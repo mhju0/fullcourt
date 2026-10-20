@@ -1,0 +1,232 @@
+{
+  "sourceRecordPath": "../../../audit/arena-shooting-correction/historical-topo/accepted-points.json",
+  "sourceRecordSha256": "e434b60adb1d63cff2755d89a2b070ef53d99210c59638d00ada1f0a15a79538",
+  "derivationScriptPath": "../../../audit/arena-shooting-correction/historical-topo/derive_points.py",
+  "derivationScriptSha256": "1bdd45a2b0c2ae9017bbf97446cfd59d9aab511cf565cc43845d930bc8be96e5",
+  "records": [
+    {
+      "arenaId": "sas-hemisfair",
+      "latitude": 29.42051607163162,
+      "longitude": -98.48445037283402,
+      "coordinateMethod": "Manually inspected historical arena map-symbol point transformed from original USGS GeoPDF georeference to WGS84; arena-scale estimate, not surveyed court center",
+      "estimatedMapSelectionUncertaintyMeters": 40,
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_geo.pdf",
+      "sourceSha256": "ad485513f4bc40b47b99811cedb840f4885af39205f58e9e5d33eb05f8badaae",
+      "catalogItem": "5a8a5293e4b00f54eb40df10",
+      "projection": {
+        "/CentralMeridian": "-98.438",
+        "/Datum": "NAS-E",
+        "/FalseEasting": "0",
+        "/FalseNorthing": "0",
+        "/OriginLatitude": "29.375",
+        "/ProjectionType": "LE",
+        "/StandardParallelOne": "33",
+        "/StandardParallelTwo": "45",
+        "/Type": "/Projection",
+        "/Units": "M"
+      },
+      "ctm": [
+        8.466666666667678,
+        0.0,
+        -1.532539206218553e-16,
+        8.46666666666768,
+        -7002.238721297458,
+        -1765.705469952936
+      ],
+      "topLeftPdfPoint": [
+        294.0,
+        1142.5
+      ],
+      "pdfHeight": 1948.88,
+      "datumTransform": "Inverse of unknown + axis order change (2D) + NAD27 to WGS 84 (6) + axis order change (2D)",
+      "datumTransformAccuracyMeters": 7.0,
+      "controlPointsWgs84": [
+        [
+          -98.37532006455626,
+          29.37523502723505
+        ],
+        [
+          -98.5003235725198,
+          29.375234725572582
+        ],
+        [
+          -98.50032396910312,
+          29.500230847877727
+        ],
+        [
+          -98.37532045684009,
+          29.500231150702927
+        ]
+      ],
+      "controlPointsNad27": [
+        [
+          -98.375,
+          29.37499999999998
+        ],
+        [
+          -98.49999999999999,
+          29.375
+        ],
+        [
+          -98.49999999999999,
+          29.499999999999996
+        ],
+        [
+          -98.375,
+          29.49999999999997
+        ]
+      ],
+      "expectedQuadrangleNad27": [
+        [
+          -98.375,
+          29.375
+        ],
+        [
+          -98.5,
+          29.375
+        ],
+        [
+          -98.5,
+          29.5
+        ],
+        [
+          -98.375,
+          29.5
+        ]
+      ],
+      "expectedQuadrangleWgs84": [
+        [
+          -98.37532006455626,
+          29.37523502723507
+        ],
+        [
+          -98.50032357251982,
+          29.375234725572582
+        ],
+        [
+          -98.50032396910314,
+          29.500230847877727
+        ],
+        [
+          -98.37532045684009,
+          29.50023115070296
+        ]
+      ],
+      "sameDatumControlToleranceDegrees": 1e-07,
+      "identityAdjudication": "Rounded arena roof symbol southeast of adjoining exhibition hall and northwest of Tower of Americas; identified against official HemisFair site plan, not candidate coordinates.",
+      "annotatedReviewPath": "../../../audit/arena-shooting-correction/historical-topo/sas-hemisfair-accepted-point.png"
+    },
+    {
+      "arenaId": "uta-saltpalace",
+      "latitude": 40.76632977658519,
+      "longitude": -111.89559815900985,
+      "coordinateMethod": "Manually inspected historical arena map-symbol point transformed from original USGS GeoPDF georeference to WGS84; arena-scale estimate, not surveyed court center",
+      "estimatedMapSelectionUncertaintyMeters": 100,
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251651_1963_24000_geo.pdf",
+      "sourceSha256": "e30843a220468421092540e29c56077a2c1da1c5f41120f4b9deba68195ae6d4",
+      "catalogItem": "5a8a56c0e4b00f54eb413c1e",
+      "projection": {
+        "/CentralMeridian": "-111.938",
+        "/Datum": "NAS-E",
+        "/FalseEasting": "0",
+        "/FalseNorthing": "0",
+        "/OriginLatitude": "40.75",
+        "/ProjectionType": "LE",
+        "/StandardParallelOne": "33",
+        "/StandardParallelTwo": "45",
+        "/Type": "/Projection",
+        "/Units": "M"
+      },
+      "ctm": [
+        8.466666666667678,
+        0.0,
+        -1.890354244457351e-16,
+        8.466666666667678,
+        -6506.082456818861,
+        -1770.171212009862
+      ],
+      "topLeftPdfPoint": [
+        1197.0,
+        1499.0
+      ],
+      "pdfHeight": 1922.25,
+      "datumTransform": "Inverse of unknown + axis order change (2D) + NAD27 to WGS 84 (6) + axis order change (2D)",
+      "datumTransformAccuracyMeters": 7.0,
+      "controlPointsWgs84": [
+        [
+          -111.87578937927495,
+          40.74992580982002
+        ],
+        [
+          -112.00079311209794,
+          40.74992495285812
+        ],
+        [
+          -112.00079460194641,
+          40.87492346316014
+        ],
+        [
+          -111.87579086211143,
+          40.87492432227113
+        ]
+      ],
+      "controlPointsNad27": [
+        [
+          -111.875,
+          40.75
+        ],
+        [
+          -112.0,
+          40.75000000000001
+        ],
+        [
+          -112.0,
+          40.87500000000001
+        ],
+        [
+          -111.875,
+          40.87499999999999
+        ]
+      ],
+      "expectedQuadrangleNad27": [
+        [
+          -111.875,
+          40.75
+        ],
+        [
+          -112.0,
+          40.75
+        ],
+        [
+          -112.0,
+          40.875
+        ],
+        [
+          -111.875,
+          40.875
+        ]
+      ],
+      "expectedQuadrangleWgs84": [
+        [
+          -111.87578937927495,
+          40.74992580982002
+        ],
+        [
+          -112.00079311209794,
+          40.74992495285811
+        ],
+        [
+          -112.00079460194641,
+          40.87492346316013
+        ],
+        [
+          -111.87579086211143,
+          40.874924322271134
+        ]
+      ],
+      "sameDatumControlToleranceDegrees": 1e-07,
+      "identityAdjudication": "Southern arena portion of magenta original Salt Palace footprint; north/south building arrangement independently checked against US Forest Service 1978 aerial, not the modern convention-center pin.",
+      "annotatedReviewPath": "../../../audit/arena-shooting-correction/historical-topo/uta-saltpalace-accepted-point.png"
+    }
+  ]
+}

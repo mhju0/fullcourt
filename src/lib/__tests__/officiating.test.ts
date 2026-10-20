@@ -36,6 +36,15 @@ describe("officiating evidence and browsing", () => {
     );
     expect(filterReviews(games, "UNKNOWN", "")).toEqual([]);
   });
+  it("joins the Cup semifinal by canonical ID while retaining NBA report identity", () => {
+    const games = (data.seasons as ReviewSeason[]).flatMap((s) => s.games);
+    const game = games.find((g) => g.id === "0022401229")!;
+    expect(game.canonicalExternalId).toBe("bref-202412140MIL");
+    expect([game.date, game.home, game.away]).toEqual(["2024-12-14", "MIL", "ATL"]);
+    expect(game.source).toBe("https://official.nba.com/l2m/L2MReport.html?gameId=0022401229");
+    expect(games.filter((g) => g.canonicalExternalId)).toHaveLength(1);
+    expect(reviewUrl("2024-25", "MIL", "", game.id)).toContain("game=0022401229");
+  });
   it("keeps distinct NBA categories distinguishable in the chips", () => {
     for (const season of data.seasons) {
       const labels = Object.keys(season.categories).map(categoryLabel);

@@ -1,0 +1,12 @@
+[
+  {
+    "title": "USGS 1:100000-scale Quadrangle for Denver West, CO 1983",
+    "url": "https://www.sciencebase.gov/catalog/item/5a8a2690e4b00f54eb3c25df?format=json",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+    "url": "https://www.sciencebase.gov/catalog/item/5a8a389ae4b00f54eb3e06f3?format=json",
+    "error": "HTTP Error 403: Forbidden"
+  }
+]

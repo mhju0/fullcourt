@@ -1,0 +1,749 @@
+[
+  {
+    "arenaId": "det-silverdome",
+    "mappingProvider": "OpenHistoricalMap",
+    "wayId": 199784496,
+    "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+    "sourcePath": "ohm-historic-arenas.json",
+    "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+    "latitude": 42.64576854229844,
+    "longitude": -83.25467107170667,
+    "vertexCount": 48,
+    "vertices": [
+      [
+        -83.2548647,
+        42.6468222
+      ],
+      [
+        -83.2548617,
+        42.6468439
+      ],
+      [
+        -83.2548674,
+        42.6468647
+      ],
+      [
+        -83.2548845,
+        42.6468791
+      ],
+      [
+        -83.2549051,
+        42.6468899
+      ],
+      [
+        -83.2549335,
+        42.6468934
+      ],
+      [
+        -83.2549665,
+        42.6468891
+      ],
+      [
+        -83.2549909,
+        42.6468717
+      ],
+      [
+        -83.2550058,
+        42.6468521
+      ],
+      [
+        -83.2550082,
+        42.6468338
+      ],
+      [
+        -83.2552448,
+        42.6468521
+      ],
+      [
+        -83.2561614,
+        42.6461245
+      ],
+      [
+        -83.2561235,
+        42.6459339
+      ],
+      [
+        -83.2561498,
+        42.6459301
+      ],
+      [
+        -83.2561752,
+        42.6459202
+      ],
+      [
+        -83.2561892,
+        42.6459041
+      ],
+      [
+        -83.2561974,
+        42.6458865
+      ],
+      [
+        -83.256194,
+        42.6458655
+      ],
+      [
+        -83.256179,
+        42.6458434
+      ],
+      [
+        -83.2561494,
+        42.6458311
+      ],
+      [
+        -83.2561206,
+        42.6458268
+      ],
+      [
+        -83.256097,
+        42.6458293
+      ],
+      [
+        -83.256049,
+        42.6456223
+      ],
+      [
+        -83.2547597,
+        42.6447311
+      ],
+      [
+        -83.2544703,
+        42.6447091
+      ],
+      [
+        -83.2544731,
+        42.6446891
+      ],
+      [
+        -83.2544672,
+        42.6446684
+      ],
+      [
+        -83.2544501,
+        42.6446541
+      ],
+      [
+        -83.2544293,
+        42.6446434
+      ],
+      [
+        -83.2544009,
+        42.64464
+      ],
+      [
+        -83.2543679,
+        42.6446445
+      ],
+      [
+        -83.2543437,
+        42.644662
+      ],
+      [
+        -83.254331,
+        42.6446791
+      ],
+      [
+        -83.2543279,
+        42.6447007
+      ],
+      [
+        -83.2540981,
+        42.6446833
+      ],
+      [
+        -83.2531779,
+        42.6454222
+      ],
+      [
+        -83.2532119,
+        42.6455849
+      ],
+      [
+        -83.253185,
+        42.645588
+      ],
+      [
+        -83.2531593,
+        42.6455976
+      ],
+      [
+        -83.253145,
+        42.6456136
+      ],
+      [
+        -83.2531364,
+        42.6456311
+      ],
+      [
+        -83.2531394,
+        42.6456522
+      ],
+      [
+        -83.2531539,
+        42.6456744
+      ],
+      [
+        -83.2531833,
+        42.645687
+      ],
+      [
+        -83.2532146,
+        42.6456927
+      ],
+      [
+        -83.2532433,
+        42.6456897
+      ],
+      [
+        -83.2532882,
+        42.6459119
+      ],
+      [
+        -83.25457,
+        42.6467998
+      ],
+      [
+        -83.2548647,
+        42.6468222
+      ]
+    ],
+    "tags": {
+      "building": "stadium",
+      "end_date": "2009-11-22",
+      "name": "Pontiac Silverdome",
+      "start_date": "1976-08-28"
+    },
+    "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+    "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+    "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json"
+  },
+  {
+    "arenaId": "det-palace",
+    "mappingProvider": "OpenHistoricalMap",
+    "wayId": 199784912,
+    "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+    "sourcePath": "ohm-historic-arenas.json",
+    "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+    "latitude": 42.69707075527974,
+    "longitude": -83.24576942572217,
+    "vertexCount": 75,
+    "vertices": [
+      [
+        -83.2466756,
+        42.6977782
+      ],
+      [
+        -83.2466683,
+        42.6971884
+      ],
+      [
+        -83.2465617,
+        42.6972498
+      ],
+      [
+        -83.2465429,
+        42.6972466
+      ],
+      [
+        -83.2465631,
+        42.697182
+      ],
+      [
+        -83.2465833,
+        42.6971078
+      ],
+      [
+        -83.2465775,
+        42.6970051
+      ],
+      [
+        -83.2465689,
+        42.6969447
+      ],
+      [
+        -83.2465472,
+        42.696879
+      ],
+      [
+        -83.2465213,
+        42.6968197
+      ],
+      [
+        -83.2465074,
+        42.6967964
+      ],
+      [
+        -83.2465367,
+        42.6967885
+      ],
+      [
+        -83.2465378,
+        42.696802
+      ],
+      [
+        -83.2466247,
+        42.6968004
+      ],
+      [
+        -83.2466219,
+        42.6966534
+      ],
+      [
+        -83.2466525,
+        42.696643
+      ],
+      [
+        -83.2465957,
+        42.6965516
+      ],
+      [
+        -83.2466042,
+        42.6965108
+      ],
+      [
+        -83.2466418,
+        42.6964816
+      ],
+      [
+        -83.2465637,
+        42.6964257
+      ],
+      [
+        -83.2465637,
+        42.6963567
+      ],
+      [
+        -83.2464691,
+        42.6963593
+      ],
+      [
+        -83.2463895,
+        42.6963045
+      ],
+      [
+        -83.2463263,
+        42.6963536
+      ],
+      [
+        -83.2461699,
+        42.6963019
+      ],
+      [
+        -83.246155,
+        42.6963249
+      ],
+      [
+        -83.2459482,
+        42.6963264
+      ],
+      [
+        -83.2459496,
+        42.6963912
+      ],
+      [
+        -83.2459688,
+        42.6963907
+      ],
+      [
+        -83.2459595,
+        42.6964111
+      ],
+      [
+        -83.2459005,
+        42.696397
+      ],
+      [
+        -83.2458259,
+        42.6963844
+      ],
+      [
+        -83.2457392,
+        42.6963755
+      ],
+      [
+        -83.2456205,
+        42.696374
+      ],
+      [
+        -83.2455139,
+        42.6963802
+      ],
+      [
+        -83.245408,
+        42.6963964
+      ],
+      [
+        -83.2452943,
+        42.6964267
+      ],
+      [
+        -83.2451535,
+        42.6964811
+      ],
+      [
+        -83.2450853,
+        42.6965145
+      ],
+      [
+        -83.2449957,
+        42.6965693
+      ],
+      [
+        -83.2449318,
+        42.69662
+      ],
+      [
+        -83.2448657,
+        42.6966895
+      ],
+      [
+        -83.2448088,
+        42.6967637
+      ],
+      [
+        -83.2447669,
+        42.6968378
+      ],
+      [
+        -83.2447406,
+        42.6969026
+      ],
+      [
+        -83.2447242,
+        42.6969606
+      ],
+      [
+        -83.2447193,
+        42.6969888
+      ],
+      [
+        -83.2447382,
+        42.6970007
+      ],
+      [
+        -83.2447295,
+        42.6970835
+      ],
+      [
+        -83.2447366,
+        42.6971774
+      ],
+      [
+        -83.2447576,
+        42.6972615
+      ],
+      [
+        -83.2447925,
+        42.6973367
+      ],
+      [
+        -83.2448422,
+        42.6974072
+      ],
+      [
+        -83.2448927,
+        42.6974626
+      ],
+      [
+        -83.244941,
+        42.6975096
+      ],
+      [
+        -83.2449488,
+        42.6975033
+      ],
+      [
+        -83.2450789,
+        42.6975958
+      ],
+      [
+        -83.2450753,
+        42.6976021
+      ],
+      [
+        -83.2451621,
+        42.697647
+      ],
+      [
+        -83.2452466,
+        42.6976804
+      ],
+      [
+        -83.2453369,
+        42.6977071
+      ],
+      [
+        -83.2454279,
+        42.6977248
+      ],
+      [
+        -83.2455459,
+        42.6977457
+      ],
+      [
+        -83.2456262,
+        42.6977499
+      ],
+      [
+        -83.2456255,
+        42.6977676
+      ],
+      [
+        -83.2456169,
+        42.6977687
+      ],
+      [
+        -83.2456169,
+        42.6977729
+      ],
+      [
+        -83.2459271,
+        42.697763
+      ],
+      [
+        -83.2459083,
+        42.6977879
+      ],
+      [
+        -83.246332,
+        42.6977776
+      ],
+      [
+        -83.2463619,
+        42.6977923
+      ],
+      [
+        -83.2464109,
+        42.6978027
+      ],
+      [
+        -83.2464671,
+        42.6978017
+      ],
+      [
+        -83.2465104,
+        42.6977907
+      ],
+      [
+        -83.246541,
+        42.6977776
+      ],
+      [
+        -83.2466756,
+        42.6977782
+      ]
+    ],
+    "tags": {
+      "building": "stadium",
+      "end_date": "2020-07-11",
+      "name": "The Palace of Auburn Hills",
+      "start_date": "1988-08-13",
+      "wikidata": "Q1327633",
+      "wikipedia": "en:The Palace of Auburn Hills"
+    },
+    "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+    "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+    "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json"
+  },
+  {
+    "arenaId": "mil-bradley",
+    "mappingProvider": "OpenHistoricalMap",
+    "wayId": 200259653,
+    "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+    "sourcePath": "ohm-historic-arenas.json",
+    "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+    "latitude": 43.04368346909724,
+    "longitude": -87.91714947438052,
+    "vertexCount": 16,
+    "vertices": [
+      [
+        -87.9177412,
+        43.0442878
+      ],
+      [
+        -87.9165395,
+        43.0442763
+      ],
+      [
+        -87.916543,
+        43.0440857
+      ],
+      [
+        -87.91648,
+        43.0440337
+      ],
+      [
+        -87.9162258,
+        43.0440286
+      ],
+      [
+        -87.9162523,
+        43.0433144
+      ],
+      [
+        -87.9164948,
+        43.0433192
+      ],
+      [
+        -87.9165578,
+        43.0432721
+      ],
+      [
+        -87.9165597,
+        43.0430824
+      ],
+      [
+        -87.9177655,
+        43.0430891
+      ],
+      [
+        -87.9177634,
+        43.0432809
+      ],
+      [
+        -87.9178211,
+        43.0433299
+      ],
+      [
+        -87.9180599,
+        43.0433309
+      ],
+      [
+        -87.9180546,
+        43.0440455
+      ],
+      [
+        -87.9177983,
+        43.0440444
+      ],
+      [
+        -87.9177447,
+        43.0440954
+      ],
+      [
+        -87.9177412,
+        43.0442878
+      ]
+    ],
+    "tags": {
+      "addr:city": "Milwaukee",
+      "addr:housenumber": "1001",
+      "addr:state": "WI",
+      "addr:street": "North Vel R. Phillips Avenue",
+      "building": "stadium",
+      "end_date": "2019-01",
+      "leisure": "stadium",
+      "name": "Bradley Center",
+      "sport": "basketball",
+      "start_date": "1986-10-20",
+      "wikidata": "Q737976",
+      "wikimedia_commons": "Category:BMO Harris Bradley Center",
+      "wikipedia": "en:Bradley Center"
+    },
+    "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+    "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+    "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json"
+  },
+  {
+    "arenaId": "cha-coliseum",
+    "mappingProvider": "OpenHistoricalMap",
+    "wayId": 200699921,
+    "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+    "sourcePath": "ohm-historic-arenas.json",
+    "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+    "latitude": 35.18627805502331,
+    "longitude": -80.91275468421792,
+    "vertexCount": 19,
+    "vertices": [
+      [
+        -80.9138153,
+        35.1862894
+      ],
+      [
+        -80.9137559,
+        35.1865647
+      ],
+      [
+        -80.9135925,
+        35.1868102
+      ],
+      [
+        -80.9133289,
+        35.1870075
+      ],
+      [
+        -80.9130002,
+        35.187122
+      ],
+      [
+        -80.9126436,
+        35.1871408
+      ],
+      [
+        -80.9122995,
+        35.1870619
+      ],
+      [
+        -80.9120071,
+        35.186894
+      ],
+      [
+        -80.9117994,
+        35.1866563
+      ],
+      [
+        -80.9117,
+        35.1863757
+      ],
+      [
+        -80.9117203,
+        35.1860841
+      ],
+      [
+        -80.9118579,
+        35.1858146
+      ],
+      [
+        -80.912085,
+        35.1856056
+      ],
+      [
+        -80.9123816,
+        35.1854665
+      ],
+      [
+        -80.912717,
+        35.1854118
+      ],
+      [
+        -80.9130563,
+        35.1854471
+      ],
+      [
+        -80.9133642,
+        35.1855688
+      ],
+      [
+        -80.9136087,
+        35.1857642
+      ],
+      [
+        -80.9137645,
+        35.186013
+      ],
+      [
+        -80.9138153,
+        35.1862894
+      ]
+    ],
+    "tags": {
+      "building": "stadium",
+      "end_date": "2007-06-03",
+      "name": "Charlotte Coliseum",
+      "start_date": "1988-08-11"
+    },
+    "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+    "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+    "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json"
+  }
+]

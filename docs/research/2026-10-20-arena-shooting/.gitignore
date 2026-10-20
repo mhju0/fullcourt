@@ -1,0 +1,11 @@
+# Retained original response bytes and rendered inspection images stay local.
+**/raw/
+**/__pycache__/
+*.pdf
+*.png
+*.jpg
+*.log
+*.xml
+
+# Full extracted third-party source texts stay with retained local raw evidence.
+**/source-*.txt

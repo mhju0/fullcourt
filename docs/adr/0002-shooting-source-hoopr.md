@@ -116,3 +116,25 @@ request per game rather than one file per season, and sets `cache-control: max-a
 valuable as the thing we check hoopR against.
 
 **balldontlie** requires an API key (401 without one). Not evaluated further once hoopR verified.
+
+## 2026-10-20 amendment: canonical fixture aliases apply to shooting outcomes
+
+The July join measurement above is a historical receipt. The five documented synthetic-ID
+fixtures are eligible regular-season games and must contribute Shooting outcomes. The
+accepted `src/data/player-appearance-context.json` already links their NBA IDs to canonical
+stored IDs, with official NBA dates, teams, player rosters and source hashes. Those aliases
+previously supplied appearance history while the outcome query's `002` filter omitted them.
+
+Shooting now selects final, nonbubble regular fixtures by their canonical game type, then
+matches the cache by exact ID or the reviewed bijective alias. Alias date, home/away team
+identity, full rosters and team scoring totals must agree before zero-attempt outcome rows
+are excluded. Every completed canonical season from the provider's 1996-97 coverage start
+requires its player cache; a missing season file or canonical fixture refuses generation.
+An upcoming season with no completed games does not require a cache. Raw
+NBA IDs remain attached to outcomes for appearance-history matching; no database re-key is
+implied. The comparison arms, thirty-day ceiling and empirical-Bayes protocol are preserved.
+
+The [focused correction record](../research/2026-10-20-arena-shooting/shooting.md) contains
+the complete raw-cache comparison, exact integer additions and regenerated artifact checks.
+Shot Quality consumes its separate regular-season shot cache without this canonical-ID join;
+its cohort and artifacts are unaffected by this correction.

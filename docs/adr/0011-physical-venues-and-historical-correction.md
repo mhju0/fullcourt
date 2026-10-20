@@ -45,3 +45,18 @@ This is a version-prefixed, bounded-age cache freshness check, not cryptographic
 a guarantee of independent 128-bit security. Physical-season context retains its richer
 fingerprint. Production transition approval and audit integrity still use exact SHA-256
 manifest/source/snapshot hashes, maintenance and CDN/deployment-cache verification.
+
+## Arena-era source amendment — October 20, 2026
+
+D-131 extends dated physical locations to moves within a metro. `arena-history.json` assigns
+one sourced point per building, including shared Los Angeles homes. Historical coordinates
+are mapped estimates with explicit provenance; first/last observed games do not establish an
+exact operating move date. Ordinary offseason cutovers use July 1, with actual midseason
+arena changes and the already ratified temporary operating-base bounds handled explicitly.
+
+A modeled-base override is not a factual active-arena era. Atlanta's 1997-99 interregnum keeps
+the exact released base point because no operating relocation is established. Every actual
+home fixture is separately assigned to Georgia Dome or Alexander Memorial Coliseum. Missing
+fixture evidence fails before the base can be mistaken for the game's physical location.
+This does not introduce a majority-venue, airport or inferred-return rule. The new correction
+protocol is separate from the immutable previous overtime transition.

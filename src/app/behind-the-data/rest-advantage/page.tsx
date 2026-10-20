@@ -250,7 +250,7 @@ const LARGE_ROAD = RESTED_ON_ROAD.ranges.find((r) => r.key === "large")!;
  * The road row inside recent eras, each against its own road baseline.
  *
  * The raw rate and the baseline are printed side by side because separating them is exactly
- * the error the retired claims made. 49.3% over the last five seasons looks like rest suddenly
+ * the error the retired claims made. A recent road rate near even can look like rest suddenly
  * mattering; most of that movement is home court weakening league-wide, and the column that
  * survives it is the last one.
  */
@@ -567,8 +567,11 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           .
         </Prose>
         <Prose>
-          Games selected by back-to-back and recent-workload terms but lost when each is
-          removed have win rates above 63%. Removing travel drops{" "}
+          Games selected by the back-to-back term but lost when it is removed won at{" "}
+          {ABLATIONS.find((a) => a.term === "Back-to-back")!.foundWinPct.toFixed(2)}%.
+          For recent workload, that rate is{" "}
+          {ABLATIONS.find((a) => a.term === "Recent workload (decay)")!.foundWinPct.toFixed(2)}%.
+          Removing travel drops{" "}
           {ABLATIONS[0].found.toLocaleString()}{" "}
           of the model&rsquo;s calls, far more than any other term (the next is{" "}
           {Math.max(...ABLATIONS.slice(1).map((a) => a.found)).toLocaleString()}). Those games won at{" "}

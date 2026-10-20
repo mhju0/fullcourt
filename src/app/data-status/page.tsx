@@ -17,7 +17,7 @@ import { shootingHomeCoverage } from "@/lib/home-findings";
 import { AVAILABILITY_SAMPLE } from "@/lib/availability-facts";
 import type { ReviewSeason } from "@/lib/officiating";
 import type { PlayerRestPayload } from "@/lib/player-rest";
-import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
+import { getHistoricalEvidenceCoverage } from "@/lib/rest-advantage-evidence-server";
 import { termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
@@ -107,7 +107,7 @@ export default async function DataStatusPage() {
     // together, so keep their independent failure states while issuing them one at a time.
     game = await readStatusValue("games", getDataAsOf);
     schedule = await readStatusValue("schedule", getPublishedScheduleCoverage);
-    analysis = await readStatusValue("analysis", () => getHistoricalBacktest(0));
+    analysis = await readStatusValue("analysis", getHistoricalEvidenceCoverage);
     playoffSeason = await readStatusValue("playoffs", getLatestPublishedPlayoffSeason);
     shotSeason = await readStatusValue("shot-quality", getLatestPublishedShotQualitySeason);
   }
@@ -156,7 +156,7 @@ export default async function DataStatusPage() {
         <StatusCard
           title="Model Results"
           href="/analysis"
-          coverage={analysis ? `${analysis.venueBaseline.games.toLocaleString()} final games with fatigue evidence` : "Unavailable"}
+          coverage={analysis ? `${analysis.games.toLocaleString()} final games with fatigue evidence` : "Unavailable"}
           through={analysis?.latestEvidenceDate ?? "Unknown"}
           refresh="Not recorded."
         />

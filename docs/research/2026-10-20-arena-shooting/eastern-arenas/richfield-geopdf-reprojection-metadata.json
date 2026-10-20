@@ -1,0 +1,49 @@
+{
+  "url": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD27_Custom_Lambert%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1927%5C%22%2CDATUM%5B%5C%22D_North_American_1927%5C%22%2CSPHEROID%5B%5C%22Clarke_1866%5C%22%2C6378206.4%2C294.9786982%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Lambert_Conformal_Conic%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.5625%5D%2CPARAMETER%5B%5C%22Standard_Parallel_1%5C%22%2C41.125%5D%2CPARAMETER%5B%5C%22Standard_Parallel_2%5C%22%2C41.25%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C41.125%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-2739.4001974435873%2C+%22y%22%3A+13735.925083062592%7D%2C+%7B%22x%22%3A+-5248.643269521235%2C+%22y%22%3A+1.8851547728529567%7D%2C+%7B%22x%22%3A+5248.643269521234%2C+%22y%22%3A+1.8851547728529567%7D%2C+%7B%22x%22%3A+-5238.671297398798%2C+%22y%22%3A+13883.853457102212%7D%2C+%7B%22x%22%3A+5238.671297398797%2C+%22y%22%3A+13883.853457102212%7D%5D%7D&f=json",
+  "sourceWkt": "PROJCS[\"NAD27_Custom_Lambert\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.5625],PARAMETER[\"Standard_Parallel_1\",41.125],PARAMETER[\"Standard_Parallel_2\",41.25],PARAMETER[\"Latitude_Of_Origin\",41.125],UNIT[\"Meter\",1]]",
+  "pdfPointCoordinates": [
+    [
+      462.5,
+      1833.98
+    ],
+    [
+      166.1327080223606,
+      211.8492998084923
+    ],
+    [
+      1405.969700822504,
+      211.8492998084923
+    ],
+    [
+      167.3105000053254,
+      1851.451855201528
+    ],
+    [
+      1404.791908839539,
+      1851.451855201528
+    ]
+  ],
+  "projectedInputPoints": [
+    {
+      "x": -2739.4001974435873,
+      "y": 13735.925083062592
+    },
+    {
+      "x": -5248.643269521235,
+      "y": 1.8851547728529567
+    },
+    {
+      "x": 5248.643269521234,
+      "y": 1.8851547728529567
+    },
+    {
+      "x": -5238.671297398798,
+      "y": 13883.853457102212
+    },
+    {
+      "x": 5238.671297398797,
+      "y": 13883.853457102212
+    }
+  ],
+  "bodySha256": "9b147f41d677aa13e9e826c49e4aa0d2f83307d30ced301d924591a02f847b55"
+}

@@ -20,14 +20,11 @@ import { mapEspnStatus } from "@/lib/espn-scoreboard";
  * publishes games that have been *played*, so it is no help for a schedule released in August,
  * but it does mean a re-key becomes possible once the season is underway.
  *
- * One consumer still matches on the `002…` shape and therefore skips these rows until then:
- *
- *   `scripts/analyze_player_shooting.py` — filters `external_id LIKE '002%'` (§ line 180) and
- *   joins hoopR box scores on it, so **Shooting by Rest will carry no 2026-27 data until these
- *   rows are re-keyed**. Dated: it needs a few months of games to clear its volume floor, so
- *   the deadline is roughly January 2027, not opening night.
- *   `scripts/seed_season_from_hoopr.ts` already has the machinery — hoopR box scores dated via
- *   the ESPN scoreboard, since hoopR carries no date of its own.
+ * Shooting joins hoopR's NBA IDs to canonical fixtures, with explicit reviewed aliases
+ * for exceptional stored IDs. New ESPN-keyed seasons still need a reviewed ID mapping
+ * or re-key before their cached shooting outcomes can be matched; missing fixtures fail
+ * the producer's coverage guard. `scripts/seed_season_from_hoopr.ts` already has the
+ * hoopR-to-ESPN fixture matching machinery.
  *
  * The nightly score path no longer does. `scripts/sync_scores_espn.ts` and `/api/cron/update`
  * both match on (date, away, home) through `src/lib/espn-scoreboard.ts`, so they maintain an

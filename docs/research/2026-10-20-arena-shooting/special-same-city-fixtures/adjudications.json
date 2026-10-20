@@ -1,0 +1,21 @@
+{
+  "fixtures": [
+    {
+      "externalId": "0020800969",
+      "arenaId": "phi-spectrum",
+      "accepted": true,
+      "primaryUrls": [
+        "https://6abc.com/archive/6709354/"
+      ]
+    },
+    {
+      "externalId": "0021700067",
+      "arenaId": "mil-mecca",
+      "accepted": true,
+      "primaryUrls": [
+        "https://statsdmz.nba.com/pdfs/20171026/20171026_BOSMIL.pdf",
+        "https://www.nba.com/bucks/release/bucks-replicate-famed-mecca-court-return-mecca-game-oct-26"
+      ]
+    }
+  ]
+}

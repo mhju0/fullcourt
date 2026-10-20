@@ -1,0 +1,201 @@
+{
+  "arenaId": "anaheim-convention-center-arena",
+  "arenaName": "Anaheim Convention Center Arena",
+  "latitude": 33.80228943029974,
+  "longitude": -117.91983669078155,
+  "coordinateType": "original-mapping-provider-building-footprint-centroid-derived",
+  "pointMeaning": "area centroid of original OSM Arena roof polygon, not Convention Center campus pin and not surveyed court center",
+  "sourceUrl": "https://api.openstreetmap.org/api/0.6/way/368791749/full",
+  "sourcePath": "osm-arena-way-368791749.xml",
+  "bodySha256": "ce44cd828c48be70461099a1c97ccdede6f5d5ec1c9b9e9f0b88d30910591eaa",
+  "osmWayId": 368791749,
+  "osmWayVersion": 3,
+  "osmTimestamp": "2025-02-18T02:47:17Z",
+  "tags": {
+    "building": "yes",
+    "name": "Arena"
+  },
+  "verticesWgs84LonLat": [
+    [
+      -117.9203754,
+      33.8022604
+    ],
+    [
+      -117.9203758,
+      33.8023434
+    ],
+    [
+      -117.920369,
+      33.8023746
+    ],
+    [
+      -117.9203407,
+      33.8024554
+    ],
+    [
+      -117.9202931,
+      33.802529
+    ],
+    [
+      -117.9202295,
+      33.802592
+    ],
+    [
+      -117.9201856,
+      33.8026215
+    ],
+    [
+      -117.9201543,
+      33.8026407
+    ],
+    [
+      -117.9201185,
+      33.8026527
+    ],
+    [
+      -117.9200572,
+      33.80268
+    ],
+    [
+      -117.919953,
+      33.8027022
+    ],
+    [
+      -117.9198298,
+      33.8027137
+    ],
+    [
+      -117.9197452,
+      33.8027077
+    ],
+    [
+      -117.9196474,
+      33.8026859
+    ],
+    [
+      -117.9195535,
+      33.8026477
+    ],
+    [
+      -117.9195003,
+      33.8026178
+    ],
+    [
+      -117.9194692,
+      33.8025939
+    ],
+    [
+      -117.919406,
+      33.8025345
+    ],
+    [
+      -117.9193412,
+      33.8024382
+    ],
+    [
+      -117.9193139,
+      33.8023638
+    ],
+    [
+      -117.9193025,
+      33.8022724
+    ],
+    [
+      -117.9193073,
+      33.8022143
+    ],
+    [
+      -117.9193218,
+      33.8021554
+    ],
+    [
+      -117.9193621,
+      33.8020702
+    ],
+    [
+      -117.9194016,
+      33.8020166
+    ],
+    [
+      -117.919433,
+      33.801991
+    ],
+    [
+      -117.9194601,
+      33.8019703
+    ],
+    [
+      -117.9195632,
+      33.8019153
+    ],
+    [
+      -117.9196984,
+      33.8018743
+    ],
+    [
+      -117.9198207,
+      33.8018645
+    ],
+    [
+      -117.9199098,
+      33.8018726
+    ],
+    [
+      -117.9200353,
+      33.8018993
+    ],
+    [
+      -117.9201297,
+      33.8019412
+    ],
+    [
+      -117.9201769,
+      33.8019706
+    ],
+    [
+      -117.9202853,
+      33.8020651
+    ],
+    [
+      -117.9203045,
+      33.8020968
+    ],
+    [
+      -117.9203633,
+      33.8021924
+    ],
+    [
+      -117.9203754,
+      33.8022604
+    ]
+  ],
+  "vertexCountIncludingClosure": 38,
+  "method": "Translate first vertex to local origin; x=(longitude-originLon)*cos(mean latitude),y=latitude-originLat; planar polygon area centroid; inverse transform. This reproduces circular Arena roof center.",
+  "primaryIdentitySources": [
+    {
+      "url": "https://www.anaheim.net/DocumentCenter/View/35656/Facility-Guide",
+      "purpose": "Official City of Anaheim facility guide labels separate circular Arena on level-one plan, adjacent to Arena Plaza and north of Halls A-D."
+    },
+    {
+      "url": "https://www.anaheim.net/DocumentCenter/View/35651/Arena-Specifications",
+      "purpose": "Official City Arena specifications identify 28140 sq ft arena with terrace/loge/bleacher/floor seating."
+    },
+    {
+      "url": "https://local.anaheim.net/docs_agend/questys_pub/16771/16801/16804/18854/18860/2.%20Exhibit%20A18860.pdf",
+      "purpose": "Official City site map identifies Arena south of Katella Avenue and east of north exhibition halls."
+    },
+    {
+      "url": "https://assets.simpleviewinc.com/simpleview/image/upload/v1/clients/anaheimca/ACC_Spec_Guide_2026_singles_701cb92a-9b24-448c-9bf5-e007efa8aec2.pdf",
+      "discoveredFrom": "https://www.visitanaheim.org/meetings/anaheim-convention-center/floor-plans-and-specifications/arena-capacities/",
+      "path": "operator-linked-2026-spec-guide.pdf",
+      "bodySha256": "536fcb2a0db597ad5209795e8e2d6826f176c8683c55beb5940100ff4e8f8d96",
+      "purpose": "Official destination organization directly links original 2026 Convention Center specification guide; page13 campus map labels circular Arena at north/east edge of main halls immediately south of Katella; page18 level-one plan confirms Arena separate from lobby/exhibit halls.",
+      "visuallyInspectedPages": [
+        13,
+        18
+      ]
+    }
+  ],
+  "uncertainty": "Original mapping-provider footprint; mapping accuracy rather than survey accuracy. Historical fixture physical venue identity is owned by root; this check locates that named physical Arena.",
+  "identityValidation": "Visually inspected original linked guide page13 and original OSM named Arena roof shape/context; circular Arena south of Katella/east of halls matches. City PDFs are web-provider-readable but direct downloads failed403/timeouts; no raw hashes invented for those."
+}

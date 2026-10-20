@@ -1,0 +1,5 @@
+{
+  "url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%5Bdate%3A%222010-01-01T00%3A00%3A00Z%22%5D%3Bnwr%5B%22name%22%3D%22Georgia+Dome%22%5D%3Bout+geom%3B",
+  "query": "[out:json][timeout:25][date:\"2010-01-01T00:00:00Z\"];nwr[\"name\"=\"Georgia Dome\"];out geom;",
+  "error": "HTTP Error 502: Bad Gateway"
+}

@@ -1,7 +1,7 @@
 import { BUBBLE_CAMPUS, hasBubbleBase } from "./bubble-venue";
 import { lookupFixtureVenueCorrection } from "./game-input-corrections";
 import { neutralVenueCoordinates, type NeutralVenue } from "./neutral-venues";
-import { eraCoordinates } from "./team-era-coordinates";
+import { eraCoordinates, requiresFixtureVenueCorrection } from "./team-era-coordinates";
 
 export interface VenueTeam {
   abbreviation: string;
@@ -52,6 +52,10 @@ export function resolvePhysicalVenue(input: PhysicalVenueInput) {
       homeCourt: false,
       venueSource: "bubble-campus" as const,
     };
+  }
+
+  if (requiresFixtureVenueCorrection(homeTeam.abbreviation, date)) {
+    throw new Error("Mixed-arena home game is missing its physical venue correction");
   }
 
   const neutral = input.neutralSite === true;

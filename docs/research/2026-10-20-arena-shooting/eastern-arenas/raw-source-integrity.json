@@ -1,0 +1,3796 @@
+{
+  "captureCount": 421,
+  "bodyHashVerified": 412,
+  "failedCaptureCount": 9,
+  "sources": [
+    {
+      "metadataPath": "raw/arena-map-bos-0.json",
+      "url": "https://www.google.com/maps?q=TD%20Garden%2C%20Boston%2C%20MA&output=embed",
+      "rawPath": "raw/arena-map-bos-0-5ef8d56c0ce4974866e684103646cadbcc6929ad46ef274ede39103bc8445e17.html.gz",
+      "bodySha256": "5ef8d56c0ce4974866e684103646cadbcc6929ad46ef274ede39103bc8445e17",
+      "hashVerified": true,
+      "httpStatus": null,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-atl.json",
+      "url": "https://www.statefarmarena.com/plan-your-visit/directions-parking",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/arena-site-bkn.json",
+      "url": "https://www.barclayscenter.com/center-info/directions-parking",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/arena-site-bos.json",
+      "url": "https://www.tdgarden.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-bos-3266fcd8fcd935488175b1fa7dc1415799f5232bbeabf78b0bda49d830bcb9a5.html.gz",
+      "bodySha256": "3266fcd8fcd935488175b1fa7dc1415799f5232bbeabf78b0bda49d830bcb9a5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-cha.json",
+      "url": "https://www.spectrumcentercharlotte.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-cha-9c806d60422dc15c100aabcdec39947f3ab04f63778aaf4207c14ef741809bb6.html.gz",
+      "bodySha256": "9c806d60422dc15c100aabcdec39947f3ab04f63778aaf4207c14ef741809bb6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-chi.json",
+      "url": "https://www.unitedcenter.com/venue/directions-parking/",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 403: Forbidden"
+    },
+    {
+      "metadataPath": "raw/arena-site-cle.json",
+      "url": "https://www.rocketarena.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-cle-8d17e7ba64a2b8a2638afe455e49153f5657ee8de822aa35e9b26ed0dfc2037c.html.gz",
+      "bodySha256": "8d17e7ba64a2b8a2638afe455e49153f5657ee8de822aa35e9b26ed0dfc2037c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-det.json",
+      "url": "https://www.313presents.com/venues-events/little-caesars-arena",
+      "rawPath": "raw/arena-site-det-21eb686ec2d22005378cb5ef4eff101b3081db651a67d3910733073a58128498.html.gz",
+      "bodySha256": "21eb686ec2d22005378cb5ef4eff101b3081db651a67d3910733073a58128498",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-ind.json",
+      "url": "https://www.gainbridgefieldhouse.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-ind-c34596353377420eae9f810ef418db55fe03db97beeba2b90fde89ea14a9455f.html.gz",
+      "bodySha256": "c34596353377420eae9f810ef418db55fe03db97beeba2b90fde89ea14a9455f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-mia.json",
+      "url": "https://www.kaseyacenter.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-mia-d1c88bb5317b6306f5e58491f6d901e2ef6290ea784576bbe4cdd12a3eedbf5a.html.gz",
+      "bodySha256": "d1c88bb5317b6306f5e58491f6d901e2ef6290ea784576bbe4cdd12a3eedbf5a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-mil.json",
+      "url": "https://www.fiservforum.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-mil-36babd0e967cca1619984348c329a53a5b726b8f64ec798ae397cbc0c9a283b7.html.gz",
+      "bodySha256": "36babd0e967cca1619984348c329a53a5b726b8f64ec798ae397cbc0c9a283b7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-nyk.json",
+      "url": "https://www.msg.com/madison-square-garden/directions",
+      "rawPath": "raw/arena-site-nyk-a1b61866abc7797ab70db70927f2dbd5fb8720456da6d1f3beae049b1c99a412.html.gz",
+      "bodySha256": "a1b61866abc7797ab70db70927f2dbd5fb8720456da6d1f3beae049b1c99a412",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/arena-site-orl.json",
+      "url": "https://www.kiacenter.com/plan-your-visit/directions-parking",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/arena-site-phi.json",
+      "url": "https://www.xfinitymobilearena.com/plan-your-visit/directions-parking",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/arena-site-tor.json",
+      "url": "https://www.scotiabankarena.com/plan-your-visit/directions-parking",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/arena-site-was.json",
+      "url": "https://www.capitalonearena.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-was-5b9198109ad7e7ae4b01d42d61a3a3d951f6a36b6d74769196dd291c5042152c.html.gz",
+      "bodySha256": "5b9198109ad7e7ae4b01d42d61a3a3d951f6a36b6d74769196dd291c5042152c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/failed-attempt1-game-0029600033.json",
+      "url": "https://www.nba.com/game/0029600033/box-score",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 503: Service Unavailable"
+    },
+    {
+      "metadataPath": "raw/game-0020000016.json",
+      "url": "https://www.nba.com/game/0020000016/box-score",
+      "rawPath": "raw/game-0020000016-d9fe5b39f65d73e59bc4aca8d31105daf18a9be8541e9a0a8404fd2aca75be83.html.gz",
+      "bodySha256": "d9fe5b39f65d73e59bc4aca8d31105daf18a9be8541e9a0a8404fd2aca75be83",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0020400017.json",
+      "url": "https://www.nba.com/game/0020400017/box-score",
+      "rawPath": "raw/game-0020400017-3a0f639e162e5d9774ae402508ad958fdae2dd47b35d383f66548bea1c8949c7.html.gz",
+      "bodySha256": "3a0f639e162e5d9774ae402508ad958fdae2dd47b35d383f66548bea1c8949c7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0020401220.json",
+      "url": "https://www.nba.com/game/0020401220/box-score",
+      "rawPath": "raw/game-0020401220-b2d6435ecdc01f1b44972a788bd4fb903487a4529c91429dda59c8c4b82bc018.html.gz",
+      "bodySha256": "b2d6435ecdc01f1b44972a788bd4fb903487a4529c91429dda59c8c4b82bc018",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0020500033.json",
+      "url": "https://www.nba.com/game/0020500033/box-score",
+      "rawPath": "raw/game-0020500033-a7026ce066831741edc6a2e4f8b6065eb522360362dfb17efe46287c47dab0be.html.gz",
+      "bodySha256": "a7026ce066831741edc6a2e4f8b6065eb522360362dfb17efe46287c47dab0be",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0020800969.json",
+      "url": "https://www.nba.com/game/0020800969/box-score",
+      "rawPath": "raw/game-0020800969-f63935be508e48e766adaf492ff62b21d157003b09f35a1e1594bdae7bb0a917.html.gz",
+      "bodySha256": "f63935be508e48e766adaf492ff62b21d157003b09f35a1e1594bdae7bb0a917",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0020901205.json",
+      "url": "https://www.nba.com/game/0020901205/box-score",
+      "rawPath": "raw/game-0020901205-fcf2fdaa8fcbe10079c35cacf383b411332f78756a9518412f649ed14323d32b.html.gz",
+      "bodySha256": "fcf2fdaa8fcbe10079c35cacf383b411332f78756a9518412f649ed14323d32b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021000005.json",
+      "url": "https://www.nba.com/game/0021000005/box-score",
+      "rawPath": "raw/game-0021000005-e9373aa0c5b78d823dfa0f12d6fb341d2f4c0e6d68140c56a92d6a91221a4ae9.html.gz",
+      "bodySha256": "e9373aa0c5b78d823dfa0f12d6fb341d2f4c0e6d68140c56a92d6a91221a4ae9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021000017.json",
+      "url": "https://www.nba.com/game/0021000017/box-score",
+      "rawPath": "raw/game-0021000017-cd8bde986b9a2e7d18466ea7c9385d2b89dc16e4ebeeea9747b93e755d025107.html.gz",
+      "bodySha256": "cd8bde986b9a2e7d18466ea7c9385d2b89dc16e4ebeeea9747b93e755d025107",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021100962.json",
+      "url": "https://www.nba.com/game/0021100962/box-score",
+      "rawPath": "raw/game-0021100962-8b66299b99f110844f34a01393475a66e5141f519ea5cb5e59a75fcd8c8f7799.html.gz",
+      "bodySha256": "8b66299b99f110844f34a01393475a66e5141f519ea5cb5e59a75fcd8c8f7799",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021200029.json",
+      "url": "https://www.nba.com/game/0021200029/box-score",
+      "rawPath": "raw/game-0021200029-eb1dd4a6062d5608b854f2288488b735a75b2b0f602e5719efaa3000c5a63aa2.html.gz",
+      "bodySha256": "eb1dd4a6062d5608b854f2288488b735a75b2b0f602e5719efaa3000c5a63aa2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021601208.json",
+      "url": "https://www.nba.com/game/0021601208/box-score",
+      "rawPath": "raw/game-0021601208-9f78d629477fcce3289f17d8640597e6f605a37b4a2bcd2ab22e0bbd61b52ca6.html.gz",
+      "bodySha256": "9f78d629477fcce3289f17d8640597e6f605a37b4a2bcd2ab22e0bbd61b52ca6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021700003.json",
+      "url": "https://www.nba.com/game/0021700003/box-score",
+      "rawPath": "raw/game-0021700003-91bc7d156c23a86be5335a3ecb6c73347949b77f441cec440af5808832b6248c.html.gz",
+      "bodySha256": "91bc7d156c23a86be5335a3ecb6c73347949b77f441cec440af5808832b6248c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021700067.json",
+      "url": "https://www.nba.com/game/0021700067/box-score",
+      "rawPath": "raw/game-0021700067-82a23f20d1b49f49d4d5f02add967f911f1bb43cd4608400d30efd5331bb07ca.html.gz",
+      "bodySha256": "82a23f20d1b49f49d4d5f02add967f911f1bb43cd4608400d30efd5331bb07ca",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021800023.json",
+      "url": "https://www.nba.com/game/0021800023/box-score",
+      "rawPath": "raw/game-0021800023-0b63abfa3acf55d420aabeeb737679faccbaf3b68e3341160a003415be5d13ea.html.gz",
+      "bodySha256": "0b63abfa3acf55d420aabeeb737679faccbaf3b68e3341160a003415be5d13ea",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0021900879.json",
+      "url": "https://www.nba.com/game/0021900879/box-score",
+      "rawPath": "raw/game-0021900879-c305230aecdc314847071b8fccf7d22dee881daac23aaa3e3e06da3366af63e9.html.gz",
+      "bodySha256": "c305230aecdc314847071b8fccf7d22dee881daac23aaa3e3e06da3366af63e9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022000014.json",
+      "url": "https://www.nba.com/game/0022000014/box-score",
+      "rawPath": "raw/game-0022000014-52328500aaac85fc7cc72a28f82458abff8217e12c0f1c2deaa9428cdca68878.html.gz",
+      "bodySha256": "52328500aaac85fc7cc72a28f82458abff8217e12c0f1c2deaa9428cdca68878",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022001079.json",
+      "url": "https://www.nba.com/game/0022001079/box-score",
+      "rawPath": "raw/game-0022001079-a64d8d1d4bb2bd124cbb2c27448c6ccaf36d1e26bbabaf623a87e0879796df89.html.gz",
+      "bodySha256": "a64d8d1d4bb2bd124cbb2c27448c6ccaf36d1e26bbabaf623a87e0879796df89",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022100006.json",
+      "url": "https://www.nba.com/game/0022100006/box-score",
+      "rawPath": "raw/game-0022100006-4120432139bcdf58cb45659a542af22ca6b8b1d4053fd5748cd06b700eafa0fd.html.gz",
+      "bodySha256": "4120432139bcdf58cb45659a542af22ca6b8b1d4053fd5748cd06b700eafa0fd",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501167.json",
+      "url": "https://www.nba.com/game/0022501167/box-score",
+      "rawPath": "raw/game-0022501167-b85eb1dab1ba6303517d9cce56a9f08bd9cd8d330c366315889db39a27030957.html.gz",
+      "bodySha256": "b85eb1dab1ba6303517d9cce56a9f08bd9cd8d330c366315889db39a27030957",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501172.json",
+      "url": "https://www.nba.com/game/0022501172/box-score",
+      "rawPath": "raw/game-0022501172-beca36732c5df2934f38ec22e40c9f26200c9acdcaf54add1248a7900b126fb9.html.gz",
+      "bodySha256": "beca36732c5df2934f38ec22e40c9f26200c9acdcaf54add1248a7900b126fb9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501177.json",
+      "url": "https://www.nba.com/game/0022501177/box-score",
+      "rawPath": "raw/game-0022501177-5e2f877c77228942660158b6a6d4986fcfaa2166747e2da2778b3bbc88ec3ec4.html.gz",
+      "bodySha256": "5e2f877c77228942660158b6a6d4986fcfaa2166747e2da2778b3bbc88ec3ec4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501179.json",
+      "url": "https://www.nba.com/game/0022501179/box-score",
+      "rawPath": "raw/game-0022501179-6c025b74459cc6cbc1f9775f5dd31581040fa137aeee684a3825b7f41c9ccaf7.html.gz",
+      "bodySha256": "6c025b74459cc6cbc1f9775f5dd31581040fa137aeee684a3825b7f41c9ccaf7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501188.json",
+      "url": "https://www.nba.com/game/0022501188/box-score",
+      "rawPath": "raw/game-0022501188-2f401838e8398d2b69de5ffb77297d35d1cee252c15aca00a8a8799b40336017.html.gz",
+      "bodySha256": "2f401838e8398d2b69de5ffb77297d35d1cee252c15aca00a8a8799b40336017",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0022501189.json",
+      "url": "https://www.nba.com/game/0022501189/box-score",
+      "rawPath": "raw/game-0022501189-49f83ad60ad91413020800af2aaa3676793172e2ce28944c887d949fe9090ad1.html.gz",
+      "bodySha256": "49f83ad60ad91413020800af2aaa3676793172e2ce28944c887d949fe9090ad1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500004.json",
+      "url": "https://www.nba.com/game/0028500004/box-score",
+      "rawPath": "raw/game-0028500004-2261076c05cc989bd75d4cbbc410e92aba9231bd61e2fa699145f4611b44efc2.html.gz",
+      "bodySha256": "2261076c05cc989bd75d4cbbc410e92aba9231bd61e2fa699145f4611b44efc2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500005.json",
+      "url": "https://www.nba.com/game/0028500005/box-score",
+      "rawPath": "raw/game-0028500005-8b91a390e3be33fce2ded089b3e8e4f31a397ea2a181554731bb98bf9740bbb7.html.gz",
+      "bodySha256": "8b91a390e3be33fce2ded089b3e8e4f31a397ea2a181554731bb98bf9740bbb7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500007.json",
+      "url": "https://www.nba.com/game/0028500007/box-score",
+      "rawPath": "raw/game-0028500007-271f283f9fc2eccf6f240178cd2bf25413db3625de6a672e6567dd66bd277d4a.html.gz",
+      "bodySha256": "271f283f9fc2eccf6f240178cd2bf25413db3625de6a672e6567dd66bd277d4a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500010.json",
+      "url": "https://www.nba.com/game/0028500010/box-score",
+      "rawPath": "raw/game-0028500010-4ff681ca72b2311ae26c7ff3f9fb1523b641ba781570d5b1b34dc8c30dfdd9ea.html.gz",
+      "bodySha256": "4ff681ca72b2311ae26c7ff3f9fb1523b641ba781570d5b1b34dc8c30dfdd9ea",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500012.json",
+      "url": "https://www.nba.com/game/0028500012/box-score",
+      "rawPath": "raw/game-0028500012-2142df9fcbf160f330a1678fc6ec8ab268a032f561100e13e7c6c4a60cfc5710.html.gz",
+      "bodySha256": "2142df9fcbf160f330a1678fc6ec8ab268a032f561100e13e7c6c4a60cfc5710",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500013.json",
+      "url": "https://www.nba.com/game/0028500013/box-score",
+      "rawPath": "raw/game-0028500013-17cdc1c917efb0f9b44544576aa817e1e94f4f7e42da96d3fedb5cbb40a245a1.html.gz",
+      "bodySha256": "17cdc1c917efb0f9b44544576aa817e1e94f4f7e42da96d3fedb5cbb40a245a1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500016.json",
+      "url": "https://www.nba.com/game/0028500016/box-score",
+      "rawPath": "raw/game-0028500016-d0528bcbddfe49114294edd1946bc23b4b89354a6508d5cb4f4e5656199442f9.html.gz",
+      "bodySha256": "d0528bcbddfe49114294edd1946bc23b4b89354a6508d5cb4f4e5656199442f9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500020.json",
+      "url": "https://www.nba.com/game/0028500020/box-score",
+      "rawPath": "raw/game-0028500020-528446a099e5deb00fe7269bf2985e9ff56876098af48d4e4563ba54e154aa1e.html.gz",
+      "bodySha256": "528446a099e5deb00fe7269bf2985e9ff56876098af48d4e4563ba54e154aa1e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500032.json",
+      "url": "https://www.nba.com/game/0028500032/box-score",
+      "rawPath": "raw/game-0028500032-89a10981a7cf6a09790d621de235d766debf2ad5cb35e3d1547fea4d7792c626.html.gz",
+      "bodySha256": "89a10981a7cf6a09790d621de235d766debf2ad5cb35e3d1547fea4d7792c626",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500033.json",
+      "url": "https://www.nba.com/game/0028500033/box-score",
+      "rawPath": "raw/game-0028500033-7162d2f36a644e2616cdda94512c6dbf1ecf238035c9010858ad9b61119efba2.html.gz",
+      "bodySha256": "7162d2f36a644e2616cdda94512c6dbf1ecf238035c9010858ad9b61119efba2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028500038.json",
+      "url": "https://www.nba.com/game/0028500038/box-score",
+      "rawPath": "raw/game-0028500038-7341dd39cc4c8e0fc485ee5091410a9c1f41c0a45d48f856e06fabc29281ffa6.html.gz",
+      "bodySha256": "7341dd39cc4c8e0fc485ee5091410a9c1f41c0a45d48f856e06fabc29281ffa6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028800008.json",
+      "url": "https://www.nba.com/game/0028800008/box-score",
+      "rawPath": "raw/game-0028800008-4f7d78594c3083b3fa38d225d91b178cadcc91852fad79577e1b0f75bc281fc5.html.gz",
+      "bodySha256": "4f7d78594c3083b3fa38d225d91b178cadcc91852fad79577e1b0f75bc281fc5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028800014.json",
+      "url": "https://www.nba.com/game/0028800014/box-score",
+      "rawPath": "raw/game-0028800014-f6c1de460dd5dbf8a1f4367c5c8e9ccb41b753efcb31ef754e4575c7bb749db1.html.gz",
+      "bodySha256": "f6c1de460dd5dbf8a1f4367c5c8e9ccb41b753efcb31ef754e4575c7bb749db1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028800015.json",
+      "url": "https://www.nba.com/game/0028800015/box-score",
+      "rawPath": "raw/game-0028800015-e5b68e5a67379d2807c8127d6dbec40ed655f37030730f1e2c76f74927212444.html.gz",
+      "bodySha256": "e5b68e5a67379d2807c8127d6dbec40ed655f37030730f1e2c76f74927212444",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028800018.json",
+      "url": "https://www.nba.com/game/0028800018/box-score",
+      "rawPath": "raw/game-0028800018-ef8854be58350d0ac135bd55313fadba5d102051318fb5c29cc7585fd4fc91ba.html.gz",
+      "bodySha256": "ef8854be58350d0ac135bd55313fadba5d102051318fb5c29cc7585fd4fc91ba",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0028900022.json",
+      "url": "https://www.nba.com/game/0028900022/box-score",
+      "rawPath": "raw/game-0028900022-e822df79f98991168fdafb82b217c56c2b548b6ee6800f7263178beeea265b9c.html.gz",
+      "bodySha256": "e822df79f98991168fdafb82b217c56c2b548b6ee6800f7263178beeea265b9c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029400009.json",
+      "url": "https://www.nba.com/game/0029400009/box-score",
+      "rawPath": "raw/game-0029400009-6801c0196d76f763e4a23b3ca57cec6984be871f2db6dafbc7beb02ef284eaf8.html.gz",
+      "bodySha256": "6801c0196d76f763e4a23b3ca57cec6984be871f2db6dafbc7beb02ef284eaf8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029400028.json",
+      "url": "https://www.nba.com/game/0029400028/box-score",
+      "rawPath": "raw/game-0029400028-fceb473cc3e166a85e1211595c1be6e0d78db7e551d8295fc78f99bfc679101d.html.gz",
+      "bodySha256": "fceb473cc3e166a85e1211595c1be6e0d78db7e551d8295fc78f99bfc679101d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500012.json",
+      "url": "https://www.nba.com/game/0029500012/box-score",
+      "rawPath": "raw/game-0029500012-0d306ebc504fc0144764afaa0fe52119e98d80e4f7ec3530bbbc2fe11ff62449.html.gz",
+      "bodySha256": "0d306ebc504fc0144764afaa0fe52119e98d80e4f7ec3530bbbc2fe11ff62449",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500013.json",
+      "url": "https://www.nba.com/game/0029500013/box-score",
+      "rawPath": "raw/game-0029500013-b4fae4affd1993853014f7c742dd0ed05485d6d518429d06ab0ee612b5bb6f53.html.gz",
+      "bodySha256": "b4fae4affd1993853014f7c742dd0ed05485d6d518429d06ab0ee612b5bb6f53",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500046.json",
+      "url": "https://www.nba.com/game/0029500046/box-score",
+      "rawPath": "raw/game-0029500046-38a3874f468b15d7c0891d7627dfdf8425ef2b271ccbec30523b0d7cbd2f8ba6.html.gz",
+      "bodySha256": "38a3874f468b15d7c0891d7627dfdf8425ef2b271ccbec30523b0d7cbd2f8ba6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500065.json",
+      "url": "https://www.nba.com/game/0029500065/box-score",
+      "rawPath": "raw/game-0029500065-dfb610d48df3b7b9aa9b01861753e99ee9d668b4086e47738ad1ea8723f5b965.html.gz",
+      "bodySha256": "dfb610d48df3b7b9aa9b01861753e99ee9d668b4086e47738ad1ea8723f5b965",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500080.json",
+      "url": "https://www.nba.com/game/0029500080/box-score",
+      "rawPath": "raw/game-0029500080-c0e8104d3771d5d3aca84410792897828d46ed4c05c9dcfb8f7a09070652ae2f.html.gz",
+      "bodySha256": "c0e8104d3771d5d3aca84410792897828d46ed4c05c9dcfb8f7a09070652ae2f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500096.json",
+      "url": "https://www.nba.com/game/0029500096/box-score",
+      "rawPath": "raw/game-0029500096-47a5fb877e27c1cce2586c2221bb2316e2d7a34b0fac0620a14e61ba3892e2e6.html.gz",
+      "bodySha256": "47a5fb877e27c1cce2586c2221bb2316e2d7a34b0fac0620a14e61ba3892e2e6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500111.json",
+      "url": "https://www.nba.com/game/0029500111/box-score",
+      "rawPath": "raw/game-0029500111-8867d8f7975f6fb50c2396efe69ecdaadfa066aebfbd5b329a9e57f3d76df5f4.html.gz",
+      "bodySha256": "8867d8f7975f6fb50c2396efe69ecdaadfa066aebfbd5b329a9e57f3d76df5f4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500135.json",
+      "url": "https://www.nba.com/game/0029500135/box-score",
+      "rawPath": "raw/game-0029500135-ee19380cdd8c3b094d16ead6c1e047cd5af230c213f871753087997da89f700a.html.gz",
+      "bodySha256": "ee19380cdd8c3b094d16ead6c1e047cd5af230c213f871753087997da89f700a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500175.json",
+      "url": "https://www.nba.com/game/0029500175/box-score",
+      "rawPath": "raw/game-0029500175-356c5530408d77a1d01fd8b56ca2bd40390ea2e0be71e2ba017c9afe7fd230d5.html.gz",
+      "bodySha256": "356c5530408d77a1d01fd8b56ca2bd40390ea2e0be71e2ba017c9afe7fd230d5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500201.json",
+      "url": "https://www.nba.com/game/0029500201/box-score",
+      "rawPath": "raw/game-0029500201-faf8a47e834755d3def643792b5cdc4795b48ddbb95f8faed2a713329d31cf02.html.gz",
+      "bodySha256": "faf8a47e834755d3def643792b5cdc4795b48ddbb95f8faed2a713329d31cf02",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500218.json",
+      "url": "https://www.nba.com/game/0029500218/box-score",
+      "rawPath": "raw/game-0029500218-7643faafc7e2df358dcab3f047a2c0488e57b9a1933ee440365439d8352b0ef3.html.gz",
+      "bodySha256": "7643faafc7e2df358dcab3f047a2c0488e57b9a1933ee440365439d8352b0ef3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500275.json",
+      "url": "https://www.nba.com/game/0029500275/box-score",
+      "rawPath": "raw/game-0029500275-635572fec3f7c03bcefe416b5f9cea410c3647dec35cc503beee1f4c94a1d1fa.html.gz",
+      "bodySha256": "635572fec3f7c03bcefe416b5f9cea410c3647dec35cc503beee1f4c94a1d1fa",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500292.json",
+      "url": "https://www.nba.com/game/0029500292/box-score",
+      "rawPath": "raw/game-0029500292-6f65dba5a7309fc7f1801f3b50333767b95a50ea6859a7bf2dac2acdb5e22a2f.html.gz",
+      "bodySha256": "6f65dba5a7309fc7f1801f3b50333767b95a50ea6859a7bf2dac2acdb5e22a2f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500313.json",
+      "url": "https://www.nba.com/game/0029500313/box-score",
+      "rawPath": "raw/game-0029500313-643b9a1d4fc73aec3900415fc392ce365ceef7c0b968b53d65ea28746462e642.html.gz",
+      "bodySha256": "643b9a1d4fc73aec3900415fc392ce365ceef7c0b968b53d65ea28746462e642",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500325.json",
+      "url": "https://www.nba.com/game/0029500325/box-score",
+      "rawPath": "raw/game-0029500325-b0906e2fe399bf0c0859c864bf1378195051992f83d77a51b0f5fb566918fb93.html.gz",
+      "bodySha256": "b0906e2fe399bf0c0859c864bf1378195051992f83d77a51b0f5fb566918fb93",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500377.json",
+      "url": "https://www.nba.com/game/0029500377/box-score",
+      "rawPath": "raw/game-0029500377-742d052cbbc40a65b704232a3c1f812a89b8ad27a7f459e443b89cf323fec5d9.html.gz",
+      "bodySha256": "742d052cbbc40a65b704232a3c1f812a89b8ad27a7f459e443b89cf323fec5d9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500456.json",
+      "url": "https://www.nba.com/game/0029500456/box-score",
+      "rawPath": "raw/game-0029500456-2df456e99262dae41ad43b2e1c15a4e62b228f19a219ba2701d9057cce48d4f3.html.gz",
+      "bodySha256": "2df456e99262dae41ad43b2e1c15a4e62b228f19a219ba2701d9057cce48d4f3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500474.json",
+      "url": "https://www.nba.com/game/0029500474/box-score",
+      "rawPath": "raw/game-0029500474-453d24ffa3dc49402644bee3835d8b7368f91c3fd28cdca783652464696240e4.html.gz",
+      "bodySha256": "453d24ffa3dc49402644bee3835d8b7368f91c3fd28cdca783652464696240e4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500497.json",
+      "url": "https://www.nba.com/game/0029500497/box-score",
+      "rawPath": "raw/game-0029500497-4dfae1c4f049762a6d366a5a21ea3111ef0e5b54871bc3ec42dd2c5f75437c18.html.gz",
+      "bodySha256": "4dfae1c4f049762a6d366a5a21ea3111ef0e5b54871bc3ec42dd2c5f75437c18",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500510.json",
+      "url": "https://www.nba.com/game/0029500510/box-score",
+      "rawPath": "raw/game-0029500510-4eb4f311402b48e5d7ab597b447cd5a87de34f11fc8be74fe0d51ff22c9bd327.html.gz",
+      "bodySha256": "4eb4f311402b48e5d7ab597b447cd5a87de34f11fc8be74fe0d51ff22c9bd327",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500523.json",
+      "url": "https://www.nba.com/game/0029500523/box-score",
+      "rawPath": "raw/game-0029500523-41cd80fc339a2bff8c9cce0d21ddc5c4b2151240923c77083e252bfa9416581d.html.gz",
+      "bodySha256": "41cd80fc339a2bff8c9cce0d21ddc5c4b2151240923c77083e252bfa9416581d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500544.json",
+      "url": "https://www.nba.com/game/0029500544/box-score",
+      "rawPath": "raw/game-0029500544-2bfa901f21aed2446fc41df3f7331c235da883fd52670342f4199acaacd3c562.html.gz",
+      "bodySha256": "2bfa901f21aed2446fc41df3f7331c235da883fd52670342f4199acaacd3c562",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500555.json",
+      "url": "https://www.nba.com/game/0029500555/box-score",
+      "rawPath": "raw/game-0029500555-5e7e45e357dcdac6e3ea4fd49090d4343d5d5a037b17212cb6cfaf651c9488a3.html.gz",
+      "bodySha256": "5e7e45e357dcdac6e3ea4fd49090d4343d5d5a037b17212cb6cfaf651c9488a3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500576.json",
+      "url": "https://www.nba.com/game/0029500576/box-score",
+      "rawPath": "raw/game-0029500576-d8c1e50503dce38923f2c67672503a7789f3845687fb1bab35cc0f2a6efcc24b.html.gz",
+      "bodySha256": "d8c1e50503dce38923f2c67672503a7789f3845687fb1bab35cc0f2a6efcc24b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500652.json",
+      "url": "https://www.nba.com/game/0029500652/box-score",
+      "rawPath": "raw/game-0029500652-88afeb7a8cf324ac4909c6d1554483d8312d221677367eee5778c9893d4d5f2a.html.gz",
+      "bodySha256": "88afeb7a8cf324ac4909c6d1554483d8312d221677367eee5778c9893d4d5f2a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500663.json",
+      "url": "https://www.nba.com/game/0029500663/box-score",
+      "rawPath": "raw/game-0029500663-4a8fcb62b7484a23b429a6475a174dbb8022f1eaf95b524c7b114ca5a2737180.html.gz",
+      "bodySha256": "4a8fcb62b7484a23b429a6475a174dbb8022f1eaf95b524c7b114ca5a2737180",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500701.json",
+      "url": "https://www.nba.com/game/0029500701/box-score",
+      "rawPath": "raw/game-0029500701-46d79bfc1fa44d5fc5b6ddccca0deeed961005d1c7eeeb3abc3531949f86936c.html.gz",
+      "bodySha256": "46d79bfc1fa44d5fc5b6ddccca0deeed961005d1c7eeeb3abc3531949f86936c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500834.json",
+      "url": "https://www.nba.com/game/0029500834/box-score",
+      "rawPath": "raw/game-0029500834-2454a4f4df1596a0cb435afa37071b9999846b6d94f35a1bf23ffe51ffb33efa.html.gz",
+      "bodySha256": "2454a4f4df1596a0cb435afa37071b9999846b6d94f35a1bf23ffe51ffb33efa",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500847.json",
+      "url": "https://www.nba.com/game/0029500847/box-score",
+      "rawPath": "raw/game-0029500847-ce393601555d0a8d1c17cbf5f16a495853d8585e3c02b9492a734a1488ddacc4.html.gz",
+      "bodySha256": "ce393601555d0a8d1c17cbf5f16a495853d8585e3c02b9492a734a1488ddacc4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500879.json",
+      "url": "https://www.nba.com/game/0029500879/box-score",
+      "rawPath": "raw/game-0029500879-4ed1b790e47a43231e34dcb08c408a538946d5d852187322aa075cdfac826324.html.gz",
+      "bodySha256": "4ed1b790e47a43231e34dcb08c408a538946d5d852187322aa075cdfac826324",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500929.json",
+      "url": "https://www.nba.com/game/0029500929/box-score",
+      "rawPath": "raw/game-0029500929-487a6eef676c7d6e829ebfec097591609e275ce7da5100e86d0f720be1433d76.html.gz",
+      "bodySha256": "487a6eef676c7d6e829ebfec097591609e275ce7da5100e86d0f720be1433d76",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500944.json",
+      "url": "https://www.nba.com/game/0029500944/box-score",
+      "rawPath": "raw/game-0029500944-632116b117bd64818da2808a55966ac23eb108adcd8210fb91f56296f5658a6b.html.gz",
+      "bodySha256": "632116b117bd64818da2808a55966ac23eb108adcd8210fb91f56296f5658a6b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500960.json",
+      "url": "https://www.nba.com/game/0029500960/box-score",
+      "rawPath": "raw/game-0029500960-8dbb950b9e9908622f8b42a5c0686fdbf5fa0dc50ca3a9adcf77c3911a03bdf0.html.gz",
+      "bodySha256": "8dbb950b9e9908622f8b42a5c0686fdbf5fa0dc50ca3a9adcf77c3911a03bdf0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500977.json",
+      "url": "https://www.nba.com/game/0029500977/box-score",
+      "rawPath": "raw/game-0029500977-112e313818f5551fe1ddbaf2ecdc6b93486ee88822eb878b96e34a519e1bf8b3.html.gz",
+      "bodySha256": "112e313818f5551fe1ddbaf2ecdc6b93486ee88822eb878b96e34a519e1bf8b3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029500986.json",
+      "url": "https://www.nba.com/game/0029500986/box-score",
+      "rawPath": "raw/game-0029500986-58b086c5072707f2d7b05b76b3b86800feb55fd2151de3f5ea98523937ac9bc2.html.gz",
+      "bodySha256": "58b086c5072707f2d7b05b76b3b86800feb55fd2151de3f5ea98523937ac9bc2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501014.json",
+      "url": "https://www.nba.com/game/0029501014/box-score",
+      "rawPath": "raw/game-0029501014-0f242b038cce259970597e5b8eb22d6d2e446efcdfb653e71f31e27d08336c4f.html.gz",
+      "bodySha256": "0f242b038cce259970597e5b8eb22d6d2e446efcdfb653e71f31e27d08336c4f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501028.json",
+      "url": "https://www.nba.com/game/0029501028/box-score",
+      "rawPath": "raw/game-0029501028-1ffd65e8911b53d124a85feca39b915c57721b68b459aca175f61afdd2759c10.html.gz",
+      "bodySha256": "1ffd65e8911b53d124a85feca39b915c57721b68b459aca175f61afdd2759c10",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501033.json",
+      "url": "https://www.nba.com/game/0029501033/box-score",
+      "rawPath": "raw/game-0029501033-e72dfb9d8e622f8f4b2daad77d94e3745e47295973b3ef4b0be8d018653cd1d4.html.gz",
+      "bodySha256": "e72dfb9d8e622f8f4b2daad77d94e3745e47295973b3ef4b0be8d018653cd1d4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501053.json",
+      "url": "https://www.nba.com/game/0029501053/box-score",
+      "rawPath": "raw/game-0029501053-a1fc1cbf738ddc02b818f53a7fe01ac07ee7f73ce14dce607738ba0502edef37.html.gz",
+      "bodySha256": "a1fc1cbf738ddc02b818f53a7fe01ac07ee7f73ce14dce607738ba0502edef37",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501068.json",
+      "url": "https://www.nba.com/game/0029501068/box-score",
+      "rawPath": "raw/game-0029501068-d61f29774c891d7e629ed6630921ca3175e4ba6330bd2e4dea3285f0d7112e33.html.gz",
+      "bodySha256": "d61f29774c891d7e629ed6630921ca3175e4ba6330bd2e4dea3285f0d7112e33",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501166.json",
+      "url": "https://www.nba.com/game/0029501166/box-score",
+      "rawPath": "raw/game-0029501166-aec4c88102d895523373f62270cad4e2de616c2cad03079d7d57c49fe9642302.html.gz",
+      "bodySha256": "aec4c88102d895523373f62270cad4e2de616c2cad03079d7d57c49fe9642302",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501168.json",
+      "url": "https://www.nba.com/game/0029501168/box-score",
+      "rawPath": "raw/game-0029501168-ae70e7ca86364df43bd52110f64dd289f21187d96fbd7cb36d6a2d482fa6a42b.html.gz",
+      "bodySha256": "ae70e7ca86364df43bd52110f64dd289f21187d96fbd7cb36d6a2d482fa6a42b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029501182.json",
+      "url": "https://www.nba.com/game/0029501182/box-score",
+      "rawPath": "raw/game-0029501182-2e03a710a6c5d228c4a080cee693cc5feb85067470bf2a8ab0093558f334abc4.html.gz",
+      "bodySha256": "2e03a710a6c5d228c4a080cee693cc5feb85067470bf2a8ab0093558f334abc4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600003.json",
+      "url": "https://www.nba.com/game/0029600003/box-score",
+      "rawPath": "raw/game-0029600003-452bea6523df5158b96f68ff446f68f9d7a653d1f9067fdf74de39a8082cd879.html.gz",
+      "bodySha256": "452bea6523df5158b96f68ff446f68f9d7a653d1f9067fdf74de39a8082cd879",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600006.json",
+      "url": "https://www.nba.com/game/0029600006/box-score",
+      "rawPath": "raw/game-0029600006-8d72746f0f693a3fd642cf32abe02cbc4dbd52a8b481da7fe5d0ea6c427c4380.html.gz",
+      "bodySha256": "8d72746f0f693a3fd642cf32abe02cbc4dbd52a8b481da7fe5d0ea6c427c4380",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600033.json",
+      "url": "https://www.nba.com/game/0029600033/box-score",
+      "rawPath": "raw/game-0029600033-a07e1ec13b2a3dc2101073010627050aacaf33c00defe45248aaee53f1bf001f.html.gz",
+      "bodySha256": "a07e1ec13b2a3dc2101073010627050aacaf33c00defe45248aaee53f1bf001f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600057.json",
+      "url": "https://www.nba.com/game/0029600057/box-score",
+      "rawPath": "raw/game-0029600057-5dca6faf0dfa93833f4338ed4b0ec113990e36c63b7bb234b2ce05838ad07eb3.html.gz",
+      "bodySha256": "5dca6faf0dfa93833f4338ed4b0ec113990e36c63b7bb234b2ce05838ad07eb3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600075.json",
+      "url": "https://www.nba.com/game/0029600075/box-score",
+      "rawPath": "raw/game-0029600075-7e24a18204c86b9a13df8712ba7079e6d4a79f233ee95d91fb651a7c5e69c536.html.gz",
+      "bodySha256": "7e24a18204c86b9a13df8712ba7079e6d4a79f233ee95d91fb651a7c5e69c536",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600091.json",
+      "url": "https://www.nba.com/game/0029600091/box-score",
+      "rawPath": "raw/game-0029600091-92db7f7ce96213e229e07cf2317259acd263eda0c8dcace2f150fd0ad94051c8.html.gz",
+      "bodySha256": "92db7f7ce96213e229e07cf2317259acd263eda0c8dcace2f150fd0ad94051c8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600131.json",
+      "url": "https://www.nba.com/game/0029600131/box-score",
+      "rawPath": "raw/game-0029600131-5d081d28350b00a287bcc294ec763d0e5e3c3586071c3f79cb92c3a55df9df12.html.gz",
+      "bodySha256": "5d081d28350b00a287bcc294ec763d0e5e3c3586071c3f79cb92c3a55df9df12",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600147.json",
+      "url": "https://www.nba.com/game/0029600147/box-score",
+      "rawPath": "raw/game-0029600147-586cd582846370a17843578517b65a55c0da76daa3eab653f9372502189482e9.html.gz",
+      "bodySha256": "586cd582846370a17843578517b65a55c0da76daa3eab653f9372502189482e9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600162.json",
+      "url": "https://www.nba.com/game/0029600162/box-score",
+      "rawPath": "raw/game-0029600162-c55189e1402e637756fbc49e51f9477341c90c12c55236c5e718c123d0ea37f6.html.gz",
+      "bodySha256": "c55189e1402e637756fbc49e51f9477341c90c12c55236c5e718c123d0ea37f6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600182.json",
+      "url": "https://www.nba.com/game/0029600182/box-score",
+      "rawPath": "raw/game-0029600182-59c7aaf91f12f07f0da941704802dad48ae22d970c70be20a0e8a43fab0ab4a0.html.gz",
+      "bodySha256": "59c7aaf91f12f07f0da941704802dad48ae22d970c70be20a0e8a43fab0ab4a0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600189.json",
+      "url": "https://www.nba.com/game/0029600189/box-score",
+      "rawPath": "raw/game-0029600189-20ff2e414c6ddc8f53d25fe0c1679336f1da23cb049b1343d23b465540cbb47a.html.gz",
+      "bodySha256": "20ff2e414c6ddc8f53d25fe0c1679336f1da23cb049b1343d23b465540cbb47a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600223.json",
+      "url": "https://www.nba.com/game/0029600223/box-score",
+      "rawPath": "raw/game-0029600223-8e84f7ffb126a8b8e6f1a9d7e73f43de383a2169ce0c775815be42a95eb60199.html.gz",
+      "bodySha256": "8e84f7ffb126a8b8e6f1a9d7e73f43de383a2169ce0c775815be42a95eb60199",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600243.json",
+      "url": "https://www.nba.com/game/0029600243/box-score",
+      "rawPath": "raw/game-0029600243-6dd4befff47f94911727bcd6d188783a00667e7911b0bc990a2138eb5f79f4d0.html.gz",
+      "bodySha256": "6dd4befff47f94911727bcd6d188783a00667e7911b0bc990a2138eb5f79f4d0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600266.json",
+      "url": "https://www.nba.com/game/0029600266/box-score",
+      "rawPath": "raw/game-0029600266-2d2f0ae5d0cc260aa6f7d5b76b4e18ec3e903a0552c1ebd85073bcf4ff15611b.html.gz",
+      "bodySha256": "2d2f0ae5d0cc260aa6f7d5b76b4e18ec3e903a0552c1ebd85073bcf4ff15611b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600277.json",
+      "url": "https://www.nba.com/game/0029600277/box-score",
+      "rawPath": "raw/game-0029600277-40430cb77d51fec54ee99a5cc165f197ed16156a1b7b494a9081ca55ab962f86.html.gz",
+      "bodySha256": "40430cb77d51fec54ee99a5cc165f197ed16156a1b7b494a9081ca55ab962f86",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600323.json",
+      "url": "https://www.nba.com/game/0029600323/box-score",
+      "rawPath": "raw/game-0029600323-2c2505ae9c8098c3b0b6064543cce1eb3be1c1bbaa761ff4e2bd7bbd18fec609.html.gz",
+      "bodySha256": "2c2505ae9c8098c3b0b6064543cce1eb3be1c1bbaa761ff4e2bd7bbd18fec609",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600344.json",
+      "url": "https://www.nba.com/game/0029600344/box-score",
+      "rawPath": "raw/game-0029600344-f1a1ffead010589970f4a0cfbbe1fa452db831da7976d7a09e5e7b55151ba3e5.html.gz",
+      "bodySha256": "f1a1ffead010589970f4a0cfbbe1fa452db831da7976d7a09e5e7b55151ba3e5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600385.json",
+      "url": "https://www.nba.com/game/0029600385/box-score",
+      "rawPath": "raw/game-0029600385-91d4ecb4212f2cd2922c8c9490e84832be2d64ec06aec315c1071c0562c819c6.html.gz",
+      "bodySha256": "91d4ecb4212f2cd2922c8c9490e84832be2d64ec06aec315c1071c0562c819c6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600462.json",
+      "url": "https://www.nba.com/game/0029600462/box-score",
+      "rawPath": "raw/game-0029600462-61df0a6f4a0cbc5f7964e7ebe6563bbd10f03ef336e91f43756729d792b9d742.html.gz",
+      "bodySha256": "61df0a6f4a0cbc5f7964e7ebe6563bbd10f03ef336e91f43756729d792b9d742",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600479.json",
+      "url": "https://www.nba.com/game/0029600479/box-score",
+      "rawPath": "raw/game-0029600479-88147290840bcdcf3aed6d151e592dac300f34b0c0c32d65204fb42a0a99cd1e.html.gz",
+      "bodySha256": "88147290840bcdcf3aed6d151e592dac300f34b0c0c32d65204fb42a0a99cd1e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600499.json",
+      "url": "https://www.nba.com/game/0029600499/box-score",
+      "rawPath": "raw/game-0029600499-b2c229a8368ad8ed9634266884e95e6523d6d3e2abb1de56095c9f89fdf45325.html.gz",
+      "bodySha256": "b2c229a8368ad8ed9634266884e95e6523d6d3e2abb1de56095c9f89fdf45325",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600564.json",
+      "url": "https://www.nba.com/game/0029600564/box-score",
+      "rawPath": "raw/game-0029600564-2c6ce71f243c64101522067d72e00d2a0a1150436761d5af4ea17a970577c157.html.gz",
+      "bodySha256": "2c6ce71f243c64101522067d72e00d2a0a1150436761d5af4ea17a970577c157",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600576.json",
+      "url": "https://www.nba.com/game/0029600576/box-score",
+      "rawPath": "raw/game-0029600576-1db7d0fd277bd0c72861f42e6a2a6ea51b0f60d5fa69ef4c408889d93bc92901.html.gz",
+      "bodySha256": "1db7d0fd277bd0c72861f42e6a2a6ea51b0f60d5fa69ef4c408889d93bc92901",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600609.json",
+      "url": "https://www.nba.com/game/0029600609/box-score",
+      "rawPath": "raw/game-0029600609-1b54391cf3892c0c518b193aa4b57d14a7d08b1f08850f050d7e3849788fd21d.html.gz",
+      "bodySha256": "1b54391cf3892c0c518b193aa4b57d14a7d08b1f08850f050d7e3849788fd21d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600640.json",
+      "url": "https://www.nba.com/game/0029600640/box-score",
+      "rawPath": "raw/game-0029600640-4f1cb5d06e7baa1c7119d37119e1e782941bdfb2cad1c7eacef5f255891d9302.html.gz",
+      "bodySha256": "4f1cb5d06e7baa1c7119d37119e1e782941bdfb2cad1c7eacef5f255891d9302",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600656.json",
+      "url": "https://www.nba.com/game/0029600656/box-score",
+      "rawPath": "raw/game-0029600656-662a89b40855e477f98d80b139f745e828277671fcdb794ad865da289fd57739.html.gz",
+      "bodySha256": "662a89b40855e477f98d80b139f745e828277671fcdb794ad865da289fd57739",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600670.json",
+      "url": "https://www.nba.com/game/0029600670/box-score",
+      "rawPath": "raw/game-0029600670-679270b132ed383bb7a328fce56e48252a6a2898d7a6b1e35c2717b165c5cbde.html.gz",
+      "bodySha256": "679270b132ed383bb7a328fce56e48252a6a2898d7a6b1e35c2717b165c5cbde",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600710.json",
+      "url": "https://www.nba.com/game/0029600710/box-score",
+      "rawPath": "raw/game-0029600710-5425c25025cd8bc46917febe4b46182eb167ec2c5ec455d389defcc57a6854ae.html.gz",
+      "bodySha256": "5425c25025cd8bc46917febe4b46182eb167ec2c5ec455d389defcc57a6854ae",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600724.json",
+      "url": "https://www.nba.com/game/0029600724/box-score",
+      "rawPath": "raw/game-0029600724-0c2197c498e0fee7498d70435fde5d23225a0fea3f3d218dcbb1c35f0daa7a66.html.gz",
+      "bodySha256": "0c2197c498e0fee7498d70435fde5d23225a0fea3f3d218dcbb1c35f0daa7a66",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600834.json",
+      "url": "https://www.nba.com/game/0029600834/box-score",
+      "rawPath": "raw/game-0029600834-22a47d7826b41e0a949df5eda8816af9e1e34240fd5d00b21888e68b5116fe60.html.gz",
+      "bodySha256": "22a47d7826b41e0a949df5eda8816af9e1e34240fd5d00b21888e68b5116fe60",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600848.json",
+      "url": "https://www.nba.com/game/0029600848/box-score",
+      "rawPath": "raw/game-0029600848-8f8eb65a0eb0d9fd9d4f2051370d35e920614b16ddde77cea46a37196bda14f0.html.gz",
+      "bodySha256": "8f8eb65a0eb0d9fd9d4f2051370d35e920614b16ddde77cea46a37196bda14f0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600864.json",
+      "url": "https://www.nba.com/game/0029600864/box-score",
+      "rawPath": "raw/game-0029600864-e37fec2d2721aaff1d7d24438b1386efb2dae61c2be2104ec7c0cfa01e429a4f.html.gz",
+      "bodySha256": "e37fec2d2721aaff1d7d24438b1386efb2dae61c2be2104ec7c0cfa01e429a4f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600880.json",
+      "url": "https://www.nba.com/game/0029600880/box-score",
+      "rawPath": "raw/game-0029600880-967b20067095bed9780c9800c21638305a82dbaa32be8bd0dd9e73050b08e462.html.gz",
+      "bodySha256": "967b20067095bed9780c9800c21638305a82dbaa32be8bd0dd9e73050b08e462",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600946.json",
+      "url": "https://www.nba.com/game/0029600946/box-score",
+      "rawPath": "raw/game-0029600946-57862b8e171278e378694879444bfb4f675ba867af1d5bb8e6ed09052297070b.html.gz",
+      "bodySha256": "57862b8e171278e378694879444bfb4f675ba867af1d5bb8e6ed09052297070b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600970.json",
+      "url": "https://www.nba.com/game/0029600970/box-score",
+      "rawPath": "raw/game-0029600970-2010ba741d91292c75f46114cba7f26e84493a9915e28b1d24cc49a68e232610.html.gz",
+      "bodySha256": "2010ba741d91292c75f46114cba7f26e84493a9915e28b1d24cc49a68e232610",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600986.json",
+      "url": "https://www.nba.com/game/0029600986/box-score",
+      "rawPath": "raw/game-0029600986-d5f4228359b5f77062a5f6c38bd6491f9111bb4e954f76a92cc225ff1ac5695b.html.gz",
+      "bodySha256": "d5f4228359b5f77062a5f6c38bd6491f9111bb4e954f76a92cc225ff1ac5695b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029600994.json",
+      "url": "https://www.nba.com/game/0029600994/box-score",
+      "rawPath": "raw/game-0029600994-63b42c2d62ec999954d4bb595579865736cc64afc8e776da378b9cddeee74608.html.gz",
+      "bodySha256": "63b42c2d62ec999954d4bb595579865736cc64afc8e776da378b9cddeee74608",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029601011.json",
+      "url": "https://www.nba.com/game/0029601011/box-score",
+      "rawPath": "raw/game-0029601011-7676f8469dab1c8b5883c83e049b3724b92a2b86938d3092ccdfaa047758a445.html.gz",
+      "bodySha256": "7676f8469dab1c8b5883c83e049b3724b92a2b86938d3092ccdfaa047758a445",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029601031.json",
+      "url": "https://www.nba.com/game/0029601031/box-score",
+      "rawPath": "raw/game-0029601031-685c0027181188f78f23e8ee9150315c5ecb5f48a7a5e6293290651ae6c00679.html.gz",
+      "bodySha256": "685c0027181188f78f23e8ee9150315c5ecb5f48a7a5e6293290651ae6c00679",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029601093.json",
+      "url": "https://www.nba.com/game/0029601093/box-score",
+      "rawPath": "raw/game-0029601093-1fe41783ff4ffa7d6b034dfaaf34934f41a1d20f78efc24cb1846dd4d128f5f8.html.gz",
+      "bodySha256": "1fe41783ff4ffa7d6b034dfaaf34934f41a1d20f78efc24cb1846dd4d128f5f8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029601108.json",
+      "url": "https://www.nba.com/game/0029601108/box-score",
+      "rawPath": "raw/game-0029601108-58877c28aaed67ce18afd113d94e4c0967dcdbb129f94754f40d48b87088af26.html.gz",
+      "bodySha256": "58877c28aaed67ce18afd113d94e4c0967dcdbb129f94754f40d48b87088af26",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029601126.json",
+      "url": "https://www.nba.com/game/0029601126/box-score",
+      "rawPath": "raw/game-0029601126-47d7de064869513dd73ff2acfbf79c95435e0ad68f10b3218c7ae6640e8f14aa.html.gz",
+      "bodySha256": "47d7de064869513dd73ff2acfbf79c95435e0ad68f10b3218c7ae6640e8f14aa",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700015.json",
+      "url": "https://www.nba.com/game/0029700015/box-score",
+      "rawPath": "raw/game-0029700015-d4d9e0421272b776c547f7133021584c4aa97e83aff39eb8d5a114074fa423a4.html.gz",
+      "bodySha256": "d4d9e0421272b776c547f7133021584c4aa97e83aff39eb8d5a114074fa423a4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700016.json",
+      "url": "https://www.nba.com/game/0029700016/box-score",
+      "rawPath": "raw/game-0029700016-7d84f9daac990cf206138c86a5eed9c40b02705ad7f9733b3df63acdd6c98ed6.html.gz",
+      "bodySha256": "7d84f9daac990cf206138c86a5eed9c40b02705ad7f9733b3df63acdd6c98ed6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700033.json",
+      "url": "https://www.nba.com/game/0029700033/box-score",
+      "rawPath": "raw/game-0029700033-5fdeb8b9ef19d23d6d9255248c9ea7a5a7834cc695bedffd3d76145653302741.html.gz",
+      "bodySha256": "5fdeb8b9ef19d23d6d9255248c9ea7a5a7834cc695bedffd3d76145653302741",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700034.json",
+      "url": "https://www.nba.com/game/0029700034/box-score",
+      "rawPath": "raw/game-0029700034-fa70f698545e4fa5b63ebe7556959b0995024a9fa781297e60619e8d3ae380f3.html.gz",
+      "bodySha256": "fa70f698545e4fa5b63ebe7556959b0995024a9fa781297e60619e8d3ae380f3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700051.json",
+      "url": "https://www.nba.com/game/0029700051/box-score",
+      "rawPath": "raw/game-0029700051-d9e1838a39c11f9856cd5eefd16062ae5d9b3ce21278746ba17722201abf5428.html.gz",
+      "bodySha256": "d9e1838a39c11f9856cd5eefd16062ae5d9b3ce21278746ba17722201abf5428",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700056.json",
+      "url": "https://www.nba.com/game/0029700056/box-score",
+      "rawPath": "raw/game-0029700056-5b549124d4a74c585aaa9add6edcdaa10f55a729db1a8ba89923d3f235c574e3.html.gz",
+      "bodySha256": "5b549124d4a74c585aaa9add6edcdaa10f55a729db1a8ba89923d3f235c574e3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700057.json",
+      "url": "https://www.nba.com/game/0029700057/box-score",
+      "rawPath": "raw/game-0029700057-09f999f7c365c3e40bfcae59571bf2fbc3d3da790b0197f8ea2c03a890ff0d1c.html.gz",
+      "bodySha256": "09f999f7c365c3e40bfcae59571bf2fbc3d3da790b0197f8ea2c03a890ff0d1c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700079.json",
+      "url": "https://www.nba.com/game/0029700079/box-score",
+      "rawPath": "raw/game-0029700079-9b4a0187f79e2bbca6cf8829c743c5fb22f11370e9c358417e2e7d588565c14b.html.gz",
+      "bodySha256": "9b4a0187f79e2bbca6cf8829c743c5fb22f11370e9c358417e2e7d588565c14b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700083.json",
+      "url": "https://www.nba.com/game/0029700083/box-score",
+      "rawPath": "raw/game-0029700083-a65708d906a2031cb41ef97398f0b85970aa2f08c9a0746343e54cf58ee228a1.html.gz",
+      "bodySha256": "a65708d906a2031cb41ef97398f0b85970aa2f08c9a0746343e54cf58ee228a1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700090.json",
+      "url": "https://www.nba.com/game/0029700090/box-score",
+      "rawPath": "raw/game-0029700090-c43c1c2c98b8b77cd92c149069706d3305c7ec6acbd0cf771db181ab721de233.html.gz",
+      "bodySha256": "c43c1c2c98b8b77cd92c149069706d3305c7ec6acbd0cf771db181ab721de233",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700105.json",
+      "url": "https://www.nba.com/game/0029700105/box-score",
+      "rawPath": "raw/game-0029700105-7698a8766ddc678a17cb28371d6a56791fd36b844c792a2f44fd5846efac3f10.html.gz",
+      "bodySha256": "7698a8766ddc678a17cb28371d6a56791fd36b844c792a2f44fd5846efac3f10",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700113.json",
+      "url": "https://www.nba.com/game/0029700113/box-score",
+      "rawPath": "raw/game-0029700113-7b368feb2de2763fcb24026e9cbe5cec4261fd15f79168166b1d8868e8af0184.html.gz",
+      "bodySha256": "7b368feb2de2763fcb24026e9cbe5cec4261fd15f79168166b1d8868e8af0184",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700116.json",
+      "url": "https://www.nba.com/game/0029700116/box-score",
+      "rawPath": "raw/game-0029700116-d5b0ec48ad892694a1d51f079df0f738bc9cc02ca650a04d62b7d8909cc05b2c.html.gz",
+      "bodySha256": "d5b0ec48ad892694a1d51f079df0f738bc9cc02ca650a04d62b7d8909cc05b2c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700123.json",
+      "url": "https://www.nba.com/game/0029700123/box-score",
+      "rawPath": "raw/game-0029700123-864754decdb88d22de2c880cef628d9bbfcbb4ad04c9a9770e86aad827ec607b.html.gz",
+      "bodySha256": "864754decdb88d22de2c880cef628d9bbfcbb4ad04c9a9770e86aad827ec607b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700130.json",
+      "url": "https://www.nba.com/game/0029700130/box-score",
+      "rawPath": "raw/game-0029700130-02b2c6ceb6e6d001074c0619e40a4ac3d0597c8905c328d19928463219e9fe4d.html.gz",
+      "bodySha256": "02b2c6ceb6e6d001074c0619e40a4ac3d0597c8905c328d19928463219e9fe4d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700131.json",
+      "url": "https://www.nba.com/game/0029700131/box-score",
+      "rawPath": "raw/game-0029700131-516d5ca324769dc1910cfb57df729d0e2c7d5785164cdf0b82b17f21100c68b4.html.gz",
+      "bodySha256": "516d5ca324769dc1910cfb57df729d0e2c7d5785164cdf0b82b17f21100c68b4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700146.json",
+      "url": "https://www.nba.com/game/0029700146/box-score",
+      "rawPath": "raw/game-0029700146-c7dcf7bec744c817dff01cb706716069d2761af97caa429becc90c184794d45d.html.gz",
+      "bodySha256": "c7dcf7bec744c817dff01cb706716069d2761af97caa429becc90c184794d45d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700154.json",
+      "url": "https://www.nba.com/game/0029700154/box-score",
+      "rawPath": "raw/game-0029700154-ca9b3d12ca20fba694e11a29ef262633adf0b4dd3d5f05fe39c6d57b2c03d201.html.gz",
+      "bodySha256": "ca9b3d12ca20fba694e11a29ef262633adf0b4dd3d5f05fe39c6d57b2c03d201",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700175.json",
+      "url": "https://www.nba.com/game/0029700175/box-score",
+      "rawPath": "raw/game-0029700175-5b703a639ddcb88eb3cd69c5a7102817bb0e8b65a04c11d089173bf4b25889b6.html.gz",
+      "bodySha256": "5b703a639ddcb88eb3cd69c5a7102817bb0e8b65a04c11d089173bf4b25889b6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700186.json",
+      "url": "https://www.nba.com/game/0029700186/box-score",
+      "rawPath": "raw/game-0029700186-d8264c0434c613740673485adec9973bc455dc055ebf6073c74cb750ffcecc7a.html.gz",
+      "bodySha256": "d8264c0434c613740673485adec9973bc455dc055ebf6073c74cb750ffcecc7a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700206.json",
+      "url": "https://www.nba.com/game/0029700206/box-score",
+      "rawPath": "raw/game-0029700206-5bdf2f089a3995704fb2a3885e652f0e9a74a190463b170721471554912a613c.html.gz",
+      "bodySha256": "5bdf2f089a3995704fb2a3885e652f0e9a74a190463b170721471554912a613c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700208.json",
+      "url": "https://www.nba.com/game/0029700208/box-score",
+      "rawPath": "raw/game-0029700208-731d3ba282b01d5930250b10897545262186edafbc9527e5de15c238455ed64a.html.gz",
+      "bodySha256": "731d3ba282b01d5930250b10897545262186edafbc9527e5de15c238455ed64a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700214.json",
+      "url": "https://www.nba.com/game/0029700214/box-score",
+      "rawPath": "raw/game-0029700214-666c9082145e5e7f8a519543b1ddec90550ba8a803e9c8737eaa1f9b1c7fdbeb.html.gz",
+      "bodySha256": "666c9082145e5e7f8a519543b1ddec90550ba8a803e9c8737eaa1f9b1c7fdbeb",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700221.json",
+      "url": "https://www.nba.com/game/0029700221/box-score",
+      "rawPath": "raw/game-0029700221-4c584868131ecf1e7f57fe223b8692baf1cd20c80dff5e7fe89723106e39a07e.html.gz",
+      "bodySha256": "4c584868131ecf1e7f57fe223b8692baf1cd20c80dff5e7fe89723106e39a07e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700237.json",
+      "url": "https://www.nba.com/game/0029700237/box-score",
+      "rawPath": "raw/game-0029700237-d085c7e027057ac91775791c742df1e5fd7e8eac60e88b564321dc78c5dc5f7d.html.gz",
+      "bodySha256": "d085c7e027057ac91775791c742df1e5fd7e8eac60e88b564321dc78c5dc5f7d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700254.json",
+      "url": "https://www.nba.com/game/0029700254/box-score",
+      "rawPath": "raw/game-0029700254-20a80afabcf009579ba9c575c547b09f585efc9b6610cc921a7a590de9d5a04a.html.gz",
+      "bodySha256": "20a80afabcf009579ba9c575c547b09f585efc9b6610cc921a7a590de9d5a04a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700258.json",
+      "url": "https://www.nba.com/game/0029700258/box-score",
+      "rawPath": "raw/game-0029700258-055f1d9049a59ffadd4ae7f6dc84ff98e6dd940f913452b75c8454c201f0daa7.html.gz",
+      "bodySha256": "055f1d9049a59ffadd4ae7f6dc84ff98e6dd940f913452b75c8454c201f0daa7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700268.json",
+      "url": "https://www.nba.com/game/0029700268/box-score",
+      "rawPath": "raw/game-0029700268-ffb58987c352a423b738114df3403e9e254b76d5bff6f1b893ee47f73b5cd131.html.gz",
+      "bodySha256": "ffb58987c352a423b738114df3403e9e254b76d5bff6f1b893ee47f73b5cd131",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700269.json",
+      "url": "https://www.nba.com/game/0029700269/box-score",
+      "rawPath": "raw/game-0029700269-cc065d4dba84454a78c0038b6d30fccc41f23135107ad6b37298734242d8cbe4.html.gz",
+      "bodySha256": "cc065d4dba84454a78c0038b6d30fccc41f23135107ad6b37298734242d8cbe4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700270.json",
+      "url": "https://www.nba.com/game/0029700270/box-score",
+      "rawPath": "raw/game-0029700270-d758e10027965faf33c58d1a1ff109262ae5d92fb41bf5501b5006a995180e15.html.gz",
+      "bodySha256": "d758e10027965faf33c58d1a1ff109262ae5d92fb41bf5501b5006a995180e15",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700316.json",
+      "url": "https://www.nba.com/game/0029700316/box-score",
+      "rawPath": "raw/game-0029700316-b6dccb77428abc3c2eaa2d712ab98f4a3bfde4b3311c9c145ce3a7f76d55aada.html.gz",
+      "bodySha256": "b6dccb77428abc3c2eaa2d712ab98f4a3bfde4b3311c9c145ce3a7f76d55aada",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700332.json",
+      "url": "https://www.nba.com/game/0029700332/box-score",
+      "rawPath": "raw/game-0029700332-47fbdb085733bc11ccc205ac2cd08ad479a0961704ca31e4d5c6a3f04f1dfa9e.html.gz",
+      "bodySha256": "47fbdb085733bc11ccc205ac2cd08ad479a0961704ca31e4d5c6a3f04f1dfa9e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700333.json",
+      "url": "https://www.nba.com/game/0029700333/box-score",
+      "rawPath": "raw/game-0029700333-3f2fa35ed475d38b61e98bad8865d0c770fd6c93db2dc9f853f9bc259ef94333.html.gz",
+      "bodySha256": "3f2fa35ed475d38b61e98bad8865d0c770fd6c93db2dc9f853f9bc259ef94333",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700343.json",
+      "url": "https://www.nba.com/game/0029700343/box-score",
+      "rawPath": "raw/game-0029700343-a3df970ee64a397980aeaf79fa2f15085af48adcb820d5ba1f5f8d1b2de82722.html.gz",
+      "bodySha256": "a3df970ee64a397980aeaf79fa2f15085af48adcb820d5ba1f5f8d1b2de82722",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700344.json",
+      "url": "https://www.nba.com/game/0029700344/box-score",
+      "rawPath": "raw/game-0029700344-af0117b0e6bbc22380de5ba9ef4261def75852ca5fec75fca07a4dbaf1137eed.html.gz",
+      "bodySha256": "af0117b0e6bbc22380de5ba9ef4261def75852ca5fec75fca07a4dbaf1137eed",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700353.json",
+      "url": "https://www.nba.com/game/0029700353/box-score",
+      "rawPath": "raw/game-0029700353-e2c7dc8948a5f881fe9760c4f47b5f0723b2c065d4ac1ed526c2117a17bb550b.html.gz",
+      "bodySha256": "e2c7dc8948a5f881fe9760c4f47b5f0723b2c065d4ac1ed526c2117a17bb550b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700368.json",
+      "url": "https://www.nba.com/game/0029700368/box-score",
+      "rawPath": "raw/game-0029700368-f672c1f5b1d05bf808f0efb2fd7203632e640e064fe04f83cb588cc5617fc109.html.gz",
+      "bodySha256": "f672c1f5b1d05bf808f0efb2fd7203632e640e064fe04f83cb588cc5617fc109",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700430.json",
+      "url": "https://www.nba.com/game/0029700430/box-score",
+      "rawPath": "raw/game-0029700430-4b449614edc0bc944341754d9ee9e43d1f71b36aad3ca0f131f1127b35faf5a4.html.gz",
+      "bodySha256": "4b449614edc0bc944341754d9ee9e43d1f71b36aad3ca0f131f1127b35faf5a4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700455.json",
+      "url": "https://www.nba.com/game/0029700455/box-score",
+      "rawPath": "raw/game-0029700455-c57336e09c846b23b6997138419976f316ee714763c109f52ac67e2c46da44a5.html.gz",
+      "bodySha256": "c57336e09c846b23b6997138419976f316ee714763c109f52ac67e2c46da44a5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700468.json",
+      "url": "https://www.nba.com/game/0029700468/box-score",
+      "rawPath": "raw/game-0029700468-edabbf9d2b573b31dac489666dc0de9c56697138d8799ef40ea7772042cab70a.html.gz",
+      "bodySha256": "edabbf9d2b573b31dac489666dc0de9c56697138d8799ef40ea7772042cab70a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700482.json",
+      "url": "https://www.nba.com/game/0029700482/box-score",
+      "rawPath": "raw/game-0029700482-51c7f1298c959fae1572d882013f1d2ae755b20afce794ed3f8ec5ebb9e50f7c.html.gz",
+      "bodySha256": "51c7f1298c959fae1572d882013f1d2ae755b20afce794ed3f8ec5ebb9e50f7c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700502.json",
+      "url": "https://www.nba.com/game/0029700502/box-score",
+      "rawPath": "raw/game-0029700502-705c7c710477a44b2fe309517c501e7a88f1508a61c6d0f5655eaa7400062c14.html.gz",
+      "bodySha256": "705c7c710477a44b2fe309517c501e7a88f1508a61c6d0f5655eaa7400062c14",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700517.json",
+      "url": "https://www.nba.com/game/0029700517/box-score",
+      "rawPath": "raw/game-0029700517-d110b3fe82cae4b0840bb6b20cafe39880005492906d78b0cea0935e9ff77fbd.html.gz",
+      "bodySha256": "d110b3fe82cae4b0840bb6b20cafe39880005492906d78b0cea0935e9ff77fbd",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700518.json",
+      "url": "https://www.nba.com/game/0029700518/box-score",
+      "rawPath": "raw/game-0029700518-07fdbfa68258d24d75776029fe951388544f0425700097c45ded888b61dd5b1b.html.gz",
+      "bodySha256": "07fdbfa68258d24d75776029fe951388544f0425700097c45ded888b61dd5b1b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700530.json",
+      "url": "https://www.nba.com/game/0029700530/box-score",
+      "rawPath": "raw/game-0029700530-f4f41666e46e20f36e87d428187d6b2251648bad75f0c1f044fd781f314bb033.html.gz",
+      "bodySha256": "f4f41666e46e20f36e87d428187d6b2251648bad75f0c1f044fd781f314bb033",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700540.json",
+      "url": "https://www.nba.com/game/0029700540/box-score",
+      "rawPath": "raw/game-0029700540-7c997638ffc50847ed4acc382809e1c9a370ae63caadde0112715ef80506215d.html.gz",
+      "bodySha256": "7c997638ffc50847ed4acc382809e1c9a370ae63caadde0112715ef80506215d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700558.json",
+      "url": "https://www.nba.com/game/0029700558/box-score",
+      "rawPath": "raw/game-0029700558-48dcff2afb6527289a95aaa846171b4db2cfdb2c64cc79e1f0b15bba6df104f2.html.gz",
+      "bodySha256": "48dcff2afb6527289a95aaa846171b4db2cfdb2c64cc79e1f0b15bba6df104f2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700568.json",
+      "url": "https://www.nba.com/game/0029700568/box-score",
+      "rawPath": "raw/game-0029700568-60da3a04d8473a067ab07ce489a68e82454fe52c9a1ad095bf7775c77521ba3f.html.gz",
+      "bodySha256": "60da3a04d8473a067ab07ce489a68e82454fe52c9a1ad095bf7775c77521ba3f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700581.json",
+      "url": "https://www.nba.com/game/0029700581/box-score",
+      "rawPath": "raw/game-0029700581-357c4da7981070e1b5734d1600437a6cdb7a391e80196c618f4f337aca255c69.html.gz",
+      "bodySha256": "357c4da7981070e1b5734d1600437a6cdb7a391e80196c618f4f337aca255c69",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700587.json",
+      "url": "https://www.nba.com/game/0029700587/box-score",
+      "rawPath": "raw/game-0029700587-5d351591386fd5adcd8eb19070767f350ce249a591b6e4f06e4e239ade56b399.html.gz",
+      "bodySha256": "5d351591386fd5adcd8eb19070767f350ce249a591b6e4f06e4e239ade56b399",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700588.json",
+      "url": "https://www.nba.com/game/0029700588/box-score",
+      "rawPath": "raw/game-0029700588-4fab9a8eff0fef90dfedc06f868e4996e0a7ea71090b9965b83a7a07a2da84da.html.gz",
+      "bodySha256": "4fab9a8eff0fef90dfedc06f868e4996e0a7ea71090b9965b83a7a07a2da84da",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700601.json",
+      "url": "https://www.nba.com/game/0029700601/box-score",
+      "rawPath": "raw/game-0029700601-17afa3e398087e0f1f17d56a3181a2c4d94e60afafd6b0b4c4406756e9dd8d48.html.gz",
+      "bodySha256": "17afa3e398087e0f1f17d56a3181a2c4d94e60afafd6b0b4c4406756e9dd8d48",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700602.json",
+      "url": "https://www.nba.com/game/0029700602/box-score",
+      "rawPath": "raw/game-0029700602-218114bece8aa2122621f84b59218a6efdd3af4f439ab84598ba311bc7d71cd5.html.gz",
+      "bodySha256": "218114bece8aa2122621f84b59218a6efdd3af4f439ab84598ba311bc7d71cd5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700622.json",
+      "url": "https://www.nba.com/game/0029700622/box-score",
+      "rawPath": "raw/game-0029700622-af87e09d46d198444ec642de998f6d78956ba5415fc60cfe562908559956e334.html.gz",
+      "bodySha256": "af87e09d46d198444ec642de998f6d78956ba5415fc60cfe562908559956e334",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700660.json",
+      "url": "https://www.nba.com/game/0029700660/box-score",
+      "rawPath": "raw/game-0029700660-539927dad85cd63d0fbac35f26bb225564dfad536f01294877218ea9e5846baa.html.gz",
+      "bodySha256": "539927dad85cd63d0fbac35f26bb225564dfad536f01294877218ea9e5846baa",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700678.json",
+      "url": "https://www.nba.com/game/0029700678/box-score",
+      "rawPath": "raw/game-0029700678-d4f7b686111dae8b843d6dcf5e6281fd24dd44cb56af1e3bf245010e1f472669.html.gz",
+      "bodySha256": "d4f7b686111dae8b843d6dcf5e6281fd24dd44cb56af1e3bf245010e1f472669",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700702.json",
+      "url": "https://www.nba.com/game/0029700702/box-score",
+      "rawPath": "raw/game-0029700702-42ddabae8fd91cf357e227f194c0e53fb47268472f0c4d7991db69f2c5c74b40.html.gz",
+      "bodySha256": "42ddabae8fd91cf357e227f194c0e53fb47268472f0c4d7991db69f2c5c74b40",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700719.json",
+      "url": "https://www.nba.com/game/0029700719/box-score",
+      "rawPath": "raw/game-0029700719-eb5b0263be992c531523af13b96fe78fe5482552b7aa54906e8c684905bd9163.html.gz",
+      "bodySha256": "eb5b0263be992c531523af13b96fe78fe5482552b7aa54906e8c684905bd9163",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700725.json",
+      "url": "https://www.nba.com/game/0029700725/box-score",
+      "rawPath": "raw/game-0029700725-48a9f8df20c2224ae768e3bef6345d6c10bc8c0705d204bbcee59fe38ebbb4bf.html.gz",
+      "bodySha256": "48a9f8df20c2224ae768e3bef6345d6c10bc8c0705d204bbcee59fe38ebbb4bf",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700733.json",
+      "url": "https://www.nba.com/game/0029700733/box-score",
+      "rawPath": "raw/game-0029700733-12e76b653c6414a0f3592bbc284ba61a76b889eefb641e041acd7379d4ab2fab.html.gz",
+      "bodySha256": "12e76b653c6414a0f3592bbc284ba61a76b889eefb641e041acd7379d4ab2fab",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700746.json",
+      "url": "https://www.nba.com/game/0029700746/box-score",
+      "rawPath": "raw/game-0029700746-9768cf73a764332e5e89bc000a3f405ad4894c0a5f3b1f09639bee614a920dc1.html.gz",
+      "bodySha256": "9768cf73a764332e5e89bc000a3f405ad4894c0a5f3b1f09639bee614a920dc1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700752.json",
+      "url": "https://www.nba.com/game/0029700752/box-score",
+      "rawPath": "raw/game-0029700752-cfa7b8d4f2ca795ae42dcc2dd316b26c48bc72b42036fa29e63f3508b599a78c.html.gz",
+      "bodySha256": "cfa7b8d4f2ca795ae42dcc2dd316b26c48bc72b42036fa29e63f3508b599a78c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700760.json",
+      "url": "https://www.nba.com/game/0029700760/box-score",
+      "rawPath": "raw/game-0029700760-93e41d7a2515c2a35e09018d449296cbd4bc304be8a62b08b686c4ecbb847259.html.gz",
+      "bodySha256": "93e41d7a2515c2a35e09018d449296cbd4bc304be8a62b08b686c4ecbb847259",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700776.json",
+      "url": "https://www.nba.com/game/0029700776/box-score",
+      "rawPath": "raw/game-0029700776-7c7eea1cb9eb3f26384838ce86de318d8959edfb76977cfad7716f4f785d9508.html.gz",
+      "bodySha256": "7c7eea1cb9eb3f26384838ce86de318d8959edfb76977cfad7716f4f785d9508",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700837.json",
+      "url": "https://www.nba.com/game/0029700837/box-score",
+      "rawPath": "raw/game-0029700837-e491143b14794cb90454a9bcc998cb64763acd75ae3e91aa22b645c18e7392d9.html.gz",
+      "bodySha256": "e491143b14794cb90454a9bcc998cb64763acd75ae3e91aa22b645c18e7392d9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700861.json",
+      "url": "https://www.nba.com/game/0029700861/box-score",
+      "rawPath": "raw/game-0029700861-e744b7506ce48ca30c99b7c91584203d41335b165f8529eafaa78d79c53d9c7e.html.gz",
+      "bodySha256": "e744b7506ce48ca30c99b7c91584203d41335b165f8529eafaa78d79c53d9c7e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700872.json",
+      "url": "https://www.nba.com/game/0029700872/box-score",
+      "rawPath": "raw/game-0029700872-8ff37be67050df30c2915601726a036bbc63f9bb75a2b5694c39967ff4a29d7d.html.gz",
+      "bodySha256": "8ff37be67050df30c2915601726a036bbc63f9bb75a2b5694c39967ff4a29d7d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700922.json",
+      "url": "https://www.nba.com/game/0029700922/box-score",
+      "rawPath": "raw/game-0029700922-517f49a8cd5f57153f0cdfd919aba67603705b0973af8f040b936f26068fe421.html.gz",
+      "bodySha256": "517f49a8cd5f57153f0cdfd919aba67603705b0973af8f040b936f26068fe421",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700937.json",
+      "url": "https://www.nba.com/game/0029700937/box-score",
+      "rawPath": "raw/game-0029700937-e993f67f90b63ab69066eae0448bf30acd320ceb3217d9a67949c600ee9859da.html.gz",
+      "bodySha256": "e993f67f90b63ab69066eae0448bf30acd320ceb3217d9a67949c600ee9859da",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700953.json",
+      "url": "https://www.nba.com/game/0029700953/box-score",
+      "rawPath": "raw/game-0029700953-f7414eaaf3b04552904636657a0f71ce7a3ac49be9f83a36eecd70f929d882de.html.gz",
+      "bodySha256": "f7414eaaf3b04552904636657a0f71ce7a3ac49be9f83a36eecd70f929d882de",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700954.json",
+      "url": "https://www.nba.com/game/0029700954/box-score",
+      "rawPath": "raw/game-0029700954-07bc3e3248a887d0cd4fd899ce66844dbff0622066afe5ffa13beaad4a6447dd.html.gz",
+      "bodySha256": "07bc3e3248a887d0cd4fd899ce66844dbff0622066afe5ffa13beaad4a6447dd",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700977.json",
+      "url": "https://www.nba.com/game/0029700977/box-score",
+      "rawPath": "raw/game-0029700977-623321a5fdc65d63d54ed86a0b0f1275784f59605e41590e5b2cd17a724ff7fd.html.gz",
+      "bodySha256": "623321a5fdc65d63d54ed86a0b0f1275784f59605e41590e5b2cd17a724ff7fd",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700988.json",
+      "url": "https://www.nba.com/game/0029700988/box-score",
+      "rawPath": "raw/game-0029700988-37d4878419af630631caedbf5b2dedb3ca03d7964dcc84ba0ccb48c0e5ac69ff.html.gz",
+      "bodySha256": "37d4878419af630631caedbf5b2dedb3ca03d7964dcc84ba0ccb48c0e5ac69ff",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029700989.json",
+      "url": "https://www.nba.com/game/0029700989/box-score",
+      "rawPath": "raw/game-0029700989-e616f7624df500fae9075d0c075cac5054f74e360694d7778cc2353cef46b6da.html.gz",
+      "bodySha256": "e616f7624df500fae9075d0c075cac5054f74e360694d7778cc2353cef46b6da",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701006.json",
+      "url": "https://www.nba.com/game/0029701006/box-score",
+      "rawPath": "raw/game-0029701006-a3aade42fb43137ef4e4d6adeeb44ffc45833448ca9d350987429d9caf76b5d7.html.gz",
+      "bodySha256": "a3aade42fb43137ef4e4d6adeeb44ffc45833448ca9d350987429d9caf76b5d7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701013.json",
+      "url": "https://www.nba.com/game/0029701013/box-score",
+      "rawPath": "raw/game-0029701013-0e3a5f1d3bfc517d5b14b84b037a542f26073b6a0ff2705d8f044afb792e8b8b.html.gz",
+      "bodySha256": "0e3a5f1d3bfc517d5b14b84b037a542f26073b6a0ff2705d8f044afb792e8b8b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701026.json",
+      "url": "https://www.nba.com/game/0029701026/box-score",
+      "rawPath": "raw/game-0029701026-b964f353ecc5b67f5685c8cfc5758b1899b68f9c43596f02fa55092c4cb061c8.html.gz",
+      "bodySha256": "b964f353ecc5b67f5685c8cfc5758b1899b68f9c43596f02fa55092c4cb061c8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701027.json",
+      "url": "https://www.nba.com/game/0029701027/box-score",
+      "rawPath": "raw/game-0029701027-acccb20b3acf668cc55564fb10137c2d59e44b39f7f1d5748ee9c032dceeb29a.html.gz",
+      "bodySha256": "acccb20b3acf668cc55564fb10137c2d59e44b39f7f1d5748ee9c032dceeb29a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701040.json",
+      "url": "https://www.nba.com/game/0029701040/box-score",
+      "rawPath": "raw/game-0029701040-23c6774ff3ddb75fee626f1a9a02019898d7c30162fddd96a5daa6abd404d9c8.html.gz",
+      "bodySha256": "23c6774ff3ddb75fee626f1a9a02019898d7c30162fddd96a5daa6abd404d9c8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701050.json",
+      "url": "https://www.nba.com/game/0029701050/box-score",
+      "rawPath": "raw/game-0029701050-b2118cac712c6e23194cc157acd3e0a998c417dccc83e56b9c749f463ccbcd94.html.gz",
+      "bodySha256": "b2118cac712c6e23194cc157acd3e0a998c417dccc83e56b9c749f463ccbcd94",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701063.json",
+      "url": "https://www.nba.com/game/0029701063/box-score",
+      "rawPath": "raw/game-0029701063-1eb2e1535ec3ab0ba9d175901d26f138c942f853350db6bad48a2a99b0b342db.html.gz",
+      "bodySha256": "1eb2e1535ec3ab0ba9d175901d26f138c942f853350db6bad48a2a99b0b342db",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701078.json",
+      "url": "https://www.nba.com/game/0029701078/box-score",
+      "rawPath": "raw/game-0029701078-b801908fa33f7eb44e2fa1c38a483849bdfce3c7beb8cb45efd7d29099c820f1.html.gz",
+      "bodySha256": "b801908fa33f7eb44e2fa1c38a483849bdfce3c7beb8cb45efd7d29099c820f1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701090.json",
+      "url": "https://www.nba.com/game/0029701090/box-score",
+      "rawPath": "raw/game-0029701090-b128c461b3bcbdbd244a6e3c874ae70c67ebd38c10d65f884af4d9c42b6b7164.html.gz",
+      "bodySha256": "b128c461b3bcbdbd244a6e3c874ae70c67ebd38c10d65f884af4d9c42b6b7164",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701104.json",
+      "url": "https://www.nba.com/game/0029701104/box-score",
+      "rawPath": "raw/game-0029701104-469e22606d1dbe8d49f6b3f06a905a958dac115c0652497d8c3a02530280f76d.html.gz",
+      "bodySha256": "469e22606d1dbe8d49f6b3f06a905a958dac115c0652497d8c3a02530280f76d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701108.json",
+      "url": "https://www.nba.com/game/0029701108/box-score",
+      "rawPath": "raw/game-0029701108-bc862ac2565e36887f5e41dda35ff3368dd69286b40f9e4401a11d1dad496507.html.gz",
+      "bodySha256": "bc862ac2565e36887f5e41dda35ff3368dd69286b40f9e4401a11d1dad496507",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701116.json",
+      "url": "https://www.nba.com/game/0029701116/box-score",
+      "rawPath": "raw/game-0029701116-5891fb6330a23695d1fc147c67a37f8ac127f8662722cae5fb154c31d74afd07.html.gz",
+      "bodySha256": "5891fb6330a23695d1fc147c67a37f8ac127f8662722cae5fb154c31d74afd07",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701133.json",
+      "url": "https://www.nba.com/game/0029701133/box-score",
+      "rawPath": "raw/game-0029701133-2b42f987a7af829d94ae7dedfb6a2f8ac287152f5ffb164f3199aa665e1bd597.html.gz",
+      "bodySha256": "2b42f987a7af829d94ae7dedfb6a2f8ac287152f5ffb164f3199aa665e1bd597",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701142.json",
+      "url": "https://www.nba.com/game/0029701142/box-score",
+      "rawPath": "raw/game-0029701142-af38d0fdcc359440c61fa454b68dbde443170173c829a98a8c48755cc6235d09.html.gz",
+      "bodySha256": "af38d0fdcc359440c61fa454b68dbde443170173c829a98a8c48755cc6235d09",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701167.json",
+      "url": "https://www.nba.com/game/0029701167/box-score",
+      "rawPath": "raw/game-0029701167-e68d94e9fb2ebcb0a4b775cba2d57e57e0c0b77765b6f35f0cd000980c00b3bf.html.gz",
+      "bodySha256": "e68d94e9fb2ebcb0a4b775cba2d57e57e0c0b77765b6f35f0cd000980c00b3bf",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701183.json",
+      "url": "https://www.nba.com/game/0029701183/box-score",
+      "rawPath": "raw/game-0029701183-8704f83141ae967ec75264b527e392289ff3096bc8c89b38b84525619cc17858.html.gz",
+      "bodySha256": "8704f83141ae967ec75264b527e392289ff3096bc8c89b38b84525619cc17858",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029701184.json",
+      "url": "https://www.nba.com/game/0029701184/box-score",
+      "rawPath": "raw/game-0029701184-18c72fcfc08b316d73399f9fd62f5484069959fc349a35fee2f86eb4632bb9d5.html.gz",
+      "bodySha256": "18c72fcfc08b316d73399f9fd62f5484069959fc349a35fee2f86eb4632bb9d5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800005.json",
+      "url": "https://www.nba.com/game/0029800005/box-score",
+      "rawPath": "raw/game-0029800005-ecc345e442beafe32623e0b2f345ea06d1f33769dc9f6d9db73f9bb628401bbe.html.gz",
+      "bodySha256": "ecc345e442beafe32623e0b2f345ea06d1f33769dc9f6d9db73f9bb628401bbe",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800017.json",
+      "url": "https://www.nba.com/game/0029800017/box-score",
+      "rawPath": "raw/game-0029800017-a6e3bfb1b2051fc85dbafb2a03dd8dc901b84750210bcf9ef4814680a69f59a0.html.gz",
+      "bodySha256": "a6e3bfb1b2051fc85dbafb2a03dd8dc901b84750210bcf9ef4814680a69f59a0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800038.json",
+      "url": "https://www.nba.com/game/0029800038/box-score",
+      "rawPath": "raw/game-0029800038-fb5f1d386fe6a92a1f0f359de45c68c1a17652deffed91c4c1ae6b2c5de91577.html.gz",
+      "bodySha256": "fb5f1d386fe6a92a1f0f359de45c68c1a17652deffed91c4c1ae6b2c5de91577",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800053.json",
+      "url": "https://www.nba.com/game/0029800053/box-score",
+      "rawPath": "raw/game-0029800053-4b5c5729fddb64cf3a9be9a4d1ab2e942e541d6127532f799e4ea3ad2949f6c6.html.gz",
+      "bodySha256": "4b5c5729fddb64cf3a9be9a4d1ab2e942e541d6127532f799e4ea3ad2949f6c6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800102.json",
+      "url": "https://www.nba.com/game/0029800102/box-score",
+      "rawPath": "raw/game-0029800102-654d6a31318fc158abd855995d81bbcd2071901921404428e1fc1b17b7b8aeb8.html.gz",
+      "bodySha256": "654d6a31318fc158abd855995d81bbcd2071901921404428e1fc1b17b7b8aeb8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800108.json",
+      "url": "https://www.nba.com/game/0029800108/box-score",
+      "rawPath": "raw/game-0029800108-5501b6a7008b2a42d85c3ad2ddfeb5afa8eeb71584b32731b299f98c97ceb589.html.gz",
+      "bodySha256": "5501b6a7008b2a42d85c3ad2ddfeb5afa8eeb71584b32731b299f98c97ceb589",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800109.json",
+      "url": "https://www.nba.com/game/0029800109/box-score",
+      "rawPath": "raw/game-0029800109-0daf608261323cee497b9911bacbf2c43fdac846b581a09358ec59fa0f1bdce8.html.gz",
+      "bodySha256": "0daf608261323cee497b9911bacbf2c43fdac846b581a09358ec59fa0f1bdce8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800126.json",
+      "url": "https://www.nba.com/game/0029800126/box-score",
+      "rawPath": "raw/game-0029800126-8fec876043923c6fb02ffd2b3af44bf36a0834c8012b25ee2c88fc1ae7aa0256.html.gz",
+      "bodySha256": "8fec876043923c6fb02ffd2b3af44bf36a0834c8012b25ee2c88fc1ae7aa0256",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800132.json",
+      "url": "https://www.nba.com/game/0029800132/box-score",
+      "rawPath": "raw/game-0029800132-ba08db1e55626d0c65adcb30b023c5ac2f431c82e7ff48404dd2e9a40c254fac.html.gz",
+      "bodySha256": "ba08db1e55626d0c65adcb30b023c5ac2f431c82e7ff48404dd2e9a40c254fac",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800165.json",
+      "url": "https://www.nba.com/game/0029800165/box-score",
+      "rawPath": "raw/game-0029800165-07e140145d386f112180a07526255c15270617578c3e4702fa7ba7e2232afa29.html.gz",
+      "bodySha256": "07e140145d386f112180a07526255c15270617578c3e4702fa7ba7e2232afa29",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800179.json",
+      "url": "https://www.nba.com/game/0029800179/box-score",
+      "rawPath": "raw/game-0029800179-1e2ecc0f386d7adcfb09dcb3435e2559bf4377769e2db94a579c41aca2a55836.html.gz",
+      "bodySha256": "1e2ecc0f386d7adcfb09dcb3435e2559bf4377769e2db94a579c41aca2a55836",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800196.json",
+      "url": "https://www.nba.com/game/0029800196/box-score",
+      "rawPath": "raw/game-0029800196-0dc16a0ccfc859fdf14f32967b0940595aaeecaf5255a057e327b02b3f64538c.html.gz",
+      "bodySha256": "0dc16a0ccfc859fdf14f32967b0940595aaeecaf5255a057e327b02b3f64538c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800214.json",
+      "url": "https://www.nba.com/game/0029800214/box-score",
+      "rawPath": "raw/game-0029800214-f5c409621c4fbc7c41a0ec2af26fc357d37c2b8c86650282ff12056ed5663b5f.html.gz",
+      "bodySha256": "f5c409621c4fbc7c41a0ec2af26fc357d37c2b8c86650282ff12056ed5663b5f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800223.json",
+      "url": "https://www.nba.com/game/0029800223/box-score",
+      "rawPath": "raw/game-0029800223-d75a8765f5e7a8d165443373f57aea66a845790bad0109733217d4c06c4cc693.html.gz",
+      "bodySha256": "d75a8765f5e7a8d165443373f57aea66a845790bad0109733217d4c06c4cc693",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800236.json",
+      "url": "https://www.nba.com/game/0029800236/box-score",
+      "rawPath": "raw/game-0029800236-36886dd9dfa7a5b91d9b0a153badd8e1c89d360221b59ea8ad0bfa06e4d58b83.html.gz",
+      "bodySha256": "36886dd9dfa7a5b91d9b0a153badd8e1c89d360221b59ea8ad0bfa06e4d58b83",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800268.json",
+      "url": "https://www.nba.com/game/0029800268/box-score",
+      "rawPath": "raw/game-0029800268-4b0220283f4ea883f8c8771e799cd024a88b0422ce0dc2943a5877d8e08235d0.html.gz",
+      "bodySha256": "4b0220283f4ea883f8c8771e799cd024a88b0422ce0dc2943a5877d8e08235d0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800284.json",
+      "url": "https://www.nba.com/game/0029800284/box-score",
+      "rawPath": "raw/game-0029800284-7731d53f089b62f85f31858280c4f8c0b1a5b78459cd14f72818fb107ee37e57.html.gz",
+      "bodySha256": "7731d53f089b62f85f31858280c4f8c0b1a5b78459cd14f72818fb107ee37e57",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800300.json",
+      "url": "https://www.nba.com/game/0029800300/box-score",
+      "rawPath": "raw/game-0029800300-4d134f3929e3121cc92340a59be8ab88f25ce44cad64436bdd0628ed5d9e6071.html.gz",
+      "bodySha256": "4d134f3929e3121cc92340a59be8ab88f25ce44cad64436bdd0628ed5d9e6071",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800309.json",
+      "url": "https://www.nba.com/game/0029800309/box-score",
+      "rawPath": "raw/game-0029800309-24a462e967891cfb305315f330d7ee5930610d6e8bbe0484cc9990aa76d65265.html.gz",
+      "bodySha256": "24a462e967891cfb305315f330d7ee5930610d6e8bbe0484cc9990aa76d65265",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800322.json",
+      "url": "https://www.nba.com/game/0029800322/box-score",
+      "rawPath": "raw/game-0029800322-45e61c5782062c2858888e44e500f60e44b4ee3014cfb2eafe3268b3e3e0bfd4.html.gz",
+      "bodySha256": "45e61c5782062c2858888e44e500f60e44b4ee3014cfb2eafe3268b3e3e0bfd4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800335.json",
+      "url": "https://www.nba.com/game/0029800335/box-score",
+      "rawPath": "raw/game-0029800335-aaa5b8e03f219cee70e1254d883475d2f333ca2cac6a4c9a1884c0e61814fb40.html.gz",
+      "bodySha256": "aaa5b8e03f219cee70e1254d883475d2f333ca2cac6a4c9a1884c0e61814fb40",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800336.json",
+      "url": "https://www.nba.com/game/0029800336/box-score",
+      "rawPath": "raw/game-0029800336-c6ccda8f06112336066f22b8c8fc4eb8654571cdf1a20b4cd85625b22ffac7d9.html.gz",
+      "bodySha256": "c6ccda8f06112336066f22b8c8fc4eb8654571cdf1a20b4cd85625b22ffac7d9",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800345.json",
+      "url": "https://www.nba.com/game/0029800345/box-score",
+      "rawPath": "raw/game-0029800345-84dfb23ee7c570ddcae2615570244affa3a614e0023a850536a121755f49bb3a.html.gz",
+      "bodySha256": "84dfb23ee7c570ddcae2615570244affa3a614e0023a850536a121755f49bb3a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800351.json",
+      "url": "https://www.nba.com/game/0029800351/box-score",
+      "rawPath": "raw/game-0029800351-cc8b3f708405de5c453f70e7a822e4c1ae8560247958311f1e9c58d09087167f.html.gz",
+      "bodySha256": "cc8b3f708405de5c453f70e7a822e4c1ae8560247958311f1e9c58d09087167f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800375.json",
+      "url": "https://www.nba.com/game/0029800375/box-score",
+      "rawPath": "raw/game-0029800375-ab29bd311e0f4b2ff7667b28706987b9441ab56ed5d722cc93431bd7275f92b6.html.gz",
+      "bodySha256": "ab29bd311e0f4b2ff7667b28706987b9441ab56ed5d722cc93431bd7275f92b6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800390.json",
+      "url": "https://www.nba.com/game/0029800390/box-score",
+      "rawPath": "raw/game-0029800390-a7944d0c8fd6d896ae841cdc62e22a216b3766cee1481674b3d36993fca7c754.html.gz",
+      "bodySha256": "a7944d0c8fd6d896ae841cdc62e22a216b3766cee1481674b3d36993fca7c754",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800401.json",
+      "url": "https://www.nba.com/game/0029800401/box-score",
+      "rawPath": "raw/game-0029800401-e60f904b2b743a6d346c43100475ccbd99e1b11b212584a9890502c8019de107.html.gz",
+      "bodySha256": "e60f904b2b743a6d346c43100475ccbd99e1b11b212584a9890502c8019de107",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800409.json",
+      "url": "https://www.nba.com/game/0029800409/box-score",
+      "rawPath": "raw/game-0029800409-d53a4f7deb54a2e372266119e6e3e4f5182908b64bd7d7d0415d1aa1bbae1851.html.gz",
+      "bodySha256": "d53a4f7deb54a2e372266119e6e3e4f5182908b64bd7d7d0415d1aa1bbae1851",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800422.json",
+      "url": "https://www.nba.com/game/0029800422/box-score",
+      "rawPath": "raw/game-0029800422-6bc1287397e4403dc1ec0041682fed80251ea6828d550739e3f7030d514c3863.html.gz",
+      "bodySha256": "6bc1287397e4403dc1ec0041682fed80251ea6828d550739e3f7030d514c3863",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800449.json",
+      "url": "https://www.nba.com/game/0029800449/box-score",
+      "rawPath": "raw/game-0029800449-08857f70650645f989572fb668e4cc5413f6cb3f66c5ce9af4184bba24f223de.html.gz",
+      "bodySha256": "08857f70650645f989572fb668e4cc5413f6cb3f66c5ce9af4184bba24f223de",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800464.json",
+      "url": "https://www.nba.com/game/0029800464/box-score",
+      "rawPath": "raw/game-0029800464-985f557f53059ef7dd0160cafcd6f1eae05bd2e0b8cab090de1eae112e5d50ab.html.gz",
+      "bodySha256": "985f557f53059ef7dd0160cafcd6f1eae05bd2e0b8cab090de1eae112e5d50ab",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800507.json",
+      "url": "https://www.nba.com/game/0029800507/box-score",
+      "rawPath": "raw/game-0029800507-14f3a2b640bc7d250821aa46574e293497613386dcfd3e04f3dad27f12906f2c.html.gz",
+      "bodySha256": "14f3a2b640bc7d250821aa46574e293497613386dcfd3e04f3dad27f12906f2c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800562.json",
+      "url": "https://www.nba.com/game/0029800562/box-score",
+      "rawPath": "raw/game-0029800562-5fca3906634baae1568a94ebdd46753e47ffb0e8956f480735835e77ab9de833.html.gz",
+      "bodySha256": "5fca3906634baae1568a94ebdd46753e47ffb0e8956f480735835e77ab9de833",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800614.json",
+      "url": "https://www.nba.com/game/0029800614/box-score",
+      "rawPath": "raw/game-0029800614-5743be3f07ea92f73fb0b8b7a123446e10de24f251724ebad46107a0fd95d0ba.html.gz",
+      "bodySha256": "5743be3f07ea92f73fb0b8b7a123446e10de24f251724ebad46107a0fd95d0ba",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800637.json",
+      "url": "https://www.nba.com/game/0029800637/box-score",
+      "rawPath": "raw/game-0029800637-d4e476105c987ae939b1ddf864e75103831c11ccf588efb50a805760d0e09ee4.html.gz",
+      "bodySha256": "d4e476105c987ae939b1ddf864e75103831c11ccf588efb50a805760d0e09ee4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800660.json",
+      "url": "https://www.nba.com/game/0029800660/box-score",
+      "rawPath": "raw/game-0029800660-d8613a6005d6d3017e374dbc3876c5dd47226d7ed349d17d55acd191f7dd8a2c.html.gz",
+      "bodySha256": "d8613a6005d6d3017e374dbc3876c5dd47226d7ed349d17d55acd191f7dd8a2c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800677.json",
+      "url": "https://www.nba.com/game/0029800677/box-score",
+      "rawPath": "raw/game-0029800677-3c5e15fdf78aa5994dec50fa1a45f381efce3324c489062f359349dbc4fbbcdc.html.gz",
+      "bodySha256": "3c5e15fdf78aa5994dec50fa1a45f381efce3324c489062f359349dbc4fbbcdc",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800717.json",
+      "url": "https://www.nba.com/game/0029800717/box-score",
+      "rawPath": "raw/game-0029800717-dd830a0c6f1e91bc117d766156b152e6c7ab9854ed29df35f5ffcfa1c0b4c2ca.html.gz",
+      "bodySha256": "dd830a0c6f1e91bc117d766156b152e6c7ab9854ed29df35f5ffcfa1c0b4c2ca",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029800718.json",
+      "url": "https://www.nba.com/game/0029800718/box-score",
+      "rawPath": "raw/game-0029800718-0e1a9c1168077896b93c0f7bd3cc10bb4a9997d1145c1e0d95b6b1fce8a96819.html.gz",
+      "bodySha256": "0e1a9c1168077896b93c0f7bd3cc10bb4a9997d1145c1e0d95b6b1fce8a96819",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900006.json",
+      "url": "https://www.nba.com/game/0029900006/box-score",
+      "rawPath": "raw/game-0029900006-d5db3431bfe8bbbc9ea2b799160a0e2e3d20ab66342827e9dc2c98e36178992c.html.gz",
+      "bodySha256": "d5db3431bfe8bbbc9ea2b799160a0e2e3d20ab66342827e9dc2c98e36178992c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900021.json",
+      "url": "https://www.nba.com/game/0029900021/box-score",
+      "rawPath": "raw/game-0029900021-d82878f87c86e977810b4210b18f863f39eb5bf52d984738b9219971c66b0757.html.gz",
+      "bodySha256": "d82878f87c86e977810b4210b18f863f39eb5bf52d984738b9219971c66b0757",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900039.json",
+      "url": "https://www.nba.com/game/0029900039/box-score",
+      "rawPath": "raw/game-0029900039-fd254e3b93eec58907aaed5e83b8150ed54779279f07df2aa793962fd40450db.html.gz",
+      "bodySha256": "fd254e3b93eec58907aaed5e83b8150ed54779279f07df2aa793962fd40450db",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900211.json",
+      "url": "https://www.nba.com/game/0029900211/box-score",
+      "rawPath": "raw/game-0029900211-37f5688983f5e7258e11ab758cba9dd92bdc3ae74be5be166df068526f3f35e5.html.gz",
+      "bodySha256": "37f5688983f5e7258e11ab758cba9dd92bdc3ae74be5be166df068526f3f35e5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900317.json",
+      "url": "https://www.nba.com/game/0029900317/box-score",
+      "rawPath": "raw/game-0029900317-c007b2a16f9a7ab3e4cb0511375ff164ba1ca610e5b710a01aa2ea5da7c176e0.html.gz",
+      "bodySha256": "c007b2a16f9a7ab3e4cb0511375ff164ba1ca610e5b710a01aa2ea5da7c176e0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900332.json",
+      "url": "https://www.nba.com/game/0029900332/box-score",
+      "rawPath": "raw/game-0029900332-6ec8d7f1e9451ea2d22624be1669220de3b32e16462bda8d5404767c14ea4457.html.gz",
+      "bodySha256": "6ec8d7f1e9451ea2d22624be1669220de3b32e16462bda8d5404767c14ea4457",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900364.json",
+      "url": "https://www.nba.com/game/0029900364/box-score",
+      "rawPath": "raw/game-0029900364-f3f9395c50cf42fcf6b91015f8879ec5a8e1821a845992aa28fbf7bf3398b0b5.html.gz",
+      "bodySha256": "f3f9395c50cf42fcf6b91015f8879ec5a8e1821a845992aa28fbf7bf3398b0b5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900398.json",
+      "url": "https://www.nba.com/game/0029900398/box-score",
+      "rawPath": "raw/game-0029900398-9bdff34efc20e9d9feae5c2b38a5a7139836a525cb6b82217807b4f8dc1b87a2.html.gz",
+      "bodySha256": "9bdff34efc20e9d9feae5c2b38a5a7139836a525cb6b82217807b4f8dc1b87a2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900423.json",
+      "url": "https://www.nba.com/game/0029900423/box-score",
+      "rawPath": "raw/game-0029900423-c60234ce5ef00a392251e19bc06ab196b76e3f42a0bdfa347df8028f86db127b.html.gz",
+      "bodySha256": "c60234ce5ef00a392251e19bc06ab196b76e3f42a0bdfa347df8028f86db127b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900431.json",
+      "url": "https://www.nba.com/game/0029900431/box-score",
+      "rawPath": "raw/game-0029900431-2c2cbf2e7e2146215bad5ff74b08caf49ac366c637c728ea0a3762fcc114abe3.html.gz",
+      "bodySha256": "2c2cbf2e7e2146215bad5ff74b08caf49ac366c637c728ea0a3762fcc114abe3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900448.json",
+      "url": "https://www.nba.com/game/0029900448/box-score",
+      "rawPath": "raw/game-0029900448-f9b2024b5d4c6c2b09e578de1c7be3d07b1742cd4ecd8226905249104a7063d8.html.gz",
+      "bodySha256": "f9b2024b5d4c6c2b09e578de1c7be3d07b1742cd4ecd8226905249104a7063d8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0029900463.json",
+      "url": "https://www.nba.com/game/0029900463/box-score",
+      "rawPath": "raw/game-0029900463-dcf1861f1f560722d7909c56f4bc59a263f8445916426f16378536a917e0faac.html.gz",
+      "bodySha256": "dcf1861f1f560722d7909c56f4bc59a263f8445916426f16378536a917e0faac",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0040100204.json",
+      "url": "https://www.nba.com/game/0040100204/box-score",
+      "rawPath": "raw/game-0040100204-e567c0b482d1bbe08da0a350c0d229decf5d9cdf94fd92ca5b9dd1f3684b4ff7.html.gz",
+      "bodySha256": "e567c0b482d1bbe08da0a350c0d229decf5d9cdf94fd92ca5b9dd1f3684b4ff7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0040900305.json",
+      "url": "https://www.nba.com/game/0040900305/box-score",
+      "rawPath": "raw/game-0040900305-28671a88aecf5adbd845923b052dc4aae586ed8f4c8f2f8aa0d30e797a48400d.html.gz",
+      "bodySha256": "28671a88aecf5adbd845923b052dc4aae586ed8f4c8f2f8aa0d30e797a48400d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0041700116.json",
+      "url": "https://www.nba.com/game/0041700116/box-score",
+      "rawPath": "raw/game-0041700116-ed903765ac4c48d6206fb948e5accd6011032e45fcfc8f43c9aec4e6690a9663.html.gz",
+      "bodySha256": "ed903765ac4c48d6206fb948e5accd6011032e45fcfc8f43c9aec4e6690a9663",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500106.json",
+      "url": "https://www.nba.com/game/0042500106/box-score",
+      "rawPath": "raw/game-0042500106-541cd00dacaaf5386551d6dbd362f16d243dfa29d09aa073baacdc062e958d53.html.gz",
+      "bodySha256": "541cd00dacaaf5386551d6dbd362f16d243dfa29d09aa073baacdc062e958d53",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500117.json",
+      "url": "https://www.nba.com/game/0042500117/box-score",
+      "rawPath": "raw/game-0042500117-5a2fe86435f82066896fc5234dc6451644188f3c8068ce665ede32da733cbeef.html.gz",
+      "bodySha256": "5a2fe86435f82066896fc5234dc6451644188f3c8068ce665ede32da733cbeef",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500126.json",
+      "url": "https://www.nba.com/game/0042500126/box-score",
+      "rawPath": "raw/game-0042500126-8c53ad961f260f063e79f771bae04bd2f2fa3481351900b0559b27d20a352093.html.gz",
+      "bodySha256": "8c53ad961f260f063e79f771bae04bd2f2fa3481351900b0559b27d20a352093",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500136.json",
+      "url": "https://www.nba.com/game/0042500136/box-score",
+      "rawPath": "raw/game-0042500136-4bdea249766c75361f8acaef8701de9df7e8dd4b291c8faebb1cc69d8ad16c5b.html.gz",
+      "bodySha256": "4bdea249766c75361f8acaef8701de9df7e8dd4b291c8faebb1cc69d8ad16c5b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500207.json",
+      "url": "https://www.nba.com/game/0042500207/box-score",
+      "rawPath": "raw/game-0042500207-d490c033a79304303b6b5fb2db69e0dc791d2aa84075cbffc83314abe253fe31.html.gz",
+      "bodySha256": "d490c033a79304303b6b5fb2db69e0dc791d2aa84075cbffc83314abe253fe31",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500214.json",
+      "url": "https://www.nba.com/game/0042500214/box-score",
+      "rawPath": "raw/game-0042500214-e0fca43870bfeff508795f2f54512d00af0810290f555da4545209a9b78cb6e2.html.gz",
+      "bodySha256": "e0fca43870bfeff508795f2f54512d00af0810290f555da4545209a9b78cb6e2",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500304.json",
+      "url": "https://www.nba.com/game/0042500304/box-score",
+      "rawPath": "raw/game-0042500304-6ac6523892a4b1ea2b6d450bea4584d3b2e572254a208c9811740aed7a704dee.html.gz",
+      "bodySha256": "6ac6523892a4b1ea2b6d450bea4584d3b2e572254a208c9811740aed7a704dee",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0042500404.json",
+      "url": "https://www.nba.com/game/0042500404/box-score",
+      "rawPath": "raw/game-0042500404-44a307e50be9fbe92f913818181836c74591319ace985861798e939a3808aa48.html.gz",
+      "bodySha256": "44a307e50be9fbe92f913818181836c74591319ace985861798e939a3808aa48",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0048700029.json",
+      "url": "https://www.nba.com/game/0048700029/box-score",
+      "rawPath": "raw/game-0048700029-2c10b07d27c3f9c4944ff6cb007224b1071fd2b92951cf5d53e40c6c057a1f2b.html.gz",
+      "bodySha256": "2c10b07d27c3f9c4944ff6cb007224b1071fd2b92951cf5d53e40c6c057a1f2b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0048700078.json",
+      "url": "https://www.nba.com/game/0048700078/box-score",
+      "rawPath": "raw/game-0048700078-89bc6aa741e2b0aefa5a34b699caa25f383c353ae7052c158d19e4c642bd8e11.html.gz",
+      "bodySha256": "89bc6aa741e2b0aefa5a34b699caa25f383c353ae7052c158d19e4c642bd8e11",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049300022.json",
+      "url": "https://www.nba.com/game/0049300022/box-score",
+      "rawPath": "raw/game-0049300022-aed4bb3265c51e516b7eaf0f9e16f23b9d52f7b0e797fe59b47d78c7c7d894e8.html.gz",
+      "bodySha256": "aed4bb3265c51e516b7eaf0f9e16f23b9d52f7b0e797fe59b47d78c7c7d894e8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049300055.json",
+      "url": "https://www.nba.com/game/0049300055/box-score",
+      "rawPath": "raw/game-0049300055-a5cc44aa3b0031e9d96fb737402828f1e0a1e4d4bdf7766fd08bb1045437fe5f.html.gz",
+      "bodySha256": "a5cc44aa3b0031e9d96fb737402828f1e0a1e4d4bdf7766fd08bb1045437fe5f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049400029.json",
+      "url": "https://www.nba.com/game/0049400029/box-score",
+      "rawPath": "raw/game-0049400029-0fc3715488b0be1691c70929734c7dbdf03a1270f1795b8fdc945e846eb9054b.html.gz",
+      "bodySha256": "0fc3715488b0be1691c70929734c7dbdf03a1270f1795b8fdc945e846eb9054b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049600023.json",
+      "url": "https://www.nba.com/game/0049600023/box-score",
+      "rawPath": "raw/game-0049600023-6fa6f67d0da1815f643195c78281f7002a9620a11c133c09c2b453df4ffa460b.html.gz",
+      "bodySha256": "6fa6f67d0da1815f643195c78281f7002a9620a11c133c09c2b453df4ffa460b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049600053.json",
+      "url": "https://www.nba.com/game/0049600053/box-score",
+      "rawPath": "raw/game-0049600053-33eaef7222d2314ed1a81a1f869bc80810e62b511983845788cd89b2269bf94d.html.gz",
+      "bodySha256": "33eaef7222d2314ed1a81a1f869bc80810e62b511983845788cd89b2269bf94d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049700020.json",
+      "url": "https://www.nba.com/game/0049700020/box-score",
+      "rawPath": "raw/game-0049700020-1f56348ce5d669c2d4445b7df7cd95b4ec817bc07450f96eb22cbf8bfe6b568f.html.gz",
+      "bodySha256": "1f56348ce5d669c2d4445b7df7cd95b4ec817bc07450f96eb22cbf8bfe6b568f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049700031.json",
+      "url": "https://www.nba.com/game/0049700031/box-score",
+      "rawPath": "raw/game-0049700031-8ff4a250efa8a3e8ba42fdc2368a163b888815f1223e81096d6935314e073356.html.gz",
+      "bodySha256": "8ff4a250efa8a3e8ba42fdc2368a163b888815f1223e81096d6935314e073356",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800004.json",
+      "url": "https://www.nba.com/game/0049800004/box-score",
+      "rawPath": "raw/game-0049800004-b8e1465bf23c016098bea1a25835e24f61314533411614d77185e0112860ca6f.html.gz",
+      "bodySha256": "b8e1465bf23c016098bea1a25835e24f61314533411614d77185e0112860ca6f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800010.json",
+      "url": "https://www.nba.com/game/0049800010/box-score",
+      "rawPath": "raw/game-0049800010-ce0b376535b9dede96a13903b1ba50e71b3dfd0438a843b835a767d3986a9b44.html.gz",
+      "bodySha256": "ce0b376535b9dede96a13903b1ba50e71b3dfd0438a843b835a767d3986a9b44",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800035.json",
+      "url": "https://www.nba.com/game/0049800035/box-score",
+      "rawPath": "raw/game-0049800035-720db44348f346c11b4d5528818dfe91a12802df5593759194fe7aceae487444.html.gz",
+      "bodySha256": "720db44348f346c11b4d5528818dfe91a12802df5593759194fe7aceae487444",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800043.json",
+      "url": "https://www.nba.com/game/0049800043/box-score",
+      "rawPath": "raw/game-0049800043-5b1e6cb1739bc73f4154280104348b0321a12aa9cecf7d35bc43dc8af9eccf08.html.gz",
+      "bodySha256": "5b1e6cb1739bc73f4154280104348b0321a12aa9cecf7d35bc43dc8af9eccf08",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800047.json",
+      "url": "https://www.nba.com/game/0049800047/box-score",
+      "rawPath": "raw/game-0049800047-9cfe3bfa30990194a72937b57b91cfc392dbc39f72af76e46933604f9001073d.html.gz",
+      "bodySha256": "9cfe3bfa30990194a72937b57b91cfc392dbc39f72af76e46933604f9001073d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049800073.json",
+      "url": "https://www.nba.com/game/0049800073/box-score",
+      "rawPath": "raw/game-0049800073-65885bc8b96a769ba2cc87013d97b39ca0646d2940b3cbf6d6e46936ba4cda9f.html.gz",
+      "bodySha256": "65885bc8b96a769ba2cc87013d97b39ca0646d2940b3cbf6d6e46936ba4cda9f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0049900047.json",
+      "url": "https://www.nba.com/game/0049900047/box-score",
+      "rawPath": "raw/game-0049900047-0687fd3fa2200cbdeb7e48c6fe3ea1c28150d58eb3c33c49b59b4dd47314e165.html.gz",
+      "bodySha256": "0687fd3fa2200cbdeb7e48c6fe3ea1c28150d58eb3c33c49b59b4dd47314e165",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/game-0052500111.json",
+      "url": "https://www.nba.com/game/0052500111/box-score",
+      "rawPath": "raw/game-0052500111-1fa896cd0498bf7d536eee35106ea8f6c49c80e898d4b64dc94259b992da6a6f.html.gz",
+      "bodySha256": "1fa896cd0498bf7d536eee35106ea8f6c49c80e898d4b64dc94259b992da6a6f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-atl-georgia-dome.json",
+      "url": "https://www.geonames.org/4196938/georgia-dome.html",
+      "rawPath": "raw/geonames-record-atl-georgia-dome-e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99.html.gz",
+      "bodySha256": "e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-atl-omni.json",
+      "url": "https://www.geonames.org/6348383/omni-coliseum-historical.html",
+      "rawPath": "raw/geonames-record-atl-omni-cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42.html.gz",
+      "bodySha256": "cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-bos-garden.json",
+      "url": "https://www.geonames.org/4930980/boston-garden.html",
+      "rawPath": "raw/geonames-record-bos-garden-9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076.html.gz",
+      "bodySha256": "9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-chi-stadium.json",
+      "url": "https://www.geonames.org/4887510/chicago-stadium-historical.html",
+      "rawPath": "raw/geonames-record-chi-stadium-e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3.html.gz",
+      "bodySha256": "e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-cle-richfield.json",
+      "url": "https://www.geonames.org/5168029/richfield-coliseum-historical.html",
+      "rawPath": "raw/geonames-record-cle-richfield-bb07eacbdedf4df0279a9d4c94662d2c7d9bcd5ec67baae9e22c0f204262991f.html.gz",
+      "bodySha256": "bb07eacbdedf4df0279a9d4c94662d2c7d9bcd5ec67baae9e22c0f204262991f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-mia-old.json",
+      "url": "https://www.geonames.org/4164142/miami-arena.html",
+      "rawPath": "raw/geonames-record-mia-old-62e272aa709fef1a5e045517bdd3fe12f6e406bb56a603a7aa58d380efa2746a.html.gz",
+      "bodySha256": "62e272aa709fef1a5e045517bdd3fe12f6e406bb56a603a7aa58d380efa2746a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-orl-old.json",
+      "url": "https://www.geonames.org/7533656/amway-arena.html",
+      "rawPath": "raw/geonames-record-orl-old-a8cf2906c42ba9a96c17e7801dc6e5c28b45733c9731f1f22b01892c9be4ea16.html.gz",
+      "bodySha256": "a8cf2906c42ba9a96c17e7801dc6e5c28b45733c9731f1f22b01892c9be4ea16",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-phi-spectrum.json",
+      "url": "https://www.geonames.org/4561993/wachovia-spectrum-historical.html",
+      "rawPath": "raw/geonames-record-phi-spectrum-316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738.html.gz",
+      "bodySha256": "316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-record-was-capitalcentre.json",
+      "url": "https://www.geonames.org/4371978/u-s-airways-arena-historical.html",
+      "rawPath": "raw/geonames-record-was-capitalcentre-e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af.html.gz",
+      "bodySha256": "e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-atl-georgia-dome.json",
+      "url": "https://www.geonames.org/search.html?q=Georgia+Dome&country=US",
+      "rawPath": "raw/geonames-search-atl-georgia-dome-7534c260f417ce177c5171906b5e8ae47618f291c5f44e256d2bc97c36a33711.html.gz",
+      "bodySha256": "7534c260f417ce177c5171906b5e8ae47618f291c5f44e256d2bc97c36a33711",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-atl-omni.json",
+      "url": "https://www.geonames.org/search.html?q=Omni+Coliseum&country=US",
+      "rawPath": "raw/geonames-search-atl-omni-28568ced6c827998d65f1294a4365d417aeb857dc64e9ab6d1f20215628fc0f5.html.gz",
+      "bodySha256": "28568ced6c827998d65f1294a4365d417aeb857dc64e9ab6d1f20215628fc0f5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-bos-garden.json",
+      "url": "https://www.geonames.org/search.html?q=Boston+Garden&country=US",
+      "rawPath": "raw/geonames-search-bos-garden-64283cf097eb348a5268513ba85497cc81b2dfc595972b7645c791ea5d9979b4.html.gz",
+      "bodySha256": "64283cf097eb348a5268513ba85497cc81b2dfc595972b7645c791ea5d9979b4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-chi-stadium.json",
+      "url": "https://www.geonames.org/search.html?q=Chicago+Stadium&country=US",
+      "rawPath": "raw/geonames-search-chi-stadium-0d36404d4700176f40e53d9b4c20fbe1e1d0c3fff6a6896a135cb36dab5667b0.html.gz",
+      "bodySha256": "0d36404d4700176f40e53d9b4c20fbe1e1d0c3fff6a6896a135cb36dab5667b0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-cle-richfield.json",
+      "url": "https://www.geonames.org/search.html?q=Richfield+Coliseum&country=US",
+      "rawPath": "raw/geonames-search-cle-richfield-26afbf661eb4c6adfda42299f524460a0adb81585698be0768a426b34a57f0c8.html.gz",
+      "bodySha256": "26afbf661eb4c6adfda42299f524460a0adb81585698be0768a426b34a57f0c8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-ind-market.json",
+      "url": "https://www.geonames.org/search.html?q=Market+Square+Arena&country=US",
+      "rawPath": "raw/geonames-search-ind-market-cd3ed555bba896dc5a4e3f4b144a5d981d2b1b3825169e6b131d4f4e2a6a3443.html.gz",
+      "bodySha256": "cd3ed555bba896dc5a4e3f4b144a5d981d2b1b3825169e6b131d4f4e2a6a3443",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-mia-old.json",
+      "url": "https://www.geonames.org/search.html?q=Miami+Arena&country=US",
+      "rawPath": "raw/geonames-search-mia-old-4cbb3ba49fce9626d95a1450b6fd51fd7b62677c50419792266d60abe7aa919c.html.gz",
+      "bodySha256": "4cbb3ba49fce9626d95a1450b6fd51fd7b62677c50419792266d60abe7aa919c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-orl-old.json",
+      "url": "https://www.geonames.org/search.html?q=Amway+Arena&country=US",
+      "rawPath": "raw/geonames-search-orl-old-c4a45f410e0983c7527313a8f8b26e8ab5025ab18be33ae2e5bbb05db0e3169a.html.gz",
+      "bodySha256": "c4a45f410e0983c7527313a8f8b26e8ab5025ab18be33ae2e5bbb05db0e3169a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-phi-spectrum.json",
+      "url": "https://www.geonames.org/search.html?q=The+Spectrum+Philadelphia&country=US",
+      "rawPath": "raw/geonames-search-phi-spectrum-ae5dc9c247fc701f3f695404a55d0fa9c8ddc186e6a0ee8a6fea0e1da31f1a9d.html.gz",
+      "bodySha256": "ae5dc9c247fc701f3f695404a55d0fa9c8ddc186e6a0ee8a6fea0e1da31f1a9d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/geonames-search-was-capitalcentre.json",
+      "url": "https://www.geonames.org/search.html?q=Capital+Centre&country=US",
+      "rawPath": "raw/geonames-search-was-capitalcentre-56c4299f36911798d7074ad4c5d2f3543b687da403222fa5f08bda1a8acd5e04.html.gz",
+      "bodySha256": "56c4299f36911798d7074ad4c5d2f3543b687da403222fa5f08bda1a8acd5e04",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-alexander.json",
+      "url": "https://www.google.com/maps?q=McCamish+Pavilion+Atlanta&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-alexander-e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed.html.gz",
+      "bodySha256": "e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-georgia-dome.json",
+      "url": "https://www.google.com/maps?q=Georgia+Dome+Atlanta&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-georgia-dome-b43c51a9e95fba56ffbcfb4174ef40d3a01f9f5078851efcdfc0bbe78e6fab51.html.gz",
+      "bodySha256": "b43c51a9e95fba56ffbcfb4174ef40d3a01f9f5078851efcdfc0bbe78e6fab51",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-omni.json",
+      "url": "https://www.google.com/maps?q=Omni+Coliseum+Atlanta&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-omni-0c41ecd4c134ab647ab7aea952d9af625238d1d69a767debc18383a4561853d1.html.gz",
+      "bodySha256": "0c41ecd4c134ab647ab7aea952d9af625238d1d69a767debc18383a4561853d1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-statefarm-cid.json",
+      "url": "https://www.google.com/maps?cid=12709393292767748091&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-statefarm-cid-268e4984b7753459fdd9bf2b806d0bf05660edbcd5843ef09eb82789796aefeb.html.gz",
+      "bodySha256": "268e4984b7753459fdd9bf2b806d0bf05660edbcd5843ef09eb82789796aefeb",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-statefarm-exact.json",
+      "url": "https://www.google.com/maps?q=State+Farm+Arena+1+State+Farm+Dr+Atlanta+GA+30303&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-statefarm-exact-b420a71fa017e332c4fce2821b14d40a9ad91af9188370793769a858c9045e43.html.gz",
+      "bodySha256": "b420a71fa017e332c4fce2821b14d40a9ad91af9188370793769a858c9045e43",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-statefarm-placeid.json",
+      "url": "https://www.google.com/maps?q=place_id%3AChIJbUlCkX8D9YgR-18nztzVYLA&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-statefarm-placeid-6b6ad1cd39abf0daa92670af48143914f6055e0eaac7de035e1a01467caf561e.html.gz",
+      "bodySha256": "6b6ad1cd39abf0daa92670af48143914f6055e0eaac7de035e1a01467caf561e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-atl-statefarm.json",
+      "url": "https://www.google.com/maps?q=State+Farm+Arena+Atlanta&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-statefarm-aa2010837a9d6042fef2a0b6cd16cff1388d98d81389b89c9a793d780804ab18.html.gz",
+      "bodySha256": "aa2010837a9d6042fef2a0b6cd16cff1388d98d81389b89c9a793d780804ab18",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-bkn-barclays.json",
+      "url": "https://www.google.com/maps?q=Barclays+Center+Brooklyn&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-barclays-b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab.html.gz",
+      "bodySha256": "b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-bkn-meadowlands.json",
+      "url": "https://www.google.com/maps?q=Meadowlands+Arena+East+Rutherford&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-meadowlands-765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef.html.gz",
+      "bodySha256": "765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-bkn-prudential.json",
+      "url": "https://www.google.com/maps?q=Prudential+Center+Newark&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-prudential-395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1.html.gz",
+      "bodySha256": "395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-bos-garden.json",
+      "url": "https://www.google.com/maps?q=Boston+Garden+historical+arena&output=embed&hl=en",
+      "rawPath": "raw/marker-bos-garden-7dfc1eb2876bc15de745264d0b258c35359ccf83df5965db1c709b0644210504.html.gz",
+      "bodySha256": "7dfc1eb2876bc15de745264d0b258c35359ccf83df5965db1c709b0644210504",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-bos-td.json",
+      "url": "https://www.google.com/maps?q=TD+Garden+Boston&output=embed&hl=en",
+      "rawPath": "raw/marker-bos-td-b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139.html.gz",
+      "bodySha256": "b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-capitalcentre-candidate.json",
+      "url": "https://www.google.com/maps?cid=2884999797982151893&output=embed&hl=en",
+      "rawPath": "raw/marker-capitalcentre-candidate-e807e25b2876ebc49cfaf88a02c20b6997a9b7490a57a7c98051abb667904f5e.html.gz",
+      "bodySha256": "e807e25b2876ebc49cfaf88a02c20b6997a9b7490a57a7c98051abb667904f5e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-cha-coliseum.json",
+      "url": "https://www.google.com/maps?q=Charlotte+Coliseum+100+Paul+Buck+Boulevard&output=embed&hl=en",
+      "rawPath": "raw/marker-cha-coliseum-4c62ede3b80f1be3984ea56d9edb81c98e5b092c5fbbc1721a7a83fae92d356e.html.gz",
+      "bodySha256": "4c62ede3b80f1be3984ea56d9edb81c98e5b092c5fbbc1721a7a83fae92d356e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-cha-spectrum.json",
+      "url": "https://www.google.com/maps?q=Spectrum+Center+Charlotte&output=embed&hl=en",
+      "rawPath": "raw/marker-cha-spectrum-1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64.html.gz",
+      "bodySha256": "1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-chi-stadium.json",
+      "url": "https://www.google.com/maps?q=Chicago+Stadium+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-chi-stadium-5ab7ff8d66bfdf1d8253263a92699079c1d4863946d39daa950fc8064943eb7a.html.gz",
+      "bodySha256": "5ab7ff8d66bfdf1d8253263a92699079c1d4863946d39daa950fc8064943eb7a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-chi-united.json",
+      "url": "https://www.google.com/maps?q=United+Center+Chicago&output=embed&hl=en",
+      "rawPath": "raw/marker-chi-united-784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05.html.gz",
+      "bodySha256": "784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-cle-richfield.json",
+      "url": "https://www.google.com/maps?q=Richfield+Coliseum+Ohio&output=embed&hl=en",
+      "rawPath": "raw/marker-cle-richfield-8d552d8329dc0f7108c5104dde7433a224219ae8bca63af9d966aac9472ad0d7.html.gz",
+      "bodySha256": "8d552d8329dc0f7108c5104dde7433a224219ae8bca63af9d966aac9472ad0d7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-cle-rocket.json",
+      "url": "https://www.google.com/maps?q=Rocket+Arena+Cleveland&output=embed&hl=en",
+      "rawPath": "raw/marker-cle-rocket-7261f0791d83ef1417b53e4c9b6addd4768e79d7cdbaf1115472f8e927cbec99.html.gz",
+      "bodySha256": "7261f0791d83ef1417b53e4c9b6addd4768e79d7cdbaf1115472f8e927cbec99",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-det-lca.json",
+      "url": "https://www.google.com/maps?q=Little+Caesars+Arena+Detroit&output=embed&hl=en",
+      "rawPath": "raw/marker-det-lca-049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672.html.gz",
+      "bodySha256": "049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-det-palace.json",
+      "url": "https://www.google.com/maps?q=Palace+of+Auburn+Hills&output=embed&hl=en",
+      "rawPath": "raw/marker-det-palace-2c11775d9238643587aee5e3edefa4bd37ac3b03b8731e91779f04a1366bf122.html.gz",
+      "bodySha256": "2c11775d9238643587aee5e3edefa4bd37ac3b03b8731e91779f04a1366bf122",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-det-silverdome.json",
+      "url": "https://www.google.com/maps?q=Pontiac+Silverdome+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-det-silverdome-d7ebceb8ded000dfacfebf3e5ed6b91f93bebaeadaee4c264699d91c2aa1450e.html.gz",
+      "bodySha256": "d7ebceb8ded000dfacfebf3e5ed6b91f93bebaeadaee4c264699d91c2aa1450e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-georgia-dome-candidate1.json",
+      "url": "https://www.google.com/maps?cid=7296321780679831790&output=embed&hl=en",
+      "rawPath": "raw/marker-georgia-dome-candidate1-40971279bfdfb07d21b7bba1ef3f16270ff6125d072a69354409a0d32e40cba3.html.gz",
+      "bodySha256": "40971279bfdfb07d21b7bba1ef3f16270ff6125d072a69354409a0d32e40cba3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-georgia-dome-candidate2.json",
+      "url": "https://www.google.com/maps?cid=8951728921582745347&output=embed&hl=en",
+      "rawPath": "raw/marker-georgia-dome-candidate2-51473631ee238b1090b44ca69b98d5505fccfb1a19fe46ee09c75bbc2ef9237a.html.gz",
+      "bodySha256": "51473631ee238b1090b44ca69b98d5505fccfb1a19fe46ee09c75bbc2ef9237a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-ind-gainbridge.json",
+      "url": "https://www.google.com/maps?q=Gainbridge+Fieldhouse+Indianapolis&output=embed&hl=en",
+      "rawPath": "raw/marker-ind-gainbridge-00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c.html.gz",
+      "bodySha256": "00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-ind-market.json",
+      "url": "https://www.google.com/maps?q=Market+Square+Arena+Indianapolis+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-ind-market-de26fc1851ae226b8955b529c16b28553d264ba1ccf81ef3d3e31837cfa4160a.html.gz",
+      "bodySha256": "de26fc1851ae226b8955b529c16b28553d264ba1ccf81ef3d3e31837cfa4160a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-mia-kaseya.json",
+      "url": "https://www.google.com/maps?q=Kaseya+Center+Miami&output=embed&hl=en",
+      "rawPath": "raw/marker-mia-kaseya-d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215.html.gz",
+      "bodySha256": "d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-mia-old.json",
+      "url": "https://www.google.com/maps?q=Miami+Arena+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-mia-old-5feda68ebe9ba25542a1932cd4cadbbac68927134a7e80290a2e87244f7ced11.html.gz",
+      "bodySha256": "5feda68ebe9ba25542a1932cd4cadbbac68927134a7e80290a2e87244f7ced11",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-mil-bradley.json",
+      "url": "https://www.google.com/maps?q=Bradley+Center+Milwaukee+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-mil-bradley-222c645dfe43839cf52c1fd6916b3a8fb254d4004ad2335bc163f48a0d2fc844.html.gz",
+      "bodySha256": "222c645dfe43839cf52c1fd6916b3a8fb254d4004ad2335bc163f48a0d2fc844",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-mil-fiserv.json",
+      "url": "https://www.google.com/maps?q=Fiserv+Forum+Milwaukee&output=embed&hl=en",
+      "rawPath": "raw/marker-mil-fiserv-408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243.html.gz",
+      "bodySha256": "408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-mil-mecca.json",
+      "url": "https://www.google.com/maps?q=UW+Milwaukee+Panther+Arena&output=embed&hl=en",
+      "rawPath": "raw/marker-mil-mecca-71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c.html.gz",
+      "bodySha256": "71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-nyk-msg4-exact.json",
+      "url": "https://www.google.com/maps?q=Madison+Square+Garden+4+Pennsylvania+Plaza+New+York+NY+10001&output=embed&hl=en",
+      "rawPath": "raw/marker-nyk-msg4-exact-bf0821274c9b3e7cf5cd38aa996b88eb4b05cea446d8275406c2298cf71f77d1.html.gz",
+      "bodySha256": "bf0821274c9b3e7cf5cd38aa996b88eb4b05cea446d8275406c2298cf71f77d1",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-nyk-msg4.json",
+      "url": "https://www.google.com/maps?q=Madison+Square+Garden+New+York&output=embed&hl=en",
+      "rawPath": "raw/marker-nyk-msg4-53c732d35e547b3faef06b017c865ad5961aca9a02a65ed01ca1926dc775bdc4.html.gz",
+      "bodySha256": "53c732d35e547b3faef06b017c865ad5961aca9a02a65ed01ca1926dc775bdc4",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-orl-kia.json",
+      "url": "https://www.google.com/maps?q=Kia+Center+Orlando&output=embed&hl=en",
+      "rawPath": "raw/marker-orl-kia-684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43.html.gz",
+      "bodySha256": "684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-orl-old.json",
+      "url": "https://www.google.com/maps?q=Amway+Arena+demolished+Orlando&output=embed&hl=en",
+      "rawPath": "raw/marker-orl-old-a6d31bcd6b7eecfc99bbab1336ff37080a3377bb67b8d18577978368623af416.html.gz",
+      "bodySha256": "a6d31bcd6b7eecfc99bbab1336ff37080a3377bb67b8d18577978368623af416",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-phi-spectrum.json",
+      "url": "https://www.google.com/maps?q=Spectrum+Philadelphia+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-phi-spectrum-9239a947f58619efbf4db3494cf39b72ce21758012699ebe8181a777f711f407.html.gz",
+      "bodySha256": "9239a947f58619efbf4db3494cf39b72ce21758012699ebe8181a777f711f407",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-phi-xfinity.json",
+      "url": "https://www.google.com/maps?q=Xfinity+Mobile+Arena+Philadelphia&output=embed&hl=en",
+      "rawPath": "raw/marker-phi-xfinity-75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b.html.gz",
+      "bodySha256": "75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-tor-amalie.json",
+      "url": "https://www.google.com/maps?q=Amalie+Arena+Tampa&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-amalie-584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c.html.gz",
+      "bodySha256": "584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-tor-copps.json",
+      "url": "https://www.google.com/maps?q=TD+Coliseum+101+York+Boulevard+Hamilton&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-copps-e0ead108346929760c54aee517fb5cd08ed763d5a09c8c2f4ef6b7adc7207e59.html.gz",
+      "bodySha256": "e0ead108346929760c54aee517fb5cd08ed763d5a09c8c2f4ef6b7adc7207e59",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-tor-mapleleaf.json",
+      "url": "https://www.google.com/maps?q=Maple+Leaf+Gardens+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-mapleleaf-f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7.html.gz",
+      "bodySha256": "f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-tor-scotia.json",
+      "url": "https://www.google.com/maps?q=Scotiabank+Arena+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-scotia-6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471.html.gz",
+      "bodySha256": "6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-tor-skydome.json",
+      "url": "https://www.google.com/maps?q=Rogers+Centre+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-skydome-643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec.html.gz",
+      "bodySha256": "643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-was-capitalcentre.json",
+      "url": "https://www.google.com/maps?q=Capital+Centre+Landover+demolished&output=embed&hl=en",
+      "rawPath": "raw/marker-was-capitalcentre-3e40e0b67ff56c62abb70c87b32a02c1a09b2ee01cdf5dba843d052a19a4216f.html.gz",
+      "bodySha256": "3e40e0b67ff56c62abb70c87b32a02c1a09b2ee01cdf5dba843d052a19a4216f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/marker-was-capitalone.json",
+      "url": "https://www.google.com/maps?q=Capital+One+Arena+Washington&output=embed&hl=en",
+      "rawPath": "raw/marker-was-capitalone-f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031.html.gz",
+      "bodySha256": "f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-alexander-same-footprint.json",
+      "url": "https://ramblinwreck.com/facilities/mccamish-pavilion",
+      "rawPath": "raw/source-alexander-same-footprint-85d078e3839c45fd221a33101c5f578e75a2eeea064f7264d10a32cb1aec8341.html.gz",
+      "bodySha256": "85d078e3839c45fd221a33101c5f578e75a2eeea064f7264d10a32cb1aec8341",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-atl-home.json",
+      "url": "https://www.statefarmarena.com/",
+      "rawPath": "raw/source-atl-home-300ef8e1a9965c81898caa617847fdc228985cdcb10b5ef43d139a4f13fef023.html.gz",
+      "bodySha256": "300ef8e1a9965c81898caa617847fdc228985cdcb10b5ef43d139a4f13fef023",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-bkn-home.json",
+      "url": "https://www.barclayscenter.com/",
+      "rawPath": "raw/source-bkn-home-f6c945317f05a97d61fc55833ffd051ac448837dfe33d18c0090d75817f54f37.html.gz",
+      "bodySha256": "f6c945317f05a97d61fc55833ffd051ac448837dfe33d18c0090d75817f54f37",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-bucks-era-history.json",
+      "url": "https://www.nba.com/news/milwaukee-bucks-new-arena-fiserv-forum",
+      "rawPath": "raw/source-bucks-era-history-8a7c3f61390a4f8820b803593a58368a2f8795d5c436c4b4bc2491bbceb28bf3.html.gz",
+      "bodySha256": "8a7c3f61390a4f8820b803593a58368a2f8795d5c436c4b4bc2491bbceb28bf3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-bucks-mecca-return.json",
+      "url": "https://www.nba.com/bucks/release/bucks-replicate-famed-mecca-court-return-mecca-game-oct-26",
+      "rawPath": "raw/source-bucks-mecca-return-0f0476438177569d49f6abeef551b24fd438893deaec6ecbc3677dc74c43ab3f.html.gz",
+      "bodySha256": "0f0476438177569d49f6abeef551b24fd438893deaec6ecbc3677dc74c43ab3f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-bulls-last-stadium.json",
+      "url": "https://www.nba.com/bulls/history/pippen10_940520.html",
+      "rawPath": "raw/source-bulls-last-stadium-9bcb958b8b54fa80deaaceded05dda08e7638328a4979f48e854851aa06def25.html.gz",
+      "bodySha256": "9bcb958b8b54fa80deaaceded05dda08e7638328a4979f48e854851aa06def25",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-cavs-coliseum.json",
+      "url": "https://www.nba.com/cavaliers/photogallery/remembering-coliseum",
+      "rawPath": "raw/source-cavs-coliseum-d1250bb46bee83175d4a27e41d1cc2c0e1b6964595c00f04bf3f2a3496fa4f6e.html.gz",
+      "bodySha256": "d1250bb46bee83175d4a27e41d1cc2c0e1b6964595c00f04bf3f2a3496fa4f6e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-cavs-history.json",
+      "url": "https://cdn.nba.com/teams/uploads/sites/1610612739/2022/10/10-history.pdf",
+      "rawPath": "raw/source-cavs-history-86fac3093c6ac76fbbf992bd92f36d0e80984b12aec87040879fb319a7d22d94.html.gz",
+      "bodySha256": "86fac3093c6ac76fbbf992bd92f36d0e80984b12aec87040879fb319a7d22d94",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-celtics-td-30.json",
+      "url": "https://www.tdgarden.com/news/detail/td-garden-celebrates-30-years-as-bostons-home-for-unforgettable-moments-community-engagement-and-world-class-entertainment",
+      "rawPath": "raw/source-celtics-td-30-fd4ae7d667cd8c18621ed7408f5706fb94945e9c02d04b6e94a84f2ea2758038.html.gz",
+      "bodySha256": "fd4ae7d667cd8c18621ed7408f5706fb94945e9c02d04b6e94a84f2ea2758038",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-celtics-td-era.json",
+      "url": "https://www.tdgarden.com/venue-info/about-td-garden",
+      "rawPath": "raw/source-celtics-td-era-a8e3787e3ea6d4309c3792feda212fbfacec01646a06537389690a3e07cde681.html.gz",
+      "bodySha256": "a8e3787e3ea6d4309c3792feda212fbfacec01646a06537389690a3e07cde681",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-chi-home.json",
+      "url": "https://www.unitedcenter.com/",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 403: Forbidden"
+    },
+    {
+      "metadataPath": "raw/source-copps-operator-history.json",
+      "url": "https://www.tdcoliseum.com/assets/doc/Hamilton-Arena-Groundbreaking-FINAL-5.16.24-a92b862d66.pdf",
+      "rawPath": "raw/source-copps-operator-history.body.gz",
+      "bodySha256": "a92b862d660058f88569f84d646552fee2957ed9781f9aa86175838c677ced7e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-georgia-regents-july1997.json",
+      "url": "https://www.usg.edu/regents/assets/regents/documents/board_meetings/jul97min.pdf",
+      "rawPath": null,
+      "bodySha256": null,
+      "hashVerified": false,
+      "httpStatus": null,
+      "error": "HTTPError:HTTP Error 404: Not Found"
+    },
+    {
+      "metadataPath": "raw/source-gt-guide.json",
+      "url": "https://repository.gatech.edu/bitstreams/6a55bc7f-ff78-4c13-80ae-e0cc949f2e9e/download",
+      "rawPath": "raw/source-gt-guide-165c1dafe909e92b8efd29f548902fa0333697bd690eb5c87903b2c6a6021865.html.gz",
+      "bodySha256": "165c1dafe909e92b8efd29f548902fa0333697bd690eb5c87903b2c6a6021865",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-heat-government-first-aaa.json",
+      "url": "https://www.miamidade.gov/resources-oig/pdf/Reports2012/IG11.34FinalBasketball.pdf",
+      "rawPath": "raw/source-heat-government-first-aaa-1f78666da77e0ca5d5664a803d4709b0c844cf456cc67c3ff2b6198e74dca5e5.html.gz",
+      "bodySha256": "1f78666da77e0ca5d5664a803d4709b0c844cf456cc67c3ff2b6198e74dca5e5",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-hornets-first-home.json",
+      "url": "https://www.nba.com/hornets/news/ranking-the-top-10-best-home-openers-in-hornets-history",
+      "rawPath": "raw/source-hornets-first-home-f7cd4dc39fd546328d8de792beb690edd6c9f9866a4af0efb8e75f8a71e24c6f.html.gz",
+      "bodySha256": "f7cd4dc39fd546328d8de792beb690edd6c9f9866a4af0efb8e75f8a71e24c6f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-hornets-history-pdf.json",
+      "url": "https://www.hornets30.com/wp-content/uploads/2018/07/180730_Hornets_History.pdf",
+      "rawPath": "raw/source-hornets-history-pdf-04e44372384930a7ea9b4a85ca2f1fd7664f5c378e216d2b66e032ee8ce448aa.html.gz",
+      "bodySha256": "04e44372384930a7ea9b4a85ca2f1fd7664f5c378e216d2b66e032ee8ce448aa",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-jazz-league-guide.json",
+      "url": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Jazz.pdf",
+      "rawPath": "raw/source-jazz-league-guide-841e7de5a0249f1194d5b21601d32072682603e9e318bb9805948c82d942d5fe.html.gz",
+      "bodySha256": "841e7de5a0249f1194d5b21601d32072682603e9e318bb9805948c82d942d5fe",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-knicks-official-guide-2017.json",
+      "url": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2017/10/2017-18-Media-Guide-Knicks.pdf",
+      "rawPath": "raw/source-knicks-official-guide-2017-edb1dc1013181e9e52686b0857a83557a7a70eaef5d9dca15dd0c1d03e70a93f.html.gz",
+      "bodySha256": "edb1dc1013181e9e52686b0857a83557a7a70eaef5d9dca15dd0c1d03e70a93f",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-mapleleaf-current-identity.json",
+      "url": "https://www.torontomu.ca/recreation/facilities/Mac/",
+      "rawPath": "raw/source-mapleleaf-current-identity-682e7d7097c9987650c917ab41888eb4b0ac8d99524517469fd958f08fc61cd6.html.gz",
+      "bodySha256": "682e7d7097c9987650c917ab41888eb4b0ac8d99524517469fd958f08fc61cd6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-mapleleaf-owner-map.json",
+      "url": "https://tmubold.ca/sports/2021/8/5/map-and-directions-mattamy-athletic-centre.aspx",
+      "rawPath": "raw/source-mapleleaf-owner-map-b54c49dcbc1cd2a6d10b7d1ebbaa5fb36bd59cf426111641f6b59c22420523f3.html.gz",
+      "bodySha256": "b54c49dcbc1cd2a6d10b7d1ebbaa5fb36bd59cf426111641f6b59c22420523f3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-market-square-architect-plan.json",
+      "url": "https://www.aisc.org/globalassets/modern-steel/archives/1961-1995/1975v04.pdf",
+      "rawPath": "raw/source-market-square-architect-plan-73200fcbaffbe61e0ac7bf363bf4fc0c98f03ac9ffafd1c87be2453612459af3.html.gz",
+      "bodySha256": "73200fcbaffbe61e0ac7bf363bf4fc0c98f03ac9ffafd1c87be2453612459af3",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-market-square-city-map.json",
+      "url": "https://gis.indy.gov/portal/sharing/rest/content/items/3d723f5fa3974a68856d5848b395380c/data",
+      "rawPath": "raw/source-market-square-city-map-b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081.html.gz",
+      "bodySha256": "b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-market-square-developer-plan.json",
+      "url": "https://flco.com/wp-content/uploads/2014/06/Tower-Addition-to-Skyline-IBJ_10.12.13.pdf",
+      "rawPath": "raw/source-market-square-developer-plan-67b34718222fd9ecc75f1bdc95dc8532ce9a7088e94375711bf2c2cb598a5337.html.gz",
+      "bodySha256": "67b34718222fd9ecc75f1bdc95dc8532ce9a7088e94375711bf2c2cb598a5337",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-meadowlands-owner.json",
+      "url": "https://www.njsea.com/who-we-are/",
+      "rawPath": "raw/source-meadowlands-owner-b0f025b71aadf635cfa78cc9a0a526e994d7a0a6ee3d712e1b06851ccb86e709.html.gz",
+      "bodySha256": "b0f025b71aadf635cfa78cc9a0a526e994d7a0a6ee3d712e1b06851ccb86e709",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-miami-developer-primary.json",
+      "url": "https://www.barkerpacific.com/commercial-projects/miami-arena",
+      "rawPath": "raw/source-miami-developer-primary.body.gz",
+      "bodySha256": "bd2093f2cc163b85e5454360b8fc9212acbc97a183f6953425a09b34b19596f0",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-nba-guide-2013-mirror.json",
+      "url": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "rawPath": "raw/source-nba-guide-2013-mirror-c18a718d07fb257a5a4e783cb8f07bcfca8471e4c294760d0ffd486a4cd2e26a.html.gz",
+      "bodySha256": "c18a718d07fb257a5a4e783cb8f07bcfca8471e4c294760d0ffd486a4cd2e26a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-nba-guide-official-2026.json",
+      "url": "https://cdn.nba.com/manage/2026/10/2026-27-NBA-Guide.pdf",
+      "rawPath": "raw/source-nba-guide-official-2026-c6766bee2dd74f948a08088693c8b187ae45cfb2c2cef539830472f6bdc06ed7.html.gz",
+      "bodySha256": "c6766bee2dd74f948a08088693c8b187ae45cfb2c2cef539830472f6bdc06ed7",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-nets-final-prudential.json",
+      "url": "https://www.nba.com/nets/news/history/2020/04/20/this-week-in-nets-history-april-20",
+      "rawPath": "raw/source-nets-final-prudential-4fbfdb43086e161f657692740a401b3767e197f261d6cf96bc5126518251131a.html.gz",
+      "bodySha256": "4fbfdb43086e161f657692740a401b3767e197f261d6cf96bc5126518251131a",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-nps-coliseum.json",
+      "url": "https://home.nps.gov/cuva/learn/historyculture/former-coliseum-property.htm",
+      "rawPath": "raw/source-nps-coliseum-b54f71a2c47243d899c286af02ea76a4a386c3eb9311d81a8315899bc1312d93.html.gz",
+      "bodySha256": "b54f71a2c47243d899c286af02ea76a4a386c3eb9311d81a8315899bc1312d93",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-orl-home.json",
+      "url": "https://www.kiacenter.com/",
+      "rawPath": "raw/source-orl-home-57bbcaba7565836e5330406d91e7e42cd4bc5d1c6b6e531890539e900abdc3e8.html.gz",
+      "bodySha256": "57bbcaba7565836e5330406d91e7e42cd4bc5d1c6b6e531890539e900abdc3e8",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-orlando-city-former-site.json",
+      "url": "https://orlando.novusagenda.com/AgendaPublic/AttachmentViewer.ashx?AttachmentID=70311&ItemID=41659",
+      "rawPath": "raw/source-orlando-city-former-site.body.gz",
+      "bodySha256": "8ae1799b8c90215bcc6883571c41be6ab6e81852b0a5dee5a412019aa91fb030",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-pacers-move.json",
+      "url": "https://www.nba.com/pacers/news/nine-pacers-moments-shaped-1990s",
+      "rawPath": "raw/source-pacers-move-331feb4a86efc3dadb4bc18d9677204d39dba8202c631ff065e7d6bcb0bbb027.html.gz",
+      "bodySha256": "331feb4a86efc3dadb4bc18d9677204d39dba8202c631ff065e7d6bcb0bbb027",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-phi-home.json",
+      "url": "https://www.xfinitymobilearena.com/",
+      "rawPath": "raw/source-phi-home-b2fe342a8f7da74007afbaa0d0ccf5a3100f8e9264a8f66a381cf2ddd6656174.html.gz",
+      "bodySha256": "b2fe342a8f7da74007afbaa0d0ccf5a3100f8e9264a8f66a381cf2ddd6656174",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-prudential-address.json",
+      "url": "https://www.prucenter.com/maps/entrance",
+      "rawPath": "raw/source-prudential-address-c789bf0dd0b4f329981df61d5afa5a2ba491536ffe96e252747280c7c97e9589.html.gz",
+      "bodySha256": "c789bf0dd0b4f329981df61d5afa5a2ba491536ffe96e252747280c7c97e9589",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-raptors-tampa.json",
+      "url": "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+      "rawPath": "raw/source-raptors-tampa-04bfc9158371b903a65305c4b2f0afe6f503b84559c676f53ea4b68fef89c781.html.gz",
+      "bodySha256": "04bfc9158371b903a65305c4b2f0afe6f503b84559c676f53ea4b68fef89c781",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-scotia-contact.json",
+      "url": "https://www.scotiabankarena.com/venue-information/contact-us",
+      "rawPath": "raw/source-scotia-contact-cbf5a35f723c9df3a213efcfcd566cd97a754697f487c350d6bd9fb41872ea6c.html.gz",
+      "bodySha256": "cbf5a35f723c9df3a213efcfcd566cd97a754697f487c350d6bd9fb41872ea6c",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-scotia-getting-here.json",
+      "url": "https://www.scotiabankarena.com/www.scotiabankarena.com/plan-your-visit/getting-here",
+      "rawPath": "raw/source-scotia-getting-here-d20cbd07dc823476afb84a6ed1b7aacfecf29f9cf922788ee78cfc3bb7986293.html.gz",
+      "bodySha256": "d20cbd07dc823476afb84a6ed1b7aacfecf29f9cf922788ee78cfc3bb7986293",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-sixers-guide.json",
+      "url": "https://cdn.nba.com/teams/uploads/sites/1610612755/2024/01/23-24-76ers-Media-Guide-Update-compressed.pdf",
+      "rawPath": "raw/source-sixers-guide-0161e820d0ea0611ed74ce7234456045ac441441a597febe32178701c5907d0d.html.gz",
+      "bodySha256": "0161e820d0ea0611ed74ce7234456045ac441441a597febe32178701c5907d0d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-sixers-history.json",
+      "url": "https://www.nba.com/sixers/history/76ers-team-history",
+      "rawPath": "raw/source-sixers-history-cf703e4e1ced86ea79e5da80369c0caa297522b01e9fcff6c37d6498ba30226d.html.gz",
+      "bodySha256": "cf703e4e1ced86ea79e5da80369c0caa297522b01e9fcff6c37d6498ba30226d",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-statefarm-about.json",
+      "url": "https://www.statefarmarena.com/about-the-arena/",
+      "rawPath": "raw/source-statefarm-about-14a059eed27869d72ccbd8324480e4604944c6d4b059e32aa82fea0643aede23.html.gz",
+      "bodySha256": "14a059eed27869d72ccbd8324480e4604944c6d4b059e32aa82fea0643aede23",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-tampa-official-rename.json",
+      "url": "https://www.nhl.com/lightning/news/vinik-sports-group-benchmark-international-announce-multi-year-naming-rights-partnership",
+      "rawPath": "raw/source-tampa-official-rename-4b1b9483e28ae64e8aae62b064fc686ed551286106c65d76febc55d937527feb.html.gz",
+      "bodySha256": "4b1b9483e28ae64e8aae62b064fc686ed551286106c65d76febc55d937527feb",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-usgs-peninsula-1994.json",
+      "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/OH/24000/OH_Peninsula_228030_1994_24000_geo.pdf",
+      "rawPath": "raw/source-usgs-peninsula-1994-4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6.html.gz",
+      "bodySha256": "4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    },
+    {
+      "metadataPath": "raw/source-wizards-first-mci.json",
+      "url": "https://www.nba.com/wizards/news/monroe_071115.html",
+      "rawPath": "raw/source-wizards-first-mci-ae4517820218f477b428470ea6c14ce43315be18a0f26268c9761bd63fc4909e.html.gz",
+      "bodySha256": "ae4517820218f477b428470ea6c14ce43315be18a0f26268c9761bd63fc4909e",
+      "hashVerified": true,
+      "httpStatus": 200,
+      "error": null
+    }
+  ]
+}

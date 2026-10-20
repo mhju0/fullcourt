@@ -7,6 +7,7 @@ import {
 } from "@/lib/db/queries";
 import {
   buildHistoricalBacktest,
+  summarizeHistoricalEvidenceCoverage,
   buildHistoricalGameSearch,
   gapRangeByKey,
   type HistoricalGameSearchFilters,
@@ -57,6 +58,21 @@ export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse
   },
   maxEntries: MAX_CACHED_THRESHOLDS,
 });
+
+/** Coverage includes neutral sites, which the home-court venue baseline excludes. */
+const readHistoricalEvidenceCoverage = createStampedCache<"all", {
+  games: number;
+  latestEvidenceDate: string | null;
+}>({
+  readStamp: getCompletedGamesStamp,
+  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
+  load: async () => summarizeHistoricalEvidenceCoverage(await getCompletedGamesWithFatigue()),
+  maxEntries: 1,
+});
+
+export function getHistoricalEvidenceCoverage() {
+  return readHistoricalEvidenceCoverage("all");
+}
 
 /**
  * Complete server-side game-explorer operation, including retrieval.

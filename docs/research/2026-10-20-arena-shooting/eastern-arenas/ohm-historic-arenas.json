@@ -1,0 +1,2061 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-20T07:00:50Z",
+    "copyright": "The data included in this document is from www.openhistoricalmap.org. The data is made available under CC0."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 2082820536,
+  "lat": 40.7664258,
+  "lon": -119.2295700,
+  "tags": {
+    "end_date": "2009-09-07",
+    "name": "Nowhere Omnibus Depot",
+    "start_date": "2009-08-31",
+    "tourism": "camp_site"
+  }
+},
+{
+  "type": "node",
+  "id": 2104143426,
+  "lat": 44.8634258,
+  "lon": -93.2710787,
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "345",
+    "addr:postcode": "55423",
+    "addr:state": "MN",
+    "addr:street": "East 77th Street",
+    "amenity": "bank",
+    "bank": "credit_union",
+    "branch": "77th Street",
+    "end_date": "2020-01-11",
+    "name": "Richfield–Bloomington Credit Union",
+    "short_name": "RBCU",
+    "source": "https://www.ffiec.gov/npw/Institution/Profile/208990?dt=20201101",
+    "source:start_date": "https://www.mymncu.org/about/",
+    "start_date": "1991"
+  }
+},
+{
+  "type": "node",
+  "id": 2104144514,
+  "lat": 44.8850386,
+  "lon": -93.2787219,
+  "tags": {
+    "amenity": "cinema",
+    "end_date": "1967",
+    "name": "Richfield Theater",
+    "source": "http://cms9files.revize.com/richfieldmn/Document_Center/Agendas%20&%20Minutes/City%20Council/2018/Complete%20Agenda/07242018CompleteAgenda.pdf#page=36",
+    "start_date": "1947-10-15",
+    "wikidata": "Q42816522"
+  }
+},
+{
+  "type": "node",
+  "id": 2104144810,
+  "lat": 44.8736290,
+  "lon": -93.2855065,
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "7145",
+    "addr:postcode": "55423",
+    "addr:state": "MN",
+    "addr:street": "Harriet Avenue South",
+    "amenity": "bank",
+    "bank": "credit_union",
+    "branch": "77th Street",
+    "end_date": "1991",
+    "name": "Richfield Credit Union",
+    "short_name": "RBCU",
+    "source": "https://www.newspapers.com/article/star-tribune/131216609/",
+    "source:start_date": "https://www.mymncu.org/June%20RBCU%20Adventure%20Club%20Newsletter%20Issue%203-1.pdf#page=7",
+    "start_date": "1989"
+  }
+},
+{
+  "type": "node",
+  "id": 2104144811,
+  "lat": 44.8758378,
+  "lon": -93.2538708,
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "7011",
+    "addr:state": "MN",
+    "addr:street": "15th Avenue South",
+    "amenity": "bank",
+    "bank": "credit_union",
+    "branch": "77th Street",
+    "end_date": "1989",
+    "name": "Richfield Schools Credit Union",
+    "short_name": "RBCU",
+    "source": "https://www.mymncu.org/June%20RBCU%20Adventure%20Club%20Newsletter%20Issue%203-1.pdf#page=7",
+    "start_date": "1964"
+  }
+},
+{
+  "type": "node",
+  "id": 2104144812,
+  "lat": 44.8787161,
+  "lon": -93.2804115,
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "6833",
+    "addr:state": "MN",
+    "addr:street": "Wentworth Avenue South",
+    "amenity": "bank",
+    "bank": "credit_union",
+    "branch": "77th Street",
+    "end_date": "1964",
+    "name": "Richfield School Employees Credit Union",
+    "short_name": "RBCU",
+    "source": "https://www.mymncu.org/June%20RBCU%20Adventure%20Club%20Newsletter%20Issue%203-1.pdf#page=7",
+    "source:start_date": "https://www.mymncu.org/about/",
+    "start_date": "1957-03-27"
+  }
+},
+{
+  "type": "node",
+  "id": 2104156146,
+  "lat": 42.3306328,
+  "lon": -83.0415128,
+  "tags": {
+    "addr:city": "Detroit",
+    "addr:housenumber": "333",
+    "addr:postcode": "48226",
+    "addr:state": "MI",
+    "addr:street": "Jefferson Avenue East",
+    "end_date": "1996-03-31",
+    "name": "Omni Hotel Detroit Downtown",
+    "start_date": "1985-10-20",
+    "tourism": "hotel"
+  }
+},
+{
+  "type": "node",
+  "id": 2104166339,
+  "lat": 44.8838255,
+  "lon": -93.2461751,
+  "tags": {
+    "amenity": "place_of_worship",
+    "denomination": "evangelical_free_church_of_america",
+    "denomination:wikidata": "Q5415680",
+    "end_date": "1997-09-07",
+    "name": "Richfield Evangelical Free Church",
+    "religion": "christian",
+    "source": "https://www.newspapers.com/article/star-tribune/131374934/",
+    "start_date": "1945"
+  }
+},
+{
+  "type": "node",
+  "id": 2123465975,
+  "lat": 42.8532640,
+  "lon": -74.9856053,
+  "tags": {
+    "name": "Richfield Springs",
+    "place": "town",
+    "start_date": "1800"
+  }
+},
+{
+  "type": "node",
+  "id": 2123466018,
+  "lat": 42.8576083,
+  "lon": -75.0544042,
+  "tags": {
+    "name": "Richfield",
+    "place": "village",
+    "start_date": "1800"
+  }
+},
+{
+  "type": "node",
+  "id": 2143550357,
+  "lat": 50.7117002,
+  "lon": 3.1662847,
+  "tags": {
+    "end_date": "1994",
+    "end_date:fixme": "Transpole",
+    "highway": "bus_stop",
+    "name": "Omnibus",
+    "source": "Guide indicateur E. L. R. T. Plan du réseau - Sectionnements",
+    "source:url": "https://archive.org/details/202512023",
+    "start_date": "1953-05-02"
+  }
+},
+{
+  "type": "node",
+  "id": 2143550358,
+  "lat": 50.7118208,
+  "lon": 3.1660889,
+  "tags": {
+    "end_date": "1994",
+    "end_date:fixme": "Transpole",
+    "highway": "bus_stop",
+    "name": "Omnibus",
+    "source": "Guide indicateur E. L. R. T. Plan du réseau - Sectionnements",
+    "source:url": "https://archive.org/details/202512023",
+    "start_date": "1953-05-02"
+  }
+},
+{
+  "type": "node",
+  "id": 2149947124,
+  "lat": 41.1077752,
+  "lon": -96.0747007,
+  "tags": {
+    "end_date": "1998",
+    "end_date:source": "United States Post Office",
+    "name": "Richfield",
+    "place": "hamlet",
+    "source:name": "USGS Topographic Maps",
+    "start_date": "1890",
+    "start_date:source": "United States Post Office",
+    "wikidata": "Q5680023",
+    "wikipedia": "en:Richfield, Nebraska"
+  }
+},
+{
+  "type": "node",
+  "id": 2152495624,
+  "lat": 51.8858399,
+  "lon": -8.3948539,
+  "tags": {
+    "amenity": "cinema",
+    "brand": "Omniplex Cinemas",
+    "brand:wikidata": "Q17101050",
+    "name": "Omniplex",
+    "screen": "13",
+    "start_date": "2005-03"
+  }
+},
+{
+  "type": "node",
+  "id": 2154903099,
+  "lat": -31.9454510,
+  "lon": 115.8409570,
+  "tags": {
+    "addr:housenumber": "1010",
+    "addr:postcode": "6005",
+    "addr:state": "WA",
+    "addr:street": "Wellington Street",
+    "addr:suburb": "West Perth",
+    "addr:unit": "2",
+    "name": "Omnia Global",
+    "office": "it",
+    "source:url": "https://www.omniaglobal.com.au/contact",
+    "start_date": "2026-06"
+  }
+},
+{
+  "type": "node",
+  "id": 2155117105,
+  "lat": 38.7722745,
+  "lon": -112.0847753,
+  "tags": {
+    "name": "Richfield",
+    "place": "city",
+    "source": "USGS topographic map",
+    "start_date": "1864",
+    "start_date:edtf": "1864/1867",
+    "start_date:source": "https://en.wikipedia.org/wiki/Richfield,_Utah",
+    "wikidata": "Q483319",
+    "wikipedia": "en:Richfield, Utah"
+  }
+},
+{
+  "type": "node",
+  "id": 2167156074,
+  "lat": 50.4235690,
+  "lon": 5.5305966,
+  "tags": {
+    "license": "CC-BY-4.0",
+    "name": "Hall Omnisports de Hamoir",
+    "place": "locality",
+    "ref:picc": "20741",
+    "source": "Service public de Wallonie (SPW) - Projet Informatique de Cartographie Continue (PICC) (2026-05-02)",
+    "source:date": "20210131150208",
+    "source:url": "https://geodata.wallonie.be/id/b795de68-726c-4bdf-a62a-a42686aa5b6f",
+    "start_date": "2026",
+    "start_date:fixme": "Arbitrary on import date."
+  }
+},
+{
+  "type": "node",
+  "id": 2167156815,
+  "lat": 50.6104332,
+  "lon": 5.5858425,
+  "tags": {
+    "license": "CC-BY-4.0",
+    "name": "Hall Omnisport d'Angleur",
+    "place": "locality",
+    "ref:picc": "8931",
+    "source": "Service public de Wallonie (SPW) - Projet Informatique de Cartographie Continue (PICC) (2026-05-02)",
+    "source:date": "20210109174543",
+    "source:url": "https://geodata.wallonie.be/id/b795de68-726c-4bdf-a62a-a42686aa5b6f",
+    "start_date": "2026",
+    "start_date:fixme": "Arbitrary on import date."
+  }
+},
+{
+  "type": "node",
+  "id": 2167158332,
+  "lat": 50.6236875,
+  "lon": 5.6542492,
+  "tags": {
+    "license": "CC-BY-4.0",
+    "name": "Centre Omnisport Communal",
+    "place": "locality",
+    "ref:picc": "33235",
+    "source": "Service public de Wallonie (SPW) - Projet Informatique de Cartographie Continue (PICC) (2026-05-02)",
+    "source:date": "20210131043334",
+    "source:url": "https://geodata.wallonie.be/id/b795de68-726c-4bdf-a62a-a42686aa5b6f",
+    "start_date": "2026",
+    "start_date:fixme": "Arbitrary on import date."
+  }
+},
+{
+  "type": "node",
+  "id": 2167158602,
+  "lat": 50.6389890,
+  "lon": 5.6039424,
+  "tags": {
+    "license": "CC-BY-4.0",
+    "name": "Hall Omnisport de Bressoux",
+    "place": "locality",
+    "ref:picc": "44847",
+    "source": "Service public de Wallonie (SPW) - Projet Informatique de Cartographie Continue (PICC) (2026-05-02)",
+    "source:date": "20210110101336",
+    "source:url": "https://geodata.wallonie.be/id/b795de68-726c-4bdf-a62a-a42686aa5b6f",
+    "start_date": "2026",
+    "start_date:fixme": "Arbitrary on import date."
+  }
+},
+{
+  "type": "node",
+  "id": 2167183840,
+  "lat": 50.4548153,
+  "lon": 4.9580456,
+  "tags": {
+    "license": "CC-BY-4.0",
+    "name": "Hall Omnisports de Loyers",
+    "place": "locality",
+    "ref:picc": "3162",
+    "source": "Service public de Wallonie (SPW) - Projet Informatique de Cartographie Continue (PICC) (2026-05-02)",
+    "source:date": "20210110142130",
+    "source:url": "https://geodata.wallonie.be/id/b795de68-726c-4bdf-a62a-a42686aa5b6f",
+    "start_date": "2026",
+    "start_date:fixme": "Arbitrary on import date."
+  }
+},
+{
+  "type": "way",
+  "id": 198100738,
+  "bounds": {
+    "minlat": 40.7663005,
+    "minlon": -119.2298150,
+    "maxlat": 40.7665646,
+    "maxlon": -119.2293108
+  },
+  "nodes": [
+    2082824273,
+    2082824205,
+    2082824153,
+    2082824192,
+    2082824229,
+    2082824273
+  ],
+  "geometry": [
+    { "lat": 40.7665646, "lon": -119.2297426 },
+    { "lat": 40.7664244, "lon": -119.2293108 },
+    { "lat": 40.7663005, "lon": -119.2293724 },
+    { "lat": 40.7664021, "lon": -119.2298150 },
+    { "lat": 40.7664854, "lon": -119.2297801 },
+    { "lat": 40.7665646, "lon": -119.2297426 }
+  ],
+  "tags": {
+    "end_date": "2009-09-07",
+    "name": "Nowhere Omnibus Depot",
+    "start_date": "2009-08-31",
+    "tourism": "camp_site"
+  }
+},
+{
+  "type": "way",
+  "id": 198122135,
+  "bounds": {
+    "minlat": 40.7303660,
+    "minlon": -73.9780620,
+    "maxlat": 40.7309310,
+    "maxlon": -73.9775490
+  },
+  "nodes": [
+    2082949742,
+    2082949743,
+    2082949744,
+    2082949745,
+    2082949742
+  ],
+  "geometry": [
+    { "lat": 40.7304350, "lon": -73.9780620 },
+    { "lat": 40.7309310, "lon": -73.9777080 },
+    { "lat": 40.7308640, "lon": -73.9775490 },
+    { "lat": 40.7303660, "lon": -73.9778980 },
+    { "lat": 40.7304350, "lon": -73.9780620 }
+  ],
+  "tags": {
+    "addr:city": "New York",
+    "addr:country": "US",
+    "addr:street": "East 16th Street",
+    "bkln:integer": "51404461",
+    "building": "yes",
+    "end_date": "1946",
+    "fixme": "start_date, end_date - both added for rendering....",
+    "name": "Omnibus Stables",
+    "nypl:layer": "861",
+    "nypl:year": "1854",
+    "start_date": "1849"
+  }
+},
+{
+  "type": "way",
+  "id": 198141592,
+  "bounds": {
+    "minlat": 40.7137920,
+    "minlon": -73.9818890,
+    "maxlat": 40.7140710,
+    "maxlon": -73.9816800
+  },
+  "nodes": [
+    2083055330,
+    2083055331,
+    2083055332,
+    2083055333,
+    2083055330
+  ],
+  "geometry": [
+    { "lat": 40.7140540, "lon": -73.9818890 },
+    { "lat": 40.7137920, "lon": -73.9818570 },
+    { "lat": 40.7138100, "lon": -73.9816800 },
+    { "lat": 40.7140710, "lon": -73.9817040 },
+    { "lat": 40.7140540, "lon": -73.9818890 }
+  ],
+  "tags": {
+    "addr:city": "New York",
+    "addr:country": "US",
+    "addr:housenumber": "320-322",
+    "addr:street": "Henry Street",
+    "as_of_date": "1854",
+    "bkln:integer": "51448241",
+    "building": "yes",
+    "end_date": "1920-02-29",
+    "fixme": "start_date, end_date - both added for rendering....",
+    "name": "Tyson's Omni bus stables",
+    "nypl:layer": "861",
+    "nypl:year": "1854",
+    "start_date": "1809",
+    "upload": "2"
+  }
+},
+{
+  "type": "way",
+  "id": 198141593,
+  "bounds": {
+    "minlat": 40.7137840,
+    "minlon": -73.9819750,
+    "maxlat": 40.7140540,
+    "maxlon": -73.9818570
+  },
+  "nodes": [
+    2083055335,
+    2083055336,
+    2083055337,
+    2083055338,
+    2083055335
+  ],
+  "geometry": [
+    { "lat": 40.7140460, "lon": -73.9819750 },
+    { "lat": 40.7140540, "lon": -73.9818890 },
+    { "lat": 40.7137920, "lon": -73.9818570 },
+    { "lat": 40.7137840, "lon": -73.9819480 },
+    { "lat": 40.7140460, "lon": -73.9819750 }
+  ],
+  "tags": {
+    "addr:city": "New York",
+    "addr:country": "US",
+    "addr:housenumber": "318",
+    "addr:street": "Henry Street",
+    "as_of_date": "1854",
+    "bkln:integer": "51448243",
+    "building": "yes",
+    "end_date": "1920-02-29",
+    "fixme": "start_date, end_date - both added for rendering....",
+    "name": "Tyson's Omni bus Stables",
+    "nypl:layer": "861",
+    "nypl:year": "1854",
+    "start_date": "1809",
+    "upload": "2"
+  }
+},
+{
+  "type": "way",
+  "id": 198584362,
+  "bounds": {
+    "minlat": 50.1113165,
+    "minlon": 8.6726738,
+    "maxlat": 50.1117958,
+    "maxlon": 8.6733982
+  },
+  "nodes": [
+    2091459885,
+    2091459886,
+    2091459887,
+    2091459888,
+    2091459885
+  ],
+  "geometry": [
+    { "lat": 50.1113165, "lon": 8.6729617 },
+    { "lat": 50.1114802, "lon": 8.6733982 },
+    { "lat": 50.1117958, "lon": 8.6731104 },
+    { "lat": 50.1116321, "lon": 8.6726738 },
+    { "lat": 50.1113165, "lon": 8.6729617 }
+  ],
+  "tags": {
+    "addr:city": "Frankfurt am Main",
+    "addr:housenumber": "16-18",
+    "addr:street": "Große Gallusstraße",
+    "building": "yes",
+    "building:levels": "45",
+    "height": "189",
+    "name": "Omniturm",
+    "start_date": "2019",
+    "wikidata": "Q15107362",
+    "wikipedia": "de:Omniturm"
+  }
+},
+{
+  "type": "way",
+  "id": 198790525,
+  "bounds": {
+    "minlat": 14.5990799,
+    "minlon": 120.9689652,
+    "maxlat": 14.5995379,
+    "maxlon": 120.9693421
+  },
+  "nodes": [
+    2095871428,
+    2095871429,
+    2095871430,
+    2095871431,
+    2095871432,
+    2095871433,
+    2095871434,
+    2095871435,
+    2095871436,
+    2095871437,
+    2095871438,
+    2095871439,
+    2095871440,
+    2095871428
+  ],
+  "geometry": [
+    { "lat": 14.5991342, "lon": 120.9690235 },
+    { "lat": 14.5992127, "lon": 120.9691466 },
+    { "lat": 14.5994320, "lon": 120.9689652 },
+    { "lat": 14.5994726, "lon": 120.9690219 },
+    { "lat": 14.5995010, "lon": 120.9690017 },
+    { "lat": 14.5995137, "lon": 120.9690197 },
+    { "lat": 14.5994942, "lon": 120.9690344 },
+    { "lat": 14.5995379, "lon": 120.9690960 },
+    { "lat": 14.5995137, "lon": 120.9691156 },
+    { "lat": 14.5995216, "lon": 120.9691259 },
+    { "lat": 14.5992465, "lon": 120.9693421 },
+    { "lat": 14.5990799, "lon": 120.9690938 },
+    { "lat": 14.5990862, "lon": 120.9690627 },
+    { "lat": 14.5991342, "lon": 120.9690235 }
+  ],
+  "tags": {
+    "addr:city": "Manila",
+    "building": "yes",
+    "building:levels": "18",
+    "name": "The Richfield Tower",
+    "source": "https://www.emporis.com/buildings/map#c=14.599277,120.969158&z=18&b=1337523&t=show",
+    "start_date": "2013"
+  }
+},
+{
+  "type": "way",
+  "id": 199618532,
+  "bounds": {
+    "minlat": 44.8849573,
+    "minlon": -93.2790640,
+    "maxlat": 44.8851200,
+    "maxlon": -93.2783798
+  },
+  "nodes": [
+    2104144505,
+    2104144506,
+    2104144507,
+    2104144510,
+    2104144511,
+    2104144512,
+    2104144505
+  ],
+  "geometry": [
+    { "lat": 44.8851185, "lon": -93.2790640 },
+    { "lat": 44.8849573, "lon": -93.2790634 },
+    { "lat": 44.8849577, "lon": -93.2788604 },
+    { "lat": 44.8849580, "lon": -93.2787137 },
+    { "lat": 44.8849587, "lon": -93.2783798 },
+    { "lat": 44.8851200, "lon": -93.2783804 },
+    { "lat": 44.8851185, "lon": -93.2790640 }
+  ],
+  "tags": {
+    "building": "theatre",
+    "end_date": "1967",
+    "name": "Richfield Theater",
+    "source": "http://cms9files.revize.com/richfieldmn/Document_Center/Agendas%20&%20Minutes/City%20Council/2018/Complete%20Agenda/07242018CompleteAgenda.pdf#page=36",
+    "start_date": "1947-10-15"
+  }
+},
+{
+  "type": "way",
+  "id": 199620673,
+  "bounds": {
+    "minlat": 44.8837537,
+    "minlon": -93.2462885,
+    "maxlat": 44.8839181,
+    "maxlon": -93.2460593
+  },
+  "nodes": [
+    2104166335,
+    2104166336,
+    2104166337,
+    2104166338,
+    2104166335
+  ],
+  "geometry": [
+    { "lat": 44.8839181, "lon": -93.2462845 },
+    { "lat": 44.8837566, "lon": -93.2462885 },
+    { "lat": 44.8837537, "lon": -93.2460633 },
+    { "lat": 44.8839153, "lon": -93.2460593 },
+    { "lat": 44.8839181, "lon": -93.2462845 }
+  ],
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "1856",
+    "addr:state": "MN",
+    "addr:street": "East 66th Street",
+    "building": "church",
+    "building:levels": "0",
+    "building:levels:underground": "1",
+    "denomination": "evangelical_free_church_of_america",
+    "denomination:wikidata": "Q5415680",
+    "end_date": "1957",
+    "fixme": "Approximate geometry",
+    "name": "Richfield Evangelical Free Church",
+    "religion": "christian",
+    "source": "https://www.newspapers.com/article/star-tribune/131374934/",
+    "start_date": "1945"
+  }
+},
+{
+  "type": "way",
+  "id": 199620674,
+  "bounds": {
+    "minlat": 44.8837537,
+    "minlon": -93.2462885,
+    "maxlat": 44.8839181,
+    "maxlon": -93.2460593
+  },
+  "nodes": [
+    2104166335,
+    2104166336,
+    2104166337,
+    2104166338,
+    2104166335
+  ],
+  "geometry": [
+    { "lat": 44.8839181, "lon": -93.2462845 },
+    { "lat": 44.8837566, "lon": -93.2462885 },
+    { "lat": 44.8837537, "lon": -93.2460633 },
+    { "lat": 44.8839153, "lon": -93.2460593 },
+    { "lat": 44.8839181, "lon": -93.2462845 }
+  ],
+  "tags": {
+    "addr:city": "Richfield",
+    "addr:housenumber": "1856",
+    "addr:state": "MN",
+    "addr:street": "East 66th Street",
+    "building": "church",
+    "building:levels": "1",
+    "building:levels:underground": "1",
+    "denomination": "evangelical_free_church_of_america",
+    "denomination:wikidata": "Q5415680",
+    "end_date": "1997-12-01",
+    "fixme": "Approximate geometry",
+    "name": "Richfield Evangelical Free Church",
+    "religion": "christian",
+    "source:end_date": "https://www.newspapers.com/article/star-tribune/131374655/",
+    "source:start_date": "https://www.newspapers.com/article/star-tribune/131374934/",
+    "start_date": "1957"
+  }
+},
+{
+  "type": "way",
+  "id": 199784496,
+  "bounds": {
+    "minlat": 42.6446400,
+    "minlon": -83.2561974,
+    "maxlat": 42.6468934,
+    "maxlon": -83.2531364
+  },
+  "nodes": [
+    2108245751,
+    2108245752,
+    2108245753,
+    2108245754,
+    2108245755,
+    2108245756,
+    2108245757,
+    2108245758,
+    2108245777,
+    2108245759,
+    2108245772,
+    2108245771,
+    2108245742,
+    2108245743,
+    2108245744,
+    2108245745,
+    2108245746,
+    2108245747,
+    2108245748,
+    2108245749,
+    2108245778,
+    2108245750,
+    2108245770,
+    2108245769,
+    2108245733,
+    2108245741,
+    2108245734,
+    2108245739,
+    2108245735,
+    2108245740,
+    2108245736,
+    2108245737,
+    2108245779,
+    2108245738,
+    2108245776,
+    2108245775,
+    2108245760,
+    2108245761,
+    2108245762,
+    2108245763,
+    2108245764,
+    2108245765,
+    2108245766,
+    2108245767,
+    2108245780,
+    2108245768,
+    2108245774,
+    2108245773,
+    2108245751
+  ],
+  "geometry": [
+    { "lat": 42.6468222, "lon": -83.2548647 },
+    { "lat": 42.6468439, "lon": -83.2548617 },
+    { "lat": 42.6468647, "lon": -83.2548674 },
+    { "lat": 42.6468791, "lon": -83.2548845 },
+    { "lat": 42.6468899, "lon": -83.2549051 },
+    { "lat": 42.6468934, "lon": -83.2549335 },
+    { "lat": 42.6468891, "lon": -83.2549665 },
+    { "lat": 42.6468717, "lon": -83.2549909 },
+    { "lat": 42.6468521, "lon": -83.2550058 },
+    { "lat": 42.6468338, "lon": -83.2550082 },
+    { "lat": 42.6468521, "lon": -83.2552448 },
+    { "lat": 42.6461245, "lon": -83.2561614 },
+    { "lat": 42.6459339, "lon": -83.2561235 },
+    { "lat": 42.6459301, "lon": -83.2561498 },
+    { "lat": 42.6459202, "lon": -83.2561752 },
+    { "lat": 42.6459041, "lon": -83.2561892 },
+    { "lat": 42.6458865, "lon": -83.2561974 },
+    { "lat": 42.6458655, "lon": -83.2561940 },
+    { "lat": 42.6458434, "lon": -83.2561790 },
+    { "lat": 42.6458311, "lon": -83.2561494 },
+    { "lat": 42.6458268, "lon": -83.2561206 },
+    { "lat": 42.6458293, "lon": -83.2560970 },
+    { "lat": 42.6456223, "lon": -83.2560490 },
+    { "lat": 42.6447311, "lon": -83.2547597 },
+    { "lat": 42.6447091, "lon": -83.2544703 },
+    { "lat": 42.6446891, "lon": -83.2544731 },
+    { "lat": 42.6446684, "lon": -83.2544672 },
+    { "lat": 42.6446541, "lon": -83.2544501 },
+    { "lat": 42.6446434, "lon": -83.2544293 },
+    { "lat": 42.6446400, "lon": -83.2544009 },
+    { "lat": 42.6446445, "lon": -83.2543679 },
+    { "lat": 42.6446620, "lon": -83.2543437 },
+    { "lat": 42.6446791, "lon": -83.2543310 },
+    { "lat": 42.6447007, "lon": -83.2543279 },
+    { "lat": 42.6446833, "lon": -83.2540981 },
+    { "lat": 42.6454222, "lon": -83.2531779 },
+    { "lat": 42.6455849, "lon": -83.2532119 },
+    { "lat": 42.6455880, "lon": -83.2531850 },
+    { "lat": 42.6455976, "lon": -83.2531593 },
+    { "lat": 42.6456136, "lon": -83.2531450 },
+    { "lat": 42.6456311, "lon": -83.2531364 },
+    { "lat": 42.6456522, "lon": -83.2531394 },
+    { "lat": 42.6456744, "lon": -83.2531539 },
+    { "lat": 42.6456870, "lon": -83.2531833 },
+    { "lat": 42.6456927, "lon": -83.2532146 },
+    { "lat": 42.6456897, "lon": -83.2532433 },
+    { "lat": 42.6459119, "lon": -83.2532882 },
+    { "lat": 42.6467998, "lon": -83.2545700 },
+    { "lat": 42.6468222, "lon": -83.2548647 }
+  ],
+  "tags": {
+    "building": "stadium",
+    "end_date": "2009-11-22",
+    "name": "Pontiac Silverdome",
+    "start_date": "1976-08-28"
+  }
+},
+{
+  "type": "way",
+  "id": 199784497,
+  "bounds": {
+    "minlat": 42.6446400,
+    "minlon": -83.2561974,
+    "maxlat": 42.6468934,
+    "maxlon": -83.2531364
+  },
+  "nodes": [
+    2108245751,
+    2108245752,
+    2108245753,
+    2108245754,
+    2108245755,
+    2108245756,
+    2108245757,
+    2108245758,
+    2108245777,
+    2108245759,
+    2108245772,
+    2108245771,
+    2108245742,
+    2108245743,
+    2108245744,
+    2108245745,
+    2108245746,
+    2108245747,
+    2108245748,
+    2108245749,
+    2108245778,
+    2108245750,
+    2108245770,
+    2108245769,
+    2108245733,
+    2108245741,
+    2108245734,
+    2108245739,
+    2108245735,
+    2108245740,
+    2108245736,
+    2108245737,
+    2108245779,
+    2108245738,
+    2108245776,
+    2108245775,
+    2108245760,
+    2108245761,
+    2108245762,
+    2108245763,
+    2108245764,
+    2108245765,
+    2108245766,
+    2108245767,
+    2108245780,
+    2108245768,
+    2108245774,
+    2108245773,
+    2108245751
+  ],
+  "geometry": [
+    { "lat": 42.6468222, "lon": -83.2548647 },
+    { "lat": 42.6468439, "lon": -83.2548617 },
+    { "lat": 42.6468647, "lon": -83.2548674 },
+    { "lat": 42.6468791, "lon": -83.2548845 },
+    { "lat": 42.6468899, "lon": -83.2549051 },
+    { "lat": 42.6468934, "lon": -83.2549335 },
+    { "lat": 42.6468891, "lon": -83.2549665 },
+    { "lat": 42.6468717, "lon": -83.2549909 },
+    { "lat": 42.6468521, "lon": -83.2550058 },
+    { "lat": 42.6468338, "lon": -83.2550082 },
+    { "lat": 42.6468521, "lon": -83.2552448 },
+    { "lat": 42.6461245, "lon": -83.2561614 },
+    { "lat": 42.6459339, "lon": -83.2561235 },
+    { "lat": 42.6459301, "lon": -83.2561498 },
+    { "lat": 42.6459202, "lon": -83.2561752 },
+    { "lat": 42.6459041, "lon": -83.2561892 },
+    { "lat": 42.6458865, "lon": -83.2561974 },
+    { "lat": 42.6458655, "lon": -83.2561940 },
+    { "lat": 42.6458434, "lon": -83.2561790 },
+    { "lat": 42.6458311, "lon": -83.2561494 },
+    { "lat": 42.6458268, "lon": -83.2561206 },
+    { "lat": 42.6458293, "lon": -83.2560970 },
+    { "lat": 42.6456223, "lon": -83.2560490 },
+    { "lat": 42.6447311, "lon": -83.2547597 },
+    { "lat": 42.6447091, "lon": -83.2544703 },
+    { "lat": 42.6446891, "lon": -83.2544731 },
+    { "lat": 42.6446684, "lon": -83.2544672 },
+    { "lat": 42.6446541, "lon": -83.2544501 },
+    { "lat": 42.6446434, "lon": -83.2544293 },
+    { "lat": 42.6446400, "lon": -83.2544009 },
+    { "lat": 42.6446445, "lon": -83.2543679 },
+    { "lat": 42.6446620, "lon": -83.2543437 },
+    { "lat": 42.6446791, "lon": -83.2543310 },
+    { "lat": 42.6447007, "lon": -83.2543279 },
+    { "lat": 42.6446833, "lon": -83.2540981 },
+    { "lat": 42.6454222, "lon": -83.2531779 },
+    { "lat": 42.6455849, "lon": -83.2532119 },
+    { "lat": 42.6455880, "lon": -83.2531850 },
+    { "lat": 42.6455976, "lon": -83.2531593 },
+    { "lat": 42.6456136, "lon": -83.2531450 },
+    { "lat": 42.6456311, "lon": -83.2531364 },
+    { "lat": 42.6456522, "lon": -83.2531394 },
+    { "lat": 42.6456744, "lon": -83.2531539 },
+    { "lat": 42.6456870, "lon": -83.2531833 },
+    { "lat": 42.6456927, "lon": -83.2532146 },
+    { "lat": 42.6456897, "lon": -83.2532433 },
+    { "lat": 42.6459119, "lon": -83.2532882 },
+    { "lat": 42.6467998, "lon": -83.2545700 },
+    { "lat": 42.6468222, "lon": -83.2548647 }
+  ],
+  "tags": {
+    "building": "stadium",
+    "end_date": "2018-03",
+    "name": "The Silverdome",
+    "start_date": "2009-11-23"
+  }
+},
+{
+  "type": "way",
+  "id": 199784912,
+  "bounds": {
+    "minlat": 42.6963019,
+    "minlon": -83.2466756,
+    "maxlat": 42.6978027,
+    "maxlon": -83.2447193
+  },
+  "nodes": [
+    2108251460,
+    2108251461,
+    2108251462,
+    2108251463,
+    2108251464,
+    2108251465,
+    2108251466,
+    2108251467,
+    2108251468,
+    2108251469,
+    2108251470,
+    2108251471,
+    2108251472,
+    2108251473,
+    2108251474,
+    2108251475,
+    2108251476,
+    2108251477,
+    2108251478,
+    2108251479,
+    2108251480,
+    2108251481,
+    2108251482,
+    2108251483,
+    2108251484,
+    2108251485,
+    2108251486,
+    2108251487,
+    2108251488,
+    2108251489,
+    2108251490,
+    2108251491,
+    2108251492,
+    2108251493,
+    2108251494,
+    2108251495,
+    2108251496,
+    2108251497,
+    2108251498,
+    2108251499,
+    2108251500,
+    2108251501,
+    2108251502,
+    2108251503,
+    2108251504,
+    2108251505,
+    2108251506,
+    2108251507,
+    2108251508,
+    2108251509,
+    2108251510,
+    2108251511,
+    2108251512,
+    2108251513,
+    2108251514,
+    2108251515,
+    2108251516,
+    2108251517,
+    2108251518,
+    2108251519,
+    2108251520,
+    2108251521,
+    2108251522,
+    2108251523,
+    2108251524,
+    2108251525,
+    2108251526,
+    2108251527,
+    2108251528,
+    2108251529,
+    2108251530,
+    2108251531,
+    2108251532,
+    2108251533,
+    2108251534,
+    2108251460
+  ],
+  "geometry": [
+    { "lat": 42.6977782, "lon": -83.2466756 },
+    { "lat": 42.6971884, "lon": -83.2466683 },
+    { "lat": 42.6972498, "lon": -83.2465617 },
+    { "lat": 42.6972466, "lon": -83.2465429 },
+    { "lat": 42.6971820, "lon": -83.2465631 },
+    { "lat": 42.6971078, "lon": -83.2465833 },
+    { "lat": 42.6970051, "lon": -83.2465775 },
+    { "lat": 42.6969447, "lon": -83.2465689 },
+    { "lat": 42.6968790, "lon": -83.2465472 },
+    { "lat": 42.6968197, "lon": -83.2465213 },
+    { "lat": 42.6967964, "lon": -83.2465074 },
+    { "lat": 42.6967885, "lon": -83.2465367 },
+    { "lat": 42.6968020, "lon": -83.2465378 },
+    { "lat": 42.6968004, "lon": -83.2466247 },
+    { "lat": 42.6966534, "lon": -83.2466219 },
+    { "lat": 42.6966430, "lon": -83.2466525 },
+    { "lat": 42.6965516, "lon": -83.2465957 },
+    { "lat": 42.6965108, "lon": -83.2466042 },
+    { "lat": 42.6964816, "lon": -83.2466418 },
+    { "lat": 42.6964257, "lon": -83.2465637 },
+    { "lat": 42.6963567, "lon": -83.2465637 },
+    { "lat": 42.6963593, "lon": -83.2464691 },
+    { "lat": 42.6963045, "lon": -83.2463895 },
+    { "lat": 42.6963536, "lon": -83.2463263 },
+    { "lat": 42.6963019, "lon": -83.2461699 },
+    { "lat": 42.6963249, "lon": -83.2461550 },
+    { "lat": 42.6963264, "lon": -83.2459482 },
+    { "lat": 42.6963912, "lon": -83.2459496 },
+    { "lat": 42.6963907, "lon": -83.2459688 },
+    { "lat": 42.6964111, "lon": -83.2459595 },
+    { "lat": 42.6963970, "lon": -83.2459005 },
+    { "lat": 42.6963844, "lon": -83.2458259 },
+    { "lat": 42.6963755, "lon": -83.2457392 },
+    { "lat": 42.6963740, "lon": -83.2456205 },
+    { "lat": 42.6963802, "lon": -83.2455139 },
+    { "lat": 42.6963964, "lon": -83.2454080 },
+    { "lat": 42.6964267, "lon": -83.2452943 },
+    { "lat": 42.6964811, "lon": -83.2451535 },
+    { "lat": 42.6965145, "lon": -83.2450853 },
+    { "lat": 42.6965693, "lon": -83.2449957 },
+    { "lat": 42.6966200, "lon": -83.2449318 },
+    { "lat": 42.6966895, "lon": -83.2448657 },
+    { "lat": 42.6967637, "lon": -83.2448088 },
+    { "lat": 42.6968378, "lon": -83.2447669 },
+    { "lat": 42.6969026, "lon": -83.2447406 },
+    { "lat": 42.6969606, "lon": -83.2447242 },
+    { "lat": 42.6969888, "lon": -83.2447193 },
+    { "lat": 42.6970007, "lon": -83.2447382 },
+    { "lat": 42.6970835, "lon": -83.2447295 },
+    { "lat": 42.6971774, "lon": -83.2447366 },
+    { "lat": 42.6972615, "lon": -83.2447576 },
+    { "lat": 42.6973367, "lon": -83.2447925 },
+    { "lat": 42.6974072, "lon": -83.2448422 },
+    { "lat": 42.6974626, "lon": -83.2448927 },
+    { "lat": 42.6975096, "lon": -83.2449410 },
+    { "lat": 42.6975033, "lon": -83.2449488 },
+    { "lat": 42.6975958, "lon": -83.2450789 },
+    { "lat": 42.6976021, "lon": -83.2450753 },
+    { "lat": 42.6976470, "lon": -83.2451621 },
+    { "lat": 42.6976804, "lon": -83.2452466 },
+    { "lat": 42.6977071, "lon": -83.2453369 },
+    { "lat": 42.6977248, "lon": -83.2454279 },
+    { "lat": 42.6977457, "lon": -83.2455459 },
+    { "lat": 42.6977499, "lon": -83.2456262 },
+    { "lat": 42.6977676, "lon": -83.2456255 },
+    { "lat": 42.6977687, "lon": -83.2456169 },
+    { "lat": 42.6977729, "lon": -83.2456169 },
+    { "lat": 42.6977630, "lon": -83.2459271 },
+    { "lat": 42.6977879, "lon": -83.2459083 },
+    { "lat": 42.6977776, "lon": -83.2463320 },
+    { "lat": 42.6977923, "lon": -83.2463619 },
+    { "lat": 42.6978027, "lon": -83.2464109 },
+    { "lat": 42.6978017, "lon": -83.2464671 },
+    { "lat": 42.6977907, "lon": -83.2465104 },
+    { "lat": 42.6977776, "lon": -83.2465410 },
+    { "lat": 42.6977782, "lon": -83.2466756 }
+  ],
+  "tags": {
+    "building": "stadium",
+    "end_date": "2020-07-11",
+    "name": "The Palace of Auburn Hills",
+    "start_date": "1988-08-13",
+    "wikidata": "Q1327633",
+    "wikipedia": "en:The Palace of Auburn Hills"
+  }
+},
+{
+  "type": "way",
+  "id": 200005580,
+  "bounds": {
+    "minlat": 52.5408769,
+    "minlon": 13.3908840,
+    "maxlat": 52.5416665,
+    "maxlon": 13.3918476
+  },
+  "nodes": [
+    2112981889,
+    2112981890,
+    2112981900,
+    2112981899,
+    2112981891,
+    2112981892,
+    2112981893,
+    2112981894,
+    2112981889
+  ],
+  "geometry": [
+    { "lat": 52.5416064, "lon": 13.3908840 },
+    { "lat": 52.5408769, "lon": 13.3914523 },
+    { "lat": 52.5409112, "lon": 13.3915690 },
+    { "lat": 52.5409569, "lon": 13.3917246 },
+    { "lat": 52.5409930, "lon": 13.3918476 },
+    { "lat": 52.5416665, "lon": 13.3913243 },
+    { "lat": 52.5416009, "lon": 13.3910997 },
+    { "lat": 52.5416583, "lon": 13.3910547 },
+    { "lat": 52.5416064, "lon": 13.3908840 }
+  ],
+  "tags": {
+    "building": "yes",
+    "end_date": "1945",
+    "name": "Omnibusdepot",
+    "start_date": "1910"
+  }
+},
+{
+  "type": "way",
+  "id": 200259653,
+  "bounds": {
+    "minlat": 43.0430824,
+    "minlon": -87.9180599,
+    "maxlat": 43.0442878,
+    "maxlon": -87.9162258
+  },
+  "nodes": [
+    2119941840,
+    2119941841,
+    2119941842,
+    2119941843,
+    2119941844,
+    2119941845,
+    2119941846,
+    2119941847,
+    2119941848,
+    2119941849,
+    2119941850,
+    2119941851,
+    2119941852,
+    2119941853,
+    2119941854,
+    2119941855,
+    2119941840
+  ],
+  "geometry": [
+    { "lat": 43.0442878, "lon": -87.9177412 },
+    { "lat": 43.0442763, "lon": -87.9165395 },
+    { "lat": 43.0440857, "lon": -87.9165430 },
+    { "lat": 43.0440337, "lon": -87.9164800 },
+    { "lat": 43.0440286, "lon": -87.9162258 },
+    { "lat": 43.0433144, "lon": -87.9162523 },
+    { "lat": 43.0433192, "lon": -87.9164948 },
+    { "lat": 43.0432721, "lon": -87.9165578 },
+    { "lat": 43.0430824, "lon": -87.9165597 },
+    { "lat": 43.0430891, "lon": -87.9177655 },
+    { "lat": 43.0432809, "lon": -87.9177634 },
+    { "lat": 43.0433299, "lon": -87.9178211 },
+    { "lat": 43.0433309, "lon": -87.9180599 },
+    { "lat": 43.0440455, "lon": -87.9180546 },
+    { "lat": 43.0440444, "lon": -87.9177983 },
+    { "lat": 43.0440954, "lon": -87.9177447 },
+    { "lat": 43.0442878, "lon": -87.9177412 }
+  ],
+  "tags": {
+    "addr:city": "Milwaukee",
+    "addr:housenumber": "1001",
+    "addr:state": "WI",
+    "addr:street": "North Vel R. Phillips Avenue",
+    "building": "stadium",
+    "end_date": "2019-01",
+    "leisure": "stadium",
+    "name": "Bradley Center",
+    "sport": "basketball",
+    "start_date": "1986-10-20",
+    "wikidata": "Q737976",
+    "wikimedia_commons": "Category:BMO Harris Bradley Center",
+    "wikipedia": "en:Bradley Center"
+  }
+},
+{
+  "type": "way",
+  "id": 200693868,
+  "bounds": {
+    "minlat": 35.2045784,
+    "minlon": -80.7957697,
+    "maxlat": 35.2055054,
+    "maxlon": -80.7946361
+  },
+  "nodes": [
+    2126508367,
+    2126508368,
+    2126508369,
+    2126508370,
+    2126508371,
+    2126508372,
+    2126508373,
+    2126508374,
+    2126508375,
+    2126508385,
+    2126591042,
+    2126508376,
+    2126591053,
+    2126508377,
+    2126508378,
+    2126508379,
+    2126508380,
+    2126508381,
+    2126508382,
+    2126508383,
+    2126508384,
+    2126508367
+  ],
+  "geometry": [
+    { "lat": 35.2053763, "lon": -80.7956021 },
+    { "lat": 35.2054617, "lon": -80.7954554 },
+    { "lat": 35.2055054, "lon": -80.7952835 },
+    { "lat": 35.2055032, "lon": -80.7951034 },
+    { "lat": 35.2054552, "lon": -80.7949332 },
+    { "lat": 35.2053663, "lon": -80.7947897 },
+    { "lat": 35.2052453, "lon": -80.7946873 },
+    { "lat": 35.2051042, "lon": -80.7946361 },
+    { "lat": 35.2049571, "lon": -80.7946413 },
+    { "lat": 35.2048187, "lon": -80.7947023 },
+    { "lat": 35.2047184, "lon": -80.7947980 },
+    { "lat": 35.2047027, "lon": -80.7948130 },
+    { "lat": 35.2046412, "lon": -80.7949286 },
+    { "lat": 35.2046151, "lon": -80.7949777 },
+    { "lat": 35.2045784, "lon": -80.7951690 },
+    { "lat": 35.2045968, "lon": -80.7953642 },
+    { "lat": 35.2046683, "lon": -80.7955401 },
+    { "lat": 35.2047843, "lon": -80.7956760 },
+    { "lat": 35.2049310, "lon": -80.7957557 },
+    { "lat": 35.2050912, "lon": -80.7957697 },
+    { "lat": 35.2052457, "lon": -80.7957164 },
+    { "lat": 35.2053763, "lon": -80.7956021 }
+  ],
+  "tags": {
+    "addr:city": "Charlotte",
+    "addr:housenumber": "2700",
+    "addr:state": "NC",
+    "addr:street": "East Independence Boulevard",
+    "building": "stadium",
+    "name": "Charlotte Coliseum",
+    "start_date": "1955-09"
+  }
+},
+{
+  "type": "way",
+  "id": 200699921,
+  "bounds": {
+    "minlat": 35.1854118,
+    "minlon": -80.9138153,
+    "maxlat": 35.1871408,
+    "maxlon": -80.9117000
+  },
+  "nodes": [
+    2126685194,
+    2126685195,
+    2126685177,
+    2126685178,
+    2126685190,
+    2126685191,
+    2126685189,
+    2126685179,
+    2126685188,
+    2126685192,
+    2126685193,
+    2126685187,
+    2126685180,
+    2126685181,
+    2126685182,
+    2126685183,
+    2126685184,
+    2126685185,
+    2126685186,
+    2126685194
+  ],
+  "geometry": [
+    { "lat": 35.1862894, "lon": -80.9138153 },
+    { "lat": 35.1865647, "lon": -80.9137559 },
+    { "lat": 35.1868102, "lon": -80.9135925 },
+    { "lat": 35.1870075, "lon": -80.9133289 },
+    { "lat": 35.1871220, "lon": -80.9130002 },
+    { "lat": 35.1871408, "lon": -80.9126436 },
+    { "lat": 35.1870619, "lon": -80.9122995 },
+    { "lat": 35.1868940, "lon": -80.9120071 },
+    { "lat": 35.1866563, "lon": -80.9117994 },
+    { "lat": 35.1863757, "lon": -80.9117000 },
+    { "lat": 35.1860841, "lon": -80.9117203 },
+    { "lat": 35.1858146, "lon": -80.9118579 },
+    { "lat": 35.1856056, "lon": -80.9120850 },
+    { "lat": 35.1854665, "lon": -80.9123816 },
+    { "lat": 35.1854118, "lon": -80.9127170 },
+    { "lat": 35.1854471, "lon": -80.9130563 },
+    { "lat": 35.1855688, "lon": -80.9133642 },
+    { "lat": 35.1857642, "lon": -80.9136087 },
+    { "lat": 35.1860130, "lon": -80.9137645 },
+    { "lat": 35.1862894, "lon": -80.9138153 }
+  ],
+  "tags": {
+    "building": "stadium",
+    "end_date": "2007-06-03",
+    "name": "Charlotte Coliseum",
+    "start_date": "1988-08-11"
+  }
+},
+{
+  "type": "way",
+  "id": 200827688,
+  "bounds": {
+    "minlat": 27.2875223,
+    "minlon": -81.3665932,
+    "maxlat": 27.2909452,
+    "maxlon": -81.3630236
+  },
+  "nodes": [
+    2129277937,
+    2129277949,
+    2129277938,
+    2129277941,
+    2129277942,
+    2129277943,
+    2129277944,
+    2129277945,
+    2129277946,
+    2129277953,
+    2129277948,
+    2129277947
+  ],
+  "geometry": [
+    { "lat": 27.2909452, "lon": -81.3665932 },
+    { "lat": 27.2895362, "lon": -81.3644528 },
+    { "lat": 27.2886291, "lon": -81.3630748 },
+    { "lat": 27.2885425, "lon": -81.3630397 },
+    { "lat": 27.2883995, "lon": -81.3630290 },
+    { "lat": 27.2877130, "lon": -81.3630236 },
+    { "lat": 27.2876129, "lon": -81.3630665 },
+    { "lat": 27.2875557, "lon": -81.3631416 },
+    { "lat": 27.2875223, "lon": -81.3632757 },
+    { "lat": 27.2875310, "lon": -81.3640002 },
+    { "lat": 27.2875561, "lon": -81.3660703 },
+    { "lat": 27.2875570, "lon": -81.3661523 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Richfield Drive",
+    "oneway": "no",
+    "source": "https://acclaim.hcclerk.org/search/SearchTypeBookPage",
+    "source:name": "Lake Sirena Addn",
+    "start_date": "1925"
+  }
+},
+{
+  "type": "way",
+  "id": 200865878,
+  "bounds": {
+    "minlat": 44.9404520,
+    "minlon": 26.0214509,
+    "maxlat": 44.9410312,
+    "maxlon": 26.0222907
+  },
+  "nodes": [
+    2129944319,
+    2129944320,
+    2129944326,
+    2129944325,
+    2129944323,
+    2129944324,
+    2129944321,
+    2129944322,
+    2129944319
+  ],
+  "geometry": [
+    { "lat": 44.9410312, "lon": 26.0217604 },
+    { "lat": 44.9407619, "lon": 26.0222907 },
+    { "lat": 44.9406735, "lon": 26.0222011 },
+    { "lat": 44.9406409, "lon": 26.0222652 },
+    { "lat": 44.9405615, "lon": 26.0221847 },
+    { "lat": 44.9405895, "lon": 26.0221295 },
+    { "lat": 44.9404520, "lon": 26.0219902 },
+    { "lat": 44.9407259, "lon": 26.0214509 },
+    { "lat": 44.9410312, "lon": 26.0217604 }
+  ],
+  "tags": {
+    "addr:city": "Ploiești",
+    "addr:street": "Bulevardul Ferdinand",
+    "alt_name": "Winmarkt (după 1997)",
+    "building": "commercial",
+    "name": "Omnia",
+    "start_date": "1973"
+  }
+},
+{
+  "type": "way",
+  "id": 200878398,
+  "bounds": {
+    "minlat": 50.5806911,
+    "minlon": 5.4864437,
+    "maxlat": 50.5814176,
+    "maxlon": 5.4874084
+  },
+  "nodes": [
+    2130103404,
+    2130103405,
+    2130103406,
+    2130103407,
+    2130103408,
+    2130103409,
+    2130103410,
+    2130103411,
+    2130103412,
+    2130103413,
+    2130103414,
+    2130103415,
+    2130103416,
+    2130103417,
+    2130103418,
+    2130103419,
+    2130103420,
+    2130103421,
+    2130103422,
+    2130103423,
+    2130103424,
+    2130103425,
+    2130103426,
+    2130103427,
+    2130103428,
+    2130103429,
+    2130103404
+  ],
+  "geometry": [
+    { "lat": 50.5806911, "lon": 5.4866605 },
+    { "lat": 50.5807920, "lon": 5.4866081 },
+    { "lat": 50.5808083, "lon": 5.4866850 },
+    { "lat": 50.5808881, "lon": 5.4866439 },
+    { "lat": 50.5808840, "lon": 5.4866177 },
+    { "lat": 50.5809225, "lon": 5.4865982 },
+    { "lat": 50.5809272, "lon": 5.4866237 },
+    { "lat": 50.5811084, "lon": 5.4865304 },
+    { "lat": 50.5811031, "lon": 5.4865063 },
+    { "lat": 50.5811415, "lon": 5.4864857 },
+    { "lat": 50.5811460, "lon": 5.4865110 },
+    { "lat": 50.5812766, "lon": 5.4864437 },
+    { "lat": 50.5813477, "lon": 5.4867820 },
+    { "lat": 50.5813739, "lon": 5.4867705 },
+    { "lat": 50.5813889, "lon": 5.4868472 },
+    { "lat": 50.5813639, "lon": 5.4868591 },
+    { "lat": 50.5814176, "lon": 5.4871153 },
+    { "lat": 50.5813761, "lon": 5.4871375 },
+    { "lat": 50.5813698, "lon": 5.4871153 },
+    { "lat": 50.5809448, "lon": 5.4873354 },
+    { "lat": 50.5809495, "lon": 5.4873567 },
+    { "lat": 50.5808477, "lon": 5.4874084 },
+    { "lat": 50.5808052, "lon": 5.4872060 },
+    { "lat": 50.5807841, "lon": 5.4872157 },
+    { "lat": 50.5807646, "lon": 5.4871264 },
+    { "lat": 50.5807865, "lon": 5.4871166 },
+    { "lat": 50.5806911, "lon": 5.4866605 }
+  ],
+  "tags": {
+    "addr:housenumber": "47",
+    "addr:street": "Avenue des Puddleurs",
+    "building": "yes",
+    "leisure": "sports_hall",
+    "name": "Hall Omnisport de Seraing",
+    "source": "Année indiquée près de l'ancienne entrée du côté de l'avenue",
+    "start_date": "1970"
+  }
+},
+{
+  "type": "way",
+  "id": 201104411,
+  "bounds": {
+    "minlat": 40.8520070,
+    "minlon": -81.2940539,
+    "maxlat": 40.8532408,
+    "maxlon": -81.2939747
+  },
+  "nodes": [
+    2135545542,
+    2135545541
+  ],
+  "geometry": [
+    { "lat": 40.8520070, "lon": -81.2940539 },
+    { "lat": 40.8532408, "lon": -81.2939747 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Richfield Avenue Northeast",
+    "oneway": "no",
+    "source": "https://starkcountyohio.gov/government/offices/recorder/",
+    "source:name": "Plats 18-81 to 18-84 Bordner Homesites",
+    "start_date": "1926"
+  }
+},
+{
+  "type": "way",
+  "id": 201128684,
+  "bounds": {
+    "minlat": 48.7833243,
+    "minlon": 9.1834888,
+    "maxlat": 48.7851599,
+    "maxlon": 9.1851086
+  },
+  "nodes": [
+    2135961012,
+    2135961013,
+    2135961014,
+    2135961015,
+    2135961016,
+    2135961017,
+    2135961018,
+    2135961019,
+    2135961020,
+    2135961021,
+    2135961022,
+    2135961023,
+    2135961024,
+    2135961025,
+    2135961012
+  ],
+  "geometry": [
+    { "lat": 48.7851599, "lon": 9.1848703 },
+    { "lat": 48.7848069, "lon": 9.1845521 },
+    { "lat": 48.7839037, "lon": 9.1837036 },
+    { "lat": 48.7836278, "lon": 9.1834888 },
+    { "lat": 48.7834539, "lon": 9.1835574 },
+    { "lat": 48.7833789, "lon": 9.1835914 },
+    { "lat": 48.7833243, "lon": 9.1837016 },
+    { "lat": 48.7833469, "lon": 9.1838209 },
+    { "lat": 48.7834295, "lon": 9.1839594 },
+    { "lat": 48.7842029, "lon": 9.1846683 },
+    { "lat": 48.7846864, "lon": 9.1850653 },
+    { "lat": 48.7848625, "lon": 9.1851086 },
+    { "lat": 48.7850019, "lon": 9.1850653 },
+    { "lat": 48.7851322, "lon": 9.1849418 },
+    { "lat": 48.7851599, "lon": 9.1848703 }
+  ],
+  "tags": {
+    "amenity": "parking",
+    "end_date": "2010",
+    "name": "Omnibus Bahnhof (ZOB)",
+    "start_date": "1950"
+  }
+},
+{
+  "type": "way",
+  "id": 201424278,
+  "bounds": {
+    "minlat": 42.9889464,
+    "minlon": -76.1441780,
+    "maxlat": 42.9891146,
+    "maxlon": -76.1385343
+  },
+  "nodes": [
+    2140531474,
+    2140531476,
+    2140531475
+  ],
+  "geometry": [
+    { "lat": 42.9889464, "lon": -76.1441780 },
+    { "lat": 42.9890731, "lon": -76.1399256 },
+    { "lat": 42.9891146, "lon": -76.1385343 }
+  ],
+  "tags": {
+    "highway": "residential",
+    "name": "Richfield Ave"
+  }
+},
+{
+  "type": "way",
+  "id": 201958613,
+  "bounds": {
+    "minlat": 41.2485566,
+    "minlon": -81.5732940,
+    "maxlat": 41.2485592,
+    "maxlon": -81.5724998
+  },
+  "nodes": [
+    2147167777,
+    2147167774
+  ],
+  "geometry": [
+    { "lat": 41.2485566, "lon": -81.5724998 },
+    { "lat": 41.2485592, "lon": -81.5732940 }
+  ],
+  "tags": {
+    "highway": "tertiary",
+    "name": "Richfield Boston Road",
+    "oneway": "no",
+    "source": "https://ibav.summitoh.net/#",
+    "source:name": "Plat 31-26 J C Conger Farm",
+    "start_date": "1923"
+  }
+},
+{
+  "type": "relation",
+  "id": 2747504,
+  "bounds": {
+    "minlat": 44.8630605,
+    "minlon": -93.2751301,
+    "maxlat": 44.8630605,
+    "maxlon": -93.2750672
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 2104143440,
+      "role": "",
+      "lat": 44.8630605,
+      "lon": -93.2751301
+    },
+    {
+      "type": "node",
+      "ref": 2104143441,
+      "role": "",
+      "lat": 44.8630605,
+      "lon": -93.2750672
+    }
+  ],
+  "tags": {
+    "end_date": "1970",
+    "end_date:edtf": "1970~",
+    "name": "Spartan-Atlantic Richfield",
+    "source:start_date": "https://www.newspapers.com/article/the-minneapolis-star-atlantic-mills-rich/131175575/",
+    "start_date": "1959-10-01",
+    "type": "chronology"
+  }
+},
+{
+  "type": "relation",
+  "id": 2747505,
+  "bounds": {
+    "minlat": 44.8629826,
+    "minlon": -93.2757208,
+    "maxlat": 44.8631451,
+    "maxlon": -93.2750637
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 2104143452,
+      "role": "",
+      "lat": 44.8629826,
+      "lon": -93.2750637
+    },
+    {
+      "type": "node",
+      "ref": 2104143478,
+      "role": "",
+      "lat": 44.8631451,
+      "lon": -93.2757208
+    }
+  ],
+  "tags": {
+    "name": "Menards Richfield",
+    "source:start_date": "https://www.newspapers.com/article/star-tribune/131177714/",
+    "start_date": "1993",
+    "type": "chronology"
+  }
+},
+{
+  "type": "relation",
+  "id": 2747506,
+  "bounds": {
+    "minlat": 44.8630253,
+    "minlon": -93.2751308,
+    "maxlat": 44.8630253,
+    "maxlon": -93.2750664
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 2104143453,
+      "role": "",
+      "lat": 44.8630253,
+      "lon": -93.2751308
+    },
+    {
+      "type": "node",
+      "ref": 2104143454,
+      "role": "",
+      "lat": 44.8630253,
+      "lon": -93.2750664
+    }
+  ],
+  "tags": {
+    "end_date": "1992-01",
+    "name": "Best Richfield",
+    "source:start_date": "https://www.newspapers.com/article/star-tribune/131177268/",
+    "start_date": "1970-09-05",
+    "start_date:edtf": "1970-09-03/1970-09-05",
+    "type": "chronology"
+  }
+},
+{
+  "type": "relation",
+  "id": 2747509,
+  "bounds": {
+    "minlat": 44.8621926,
+    "minlon": -93.2752491,
+    "maxlat": 44.8622885,
+    "maxlon": -93.2750840
+  },
+  "members": [
+    {
+      "type": "node",
+      "ref": 2104144533,
+      "role": "",
+      "lat": 44.8622885,
+      "lon": -93.2752491
+    },
+    {
+      "type": "node",
+      "ref": 2104144474,
+      "role": "",
+      "lat": 44.8621926,
+      "lon": -93.2750840
+    }
+  ],
+  "tags": {
+    "name": "Richfield Taco Bell",
+    "source:start_date": "1988 USGS Bloomingdale Quadrangle",
+    "start_date": "1993",
+    "start_date:edtf": "1988/1993",
+    "type": "chronology"
+  }
+},
+{
+  "type": "relation",
+  "id": 2747724,
+  "bounds": {
+    "minlat": 44.8837537,
+    "minlon": -93.2462885,
+    "maxlat": 44.8839181,
+    "maxlon": -93.2460593
+  },
+  "members": [
+    {
+      "type": "way",
+      "ref": 199620673,
+      "role": "",
+      "geometry": [
+         { "lat": 44.8839181, "lon": -93.2462845 },
+         { "lat": 44.8837566, "lon": -93.2462885 },
+         { "lat": 44.8837537, "lon": -93.2460633 },
+         { "lat": 44.8839153, "lon": -93.2460593 },
+         { "lat": 44.8839181, "lon": -93.2462845 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 199620674,
+      "role": "",
+      "geometry": [
+         { "lat": 44.8839181, "lon": -93.2462845 },
+         { "lat": 44.8837566, "lon": -93.2462885 },
+         { "lat": 44.8837537, "lon": -93.2460633 },
+         { "lat": 44.8839153, "lon": -93.2460593 },
+         { "lat": 44.8839181, "lon": -93.2462845 }
+      ]
+    }
+  ],
+  "tags": {
+    "name": "Richfield Evangelical Free Church",
+    "source": "https://www.newspapers.com/article/star-tribune/131374934/",
+    "start_date": "1940",
+    "type": "chronology"
+  }
+},
+{
+  "type": "relation",
+  "id": 2749091,
+  "bounds": {
+    "minlat": 42.6446400,
+    "minlon": -83.2561974,
+    "maxlat": 42.6468934,
+    "maxlon": -83.2531364
+  },
+  "members": [
+    {
+      "type": "way",
+      "ref": 199784494,
+      "role": "",
+      "geometry": [
+         { "lat": 42.6447007, "lon": -83.2543279 },
+         { "lat": 42.6446791, "lon": -83.2543310 },
+         { "lat": 42.6446620, "lon": -83.2543437 },
+         { "lat": 42.6446445, "lon": -83.2543679 },
+         { "lat": 42.6446400, "lon": -83.2544009 },
+         { "lat": 42.6446434, "lon": -83.2544293 },
+         { "lat": 42.6446541, "lon": -83.2544501 },
+         { "lat": 42.6446684, "lon": -83.2544672 },
+         { "lat": 42.6446891, "lon": -83.2544731 },
+         { "lat": 42.6447091, "lon": -83.2544703 },
+         { "lat": 42.6447311, "lon": -83.2547597 },
+         { "lat": 42.6456223, "lon": -83.2560490 },
+         { "lat": 42.6458293, "lon": -83.2560970 },
+         { "lat": 42.6458268, "lon": -83.2561206 },
+         { "lat": 42.6458311, "lon": -83.2561494 },
+         { "lat": 42.6458434, "lon": -83.2561790 },
+         { "lat": 42.6458655, "lon": -83.2561940 },
+         { "lat": 42.6458865, "lon": -83.2561974 },
+         { "lat": 42.6459041, "lon": -83.2561892 },
+         { "lat": 42.6459202, "lon": -83.2561752 },
+         { "lat": 42.6459301, "lon": -83.2561498 },
+         { "lat": 42.6459339, "lon": -83.2561235 },
+         { "lat": 42.6461245, "lon": -83.2561614 },
+         { "lat": 42.6468521, "lon": -83.2552448 },
+         { "lat": 42.6468338, "lon": -83.2550082 },
+         { "lat": 42.6468521, "lon": -83.2550058 },
+         { "lat": 42.6468717, "lon": -83.2549909 },
+         { "lat": 42.6468891, "lon": -83.2549665 },
+         { "lat": 42.6468934, "lon": -83.2549335 },
+         { "lat": 42.6468899, "lon": -83.2549051 },
+         { "lat": 42.6468791, "lon": -83.2548845 },
+         { "lat": 42.6468647, "lon": -83.2548674 },
+         { "lat": 42.6468439, "lon": -83.2548617 },
+         { "lat": 42.6468222, "lon": -83.2548647 },
+         { "lat": 42.6467998, "lon": -83.2545700 },
+         { "lat": 42.6459119, "lon": -83.2532882 },
+         { "lat": 42.6456897, "lon": -83.2532433 },
+         { "lat": 42.6456927, "lon": -83.2532146 },
+         { "lat": 42.6456870, "lon": -83.2531833 },
+         { "lat": 42.6456744, "lon": -83.2531539 },
+         { "lat": 42.6456522, "lon": -83.2531394 },
+         { "lat": 42.6456311, "lon": -83.2531364 },
+         { "lat": 42.6456136, "lon": -83.2531450 },
+         { "lat": 42.6455976, "lon": -83.2531593 },
+         { "lat": 42.6455880, "lon": -83.2531850 },
+         { "lat": 42.6455849, "lon": -83.2532119 },
+         { "lat": 42.6454222, "lon": -83.2531779 },
+         { "lat": 42.6446833, "lon": -83.2540981 },
+         { "lat": 42.6447007, "lon": -83.2543279 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 199784496,
+      "role": "",
+      "geometry": [
+         { "lat": 42.6468222, "lon": -83.2548647 },
+         { "lat": 42.6468439, "lon": -83.2548617 },
+         { "lat": 42.6468647, "lon": -83.2548674 },
+         { "lat": 42.6468791, "lon": -83.2548845 },
+         { "lat": 42.6468899, "lon": -83.2549051 },
+         { "lat": 42.6468934, "lon": -83.2549335 },
+         { "lat": 42.6468891, "lon": -83.2549665 },
+         { "lat": 42.6468717, "lon": -83.2549909 },
+         { "lat": 42.6468521, "lon": -83.2550058 },
+         { "lat": 42.6468338, "lon": -83.2550082 },
+         { "lat": 42.6468521, "lon": -83.2552448 },
+         { "lat": 42.6461245, "lon": -83.2561614 },
+         { "lat": 42.6459339, "lon": -83.2561235 },
+         { "lat": 42.6459301, "lon": -83.2561498 },
+         { "lat": 42.6459202, "lon": -83.2561752 },
+         { "lat": 42.6459041, "lon": -83.2561892 },
+         { "lat": 42.6458865, "lon": -83.2561974 },
+         { "lat": 42.6458655, "lon": -83.2561940 },
+         { "lat": 42.6458434, "lon": -83.2561790 },
+         { "lat": 42.6458311, "lon": -83.2561494 },
+         { "lat": 42.6458268, "lon": -83.2561206 },
+         { "lat": 42.6458293, "lon": -83.2560970 },
+         { "lat": 42.6456223, "lon": -83.2560490 },
+         { "lat": 42.6447311, "lon": -83.2547597 },
+         { "lat": 42.6447091, "lon": -83.2544703 },
+         { "lat": 42.6446891, "lon": -83.2544731 },
+         { "lat": 42.6446684, "lon": -83.2544672 },
+         { "lat": 42.6446541, "lon": -83.2544501 },
+         { "lat": 42.6446434, "lon": -83.2544293 },
+         { "lat": 42.6446400, "lon": -83.2544009 },
+         { "lat": 42.6446445, "lon": -83.2543679 },
+         { "lat": 42.6446620, "lon": -83.2543437 },
+         { "lat": 42.6446791, "lon": -83.2543310 },
+         { "lat": 42.6447007, "lon": -83.2543279 },
+         { "lat": 42.6446833, "lon": -83.2540981 },
+         { "lat": 42.6454222, "lon": -83.2531779 },
+         { "lat": 42.6455849, "lon": -83.2532119 },
+         { "lat": 42.6455880, "lon": -83.2531850 },
+         { "lat": 42.6455976, "lon": -83.2531593 },
+         { "lat": 42.6456136, "lon": -83.2531450 },
+         { "lat": 42.6456311, "lon": -83.2531364 },
+         { "lat": 42.6456522, "lon": -83.2531394 },
+         { "lat": 42.6456744, "lon": -83.2531539 },
+         { "lat": 42.6456870, "lon": -83.2531833 },
+         { "lat": 42.6456927, "lon": -83.2532146 },
+         { "lat": 42.6456897, "lon": -83.2532433 },
+         { "lat": 42.6459119, "lon": -83.2532882 },
+         { "lat": 42.6467998, "lon": -83.2545700 },
+         { "lat": 42.6468222, "lon": -83.2548647 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 199784497,
+      "role": "",
+      "geometry": [
+         { "lat": 42.6468222, "lon": -83.2548647 },
+         { "lat": 42.6468439, "lon": -83.2548617 },
+         { "lat": 42.6468647, "lon": -83.2548674 },
+         { "lat": 42.6468791, "lon": -83.2548845 },
+         { "lat": 42.6468899, "lon": -83.2549051 },
+         { "lat": 42.6468934, "lon": -83.2549335 },
+         { "lat": 42.6468891, "lon": -83.2549665 },
+         { "lat": 42.6468717, "lon": -83.2549909 },
+         { "lat": 42.6468521, "lon": -83.2550058 },
+         { "lat": 42.6468338, "lon": -83.2550082 },
+         { "lat": 42.6468521, "lon": -83.2552448 },
+         { "lat": 42.6461245, "lon": -83.2561614 },
+         { "lat": 42.6459339, "lon": -83.2561235 },
+         { "lat": 42.6459301, "lon": -83.2561498 },
+         { "lat": 42.6459202, "lon": -83.2561752 },
+         { "lat": 42.6459041, "lon": -83.2561892 },
+         { "lat": 42.6458865, "lon": -83.2561974 },
+         { "lat": 42.6458655, "lon": -83.2561940 },
+         { "lat": 42.6458434, "lon": -83.2561790 },
+         { "lat": 42.6458311, "lon": -83.2561494 },
+         { "lat": 42.6458268, "lon": -83.2561206 },
+         { "lat": 42.6458293, "lon": -83.2560970 },
+         { "lat": 42.6456223, "lon": -83.2560490 },
+         { "lat": 42.6447311, "lon": -83.2547597 },
+         { "lat": 42.6447091, "lon": -83.2544703 },
+         { "lat": 42.6446891, "lon": -83.2544731 },
+         { "lat": 42.6446684, "lon": -83.2544672 },
+         { "lat": 42.6446541, "lon": -83.2544501 },
+         { "lat": 42.6446434, "lon": -83.2544293 },
+         { "lat": 42.6446400, "lon": -83.2544009 },
+         { "lat": 42.6446445, "lon": -83.2543679 },
+         { "lat": 42.6446620, "lon": -83.2543437 },
+         { "lat": 42.6446791, "lon": -83.2543310 },
+         { "lat": 42.6447007, "lon": -83.2543279 },
+         { "lat": 42.6446833, "lon": -83.2540981 },
+         { "lat": 42.6454222, "lon": -83.2531779 },
+         { "lat": 42.6455849, "lon": -83.2532119 },
+         { "lat": 42.6455880, "lon": -83.2531850 },
+         { "lat": 42.6455976, "lon": -83.2531593 },
+         { "lat": 42.6456136, "lon": -83.2531450 },
+         { "lat": 42.6456311, "lon": -83.2531364 },
+         { "lat": 42.6456522, "lon": -83.2531394 },
+         { "lat": 42.6456744, "lon": -83.2531539 },
+         { "lat": 42.6456870, "lon": -83.2531833 },
+         { "lat": 42.6456927, "lon": -83.2532146 },
+         { "lat": 42.6456897, "lon": -83.2532433 },
+         { "lat": 42.6459119, "lon": -83.2532882 },
+         { "lat": 42.6467998, "lon": -83.2545700 },
+         { "lat": 42.6468222, "lon": -83.2548647 }
+      ]
+    }
+  ],
+  "tags": {
+    "end_date": "2018-03",
+    "name": "Pontiac Silverdome",
+    "start_date": "1975-08-23",
+    "type": "chronology",
+    "wikidata": "Q211662",
+    "wikipedia": "en:Pontiac Silverdome"
+  }
+},
+{
+  "type": "relation",
+  "id": 2800286,
+  "bounds": {
+    "minlat": 52.5385287,
+    "minlon": 13.3891140,
+    "maxlat": 52.5396070,
+    "maxlon": 13.3914271
+  },
+  "members": [
+    {
+      "type": "way",
+      "ref": 200005582,
+      "role": "outer",
+      "geometry": [
+         { "lat": 52.5396070, "lon": 13.3910392 },
+         { "lat": 52.5394047, "lon": 13.3903283 },
+         { "lat": 52.5389587, "lon": 13.3906283 },
+         { "lat": 52.5391862, "lon": 13.3914271 },
+         { "lat": 52.5396070, "lon": 13.3910392 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 200005583,
+      "role": "outer",
+      "geometry": [
+         { "lat": 52.5388840, "lon": 13.3903964 },
+         { "lat": 52.5390192, "lon": 13.3902901 },
+         { "lat": 52.5387512, "lon": 13.3893500 },
+         { "lat": 52.5386859, "lon": 13.3893936 },
+         { "lat": 52.5386607, "lon": 13.3893054 },
+         { "lat": 52.5386348, "lon": 13.3893235 },
+         { "lat": 52.5385779, "lon": 13.3891140 },
+         { "lat": 52.5385287, "lon": 13.3891553 },
+         { "lat": 52.5388840, "lon": 13.3903964 }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 200005584,
+      "role": "outer",
+      "geometry": [
+         { "lat": 52.5387101, "lon": 13.3892174 },
+         { "lat": 52.5386495, "lon": 13.3892607 },
+         { "lat": 52.5386323, "lon": 13.3891955 },
+         { "lat": 52.5386928, "lon": 13.3891522 },
+         { "lat": 52.5387101, "lon": 13.3892174 }
+      ]
+    }
+  ],
+  "tags": {
+    "building": "yes",
+    "end_date": "1920",
+    "fixme": "start_date, end_date",
+    "name": "Depot der Allgemeinen Berliner Omnibus Aciten Gesellschaft",
+    "start_date": "1910",
+    "type": "multipolygon"
+  }
+}
+
+  ]
+}

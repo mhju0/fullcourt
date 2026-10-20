@@ -9,7 +9,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "ml"))
-from publish_officiating import build, verdict
+from publish_officiating import build, canonical_external_id, load_aliases, verdict
 
 
 class PublisherTests(unittest.TestCase):
@@ -46,11 +46,11 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Incomplete"):
                 build(p)
 
-    def fixture(self, p, season_index=-1):
+    def fixture(self, p, season_index=-1, game_id=None):
         season = json.loads((ROOT / "src/data/officiating.json").read_text())[
             "seasons"
         ][season_index]
-        g = season["games"][0]
+        g = next(g for g in season["games"] if g["id"] == game_id) if game_id else season["games"][0]
         detail = json.loads(
             (
                 ROOT
@@ -114,6 +114,42 @@ class PublisherTests(unittest.TestCase):
             (p / f'{g["id"]}.json').write_text("{}")
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
                 build(p)
+
+    def test_cup_alias_preserves_nba_report_and_content_addressed_detail_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp)
+            g, _, _ = self.fixture(p, season_index=-2, game_id="0022401229")
+            published, details = build(p)
+            game = published["games"][0]
+            self.assertEqual(game["id"], "0022401229")
+            self.assertEqual(game["canonicalExternalId"], "bref-202412140MIL")
+            self.assertEqual((game["date"], game["home"], game["away"]), ("2024-12-14", "MIL", "ATL"))
+            self.assertEqual((game["source"], game["sha256"]), (g["source"], hashlib.sha256((p / "0022401229.json").read_bytes()).hexdigest()))
+            self.assertEqual(list(details), ["0022401229"])
+            self.assertTrue(all(e["id"].startswith("0022401229:") for e in details["0022401229"]["events"]))
+
+    def test_alias_requires_exact_nba_date_and_designated_teams(self):
+        aliases = load_aliases()
+        meta = {"GameId": "0022401229", "GameDate": "2024-12-14T16:30:00",
+                "Home_team_abbr": "MIL", "Away_team_abbr": "ATL",
+                "HomeTeamId": 1610612749, "AwayTeamId": 1610612737}
+        self.assertEqual(canonical_external_id(meta, aliases), "bref-202412140MIL")
+        for field, value in (("GameDate", "2024-12-15"), ("Home_team_abbr", "ATL"),
+                             ("Away_team_abbr", "MIL"), ("HomeTeamId", 1610612737),
+                             ("AwayTeamId", 1610612749)):
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, "alias.*differs"):
+                canonical_external_id(dict(meta, **{field: value}), aliases)
+        self.assertEqual(canonical_external_id({"GameId": "0022400001"}, aliases), "0022400001")
+
+    def test_duplicate_or_malformed_aliases_fail_closed(self):
+        rows = list(load_aliases().values())
+        for changed in (rows + [rows[0]], rows + [dict(rows[0], gameId="0022409999")],
+                        [dict(rows[0], canonicalId="bref-202411030WAS")]):
+            with tempfile.TemporaryDirectory() as temp:
+                p = Path(temp) / "context.json"
+                p.write_text(json.dumps({"historyAliases": changed}))
+                with self.assertRaisesRegex(ValueError, "alias"):
+                    load_aliases(p)
 
     def test_older_snapshot_cannot_replace_published_season(self):
         with tempfile.TemporaryDirectory() as temp:

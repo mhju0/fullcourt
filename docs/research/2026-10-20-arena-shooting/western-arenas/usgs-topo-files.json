@@ -1,0 +1,137 @@
+[
+  {
+    "id": "tnm-den-mcnichols-pdf",
+    "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450339_1965_24000_geo.pdf",
+    "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+    "sourceMetadata": {
+      "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+      "moreInfo": "USGS Historical Quadrangle in GeoPDF.",
+      "sourceId": "5a8a389ae4b00f54eb3e06f9",
+      "sourceName": "ScienceBase",
+      "sourceOriginId": null,
+      "sourceOriginName": "gda",
+      "metaUrl": "https://www.sciencebase.gov/catalog/item/5a8a389ae4b00f54eb3e06f9",
+      "vendorMetaUrl": "https://thor-f5.er.usgs.gov/ngtoc/metadata/waf/maps/historicaltopo/pdf/CO/24000/CO_Fort_Logan_450339_1965_24000_geo.xml",
+      "publicationDate": "1965-01-01",
+      "lastUpdated": "2025-09-18T03:34:23.834-06:00",
+      "dateCreated": "2018-02-18T19:38:18.621-07:00",
+      "sizeInBytes": 10272486,
+      "extent": "7.5 x 7.5 minute",
+      "format": "GeoPDF, GeoTIFF",
+      "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450339_1965_24000_geo.pdf",
+      "downloadURLRaster": null,
+      "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450339_1965_24000_tn.jpg",
+      "downloadLazURL": null,
+      "urls": {
+        "GeoPDF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450339_1965_24000_geo.pdf",
+        "GeoTIFF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/GeoTIFF/CO/CO_Fort%20Logan_450339_1965_24000_geo.tif"
+      },
+      "datasets": [],
+      "boundingBox": {
+        "minX": -105.125,
+        "maxX": -105.0,
+        "minY": 39.625,
+        "maxY": 39.75
+      },
+      "bestFitIndex": 0.0,
+      "body": "USGS Historical Quadrangle in GeoPDF.",
+      "processingUrl": "processingUrl",
+      "modificationInfo": "2025-09-18"
+    },
+    "capturedAt": "2026-10-20T07:18:42.060232+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-den-mcnichols-684b5ec2a31a.pdf",
+    "bodySha256": "684b5ec2a31aa8dc408c1f48d98aa64676151a79f1f8589a2da823ff9074a369",
+    "bytes": 10290137
+  },
+  {
+    "id": "tnm-sas-hemisfair-pdf",
+    "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_geo.pdf",
+    "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1992",
+    "sourceMetadata": {
+      "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1992",
+      "moreInfo": "USGS Historical Quadrangle in GeoPDF.",
+      "sourceId": "5a8a5293e4b00f54eb40df10",
+      "sourceName": "ScienceBase",
+      "sourceOriginId": null,
+      "sourceOriginName": "gda",
+      "metaUrl": "https://www.sciencebase.gov/catalog/item/5a8a5293e4b00f54eb40df10",
+      "vendorMetaUrl": "https://thor-f5.er.usgs.gov/ngtoc/metadata/waf/maps/historicaltopo/pdf/TX/24000/TX_San_Antonio_East_117659_1992_24000_geo.xml",
+      "publicationDate": "1992-01-01",
+      "lastUpdated": "2025-09-18T22:13:03.818-06:00",
+      "dateCreated": "2018-02-18T21:29:07.733-07:00",
+      "sizeInBytes": 20431108,
+      "extent": "7.5 x 7.5 minute",
+      "format": "GeoPDF, GeoTIFF",
+      "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_geo.pdf",
+      "downloadURLRaster": null,
+      "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_tn.jpg",
+      "downloadLazURL": null,
+      "urls": {
+        "GeoPDF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_geo.pdf",
+        "GeoTIFF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/GeoTIFF/TX/TX_San%20Antonio%20East_117659_1992_24000_geo.tif"
+      },
+      "datasets": [],
+      "boundingBox": {
+        "minX": -98.5,
+        "maxX": -98.375,
+        "minY": 29.375,
+        "maxY": 29.5
+      },
+      "bestFitIndex": 0.0,
+      "body": "USGS Historical Quadrangle in GeoPDF.",
+      "processingUrl": "processingUrl",
+      "modificationInfo": "2025-09-18"
+    },
+    "capturedAt": "2026-10-20T07:18:42.060737+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-sas-hemisfair-ad485513f4bc.pdf",
+    "bodySha256": "ad485513f4bc40b47b99811cedb840f4885af39205f58e9e5d33eb05f8badaae",
+    "bytes": 20449770
+  },
+  {
+    "id": "tnm-uta-saltpalace-pdf",
+    "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251650_1963_24000_geo.pdf",
+    "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+    "sourceMetadata": {
+      "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+      "moreInfo": "USGS Historical Quadrangle in GeoPDF.",
+      "sourceId": "5a8a56c0e4b00f54eb413c19",
+      "sourceName": "ScienceBase",
+      "sourceOriginId": null,
+      "sourceOriginName": "gda",
+      "metaUrl": "https://www.sciencebase.gov/catalog/item/5a8a56c0e4b00f54eb413c19",
+      "vendorMetaUrl": "https://thor-f5.er.usgs.gov/ngtoc/metadata/waf/maps/historicaltopo/pdf/UT/24000/UT_Salt_Lake_City_North_251650_1963_24000_geo.xml",
+      "publicationDate": "1963-01-01",
+      "lastUpdated": "2025-09-18T22:31:22.504-06:00",
+      "dateCreated": "2018-02-18T21:46:56.810-07:00",
+      "sizeInBytes": 13117530,
+      "extent": "7.5 x 7.5 minute",
+      "format": "GeoPDF, GeoTIFF",
+      "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251650_1963_24000_geo.pdf",
+      "downloadURLRaster": null,
+      "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251650_1963_24000_tn.jpg",
+      "downloadLazURL": null,
+      "urls": {
+        "GeoPDF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251650_1963_24000_geo.pdf",
+        "GeoTIFF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/GeoTIFF/UT/UT_Salt%20Lake%20City%20North_251650_1963_24000_geo.tif"
+      },
+      "datasets": [],
+      "boundingBox": {
+        "minX": -112.0,
+        "maxX": -111.875,
+        "minY": 40.75,
+        "maxY": 40.875
+      },
+      "bestFitIndex": 0.0,
+      "body": "USGS Historical Quadrangle in GeoPDF.",
+      "processingUrl": "processingUrl",
+      "modificationInfo": "2025-09-18"
+    },
+    "capturedAt": "2026-10-20T07:18:44.089638+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-uta-saltpalace-e4bc0436aaad.pdf",
+    "bodySha256": "e4bc0436aaadc5fd721c225e19efb1792c21be23cc51d48742b41185cc7dc533",
+    "bytes": 13136381
+  }
+]

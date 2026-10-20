@@ -4,6 +4,7 @@ import {
   buildHistoricalBacktest,
   classifyRestAdvantage,
   isCalledSide,
+  summarizeHistoricalEvidenceCoverage,
 } from "@/lib/rest-advantage-evidence";
 
 describe("neutral-site games (D-92)", () => {
@@ -342,5 +343,22 @@ describe("the explorer's gap and side filters (D-102)", () => {
 
   it("keeps the old behaviour when neither is given", () => {
     expect(ids({})).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+});
+
+describe("historical fatigue evidence coverage", () => {
+  it("includes neutral sites in the owner's audited 47,143 population, separate from the venue baseline", () => {
+    const row = { date: "2025-04-13", season: "2024-25", homeScore: 110, awayScore: 100,
+      homeFatigueScore: "2", awayFatigueScore: "6", neutralSite: false };
+    const rows = [
+      ...Array.from({ length: 47_094 }, () => row),
+      ...Array.from({ length: 49 }, () => ({ ...row, date: "2025-04-14", neutralSite: true })),
+    ];
+    expect(summarizeHistoricalEvidenceCoverage(rows)).toEqual({ games: 47_143, latestEvidenceDate: "2025-04-14" });
+    expect(buildHistoricalBacktest(rows).venueBaseline.games).toBe(47_094);
+  });
+
+  it("reports no evidence date for an empty population", () => {
+    expect(summarizeHistoricalEvidenceCoverage([])).toEqual({ games: 0, latestEvidenceDate: null });
   });
 });

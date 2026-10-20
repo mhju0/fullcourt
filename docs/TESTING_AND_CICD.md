@@ -15,8 +15,9 @@ pnpm audit --prod
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
 ```
 
-For ML contracts, use a virtual environment with `psycopg2-binary` installed under the
-`ml/requirements.txt` constraints, then run:
+Both Python contract suites import producers that require `psycopg2-binary`. Install
+`ml/requirements.txt` in the virtual environment before running either discovery command;
+CI installs that same pinned environment before schedule and ML contracts. For ML contracts, run:
 
 ```sh
 python -m unittest discover -s ml/tests -p 'test_*.py' -v
@@ -28,6 +29,13 @@ so advisories do not hide correctness failures. Never change model figures merel
 Vitest covers domain logic, API contracts, caches, data pinning, and source/design conventions.
 See `vitest.config.ts` and the tests themselves for the current inventory. Avoid copying test
 counts into this guide; dated release records may report counts observed at a specific commit.
+
+The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
+new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
+source-script packet and before/after numeric oracle are retained with the dated local audit.
+Calculation parity does not establish historical source accuracy; review the
+[venue evidence](research/2026-10-20-arena-shooting/README.md) separately. Apply/rollback tests
+must use the dedicated local clone and never a production URL.
 
 ## Browser verification
 

@@ -1,0 +1,1781 @@
+{
+  "files": [
+    {
+      "path": "INVENTORY.md",
+      "sha256": "7e013dbb105905e9a01337a68730778a5454e514cf2a34da36e86f8178ce6846",
+      "bytes": 13005
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "ed48ce6de44323c0e78f8d0b82178258fe8feb2b7df6b5e246ef24c4c0223622",
+      "bytes": 15353
+    },
+    {
+      "path": "alternate-fixture-candidates.csv",
+      "sha256": "3f77fae2dcbf90859fd45e1017e31c37ee1bcb334424216e1db196279fd909cd",
+      "bytes": 26209
+    },
+    {
+      "path": "archive-verification.json",
+      "sha256": "a0669be71dea17bb52197e871ebf01c11955e86d4c38507bdb90e62749367810",
+      "bytes": 68169
+    },
+    {
+      "path": "boundary-candidates.json",
+      "sha256": "929e3fd7fc5cbc5848013f85cc97b6aa7aec1da3ece92b6ec40809c318656b38",
+      "bytes": 29143
+    },
+    {
+      "path": "boundary-identity-check.json",
+      "sha256": "d0297160998b7bc07ceb0d101dec3feb2622b78b196c9eba8f55c67a42c5a3e1",
+      "bytes": 23343
+    },
+    {
+      "path": "boundary-primary-evidence.json",
+      "sha256": "7210544278b961b2b084140709d5c7118cd8b9954e37902521346991a8ce10a2",
+      "bytes": 93889
+    },
+    {
+      "path": "browser-primary-extracts.json",
+      "sha256": "85572fccfe64aa127df76e028698cab0646980ebb00679d682c6aa4aea69410a",
+      "bytes": 966
+    },
+    {
+      "path": "capture-google-named-markers.py",
+      "sha256": "9f4b1ef423c4d449db224cf8ff57e116e505165f6d93586f36daafdbaf5d4ff7",
+      "bytes": 4374
+    },
+    {
+      "path": "capture-mapping-markers.py",
+      "sha256": "af15ddafe2c4e803e4c6e700f2368e8f45fd03a1379e8afaa41418184a342a45",
+      "bytes": 4407
+    },
+    {
+      "path": "curate_inventory.py",
+      "sha256": "0f2dbe895f5e624fff4e7185e65bfc6158a7f293b139d4ffae46c2ecd9bb11c3",
+      "bytes": 9928
+    },
+    {
+      "path": "den-1983-geonames-comparison.json",
+      "sha256": "ee1e604663ade4e308a4023e7c198009f0b49feee0d995ce8c9da94d51446078",
+      "bytes": 7415
+    },
+    {
+      "path": "den-1983-topo.json",
+      "sha256": "7b6ea645e538cf7d918e5086b8370b2b6bac8431cbeda7b9459b1dad5f0b4803",
+      "bytes": 2086
+    },
+    {
+      "path": "den-projection-transformations.json",
+      "sha256": "90425f1ef90e351b71bee08cbd0667978dcd959132bcfd49d4d8e2baf7a12ac8",
+      "bytes": 1802
+    },
+    {
+      "path": "den-sciencebase.json",
+      "sha256": "bb4a0b9ae085c064e73fbac612d1f4dce823c5479f0d9307c2059033c1eaaf67",
+      "bytes": 429
+    },
+    {
+      "path": "derive-building-points.py",
+      "sha256": "9b90dd5b1da6cc73c50f4dc566831c4136d0941e632f11f90d558db5a258fc1f",
+      "bytes": 2869
+    },
+    {
+      "path": "hifld-western-corroboration.json",
+      "sha256": "f4c5851ccb8335aa4e4dfe336329fd0dfcad0d76dfcb994637dec103754db586",
+      "bytes": 42266
+    },
+    {
+      "path": "historical-geospatial-candidates.json",
+      "sha256": "f673af6e9404dfdaa1d7793a8b788127cc93414a9c56e5e0c56715a8b4c53b7e",
+      "bytes": 7021
+    },
+    {
+      "path": "inventory.csv",
+      "sha256": "cdbed824f99b8ba76fc81b2980281f7e8d6c0c73a6fff760dedb34742ac75737",
+      "bytes": 49601
+    },
+    {
+      "path": "map-marker-extra-manifest.json",
+      "sha256": "7ef39347c857c9b97e4fc7d9838ac3f55ee4cd9fd20d199fb5ecec92f717e8f5",
+      "bytes": 9339
+    },
+    {
+      "path": "map-marker-manifest.json",
+      "sha256": "ef579daafc84601ce70f0aa99c7163f1c34858b93d877dc7bc9cb3826849bf2a",
+      "bytes": 33016
+    },
+    {
+      "path": "mapping-marker-candidates.json",
+      "sha256": "dbf449a662a706560bc5b45356b8afec4f9439703391bdf052acaa39c3b3717f",
+      "bytes": 58716
+    },
+    {
+      "path": "ohm-query-ua.json",
+      "sha256": "222858eaca7beb0a1e12b07b7c46ada1e0efe88a4c77ed36ce95958996c4c63b",
+      "bytes": 766
+    },
+    {
+      "path": "ohm-query.json",
+      "sha256": "e5c6cb502b0c2dd778c30b77de6bea487bf0e37cf03d8e591a0e035331ee8b3e",
+      "bytes": 698
+    },
+    {
+      "path": "osm-building-queries.json",
+      "sha256": "c7d03d1e139ecf772cd6e9e8a7d4de21989c86a45b31df2abf6b927a788756d2",
+      "bytes": 1426
+    },
+    {
+      "path": "osm-derived-building-points.json",
+      "sha256": "00c7dd3635734dd9227421a0c5a6315c9299eb29b37bfa9195fe82f9e68c3ac6",
+      "bytes": 7270
+    },
+    {
+      "path": "publish-research-index.py",
+      "sha256": "e2ba4472803c9c1798ce06577c17bf58e951842cf120c11e1cfcc3e235e3b9a9",
+      "bytes": 4888
+    },
+    {
+      "path": "raw/apple-dal-aac-e47b3b13f497.html.gz",
+      "sha256": "32952c100541341b1cab35bb2eff98f071ed6f6d53857f683674da5295c1c86e",
+      "bytes": 3420
+    },
+    {
+      "path": "raw/apple-dal-reunion-695050149871.html.gz",
+      "sha256": "2542864f1ce2cb4d519adbb69aa946f69b4211aeb9c05d9618ff76b5db30d0d6",
+      "bytes": 2969
+    },
+    {
+      "path": "raw/apple-den-ball-94f8b3870a18.html.gz",
+      "sha256": "cc3f196c9ab0960cf82a104eac895f2a8d270954956b8ddb31abb9486cd3879f",
+      "bytes": 3247
+    },
+    {
+      "path": "raw/apple-den-mcnichols-f8f163c6ef6a.html.gz",
+      "sha256": "f62e9268de217f50c49290c0faf4e708afe0128f19b65a202c697eb69f41d5a3",
+      "bytes": 2970
+    },
+    {
+      "path": "raw/apple-gsw-chase-bb2fd1d1589e.html.gz",
+      "sha256": "63865243a095197ce8f745872637cbd1847ba14427d3a3e567016a1cd48c8164",
+      "bytes": 3408
+    },
+    {
+      "path": "raw/apple-gsw-oakland-8ca8f02185c7.html.gz",
+      "sha256": "25cfedb23f2e94c25d68ff30650c1b764e8e53914e78f282b03317aede1141e8",
+      "bytes": 3243
+    },
+    {
+      "path": "raw/apple-gsw-sanjose-55b15bf8458c.html.gz",
+      "sha256": "9c13afbff6b6f1fbd21c849f5c4b7119256ab733335e770af01b0368be65fb48",
+      "bytes": 3383
+    },
+    {
+      "path": "raw/apple-hou-summit-237e3461118c.html.gz",
+      "sha256": "644c89715cbff8125fea0802a93ad0e12257f1977b25ad8d95b2fa4d143cb203",
+      "bytes": 3099
+    },
+    {
+      "path": "raw/apple-hou-toyota-bdef078b2601.html.gz",
+      "sha256": "28bc81c8b91641e405de30aaa1fd12313040f65077419ae89463ef7219052850",
+      "bytes": 3183
+    },
+    {
+      "path": "raw/apple-la-staples-9dfd0e2a23c5.html.gz",
+      "sha256": "9036f37dc806c9c010fb5357cbee5a6f9776e6be89b3baf23708303e24a37225",
+      "bytes": 3451
+    },
+    {
+      "path": "raw/apple-lac-intuit-40d7a396b182.html.gz",
+      "sha256": "c436c56f6a2474e46a5b1b38db8641ccb760668c5c15ed9d40f65f85d6d2186d",
+      "bytes": 3066
+    },
+    {
+      "path": "raw/apple-lac-sports-9b9d3be2185c.html.gz",
+      "sha256": "4e173390b323f33cf7067ba661641ae90c8c50481fa73423d5c3ddcb253df888",
+      "bytes": 3244
+    },
+    {
+      "path": "raw/apple-lal-forum-860f7e37af7a.html.gz",
+      "sha256": "d79e923096a0f5713d27f83092715353cad0c49a21c3ffdf3bccb8284bf5cc84",
+      "bytes": 3054
+    },
+    {
+      "path": "raw/apple-mem-fedex-2316bbc0d07b.html.gz",
+      "sha256": "27d88722882000bd41168eef220e72aea0e5c5cc95f8a70f168388f1d62f2e4d",
+      "bytes": 3263
+    },
+    {
+      "path": "raw/apple-mem-pyramid-115632bf75ff.html.gz",
+      "sha256": "49f05a61e2f87907091ef366cfcfaa4a3f54fefe9ff6d66adb66442e44ed7287",
+      "bytes": 3185
+    },
+    {
+      "path": "raw/apple-mem-vancouver-ebddff432a48.html.gz",
+      "sha256": "7189b10398c38dee092c5d35040aedc9b429c89f784d2b18149412d9660f8b50",
+      "bytes": 3263
+    },
+    {
+      "path": "raw/apple-min-metrodome-a31abb5b73cf.html.gz",
+      "sha256": "254aef416c73b508dc7fcb27e17e637c7c6237ad778d53a06ed0142b082c0631",
+      "bytes": 3082
+    },
+    {
+      "path": "raw/apple-min-target-17d3cfb06ecc.html.gz",
+      "sha256": "3f5741afe77626e4270c37cafc474003977589196a552a688f397665dac1003b",
+      "bytes": 3450
+    },
+    {
+      "path": "raw/apple-nop-neworleans-a31a856f8766.html.gz",
+      "sha256": "f63e7e4ed026f0fb7b0bd36f6f32c1b36bb0417c25c788678812d63378a210b9",
+      "bytes": 3411
+    },
+    {
+      "path": "raw/apple-okc-ford-90f4e396d648.html.gz",
+      "sha256": "3038cc866d704b2558ec5b6068a0a6850f26b9550eac2ca0d820089fd2541e40",
+      "bytes": 3407
+    },
+    {
+      "path": "raw/apple-phx-americawest-ce78114dd8fb.html.gz",
+      "sha256": "fcde687e99e2f33fc5d448a25c3e9dd62e65b358038c24c8145f0b92bfafcd25",
+      "bytes": 3392
+    },
+    {
+      "path": "raw/apple-phx-veterans-a19803197ece.html.gz",
+      "sha256": "2b820224a1e61654d744eac39d8a9111ff254ff4821428f4b77de8a384f3f601",
+      "bytes": 3233
+    },
+    {
+      "path": "raw/apple-por-memorial-51570b79b4c2.html.gz",
+      "sha256": "e8b2cab109689621457105c6d4cfc1e18f732dab56335d808d9b01b2e0521333",
+      "bytes": 3110
+    },
+    {
+      "path": "raw/apple-por-rose-c706e50997f9.html.gz",
+      "sha256": "0f6db72f5244dd53ec2c9e7d5c4708e15be08698f25f6ae909391e81688d9bf3",
+      "bytes": 3401
+    },
+    {
+      "path": "raw/apple-sac-arco1-b02470fb6ef8.html.gz",
+      "sha256": "5c12192bb17deb3aaa86c00a3349bbf0c490c787111182f2aac10ac46be3f66e",
+      "bytes": 3230
+    },
+    {
+      "path": "raw/apple-sac-arco2-ddb2ae94cb46.html.gz",
+      "sha256": "a88701ca5a53b9bf4e76e99b49f4e6edf4f420903de2b86e0141bf12ff50dde6",
+      "bytes": 3073
+    },
+    {
+      "path": "raw/apple-sac-golden1-0ea627e4ab00.html.gz",
+      "sha256": "48095a2fce5b6cefb2ab9002ca8a483884196469fae803cf3f7c715be5238472",
+      "bytes": 3381
+    },
+    {
+      "path": "raw/apple-sas-alamodome-81a748f2ce1e.html.gz",
+      "sha256": "330389214f5597f23c939ea06538c88c6cc87584f62b06ff9b6fe74c97f147cb",
+      "bytes": 3244
+    },
+    {
+      "path": "raw/apple-sas-frost-89c0912370a1.html.gz",
+      "sha256": "4b76265d4403483871b37ba9da9067018f96f097d6622119d2c0c2b72e14229c",
+      "bytes": 3477
+    },
+    {
+      "path": "raw/apple-sas-hemisfair-e09cc69c715a.html.gz",
+      "sha256": "dfdf1b7d2ba38f0e8abeeba77939137a7bd2bf335ea756384ae26cc665aa55c4",
+      "bytes": 3080
+    },
+    {
+      "path": "raw/apple-sea-coliseum-94f826ad46cf.html.gz",
+      "sha256": "1df789386652222ebc8b2846d2f0fbcc617b5d953d4a306edd5d14af9647022f",
+      "bytes": 3338
+    },
+    {
+      "path": "raw/apple-sea-tacoma-367d830efed5.html.gz",
+      "sha256": "09d4d17b67bcd8b80b49015bc6bc3bc45f3ba06e686eff86a226b59730c66b4a",
+      "bytes": 3183
+    },
+    {
+      "path": "raw/apple-uta-delta-f5b845d0850b.html.gz",
+      "sha256": "48099fdfbe71709c02f82b9a5edcec5237d14c6c61d041ec897c0b1cfe59f310",
+      "bytes": 3436
+    },
+    {
+      "path": "raw/apple-uta-saltpalace-2e16693c87b0.html.gz",
+      "sha256": "6f1e89e17cd6916b1f481a17085d0207800a5243fb351ed0bf3ff4402efd2ca3",
+      "bytes": 3139
+    },
+    {
+      "path": "raw/boundary-0020001153-b68143e9fd2e.html.gz",
+      "sha256": "5679ac8a3ae871bb0e9dc106fac0ee36a5c9975c5502c15d354d8680087c1521",
+      "bytes": 53586
+    },
+    {
+      "path": "raw/boundary-0020100006-af77cb504d92.html.gz",
+      "sha256": "6335fd48af0431e72e9a816e0056c8db61c0a38e4c362558fc85d060222770dd",
+      "bytes": 53653
+    },
+    {
+      "path": "raw/boundary-0020100020-9dce05118e3a.html.gz",
+      "sha256": "013161cb416869c5862744c2c714a78116c316e7c79842ef67ee85e6a790b642",
+      "bytes": 54575
+    },
+    {
+      "path": "raw/boundary-0020200013-a0ff32e8b9bf.html.gz",
+      "sha256": "46d9c46438a0001b1f2ff62500ede566bb86c896d6307f83e745d3f79e7605fb",
+      "bytes": 54237
+    },
+    {
+      "path": "raw/boundary-0020200026-993001c4cf22.html.gz",
+      "sha256": "df8695b11e8186371be543a2634d87ff79586255d85bf17686b7400699ceb287",
+      "bytes": 54992
+    },
+    {
+      "path": "raw/boundary-0020201174-87f3e5cf6d73.html.gz",
+      "sha256": "fa4179e86eb4e2d4bbfc05c834cf3ae4da1bbf34f2faa035df94c2809b352910",
+      "bytes": 53542
+    },
+    {
+      "path": "raw/boundary-0020300017-e8be72edb5c7.html.gz",
+      "sha256": "30767bb4ada0340150da0ea70be539efd017df04ebd84e65744d36490b1ef688",
+      "bytes": 55321
+    },
+    {
+      "path": "raw/boundary-0020400009-b2ee1a39839a.html.gz",
+      "sha256": "20d0eb03d6d02ffed740d77e54447291c196676bdc814c9bc96e9a9edfc18c3b",
+      "bytes": 55268
+    },
+    {
+      "path": "raw/boundary-0020401225-295643462c84.html.gz",
+      "sha256": "aa419ee9ca271907c1ec61b788d8f335e31ed8659bcad2e857a0860fc068e2a2",
+      "bytes": 53646
+    },
+    {
+      "path": "raw/boundary-0020500025-991d0e4c4917.html.gz",
+      "sha256": "457e01cfee22c044a278a42bc918562ce5ccb7f4b7d9906ddf85d8ad19fee271",
+      "bytes": 53882
+    },
+    {
+      "path": "raw/boundary-0020601180-9967153fa78d.html.gz",
+      "sha256": "caac7c7720de0c755ce46e29fe08005cb6811106ca31122e3e4eeddd4ed5667f",
+      "bytes": 53605
+    },
+    {
+      "path": "raw/boundary-0020700010-c69a637f92ed.html.gz",
+      "sha256": "ccf556a7a0b0ef2edec7352d3c5a5551f2d23a944351f4b5675d349587c93e1d",
+      "bytes": 54134
+    },
+    {
+      "path": "raw/boundary-0020701202-5eab35cf0422.html.gz",
+      "sha256": "c098b4c7b35c0806762281f01b65a22951c456e09ef9762077bed271ffb2cc89",
+      "bytes": 54716
+    },
+    {
+      "path": "raw/boundary-0020800010-4c40afa6fed7.html.gz",
+      "sha256": "3dd85694eb517e84909676e6f4be93b2745f6698992648321a44b5b867ff2aaa",
+      "bytes": 54509
+    },
+    {
+      "path": "raw/boundary-0021501193-269216be09f9.html.gz",
+      "sha256": "2fc120c35739ace2d77ef73c9e899a740d8c879b5d735720c34d3434ec40faa1",
+      "bytes": 56267
+    },
+    {
+      "path": "raw/boundary-0021600016-56a36f20e04c.html.gz",
+      "sha256": "848327dcd7347bba75f9806e7a7b555589c38736f0afe4ddaec2963324770fb6",
+      "bytes": 55470
+    },
+    {
+      "path": "raw/boundary-0021900016-d36c2daf562b.html.gz",
+      "sha256": "a94d1a25b77a653ecced6945dc207cfbe6707105dde0e862019d075b6c463a0b",
+      "bytes": 59913
+    },
+    {
+      "path": "raw/boundary-0022400071-97a20ae68009.html.gz",
+      "sha256": "9b2a0770e45aaa802b7bef5ef338d401dae362e5bca169ac46b4aef46f911088",
+      "bytes": 61599
+    },
+    {
+      "path": "raw/boundary-0022501145-2887ac2c2b53.html.gz",
+      "sha256": "7cb0bb0cd2f16f61eaad99aa32beab026878c9559193ac04dea402d83115ddba",
+      "bytes": 59192
+    },
+    {
+      "path": "raw/boundary-0022501153-16e4798f965a.html.gz",
+      "sha256": "4dbebf0611c06d8e9de3652f021042afaecb4a121281a9ccc32ea65b3cb0dccf",
+      "bytes": 59204
+    },
+    {
+      "path": "raw/boundary-0022501170-abbc92355c92.html.gz",
+      "sha256": "4725117ef92dcbd1a0de018338926e424becfd6301a796b7b198b46e729e02d0",
+      "bytes": 58124
+    },
+    {
+      "path": "raw/boundary-0022501181-f84937911c44.html.gz",
+      "sha256": "6e7f67c0cae22eff2d85728ee6a932e6f7a0c3feb3f5c87f28d5c984cf02f1fb",
+      "bytes": 58445
+    },
+    {
+      "path": "raw/boundary-0022501184-2db6c313f17a.html.gz",
+      "sha256": "2e35c6296a398e1852b0d9b5265a3ab5a7ff67d4260ea25de88aac8d3982958a",
+      "bytes": 59730
+    },
+    {
+      "path": "raw/boundary-0022501193-10d4c07b848a.html.gz",
+      "sha256": "ad131ce06ad464beb9f177051569d6ca45c9be16a276c27a6b05fb6061c1529a",
+      "bytes": 60340
+    },
+    {
+      "path": "raw/boundary-0028500006-5aeccd9b138f.html.gz",
+      "sha256": "9739a7e3fba46645804cc1b50c42c194b32e5571665e6a5a98f9b3b078bbe096",
+      "bytes": 39663
+    },
+    {
+      "path": "raw/boundary-0028500008-6b628032bd5e.html.gz",
+      "sha256": "7ca37960b3c73de4300914fe731435e420d0abd84e9a4c39f861195ab5650e37",
+      "bytes": 39599
+    },
+    {
+      "path": "raw/boundary-0028500009-4862a94969fd.html.gz",
+      "sha256": "4b154ab64d226892a6aad599d30575a1a25d946c2e4063f03bb427effde55bea",
+      "bytes": 39788
+    },
+    {
+      "path": "raw/boundary-0028500011-b3cc649f1194.html.gz",
+      "sha256": "511472fd9637df202e10b4c1420c9fbb58e9c8e623c3989603583bbda7594e5b",
+      "bytes": 39607
+    },
+    {
+      "path": "raw/boundary-0028500015-48ec8cf7909f.html.gz",
+      "sha256": "6abef419a233120b202d5a35101c54a3bb8e765e4bc65cff5d765449a5c7e451",
+      "bytes": 39880
+    },
+    {
+      "path": "raw/boundary-0028500017-bf3d2a68bbc2.html.gz",
+      "sha256": "482ef19ee7f3e8893ebde7d9fee59c402d3d890b652a1318c82e4cb32c16e023",
+      "bytes": 39550
+    },
+    {
+      "path": "raw/boundary-0028500018-7e2e1d96abca.html.gz",
+      "sha256": "87ac0f174dafddfb7e82abb2d6ff155948e6c78dc525427722106673dc74b38e",
+      "bytes": 39536
+    },
+    {
+      "path": "raw/boundary-0028500019-690275d507bc.html.gz",
+      "sha256": "8b624ea27b5f9e4b1b283c0c6fc5c9b5e3bcef3c8071bc932a6584aeac932255",
+      "bytes": 39704
+    },
+    {
+      "path": "raw/boundary-0028500022-6dec0e90d634.html.gz",
+      "sha256": "4a0f915800e76bf3bc15a8aa15763b4ba55b75ca41d54ee9c8e06e1d3c8fd666",
+      "bytes": 39688
+    },
+    {
+      "path": "raw/boundary-0028500026-7a9ec2cf58e5.html.gz",
+      "sha256": "718ceade0c579908410aee302299c78b9de80074ff2ff5ff1d0eb8b9da182b3d",
+      "bytes": 39707
+    },
+    {
+      "path": "raw/boundary-0028500048-6f97430fd3ab.html.gz",
+      "sha256": "915b21eebda2dea211dda4e1909c4fc81b3837f56eed5f0dd82157b394522f06",
+      "bytes": 39656
+    },
+    {
+      "path": "raw/boundary-0028500061-36b0099fc7cc.html.gz",
+      "sha256": "c227aa46e22cf09ce0fc60a17fb21e511ff0b8ebf9524ba42c9cf048717cd8ae",
+      "bytes": 39687
+    },
+    {
+      "path": "raw/boundary-0028700937-5dee0218e357.html.gz",
+      "sha256": "a9c07159c97667b89c29d2b3f3c35e3ee985cd6e2caaf92c7743f201032784be",
+      "bytes": 39428
+    },
+    {
+      "path": "raw/boundary-0028800026-889e39b635f0.html.gz",
+      "sha256": "c8e8f5697ae04597827d49d54736e159eb160968752459567d9a291d77df5199",
+      "bytes": 39723
+    },
+    {
+      "path": "raw/boundary-0028900035-6b21d8368ef3.html.gz",
+      "sha256": "7aab3827018f4fc6e550dfc49236f83aec9c6a822ae2ec951ac1e4a7ba4b0b48",
+      "bytes": 39320
+    },
+    {
+      "path": "raw/boundary-0028901061-640f52b1fac3.html.gz",
+      "sha256": "9791f61581a388a521e4e275c94361f254dde93c75b3b50f4142fa80df2221d2",
+      "bytes": 39527
+    },
+    {
+      "path": "raw/boundary-0029000007-1d9d01a87cb4.html.gz",
+      "sha256": "a775eafa0773f5207af1ee1b7fef2b63d199ecf86984c5eb8da1a716b550112f",
+      "bytes": 39589
+    },
+    {
+      "path": "raw/boundary-0029100051-44b884ea75b3.html.gz",
+      "sha256": "2cc0cca8d92d297ba6c06821d94429dcb75ba2600a51ce7dee90c7850bd4a825",
+      "bytes": 39538
+    },
+    {
+      "path": "raw/boundary-0029200020-698cc22079c0.html.gz",
+      "sha256": "4c66abbab3a361913c4661b9af6c088666cefb04b0abfd4d17083430254847b6",
+      "bytes": 39470
+    },
+    {
+      "path": "raw/boundary-0029300012-6c5a5fb389ff.html.gz",
+      "sha256": "15b7905d750684658bdd2d1b3e4afed3a204ec76a0674036b4d6858c444f394f",
+      "bytes": 39472
+    },
+    {
+      "path": "raw/boundary-0029400013-2ec27a9bec50.html.gz",
+      "sha256": "3c07f6a9ddafc4e7ddcbac43a66d0256a86edf8a1677fcdcceb62d92d50ff404",
+      "bytes": 39593
+    },
+    {
+      "path": "raw/boundary-0029500007-f6157697bdd4.html.gz",
+      "sha256": "f87e4a1ae999ab641574359fe3b34f3cb4ad439612c26279536fbaf27adc20b8",
+      "bytes": 39298
+    },
+    {
+      "path": "raw/boundary-0029500016-2a678135c195.html.gz",
+      "sha256": "54c16149ca9204f606f250adc09f6483c375a07e51e154f5ffe1f0c31239406e",
+      "bytes": 39738
+    },
+    {
+      "path": "raw/boundary-0029500026-dd834409565f.html.gz",
+      "sha256": "d17b7d568d7f1aa3f3e7fb6e12a662bbfa62fe8a84cc63845de0929530ec3bbb",
+      "bytes": 39438
+    },
+    {
+      "path": "raw/boundary-0029501163-f0e6eceadb4e.html.gz",
+      "sha256": "7be18f9c302fb570ea73069811b8c148f9ac844ebe78487468eaf6cd70412cd3",
+      "bytes": 39422
+    },
+    {
+      "path": "raw/boundary-0029600013-5c8cab1f2614.html.gz",
+      "sha256": "c83e4b123ad410d782809112e3378e4b2bfbaaa7fcf24b5855475678a3d29a65",
+      "bytes": 53445
+    },
+    {
+      "path": "raw/boundary-0029601180-7b6e115a3c4f.html.gz",
+      "sha256": "26b3e83125dd40d7e015933eef2981c513c7cda4c95a56e62ad6a113e28abe21",
+      "bytes": 55238
+    },
+    {
+      "path": "raw/boundary-0029700074-bd4847fcb7ad.html.gz",
+      "sha256": "b8172c655abe53658e71c196e67943c561f5d15c8113c76657c9825f2174123e",
+      "bytes": 55148
+    },
+    {
+      "path": "raw/boundary-0029800720-1e65ed28de10.html.gz",
+      "sha256": "aa167deb461e2a22d96aa9ec0ee6e0238de60587aafdf8fb52b5933800fda575",
+      "bytes": 53575
+    },
+    {
+      "path": "raw/boundary-0029800722-1ad0ca5aa729.html.gz",
+      "sha256": "c787ef008a7e4f87d937eb17c209301eaacafb8c5264a1844e52af711c6f195e",
+      "bytes": 54334
+    },
+    {
+      "path": "raw/boundary-0029900010-980e72b12d05.html.gz",
+      "sha256": "8b7db5729b7a0cb852e5c15e61935fc3fa42c7c25055793505c4d8e8586bd445",
+      "bytes": 55931
+    },
+    {
+      "path": "raw/boundary-0029900012-885ce2a12485.html.gz",
+      "sha256": "9432add3f8f754a08c861bb1c6a166846d4fce4eb0d9e8220e6d3510af8be9b9",
+      "bytes": 54753
+    },
+    {
+      "path": "raw/boundary-0029900018-5e254bd986e0.html.gz",
+      "sha256": "211ac32e1471a371ad3349b4d8f03db5ce58e8c6a83960842ac35e29341e1b87",
+      "bytes": 54618
+    },
+    {
+      "path": "raw/boundary-0040000058-6c79787c95ee.html.gz",
+      "sha256": "93ee216b613b0787d1ffe0a3e644b54246fabb6f57cb5d0c01b0db7a6da54186",
+      "bytes": 54534
+    },
+    {
+      "path": "raw/boundary-0040100234-d2d0c6a34b6b.html.gz",
+      "sha256": "54976ada9e0c2e8029fc64f89b5baa39a58926142351c12cbff5122a07a44fa4",
+      "bytes": 53717
+    },
+    {
+      "path": "raw/boundary-0040300164-615b6d17c4d2.html.gz",
+      "sha256": "677081d3c85d7dbb945ba922c64e1e06a89b2120d8bc4d40758d9c6643a55b1b",
+      "bytes": 53892
+    },
+    {
+      "path": "raw/boundary-0041800406-fa38074f8ddd.html.gz",
+      "sha256": "097b2268a63158672d8c115b57c59765182675b780095daa555add39b8a59381",
+      "bytes": 56231
+    },
+    {
+      "path": "raw/boundary-0042300175-eaf363b6477f.html.gz",
+      "sha256": "0116edced26b561ce547ac39538de7f1f09ec93bcacf01ad9f3c87e00c0eaac7",
+      "bytes": 62219
+    },
+    {
+      "path": "raw/boundary-0042500144-130942e59021.html.gz",
+      "sha256": "adc70eb91658a6fadf13d7596da7ef04fb49020d55f1f62f6dbe463b2ee932b1",
+      "bytes": 61552
+    },
+    {
+      "path": "raw/boundary-0042500154-7ed335a9da9f.html.gz",
+      "sha256": "1afdf9e127aefc0fccc8c2caa137228264db9f6f6969ce6ada6669a3db248e48",
+      "bytes": 62717
+    },
+    {
+      "path": "raw/boundary-0042500165-a38b55d2f7b5.html.gz",
+      "sha256": "40a5cbcecc1bbb3ea313f7f8f1c6445dd137a68f5385ec0e2602bbb9b986a554",
+      "bytes": 62828
+    },
+    {
+      "path": "raw/boundary-0042500176-ab7ca0908b7d.html.gz",
+      "sha256": "89e46fb4719334711896ba9fd50ecb0459e275b28deee8d3f09d938a2f067679",
+      "bytes": 61982
+    },
+    {
+      "path": "raw/boundary-0042500224-f983ef9488b7.html.gz",
+      "sha256": "639923a635494300e9d1ac1157c11cccc5cbeca750d7d480428c11e2c35ef371",
+      "bytes": 61543
+    },
+    {
+      "path": "raw/boundary-0042500236-df0e07fea7bf.html.gz",
+      "sha256": "41b35446b1984f8944e4181ad3f7e48124cb15591a1d6fd91e09e6a8e3ec6267",
+      "bytes": 63413
+    },
+    {
+      "path": "raw/boundary-0042500317-2cdf8cc430f8.html.gz",
+      "sha256": "95f1453f24f3900de340f9b6beec11c5ca9174aebccd40c655a65ea56e26efa4",
+      "bytes": 62953
+    },
+    {
+      "path": "raw/boundary-0042500405-ae87bf207e7c.html.gz",
+      "sha256": "10ddc9811b5cc4e934271c092c17fad3fecccb1e8e71baa85282870cdbac634c",
+      "bytes": 63693
+    },
+    {
+      "path": "raw/boundary-0049000045-05dee5735720.html.gz",
+      "sha256": "fcc500af917510e1e0727fd107678526589ec44b14b1f72a98ef0dc6286e85e0",
+      "bytes": 39413
+    },
+    {
+      "path": "raw/boundary-0049100046-af19c7617f6c.html.gz",
+      "sha256": "d2d46fdaa245ee6f7414f451a091e0a8a029b5c29077ec7b504be47bff334b28",
+      "bytes": 39960
+    },
+    {
+      "path": "raw/boundary-0049200055-edbb10fa22cd.html.gz",
+      "sha256": "3497cbefbc44cb2affb749f03dc249f25353b618d66ba1a08dd6826ef7ad71ec",
+      "bytes": 39486
+    },
+    {
+      "path": "raw/boundary-0049300030-7a8bd8ba7f83.html.gz",
+      "sha256": "638095621325fff54b53e87baa7be30c73eee7737ef01070e96ea974c0b90e20",
+      "bytes": 39619
+    },
+    {
+      "path": "raw/boundary-0049400011-c4a8ce73a502.html.gz",
+      "sha256": "d46284438f1870148436f654beb260f2e5941401375b040dc10e1a55fa24a9c4",
+      "bytes": 39289
+    },
+    {
+      "path": "raw/boundary-0049400021-422060026f1d.html.gz",
+      "sha256": "1ec665fa68e4a733632aa276ed60220d21d94ba17c00e8c32d33df09ecafa952",
+      "bytes": 39599
+    },
+    {
+      "path": "raw/boundary-0049800054-95fb4d106f34.html.gz",
+      "sha256": "981693371a43a5525f48a6e8d9c3f4c0ed2b9667a91a34a0431c2ba4b6bce1c3",
+      "bytes": 55080
+    },
+    {
+      "path": "raw/boundary-0052500131-606683756835.html.gz",
+      "sha256": "d7ffcbe5291a8bc3f2b453235bfef9b8bfa243b1e52270aaeb2f6852d74bd1d7",
+      "bytes": 60132
+    },
+    {
+      "path": "raw/dal-aac-ca13578c139f.html.gz",
+      "sha256": "89b9668cf98815c1dc55638896ba5b9d179d3e6757e77cd7a2ef1b3dbbd405a7",
+      "bytes": 9392
+    },
+    {
+      "path": "raw/dal-directions-c52894dfed73.html.gz",
+      "sha256": "584da73fb94c92efa7a52103f489b459f9340306ea7e0d822020f83bafa33619",
+      "bytes": 7453
+    },
+    {
+      "path": "raw/dal-guide-8d3f446e0692.pdf",
+      "sha256": "8d3f446e0692edd97a0127c5aff8e28d4c6d78c2a9c3526700dba7988dcb31d5",
+      "bytes": 26650597
+    },
+    {
+      "path": "raw/dal-guide.txt",
+      "sha256": "18a1f6d1aebcfc17244110931f1562a9b8937c2cc5c9d2c0fe72c00248b274ba",
+      "bytes": 3649436
+    },
+    {
+      "path": "raw/dal-reunion-city-address-6f2f29c4c4c0.pdf",
+      "sha256": "6f2f29c4c4c0ad4613448e91cf47f10c6f02884c217caa8ed7faa45757068ce3",
+      "bytes": 342076
+    },
+    {
+      "path": "raw/dal-reunion-city-history-672c58b9157e.html.gz",
+      "sha256": "452b129462ee85883cf87f82c382a5bb8c8422ab6aa979319a88c29efb85ef15",
+      "bytes": 23125
+    },
+    {
+      "path": "raw/den-1983-arena-crop.png",
+      "sha256": "3936e07098bd350e788665f91f4c520c46bce9d7cad2755436e21bb02fe3a1b8",
+      "bytes": 1783698
+    },
+    {
+      "path": "raw/den-1983-comparison-overlay.png",
+      "sha256": "8dc6061de959d27683d15cbf7f56ba5b0ed23a653bb1d046956b08d4dfc1280a",
+      "bytes": 190603
+    },
+    {
+      "path": "raw/den-1983-geonames-comparison-a3a53e5242ac.json.gz",
+      "sha256": "64a4b26e41d5bc29f8abd3e829e0ec28e8fb236e7b3dc899836a16d6c64a5edc",
+      "bytes": 109
+    },
+    {
+      "path": "raw/den-1983-geonames-comparison-control-07daf3f4720f.json.gz",
+      "sha256": "a8af356cd7ce9070fbeadaa0ca674a8cb416a287a86bbd21fb7ed6436d0fabf0",
+      "bytes": 140
+    },
+    {
+      "path": "raw/den-1983-legend.png",
+      "sha256": "22e1ea9960954e36c191f727a0347ed0ef45caf72fc287f04f6fe5319b9cba43",
+      "bytes": 352618
+    },
+    {
+      "path": "raw/den-1983-overview.png",
+      "sha256": "e8a2e915f34e99876f0d97bc168e4403103c90363ca16d5b267e5c03f20efc63",
+      "bytes": 2406922
+    },
+    {
+      "path": "raw/den-ball-c8bf33e9e085.html.gz",
+      "sha256": "08e07b4ba027546fb8bbf41e06676c55bcd7b271e248312cd0a17673574c3843",
+      "bytes": 7137
+    },
+    {
+      "path": "raw/den-directions-47af21838261.html.gz",
+      "sha256": "2c99c9fa95b222e25a820cb2cca3f1ee93d917dfdbaf24cd4e684bbcb8ca47f5",
+      "bytes": 8117
+    },
+    {
+      "path": "raw/den-guide-59f5e565ae57.pdf",
+      "sha256": "59f5e565ae57f46f3b76ec5749d9e6a9959cded6024c7d0409da19403782b00a",
+      "bytes": 16769865
+    },
+    {
+      "path": "raw/den-guide.txt",
+      "sha256": "98c1bdf92bba2084ce631ef39e4a401256941508577584cf7b0916fdeffc6464",
+      "bytes": 3905438
+    },
+    {
+      "path": "raw/den-maplink-cf2092d67200.html.gz",
+      "sha256": "ff1b6c6f29a462d8fabad1ec2cb9dccf8d26815455e728f3da58ddf81db86c48",
+      "bytes": 69822
+    },
+    {
+      "path": "raw/den-mcnichols-city-plan-1013f2a3b974.html.gz",
+      "sha256": "8a11db414fe9664077d645b4363aaed49430c08090e1b1b83e8b4c7085a160b8",
+      "bytes": 315
+    },
+    {
+      "path": "raw/den-projection-transformations-9a7c4f809683.json.gz",
+      "sha256": "04fd863965e2fbe0c212c7ccbf188c77bb2960d50ec5a412a6da032da4c3d288",
+      "bytes": 201
+    },
+    {
+      "path": "raw/den-topo-candidate-crop.png",
+      "sha256": "15b58a2dc9ac2c789149db5bf08664d7cedee9592ac1e515238f56522e5ff300",
+      "bytes": 2080072
+    },
+    {
+      "path": "raw/den-topo-legend.png",
+      "sha256": "8237ac80b04c06c5b1b7fb8136982616bf692f0ae88f821e4fe4103148a699b8",
+      "bytes": 608002
+    },
+    {
+      "path": "raw/geonames-arco-0610f2efefb0.html.gz",
+      "sha256": "10fb9faa006cdb6302eddde2a3bbd0a75090c3bd5e0783ece118317c2774f8c3",
+      "bytes": 33617
+    },
+    {
+      "path": "raw/geonames-la-sports-630064d7551f.html.gz",
+      "sha256": "7f153f42c4ac4fd7b5cf8f66877f78bda6594c0d01f5f561cf93fbb5101aec64",
+      "bytes": 33122
+    },
+    {
+      "path": "raw/geonames-mcnichols-eab2e1be64ab.html.gz",
+      "sha256": "c9d8bac756b383716dc969c34f33b97b77fafa93d0099fb2757b7642f1795220",
+      "bytes": 33872
+    },
+    {
+      "path": "raw/geonames-metrodome-f7f693083b88.html.gz",
+      "sha256": "4e6c89a60d0c09e201e25ab0a0980a88f92c675b1d973e7e95808467bb9dff49",
+      "bytes": 34964
+    },
+    {
+      "path": "raw/geonames-reunion-9161defcb541.html.gz",
+      "sha256": "e19d1a091313a3263e780a9e04337e7f2f9092f5661aad3195c1edb9d5a1964f",
+      "bytes": 33313
+    },
+    {
+      "path": "raw/geonames-search-arco-8bb7dc153bbd.html.gz",
+      "sha256": "9eb76aeed0d63e74ab3597ca6bd1adbe85e67e8ca5c8577871637b7be41a5d73",
+      "bytes": 3865
+    },
+    {
+      "path": "raw/geonames-search-mcnichols-df5e21254d31.html.gz",
+      "sha256": "b4e39effa598f06717c7749a1abbd1e89e3dd3d5f530beb792989303dadc4ff5",
+      "bytes": 3885
+    },
+    {
+      "path": "raw/geonames-search-metrodome-c6b558fd1cf9.html.gz",
+      "sha256": "9b203147b97b79c1e6b00df57fcfabe1ccecef2c0e135b459744b376e341fd28",
+      "bytes": 4019
+    },
+    {
+      "path": "raw/geonames-search-saltpalace-41915c46def0.html.gz",
+      "sha256": "a7a76ae3ddfd80206a816f6ba5b4bc0c7157385b55e16fa1483e7ec5556810c1",
+      "bytes": 3874
+    },
+    {
+      "path": "raw/gsw-chase-e9857593d245.html.gz",
+      "sha256": "1306aa57ee242ab7bfdd592d7ebf18e8b7971cfb9ed140506d7ca38c94ad5022",
+      "bytes": 17749
+    },
+    {
+      "path": "raw/gsw-cityreport-cf92c907e3e9.pdf",
+      "sha256": "cf92c907e3e94f70ea73015b5034b5fe4d47a26a2044fa4c2c7899430ee44d40",
+      "bytes": 69368931
+    },
+    {
+      "path": "raw/gsw-cityreport.txt",
+      "sha256": "4ed05a6a559d2f5ebde645b79637a2976b9c4f4706b7095760b7bc5e74f31132",
+      "bytes": 2747272
+    },
+    {
+      "path": "raw/gsw-gettinghere-7e71f064fdd0.html.gz",
+      "sha256": "8cf4f20a1ec5ea50829b4aae41df7cf7f8f0a75fad071e05473332e84c1d4815",
+      "bytes": 16702
+    },
+    {
+      "path": "raw/gsw-guide-1f229c48c478.pdf",
+      "sha256": "1f229c48c478e78079a7c47ba1b9e0baa69f7867a1cfa8ff9c8185bca12dfd45",
+      "bytes": 12500914
+    },
+    {
+      "path": "raw/gsw-guide.txt",
+      "sha256": "44d174a68f7c6331b8e7d76bc0095b8ef69a1b92505df5b7a021b93ae4d5aa18",
+      "bytes": 3378922
+    },
+    {
+      "path": "raw/gsw-oakland-address-792e840079ed.html.gz",
+      "sha256": "9eb1483a2f9994194405f3e2fba6a3f789f78ccc223997db2160137c91c31524",
+      "bytes": 14612
+    },
+    {
+      "path": "raw/gsw-opening-4ece03f94e64.html.gz",
+      "sha256": "9c6fdd2d3a279fb3c51a45bb718a6d9f65f2fd851f7e2f7280dd3cb41bdf2003",
+      "bytes": 26627
+    },
+    {
+      "path": "raw/gsw-sap-ff0f61907167.html.gz",
+      "sha256": "841b9190f381f5e730ab13b814d119c98aa68037549de4f66a421f6b5f344bbf",
+      "bytes": 8824
+    },
+    {
+      "path": "raw/hou-directions-0892c1162b22.html.gz",
+      "sha256": "7850ca0a5ddc22cb913aa99814570271923d9206ef0551a552e117e57ba71f26",
+      "bytes": 9506
+    },
+    {
+      "path": "raw/hou-guide-45fcc34b80bb.pdf",
+      "sha256": "45fcc34b80bb6a7b753113861fade1fe51c092f4f4315026a84e787ae5bfc7b6",
+      "bytes": 9528748
+    },
+    {
+      "path": "raw/hou-guide.txt",
+      "sha256": "886ad39816affc5e6662db93a29ac67c925c7a3b5cb8b059ba31304207001c02",
+      "bytes": 2047271
+    },
+    {
+      "path": "raw/hou-toyota-a616d7c44b4a.html.gz",
+      "sha256": "ba08e819c622530db2539fcd2270f60a7b9a1fafe8ab57db8dc9110f93545145",
+      "bytes": 10848
+    },
+    {
+      "path": "raw/la-sports-city-82800c8326f5.pdf",
+      "sha256": "82800c8326f527512677a5b6db28394bcd5fd141d6d6fe0e49c8f0e7a5258f66",
+      "bytes": 859823
+    },
+    {
+      "path": "raw/la-sports-city-page13.png",
+      "sha256": "da4b79cbac8ce08515b20cf251288087c181ccd94020ae1b5d1293cb7a7658fa",
+      "bytes": 445969
+    },
+    {
+      "path": "raw/la-sports-city.txt",
+      "sha256": "f027b9b75b05e1cb29f4fabbf06ab90a95a75b6fa99c3f36953b99bd3083e967",
+      "bytes": 870484
+    },
+    {
+      "path": "raw/lac-guide-6daca07d5a9f.pdf",
+      "sha256": "6daca07d5a9f4e0acbb00e2ba331f0efbad54d5a75e1b8ccac2c4f67e92c72ae",
+      "bytes": 22640683
+    },
+    {
+      "path": "raw/lac-guide.txt",
+      "sha256": "dd3cbe9d576135918a83b1935aa2085f8fa41e6beced6c051ed09b70e03659d9",
+      "bytes": 3182250
+    },
+    {
+      "path": "raw/lac-intuit-6ce561ba9bd2.html.gz",
+      "sha256": "ceba8d992032e40bb3f9f3def7014723936c5ace98ac98b29f073d32c0a7f609",
+      "bytes": 15355
+    },
+    {
+      "path": "raw/lac-intuit-address-6df2e156dc24.html.gz",
+      "sha256": "ed348562d6a999dcb7d88493f366c43d90a4c590f4c5ad48b4d76b865155b7ac",
+      "bytes": 7173
+    },
+    {
+      "path": "raw/lac-intuit-first-820043794759.html.gz",
+      "sha256": "0a733e93413f5ddaf7dc3e58c6467fdfb59b120545a147e4fafbf1d574fb7bbb",
+      "bytes": 45720
+    },
+    {
+      "path": "raw/lac-newbrand-0ec79d126930.html.gz",
+      "sha256": "65d14db5cd3a35ea1acf86ad293d198f321cba89be6222d62e0fdd8d0ecbcd37",
+      "bytes": 26268
+    },
+    {
+      "path": "raw/lac-parking-6b18133137c1.html.gz",
+      "sha256": "bb0fba8a4b16b4684c629fa88707325b8d2f54802cd2f47ff195641ea3ccc690",
+      "bytes": 11671
+    },
+    {
+      "path": "raw/lal-crypto-872f3a9420a2.html.gz",
+      "sha256": "dc0be4ff47233d854620080c0228db1280d04a0f4e56e8ab7d202e00fa352f67",
+      "bytes": 13268
+    },
+    {
+      "path": "raw/lal-directions-f80affcb0329.html.gz",
+      "sha256": "df1bb146be7d6e723b0101d1c8b3313571f225bde2b172876d4b4f1d28006f1b",
+      "bytes": 10599
+    },
+    {
+      "path": "raw/lal-seasoncapsule-612f2ea293a8.html.gz",
+      "sha256": "fa8e44276efe9e0c69373d4baa3aaf0fdb2499973424d44ce23b429d31da1471",
+      "bytes": 185057
+    },
+    {
+      "path": "raw/maps-crypto-3aa4e7e582f2.html.gz",
+      "sha256": "187a95981b1194de9f91aef550151492ac3766719fbf5bb02016990199cfd973",
+      "bytes": 69698
+    },
+    {
+      "path": "raw/maps-crypto-qualified-8f69738ec995.html.gz",
+      "sha256": "a55546ec0ebe2868453c761f187ebb6cd1e32fc1cbdc29211d3d2cf7305d7993",
+      "bytes": 69822
+    },
+    {
+      "path": "raw/marker-dal-aac-7447208638a17517821a757c003a713a70dfbe9ef42e67ca144b786b25e1ed09.html.gz",
+      "sha256": "5ac91cd2e1f83794f2507b73f86c998341fbb1633bdefd58ce1771c26888abb7",
+      "bytes": 1222
+    },
+    {
+      "path": "raw/marker-dal-aac.json",
+      "sha256": "a15c7dc18a03797100c937f83f3240caf57deac831649ffe428b877c2b19556d",
+      "bytes": 1003
+    },
+    {
+      "path": "raw/marker-dal-reunion-d4b2a1bae81755a96dfd2068fde89b5b56be8f678cee4ab056c8df11b34800d9.html.gz",
+      "sha256": "8fa213fda9e7eb73aa339f8d3d50293d1ceee396aed96d975f0b89ebe3976eaf",
+      "bytes": 973
+    },
+    {
+      "path": "raw/marker-dal-reunion-short-a69488771353359aca479ade17eeab2b7a33e85a4f61ae8ee2cdfb8580ace5ba.html.gz",
+      "sha256": "b05dec8c21da62d0424ca6ec502152a9acd0f383d8bbf2ba80777d0f057ebd80",
+      "bytes": 1123
+    },
+    {
+      "path": "raw/marker-dal-reunion-short.json",
+      "sha256": "943fd1df295564d12964bda9e81191df273e68778f4182a1a3e40b183a40d4d4",
+      "bytes": 933
+    },
+    {
+      "path": "raw/marker-dal-reunion.json",
+      "sha256": "1cdd15bdb8d8b07f8b2083689a6e1d20358f2bb1908296d6655bf272974629ea",
+      "bytes": 668
+    },
+    {
+      "path": "raw/marker-den-ball-d4ab5b8e72dbb07e228629760d3dfb94498c1c1c8b2b96879f108ec0e6875a0c.html.gz",
+      "sha256": "2baec723bee41e07f8b748e1fc613f31099c33cfc5ec149762c1a638645d3df9",
+      "bytes": 1209
+    },
+    {
+      "path": "raw/marker-den-ball.json",
+      "sha256": "8a2b5e6fba39ab6cc07106d94995c12d1e30f26d6361a65eff024db690754e63",
+      "bytes": 953
+    },
+    {
+      "path": "raw/marker-den-mcnichols-18283bcf40680b939525eff7a696bffeea91e1b337a572ed4343d5cf6f8919b8.html.gz",
+      "sha256": "a7832337c46a6f006f611a8252015c5cc2b50d96297f55b0bb887805f8a5aac0",
+      "bytes": 1102
+    },
+    {
+      "path": "raw/marker-den-mcnichols.json",
+      "sha256": "0760331c78785ea74fe10cf6d97efa6cdc2a15bf553a47597bd8b392756d10ac",
+      "bytes": 991
+    },
+    {
+      "path": "raw/marker-gsw-chase-ed3357dd2d85c224761bad380b7af502053fbebdffe86d99f7bdb8b279635f6a.html.gz",
+      "sha256": "239601ba1d7a389d7cdf51e1be6193c3d2a9a745c08b492aead08cd4651111b7",
+      "bytes": 1219
+    },
+    {
+      "path": "raw/marker-gsw-chase.json",
+      "sha256": "564d3df1637d6abde0ec6edd3f16e4c4c25d090cd04a48865740642864fa500c",
+      "bytes": 982
+    },
+    {
+      "path": "raw/marker-gsw-oakland-7345984c756edcb2e42a6f6e5d6633da86e64e14538ad7bdee2b41e87b9513d7.html.gz",
+      "sha256": "4233b292f1ec811f256261d9bd40a7630382dfb05f45e329e5aff3f7ae9e59fa",
+      "bytes": 1025
+    },
+    {
+      "path": "raw/marker-gsw-oakland-short-a66fdb9bd2b718e8fa39e8b5df7323f92ea153088c87ecabd3a9ecf430b4aad0.html.gz",
+      "sha256": "d775e4dfe508b7448cc1d7ed3ef75eca93ed6ba77ac78997d7bc93229ee1d435",
+      "bytes": 1213
+    },
+    {
+      "path": "raw/marker-gsw-oakland-short.json",
+      "sha256": "2dad24f7481dc5d7f421619c47534012f6988c0f916dc55425f190e150c137c7",
+      "bytes": 875
+    },
+    {
+      "path": "raw/marker-gsw-oakland.json",
+      "sha256": "83731d54975071d0be2810f5958cfea4ef5fcb91daea9be80b6a2e4c23b2ba93",
+      "bytes": 701
+    },
+    {
+      "path": "raw/marker-gsw-sanjose-b8a2eab87c41d5540e560510d7ce543ddec648bcee192a789fbce3482ebffcef.html.gz",
+      "sha256": "5fdb59abf05fad9fd8bc154389f0ee414a9e22160126a3998d34a112adff2ce1",
+      "bytes": 1212
+    },
+    {
+      "path": "raw/marker-gsw-sanjose.json",
+      "sha256": "e19cc9ed677ea4700b0137778e4c74a3642908eff539f65494135398b7c21cf9",
+      "bytes": 983
+    },
+    {
+      "path": "raw/marker-hou-summit-3103f5614e7675a45350a60e9027993ce9ee7aa615f5afd2ee149bb49d95a959.html.gz",
+      "sha256": "ef20b595c77a7d3d0311c797678d188b332d2c5b199f7b28c531b6d6a9f747bb",
+      "bytes": 1442
+    },
+    {
+      "path": "raw/marker-hou-summit.json",
+      "sha256": "7cbc035786b1c3b9fb288878c77529b138c08582788ca96c578a670030751d7d",
+      "bytes": 973
+    },
+    {
+      "path": "raw/marker-hou-toyota-4d43990d8c6ead68f22ffb04eb6e2bd56ada1fe70a24bb3ca31a5444fdc3dc03.html.gz",
+      "sha256": "5b34e17c2fc52209332da4b31669176ec46093cba6efeb4b401e20fec5086fc0",
+      "bytes": 1219
+    },
+    {
+      "path": "raw/marker-hou-toyota.json",
+      "sha256": "2cdf0da5462d6071bcd569b21fc3d421e1a0eaf4293701c633416355befa96ed",
+      "bytes": 956
+    },
+    {
+      "path": "raw/marker-la-staples-1bcd7d8510255133fd92b14c6cccf3d3c18b3024243f5d7783baf69d82727296.html.gz",
+      "sha256": "573887c914927cc0031c2133079edce8523b9ad60d14482da43e82d9bd79ce7f",
+      "bytes": 1214
+    },
+    {
+      "path": "raw/marker-la-staples.json",
+      "sha256": "cf455fcb5a5933dfe3505774537775c31087bb7117e241664ca7f99d37229f27",
+      "bytes": 1009
+    },
+    {
+      "path": "raw/marker-lac-intuit-a49c8b2889bf84e48a07e404c51002aac045593b8216ecbfb4853bb914edf3af.html.gz",
+      "sha256": "9c48732c5af9ef2361465bba12d372ed779af7d3b8dfb3efdbf89606c11351a1",
+      "bytes": 1210
+    },
+    {
+      "path": "raw/marker-lac-intuit.json",
+      "sha256": "178ca9d523a4d67fa49b3e4181bfa8e5a42b53c267f0db4d5e0f286d404ad0dd",
+      "bytes": 985
+    },
+    {
+      "path": "raw/marker-lac-sports-903398049bc07d9d76b1c42a021b057f0831746e46844e4c90f7db5aaf731eba.html.gz",
+      "sha256": "c454d390657c32a4b5e5e7e7dbc1ff5e3f0884730957643aab349d62b4fd08fc",
+      "bytes": 1215
+    },
+    {
+      "path": "raw/marker-lac-sports-historic-12b7c68972a2a25e49fdbcc0d95e1245ff5bd78c432bede2a677373469fe2070.html.gz",
+      "sha256": "e9dd4f3a2e86c806b33f1d411d50f1031e97cf622537153f595ebe8a71f7cdbe",
+      "bytes": 1217
+    },
+    {
+      "path": "raw/marker-lac-sports-historic.json",
+      "sha256": "fef84f0b346b524071ac9046dfda27f360b4b57830b9ee685d80efe235b8dd5f",
+      "bytes": 985
+    },
+    {
+      "path": "raw/marker-lac-sports.json",
+      "sha256": "45fef8c149b974b623317802e7bcf0ddfd008f5a498933d094f9d92919fa9bcf",
+      "bytes": 1046
+    },
+    {
+      "path": "raw/marker-lal-forum-0250c76e2672c822e78ea34c81f675982a40106e999a33b7f98ae8898f3ee6c4.html.gz",
+      "sha256": "b052655f907e5d9eed1c4adc0c745026fa45ffcc8fad5922d328b9a1933f018d",
+      "bytes": 1205
+    },
+    {
+      "path": "raw/marker-lal-forum.json",
+      "sha256": "a872d5973f4020cbd0b9b183df1a4df97b24ecfccb2a3c895fcbb2285a889337",
+      "bytes": 988
+    },
+    {
+      "path": "raw/marker-mem-fedex-48635b2603adce4a02cc39ac15661f2006948a388279e5549fc13685e0fc9163.html.gz",
+      "sha256": "4cfe0f86e57428dae6118e0111de476ac75aa2510f0fc921f764d37143d44bf6",
+      "bytes": 1205
+    },
+    {
+      "path": "raw/marker-mem-fedex.json",
+      "sha256": "8a819e9e18b7273c3a0257979478c2d94208b3218b58c84f9d46b3e61a830453",
+      "bytes": 943
+    },
+    {
+      "path": "raw/marker-mem-pyramid-6249a98832394eda039fef2eb9a5f60f3f9c481ae2264838ab867283e996aa4d.html.gz",
+      "sha256": "fe67698adb7e56c59dc42f71a1afe41f6247b71c680ea2db80c36929ce8ab17e",
+      "bytes": 1176
+    },
+    {
+      "path": "raw/marker-mem-pyramid-current-3197ffdb930c0d10d297a6f3eb619c09f110f16b218bd4b98cd3a3ce535f436f.html.gz",
+      "sha256": "11a492e7369b0a1379799672f7cd2b6365b510bf07110cdfb77ab11c6b5cfa87",
+      "bytes": 1514
+    },
+    {
+      "path": "raw/marker-mem-pyramid-current.json",
+      "sha256": "e087ee5253f33b7631090124cfb64f6e9c5cc09ec99c4e0cd33f9622e566f35f",
+      "bytes": 962
+    },
+    {
+      "path": "raw/marker-mem-pyramid.json",
+      "sha256": "f2700357a6222bad158a1f44a38774dd3e5ae047bbba84815bd13fcd1228ca85",
+      "bytes": 695
+    },
+    {
+      "path": "raw/marker-mem-vancouver-7f35666f912b48c226a6d88cfaec40f44f2534e40b836ebc98511fbec681372c.html.gz",
+      "sha256": "489f98ffde5be01da838d2f07035b00fe93d331cc227a7d2c3ea7c8d58545d1e",
+      "bytes": 1208
+    },
+    {
+      "path": "raw/marker-mem-vancouver.json",
+      "sha256": "767c998be799896fd6c9506b916eb1834a000493a087ac42f4ae343c04b83b34",
+      "bytes": 1014
+    },
+    {
+      "path": "raw/marker-min-metrodome-9863eb939cefb30fb1438198f88a2d5ae458e9a24869595d126e72b9bae724e3.html.gz",
+      "sha256": "bc361bdf44acf0fb7b33c542abba9539f608d47844dee64e303a2e6cf2dd0a22",
+      "bytes": 1124
+    },
+    {
+      "path": "raw/marker-min-metrodome-historic-2b1f861bd3921beb9371efdb9c1dfb531adf4bd5e194812c580686e4d1009c32.html.gz",
+      "sha256": "ccb46e7fbe7d898911d43229abce7346f4bcbb5cdeb02cc4f96144c96a88188d",
+      "bytes": 1144
+    },
+    {
+      "path": "raw/marker-min-metrodome-historic.json",
+      "sha256": "1f28fc26b72b467ecd26b7f4fce42f3348ee33a38a06398d65236459cc484030",
+      "bytes": 719
+    },
+    {
+      "path": "raw/marker-min-metrodome.json",
+      "sha256": "f5a82fc23e9a5657cee86caf9afa637aced1de5a1e9f2a69f152ff8246aff580",
+      "bytes": 672
+    },
+    {
+      "path": "raw/marker-min-target-2c12183828cdb73ee6beea126829908508d6ddc42faee4cb160fbaac7d82d157.html.gz",
+      "sha256": "91b3db4b354cf445779c53fb9c38a3c5a1d51edcd08982da231055caf77cecc0",
+      "bytes": 1417
+    },
+    {
+      "path": "raw/marker-min-target.json",
+      "sha256": "71016931be5349b21d109f8f59292ea5139415ff861a1966b2f521c8f599c3a3",
+      "bytes": 977
+    },
+    {
+      "path": "raw/marker-nop-neworleans-bbe6acabf8b4cf233870add1569d25bf7aaf9977f890c51b8e42c95a50583d8a.html.gz",
+      "sha256": "2fb961ffb49ea8ce7a04176f042d6727def10e023061e093f5bcb6065af975ef",
+      "bytes": 1217
+    },
+    {
+      "path": "raw/marker-nop-neworleans-short-628c8b431fce31506209b2d5fbb3b5ef68c22de2020e4c62bf90acdca98ba0e2.html.gz",
+      "sha256": "2298181b90ec9c4f1515000de56adc27f0e5cc2ca32718598bdb1455c0d84fc6",
+      "bytes": 1237
+    },
+    {
+      "path": "raw/marker-nop-neworleans-short.json",
+      "sha256": "448a3c463fe14712b8b55980e2bcab1faacb5fd352c4443c6c0edd614dfe171c",
+      "bytes": 969
+    },
+    {
+      "path": "raw/marker-nop-neworleans.json",
+      "sha256": "1e660b329df67bc620f0d0db05c78bb2224c5631d8dce6a8f396a0715f63000e",
+      "bytes": 743
+    },
+    {
+      "path": "raw/marker-okc-ford-6f4171d6adaa08e97556b6030f4f5f6b05ea87d6e135b16d57a80c7f5ebdacfe.html.gz",
+      "sha256": "77e7fc46ca7282912630221a8cff344c159be9633f467a62ff2f0e11237962c4",
+      "bytes": 1219
+    },
+    {
+      "path": "raw/marker-okc-ford.json",
+      "sha256": "9b438a736dbff69a4edfce3181e58cfd1d5fea4cc022989627910b5cd25e4085",
+      "bytes": 992
+    },
+    {
+      "path": "raw/marker-phx-americawest-c6cceb970f0a99d880acfe95e3070eec441e255310cbb71fe6da40b201ecd9f3.html.gz",
+      "sha256": "bd38a36676f1b01ccf5f5104fe835ba5dea3ac8e9b598cd528808c32fe33d79b",
+      "bytes": 1222
+    },
+    {
+      "path": "raw/marker-phx-americawest.json",
+      "sha256": "2fb9034311c828ddb506cfca20c9cd1b3fc7fcd99faf8aa5cedb0f7ad1344502",
+      "bytes": 1030
+    },
+    {
+      "path": "raw/marker-phx-veterans-a3cbd2941c914465d1f6d4e9067e007d4b43cb16d694abade2b422911dff66e1.html.gz",
+      "sha256": "ac18d508208d3093e93c0b0754f1ce72afbd12f4d5f9c51b84ce4cd7ec288dbe",
+      "bytes": 1228
+    },
+    {
+      "path": "raw/marker-phx-veterans.json",
+      "sha256": "797ee8c7a8caadf58319e095be771d1275e4424f2fe8526cf3e5a52e14f4db71",
+      "bytes": 1070
+    },
+    {
+      "path": "raw/marker-por-memorial-11077bc3b00d3c4b2aeaeecc220c8b5160b921489aec86f93b3f6d33bbecb36a.html.gz",
+      "sha256": "ae420cc1919af2fe421dbfb499ab16be30eae56911246d0769bae6aeaaad8622",
+      "bytes": 1245
+    },
+    {
+      "path": "raw/marker-por-memorial.json",
+      "sha256": "96396fb248993594e3ad0043e0bd595f1210aa3ec413ad3985a46c68f843c1ab",
+      "bytes": 1031
+    },
+    {
+      "path": "raw/marker-por-rose-fbf71f255bd0d512bbf2f84544a653de19fd4b8f51054c9241c4d1029e52daea.html.gz",
+      "sha256": "fcf7e3b8b6cb5b2273548468a4460edbeb33e91f6921b3026fe3f90773abc9bd",
+      "bytes": 1218
+    },
+    {
+      "path": "raw/marker-por-rose-short-73944c8ebae6b5f99e8487666820138eee2c56587ac0eb51c72c57431ae406e4.html.gz",
+      "sha256": "6129161e57cf7afae93aeba2cb8f6b88b141941affa16671518b0081b629cd7d",
+      "bytes": 1206
+    },
+    {
+      "path": "raw/marker-por-rose-short.json",
+      "sha256": "1686380db7d1dba6a2a58b516f5970f2ed401e3cb36a97192fc5daaad0319048",
+      "bytes": 897
+    },
+    {
+      "path": "raw/marker-por-rose.json",
+      "sha256": "a7ebffc807ed30f18c10bff8115a35c06da769754e7ba88de13fa82d2d1a5f82",
+      "bytes": 698
+    },
+    {
+      "path": "raw/marker-sac-arco1-2993a34758d5287f8b68b291d10cb87adb066e9e364cc51ae1267067cc6eb0e7.html.gz",
+      "sha256": "828a6f95c67a8ccb7e28c3d80d430dfc00f4f60a8aca3948f900a1c8b56fdd21",
+      "bytes": 1065
+    },
+    {
+      "path": "raw/marker-sac-arco1-historic-ec37bfea4f49bf7b2b8c70cc33475c335e908a4abc95a123e6841267a15af64a.html.gz",
+      "sha256": "da348a67fee805ffa94e6e278f602b553440e03d3910bcc08e60f82b6878ac42",
+      "bytes": 1062
+    },
+    {
+      "path": "raw/marker-sac-arco1-historic.json",
+      "sha256": "73e2809e4de7a52611254efedce80d2132d54afdcb9ab32fbc9fb55dd84ce77f",
+      "bytes": 980
+    },
+    {
+      "path": "raw/marker-sac-arco1.json",
+      "sha256": "3e98346693534dfff842a3b9239b9973efca448a4d1ea4fe4df7dd267b958ab5",
+      "bytes": 984
+    },
+    {
+      "path": "raw/marker-sac-arco2-992f1d59b10ebceb66e209e1d29d1c6252d2c0adf47561fee22ae22a1c8e1c7b.html.gz",
+      "sha256": "1a7688574a3eb3e51245417e295131bfa341186bcd1851ce5773a560b1023cd0",
+      "bytes": 1062
+    },
+    {
+      "path": "raw/marker-sac-arco2.json",
+      "sha256": "2a4b50d24567ac554aa38d7b249a628925f9d66f9686392e113d84cd48d859e8",
+      "bytes": 942
+    },
+    {
+      "path": "raw/marker-sac-golden1-3c90948a3823b9910b22efd73f9cd9df7aef2686f892c003607e12a33ed58aca.html.gz",
+      "sha256": "a403d9e51b1f85ac8fcfca301935aba3263feeafceac0add98c0f207f5120914",
+      "bytes": 1047
+    },
+    {
+      "path": "raw/marker-sac-golden1-cid-8a7576853335d94dfee0cf8b69647bb82c5621f2b689006807d9c9a743beade2.html.gz",
+      "sha256": "27e0b67860c2b726aebb6d0f5bbf04db9021fce0827ab11b879ba59ae09e1006",
+      "bytes": 1217
+    },
+    {
+      "path": "raw/marker-sac-golden1-cid.json",
+      "sha256": "05bfbdb75465bd48acb14dfd6ca5eb0db4c2d8df8953338e894d49b1fcade943",
+      "bytes": 812
+    },
+    {
+      "path": "raw/marker-sac-golden1-short-e10f6e72f098d4d2884e897aeb7e36fbe99c3527101f9a1c356d720ffaec149e.html.gz",
+      "sha256": "4b19136d145cbed429d69af599e320b2c8933a333a35b893f4d818cb1aeda8ab",
+      "bytes": 1103
+    },
+    {
+      "path": "raw/marker-sac-golden1-short.json",
+      "sha256": "5e955b771984047c25e0a3f383bde8a86ba6a1606ec440e4bced0d00657e169c",
+      "bytes": 637
+    },
+    {
+      "path": "raw/marker-sac-golden1.json",
+      "sha256": "f9f18f8f35cade34d16d8e7c6848d70c1a24cabfcad039fa7d6fb09b8b2b92a9",
+      "bytes": 731
+    },
+    {
+      "path": "raw/marker-sas-alamodome-d415f9abd40590bda65f45023778e24c1fc8f0685b3303aa3081fbfe19e1ddeb.html.gz",
+      "sha256": "7fd6a6268b134f6b0cff2fffdff3216098db3c3e162d66fefabbcc5ed2ff94b7",
+      "bytes": 1219
+    },
+    {
+      "path": "raw/marker-sas-alamodome.json",
+      "sha256": "8f97d7df277bf6dac508af189a15c3dd6d5f6327fbb4e26c3a78e6f9f32d5c7e",
+      "bytes": 985
+    },
+    {
+      "path": "raw/marker-sas-frost-a37c807907337072c51a423ef8d185de0c2a69ba42ee41e7a32e48a7525f3184.html.gz",
+      "sha256": "205d08ca6968d214e414acd534e62a810cb58ae64a31137e31b5e7dd1b10f53e",
+      "bytes": 1208
+    },
+    {
+      "path": "raw/marker-sas-frost.json",
+      "sha256": "d8943f5050e1346729dfe3e8c5bb3a8a71b6f5c0d6ee0ec359d1420352b740b3",
+      "bytes": 1034
+    },
+    {
+      "path": "raw/marker-sas-hemisfair-84afc2fa51760fe192238a9afceeda370c7b66348c3382597f87a5a31b91dd64.html.gz",
+      "sha256": "9fb260aac1dea0371eb362e376dfe3e5e6043ee6053035d51ed2bb32494f583a",
+      "bytes": 1045
+    },
+    {
+      "path": "raw/marker-sas-hemisfair.json",
+      "sha256": "28c764b63a4f052d870eff3008df805e19a8811be190a9f79b9923f92a000c1d",
+      "bytes": 987
+    },
+    {
+      "path": "raw/marker-sea-coliseum-4d412b03b9949a14833b69f2de8ff853dc86dd16c31a034413e564b640765201.html.gz",
+      "sha256": "2368fe1bc11cbe18a7fe17763ace9e9a2f4af6991a510806f16edf6a6bd3e1a3",
+      "bytes": 1202
+    },
+    {
+      "path": "raw/marker-sea-coliseum.json",
+      "sha256": "da7fa089ec9dde259748ce730d82e75e99f3dcbebb3d2ad8a3f30c8cc2bfa483",
+      "bytes": 993
+    },
+    {
+      "path": "raw/marker-sea-tacoma-3bdbbab2c312388b3525346d823ebe7e85bcec7616a39140141296b45697bf49.html.gz",
+      "sha256": "1913bf719680bc94e268460845b0def1cdcae2688017b4a3c91b6ebc7c0a85c1",
+      "bytes": 1407
+    },
+    {
+      "path": "raw/marker-sea-tacoma.json",
+      "sha256": "56ef4020644b139171a2eb0d84f4bbe960a5ab77dc4dd3ca3940a10112809393",
+      "bytes": 942
+    },
+    {
+      "path": "raw/marker-uta-delta-71b9c5d0aa4dc7f94cb43f2092cbdf5e8f039f089f0cffda1e52af470292165b.html.gz",
+      "sha256": "d2fb571d6b7e1ed2c5e14254d1e2df6834173859f5f8a3d101a204bdc274a9da",
+      "bytes": 1212
+    },
+    {
+      "path": "raw/marker-uta-delta.json",
+      "sha256": "ea32767487163ab0a4e7c21bbae4d1b7caea5b8ca694868bd83542cded20c2f0",
+      "bytes": 980
+    },
+    {
+      "path": "raw/marker-uta-saltpalace-224d801d12358a8839b70df4983527edc1766537a57ce4e072b64ba375fe545e.html.gz",
+      "sha256": "c7c1d4aa182502ac0ed22564b42cfc9d53166331d5c11d5bdef207767ff3ff06",
+      "bytes": 1407
+    },
+    {
+      "path": "raw/marker-uta-saltpalace-historic-ae7478a628716a0950cc794dfe2cdbc013d556a509a5512591ee945903503ef2.html.gz",
+      "sha256": "b34d0075925a0046588cb7d2cc0b7bc7b3e018b4e071bbea531546dc9a051dcb",
+      "bytes": 1411
+    },
+    {
+      "path": "raw/marker-uta-saltpalace-historic.json",
+      "sha256": "507f673ed497c2002600c3900c4b2f85b4df1357f1c19bd4aa3e1e3595bb4e15",
+      "bytes": 1001
+    },
+    {
+      "path": "raw/marker-uta-saltpalace.json",
+      "sha256": "4f957f4b3450a45432abc57213257d136544f9087fffd4a335cac60e20babecd",
+      "bytes": 1050
+    },
+    {
+      "path": "raw/mem-fedex-1b65285cd56f.html.gz",
+      "sha256": "9f1cae32e347e6a730285a25175575ebe08a1be71d1c01831693697e4b946372",
+      "bytes": 15184
+    },
+    {
+      "path": "raw/mem-relocation-0ef8a69a9b6f.html.gz",
+      "sha256": "2b04a62a13744ad35fd2963113d8d80e32fb13446214dc151059a98730dab064",
+      "bytes": 25230
+    },
+    {
+      "path": "raw/min-guide-ac89b1241bf2.pdf",
+      "sha256": "ac89b1241bf211c9ebed75c56a60f19a0e12c3aca516e827d960a596bf64568f",
+      "bytes": 9909531
+    },
+    {
+      "path": "raw/min-guide.txt",
+      "sha256": "5a4801e0d44802fd7c2b52934f48a77f686a5d6534c8eb08a08a91ea599eb530",
+      "bytes": 2881523
+    },
+    {
+      "path": "raw/min-metrodome-state-map-2c501f300f0d.pdf",
+      "sha256": "2c501f300f0d526caa73d6f658a23b49bcb4adb876b2f527ec54f359c644d9f0",
+      "bytes": 26201448
+    },
+    {
+      "path": "raw/min-metrodome-state-map-page26.png",
+      "sha256": "239e4718869633c3e51c30206c5924775ce72a9e59bbdba99667ca1ab12d3c85",
+      "bytes": 295107
+    },
+    {
+      "path": "raw/min-metrodome-state-map.txt",
+      "sha256": "7dc83cc4cfdcc08cd5928bf95249a6d22096585772944333533ce3fe98a16ec7",
+      "bytes": 404375
+    },
+    {
+      "path": "raw/min-target-752d4d37bb78.html.gz",
+      "sha256": "d0ad4d619e17479415e8fd43c9731132b36bd877641992d7fc01fd7df6f7678c",
+      "bytes": 23078
+    },
+    {
+      "path": "raw/nop-directions-fef0416464ba.html.gz",
+      "sha256": "3d6fcd92ac1e931d39287b44f77c9ce307fb61b8986ef9ab0ac4a367df821054",
+      "bytes": 9229
+    },
+    {
+      "path": "raw/nop-guide-eecce8fef42e.pdf",
+      "sha256": "eecce8fef42ef5a43f4a99c4c4d18b2d5a9a25260e13ff3938548557132fa2ae",
+      "bytes": 7857922
+    },
+    {
+      "path": "raw/nop-guide.txt",
+      "sha256": "ffa3008eeb51c2c4551062e12d540e7b6839d2aac6fee490e9155e9fbb0759e2",
+      "bytes": 1412583
+    },
+    {
+      "path": "raw/nop-katrina-23a41f79c6bd.html.gz",
+      "sha256": "06a0f215a3df41890442932d9f9a8971d8676d0cc3cd9964bbe7162cdae0707a",
+      "bytes": 34209
+    },
+    {
+      "path": "raw/nop-record-allocation-017da3016f93.html.gz",
+      "sha256": "58f1806307996b5773d971169e2c35249bbe138d16f89be83a8dcd67423f917f",
+      "bytes": 25650
+    },
+    {
+      "path": "raw/nop-smoothie-9efbf5c557f3.html.gz",
+      "sha256": "eb552d911bbf726ceb82e01b039e4e19ab87c69fd2f1e2f14c66e0fe56782c80",
+      "bytes": 13144
+    },
+    {
+      "path": "raw/nps-forum-d80b263c50db.pdf",
+      "sha256": "d80b263c50db83eb02b2df8c7f132992baa77ca29147e8bb762dd54134cfae36",
+      "bytes": 13367006
+    },
+    {
+      "path": "raw/nps-forum.txt",
+      "sha256": "ff32d87350144eb7281936a589a0df7fed937cebd52d363cd10a5fb32d43bd75",
+      "bytes": 91157
+    },
+    {
+      "path": "raw/nps-por-coliseum-1df158361d6c.pdf",
+      "sha256": "1df158361d6c2c84095774deafe589909f4c8c6f79e721adb5691cb357a5674d",
+      "bytes": 10066363
+    },
+    {
+      "path": "raw/nps-por-coliseum.txt",
+      "sha256": "fce7b7fce2e3dcce7a15dd7888901e030c09fd7d42d4bafe4b74385eca6ebc95",
+      "bytes": 110081
+    },
+    {
+      "path": "raw/oakland-home-e666efcd35a7.html.gz",
+      "sha256": "c8d9ce18a562b702fa79185a207e4751d7e1dd43049c14a5cfb96631687cfc7e",
+      "bytes": 20859
+    },
+    {
+      "path": "raw/ohm-west-historical-ua-a78c4e39d45c.json.gz",
+      "sha256": "7ea4050e123dbcc4fb67b52c8c37dec3dfb629189c8b2688bba75bc3dd100c04",
+      "bytes": 19490
+    },
+    {
+      "path": "raw/okc-ford-address-575689131d19.html.gz",
+      "sha256": "846c8f2cafbaecf242abfccb369c2e5fd9449c2fb4858e732c826279366d71ba",
+      "bytes": 34102
+    },
+    {
+      "path": "raw/okc-paycom-6b012a9b8995.html.gz",
+      "sha256": "d683d6f34b6ddb5cc1d1cef355e0fe3e38e0101446fd7df880db12f836b6a45e",
+      "bytes": 38583
+    },
+    {
+      "path": "raw/osm-arco1-3e32d8a68fdb.xml.gz",
+      "sha256": "07a1d6d48a9b27db33db6c4c700cc5ac30a281223d1941e589c57bfda7d295fc",
+      "bytes": 616
+    },
+    {
+      "path": "raw/osm-pyramid-05ef795dc28f.xml.gz",
+      "sha256": "40456b74ad4710f36861cae057c05b4bad7725520ae1a2e20f5773340344504e",
+      "bytes": 790
+    },
+    {
+      "path": "raw/osm-summit-ff3523ffcac7.xml.gz",
+      "sha256": "bc2da542122d1e50f63afb0cc4ff3aeba09a90517cd79663775ad7936203e855",
+      "bytes": 968
+    },
+    {
+      "path": "raw/phx-directions-6ef23e34ec6b.html.gz",
+      "sha256": "2a2dcfa50c64e7c1ba2ab52eafbf7831ad25c580cf8f4135b765ffd548560ef7",
+      "bytes": 37370
+    },
+    {
+      "path": "raw/phx-first-b99105a1d7b1.html.gz",
+      "sha256": "33e33b337765a48b911a8a49f756ab5e8cc5ba8ca40d2b2405f569557ba5c480",
+      "bytes": 117428
+    },
+    {
+      "path": "raw/phx-footprint-9513f492b848.html.gz",
+      "sha256": "6185d5ae79548ce23b506b79d212f0568c9da6c213618d85839671d232ec3ab6",
+      "bytes": 68672
+    },
+    {
+      "path": "raw/phx-guide-bee550ed892f.pdf",
+      "sha256": "bee550ed892ffba853b119419aebfd4f7df0d5af67030dc506b27041cd91a1e8",
+      "bytes": 24993280
+    },
+    {
+      "path": "raw/phx-guide.txt",
+      "sha256": "281c0b0d314b29329fccb8577b3e166afcefac88670c95479e1442810416a3ef",
+      "bytes": 2214996
+    },
+    {
+      "path": "raw/por-city-689f2e8effce.html.gz",
+      "sha256": "2ccea21b17be85945c1e201bae5764aab37a9b01e252548b99a62731e3c6ef9e",
+      "bytes": 16309
+    },
+    {
+      "path": "raw/por-city-history-4796776470c2.html.gz",
+      "sha256": "03769c49ea0265e41bd4d6179f7078445117a6ff968f87074fc16c58f9b06cfb",
+      "bytes": 16573
+    },
+    {
+      "path": "raw/por-directions-5c14b7165d80.html.gz",
+      "sha256": "468586324bc3e76523a99a9beaf22b85108601ffd3e3ab00fdf270b299535ca5",
+      "bytes": 20805
+    },
+    {
+      "path": "raw/por-memorial-address-5081f3da7da4.html.gz",
+      "sha256": "135c6e3f66269cc0a27bd3220c692cc8c68b98e7819edcbfebd342f6bc6ae243",
+      "bytes": 15190
+    },
+    {
+      "path": "raw/por-rosequarter-7353c5c26aac.html.gz",
+      "sha256": "004403c2090b36c3a34005b1ee428fd35f057b6672c4e1b75c6ed57b07040280",
+      "bytes": 19668
+    },
+    {
+      "path": "raw/sac-arco-bound-1bbc67681446.html.gz",
+      "sha256": "d84e78dfae112130586a5faf6bb3e76fb16a7dda827533dd00ae8d47898228b5",
+      "bytes": 27608
+    },
+    {
+      "path": "raw/sac-arco1-dca-address-a0cb96aa566d.html.gz",
+      "sha256": "26ab851f252313759d662e1e3dee021bc3e52db4286a6b84eb18279c25e9660b",
+      "bytes": 7809
+    },
+    {
+      "path": "raw/sac-arco1-dca-history-a7b5c09af358.html.gz",
+      "sha256": "91340c28c2bc5cf0d70fe149f08ae28bf4f3fd0f0295591aed37fd3ac5da65f4",
+      "bytes": 42816
+    },
+    {
+      "path": "raw/sac-golden1-6eeab2366a3c.html.gz",
+      "sha256": "10ea9437ccf1a4f41f976587633c446b11529ee2695b8c32720621fe105d20a0",
+      "bytes": 40756
+    },
+    {
+      "path": "raw/sac-guide-9836235767fc.pdf",
+      "sha256": "9836235767fcda4652e8c402eba8982b6fa84c1e4b189e8fec5a148a7e8c1f34",
+      "bytes": 13318163
+    },
+    {
+      "path": "raw/sac-guide.txt",
+      "sha256": "6ccbe146c29d3a76a1d2fd2db8586a01b45f659b74908354de9cdf5ea9a44c3e",
+      "bytes": 3183603
+    },
+    {
+      "path": "raw/sas-frost-4177147b71e4.html.gz",
+      "sha256": "4c66d8a68d006916cdd266149e88aef0350c7c68fa0d93d954fef75bff2baa98",
+      "bytes": 23973
+    },
+    {
+      "path": "raw/sas-frost-address-c6c06db112c5.html.gz",
+      "sha256": "51e3b7dad2fa99197dddf785270ec2d221ccc7120e76d5629eadefee2fcf22bd",
+      "bytes": 13400
+    },
+    {
+      "path": "raw/sas-guide-e5e69fbf21c0.pdf",
+      "sha256": "e5e69fbf21c03b03bf1057efcc4493be58cb5394474772ab0df48f8106f3ca2b",
+      "bytes": 7473257
+    },
+    {
+      "path": "raw/sas-guide.txt",
+      "sha256": "e4999294d487610144246d992312db8a7b4b94fc56254dca741a657f33c8bf58",
+      "bytes": 2946092
+    },
+    {
+      "path": "raw/sea-cityreport-25e9ed67217a.pdf",
+      "sha256": "25e9ed67217a3ea5f863001f064f650703b144aa2084ae292bf0c470f3cc95c3",
+      "bytes": 11273831
+    },
+    {
+      "path": "raw/sea-cityreport.txt",
+      "sha256": "16fcfa05b198439697d6889f043998551334837f64249a90165f25c1e36f10db",
+      "bytes": 458315
+    },
+    {
+      "path": "raw/sea-tacoma-address-b8ea3657bac2.html.gz",
+      "sha256": "5b2cccfc196ad0ef45571796b8e7875b296af8a3b4c020845a21c01a21e07610",
+      "bytes": 10551
+    },
+    {
+      "path": "raw/tacoma-home-5f1ce4d2c44f.html.gz",
+      "sha256": "ded0dd3a6c76a7304b0c9c1db88926758772a06a4cd5225ac890ec44879ea073",
+      "bytes": 10800
+    },
+    {
+      "path": "raw/tnm-den-1983-a850c76e6941.pdf",
+      "sha256": "a850c76e694157f793dc1656b2962817544b5cb1b350bf0be922151ae81bd3ec",
+      "bytes": 22292725
+    },
+    {
+      "path": "raw/tnm-den-mcnichols-2aa351bbe7a1.json.gz",
+      "sha256": "e2d947ece9a5e95db555d6cd74c5c73501f342b79310962b013144a1cdb90703",
+      "bytes": 2307
+    },
+    {
+      "path": "raw/tnm-den-mcnichols-684b5ec2a31a.pdf",
+      "sha256": "684b5ec2a31aa8dc408c1f48d98aa64676151a79f1f8589a2da823ff9074a369",
+      "bytes": 10290137
+    },
+    {
+      "path": "raw/tnm-sas-hemisfair-7af50ad92d2c.json.gz",
+      "sha256": "62f88078a07d60c800296d541129aa997d24d07f7ee97da39e6f6eb37d3e5b9d",
+      "bytes": 1732
+    },
+    {
+      "path": "raw/tnm-sas-hemisfair-ad485513f4bc.pdf",
+      "sha256": "ad485513f4bc40b47b99811cedb840f4885af39205f58e9e5d33eb05f8badaae",
+      "bytes": 20449770
+    },
+    {
+      "path": "raw/tnm-uta-saltpalace-e32b9b2f0e35.json.gz",
+      "sha256": "0ffe225d43920b2ee137bc62379cc49bef59a00f827762b7123016caf9c0e301",
+      "bytes": 2619
+    },
+    {
+      "path": "raw/tnm-uta-saltpalace-e4bc0436aaad.pdf",
+      "sha256": "e4bc0436aaadc5fd721c225e19efb1792c21be23cc51d48742b41185cc7dc533",
+      "bytes": 13136381
+    },
+    {
+      "path": "raw/uta-delta-21f3e43876f6.html.gz",
+      "sha256": "73dab5a25da4d76587627d91808d05bde91e64bf6936fc6a4a206be86ef2d7fd",
+      "bytes": 55106
+    },
+    {
+      "path": "raw/uta-guide-841e7de5a024.pdf",
+      "sha256": "841e7de5a0249f1194d5b21601d32072682603e9e318bb9805948c82d942d5fe",
+      "bytes": 19298505
+    },
+    {
+      "path": "raw/uta-guide.txt",
+      "sha256": "a04561d12a1cb08fde82461616cec3632dc01295eed559b4260e5c70d6c8b4b0",
+      "bytes": 3112496
+    },
+    {
+      "path": "raw/uta-history-01b1988c4147.html.gz",
+      "sha256": "b75b062cc0c33524ee658ee8f533371a0de080b6d4900a3212c8543c7c2e455f",
+      "bytes": 40907
+    },
+    {
+      "path": "root-historical-points.json",
+      "sha256": "0da5ff6649fe59cf63718ef2053e48f473abd16428ef07ef7c041e46c19f9825",
+      "bytes": 6696
+    },
+    {
+      "path": "sources.json",
+      "sha256": "3deafeb9f82d2a1908867198d175a720e043a42660e3a8161b29e2fbabd4966a",
+      "bytes": 54936
+    },
+    {
+      "path": "usgs-topo-discovery.json",
+      "sha256": "c59aa6770832baf3026c8aa6c55f1f668dd53c5163d1d44950014d5eb5ddee4d",
+      "bytes": 19088
+    },
+    {
+      "path": "usgs-topo-files.json",
+      "sha256": "511fb7768dc5cfaa4dae1e05aa556e19b635fba04774722e857c6e65167157bb",
+      "bytes": 6940
+    },
+    {
+      "path": "venue-label-conflicts.csv",
+      "sha256": "ea63a997c61f4ff87f9ddfc886ca7f3e32804bcc6a7ad5dbdef6d322de9be59d",
+      "bytes": 5080
+    },
+    {
+      "path": "verify-archive.py",
+      "sha256": "e32ff2c7b9be23eeff584ee6f127db36d74bbc671452f566b2ccd9dbad5ee779",
+      "bytes": 2568
+    },
+    {
+      "path": "verify-boundaries.py",
+      "sha256": "e49ce025076330d56e70d0d42b91628b2bf5bbc4343093d1826531dc772b3a96",
+      "bytes": 2660
+    },
+    {
+      "path": "western-arenas.json",
+      "sha256": "b645639051f0741c88eb4ae5432116ff79592157052e38ef7cfb47c00acaa108",
+      "bytes": 82766
+    }
+  ],
+  "count": 355,
+  "bytes": 419886489
+}

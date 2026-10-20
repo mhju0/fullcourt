@@ -1,0 +1,125 @@
+{
+  "url": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/12/query?where=gaz_name+LIKE+%27%25Coliseum%25%27+OR+gaz_name+LIKE+%27%25Arena%25%27+OR+gaz_name+LIKE+%27%25Boston+Garden%25%27&outFields=%2A&outSR=4326&f=json",
+  "data": {
+    "displayFieldName": "gaz_name",
+    "fieldAliases": {
+      "OBJECTID": "OBJECTID",
+      "gaz_id": "gaz_id",
+      "gaz_name": "gaz_name",
+      "gaz_featureclass": "gaz_featureclass",
+      "fcode": "fcode",
+      "state_alpha": "state_alpha",
+      "county_name": "county_name",
+      "objectid_1": "objectid_1",
+      "isunknowncoords": "isunknowncoords",
+      "incounty_id": "incounty_id"
+    },
+    "geometryType": "esriGeometryMultipoint",
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "gaz_id",
+        "type": "esriFieldTypeInteger",
+        "alias": "gaz_id"
+      },
+      {
+        "name": "gaz_name",
+        "type": "esriFieldTypeString",
+        "alias": "gaz_name",
+        "length": 120
+      },
+      {
+        "name": "gaz_featureclass",
+        "type": "esriFieldTypeString",
+        "alias": "gaz_featureclass",
+        "length": 50
+      },
+      {
+        "name": "fcode",
+        "type": "esriFieldTypeInteger",
+        "alias": "fcode"
+      },
+      {
+        "name": "state_alpha",
+        "type": "esriFieldTypeString",
+        "alias": "state_alpha",
+        "length": 1073741822
+      },
+      {
+        "name": "county_name",
+        "type": "esriFieldTypeString",
+        "alias": "county_name",
+        "length": 100
+      },
+      {
+        "name": "objectid_1",
+        "type": "esriFieldTypeInteger",
+        "alias": "objectid_1"
+      },
+      {
+        "name": "isunknowncoords",
+        "type": "esriFieldTypeInteger",
+        "alias": "isunknowncoords"
+      },
+      {
+        "name": "incounty_id",
+        "type": "esriFieldTypeInteger",
+        "alias": "incounty_id"
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 1525,
+          "gaz_id": 2086564,
+          "gaz_name": "Point Arena Air Force Station (historical)",
+          "gaz_featureclass": "Military",
+          "fcode": 67300,
+          "state_alpha": "CA",
+          "county_name": "Mendocino",
+          "objectid_1": 1367701,
+          "isunknowncoords": 2,
+          "incounty_id": 1036628
+        },
+        "geometry": {
+          "points": [
+            [
+              -123.54751351711207,
+              38.89139384660018
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 9269,
+          "gaz_id": 1074234,
+          "gaz_name": "Arena (historical)",
+          "gaz_featureclass": "Populated Place",
+          "fcode": 61500,
+          "state_alpha": "OH",
+          "county_name": "Paulding",
+          "objectid_1": 342765,
+          "isunknowncoords": 2,
+          "incounty_id": 1191869
+        },
+        "geometry": {
+          "points": [
+            [
+              -84.63134838799735,
+              41.13533518174995
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}
