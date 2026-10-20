@@ -69,3 +69,22 @@ writing `officials-games.json` or either published JSON. The count floor detects
 loss; it does not prove membership continuity or fresh provider fidelity. The boundary tests
 use field projections of retained ESPN responses with their original cache hashes, and check
 that refusal preserves existing outputs. Published figures are unchanged by this guard work.
+
+
+## Database-derived HTML cutover
+
+Database-backed static/prerendered pages and ISR output are generated artifacts too.
+For a coordinated data correction, keep readers gated and writers paused while the root:
+
+1. Applies the approved correction and independently verifies its exact AFTER state.
+2. Builds the matching source against that verified state. If reusing a build made against
+   earlier data, explicitly invalidates and re-renders the affected output. Waiting for an
+   ISR interval does not prove that a stale response has been replaced.
+3. Checks the actual staged homepage SSR/prerendered headline, game count and baseline/lift,
+   followed by its hydrated browser state and corresponding API values, before promotion.
+4. Verifies canonical HTML/browser and APIs on the promoted deployment before restoring
+   normal readers/writers and recording acceptance.
+
+The [V11 release-order record](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
+retains a failure where all API comparisons passed but a pre-apply homepage build still
+served old values. API-only parity cannot establish rendered-page acceptance.

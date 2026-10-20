@@ -197,3 +197,37 @@ the original into a public release tree or silently update the frozen source pro
 Local checks for this correction: two targeted metadata tests and all 26 native Node tests
 pass; original-byte comparison verifies exactly one query-value substitution, valid JSON
 and private-file mode 0600. These checks did not contact the provider or test key validity.
+
+
+## V11: production build before data apply, 2026-10-20
+
+The root built production source `6ddf73f46a36e664fb505cd160ad92d324e748eb`
+(deployment shorthand `etnyt` in the private release receipts) before applying the approved
+database correction, intending to shorten the maintenance window. The homepage's
+database-derived prerender/ISR output, with `revalidate = 86400`, therefore retained the
+old headline: 65.2%, 3,901 games and +5.3 percentage points. After the approved apply,
+all 86 actual API responses / 50,581 compared leaves matched the corrected state, while
+the previously built homepage HTML still showed the earlier values. API parity did not
+establish page acceptance.
+
+Actual canonical browser checks caught the stale homepage at both 390px and 1440px.
+The other ten selected browser states and all four forced-logo-fallback cases passed.
+The root immediately restored maintenance; scheduled writers remain paused. The root
+owns this release-order error. Remediation rebuilds the same `6ddf73f4` source only after
+the database matches exact AFTER hash
+`83fc2c66f301f6ac115d4b2fdfe45883b5304d33a041569712a94fe3cbb18fa7`;
+staged deployment shorthand `4i7sjdouf` is building at this entry. No SQL change, refit,
+coefficient change or new analytical publication is part of that remediation.
+
+**Status: remediation pending; canonical acceptance is not established.** Preserve the
+failed HTML/browser receipts and subsequent rebuild/readback separately. Root must append
+the actual final deployment/SHA and canonical browser/API outcome before closing this entry.
+The ignored release packet holds operational proof; this ledger records the recurrence rule.
+
+Prevention: apply and independently verify the approved data state before building any
+database-derived static/prerendered output. If an earlier build must be reused, explicitly
+invalidate and re-render its affected output and prove the resulting HTML. Before promotion,
+inspect the actual staged homepage SSR/prerendered headline, denominator and baseline/lift,
+then verify the hydrated browser at relevant widths and the corresponding APIs against the
+same accepted state. A successful deployment, correct APIs or an ISR interval alone cannot
+accept the release. Follow the [HTML cutover runbook](../../GENERATED_ARTIFACTS.md#database-derived-html-cutover).

@@ -244,3 +244,15 @@ accepted arena outputs; all six local AFTER tables match the frozen manifest. Bo
 validate and old CSV/receipt/report copies remain archived. See the
 [maintenance record](research/2026-10-20-repository-maintenance.md#arena-closure-follow-up-for-v109--2026-10-20).
 No cleanup publication or production action is claimed.
+
+
+## Homepage cutover readback failed; rebuild pending — 2026-10-20
+
+The root applied the approved arena manifest and verified exact production AFTER `83fc2c66…`,
+but had built source `6ddf73f4` before that apply to shorten the maintenance window. Canonical
+browser checks at 390/1440 caught old prerendered homepage values despite 86 APIs / 50,581
+leaves passing. The root restored maintenance immediately and kept scheduled writers paused.
+The same source is rebuilding against the corrected database (`4i7sjdouf` staged shorthand);
+no SQL/model change is involved. [V11](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
+records the root's sequencing error and the required staged HTML/browser plus API gate.
+Remediation and canonical acceptance remain pending; root appends the measured final outcome.
