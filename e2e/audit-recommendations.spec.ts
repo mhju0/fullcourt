@@ -13,6 +13,7 @@ for (const width of [390, 1440]) {
     });
     await page.goto("/games?season=2024-25&date=2024-12-25");
     await expect(page.getByText("Checked", { exact: true })).toBeVisible();
+    await page.getByText("About rest advantage and game status", { exact: true }).click();
     await expect(page.getByText(/Scores are final-only\. LIVE is estimated/)).toBeVisible();
     await page.getByText("How to read the board", { exact: true }).click();
     const guide = page.locator("details").filter({ hasText: "How to read the board" });

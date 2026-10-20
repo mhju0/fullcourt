@@ -22,7 +22,7 @@ import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import type { SlateDay } from "@/lib/game-slate-machine"
-import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
+import { LEAD, SPACE, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -412,7 +412,7 @@ export default function GamesPage() {
         <PageHeader
           eyebrow="GAME SLATE · REST ADVANTAGE"
           title="Games"
-          description="Compare each team’s schedule. Rest gap is a model-score difference, not a win probability."
+          description="Compare the schedule behind each matchup."
         />
         {/* A span, not a div: `.page-intro > div` would stretch it. Phones get it in the tabs row. */}
         <span className="hidden sm:block">
@@ -422,7 +422,7 @@ export default function GamesPage() {
       <GamesViewTabs current="/games" />
       <div className="grid items-start gap-8">
       <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
-      <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
+      <section aria-label="Choose a game date" className="flex flex-col gap-2 sm:rounded-[var(--term-radius)] sm:border sm:border-[var(--term-border)] sm:bg-[var(--term-surface)] sm:p-4">
         <div className="flex flex-wrap items-end justify-between gap-2">
               <SeasonSelector
                 id="nba-season"
@@ -665,11 +665,11 @@ export default function GamesPage() {
         gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
         avgRestAdv={avgRestAdv}
         markedEdgeGames={markedEdgeGames}
-        className="grid"
+        className="order-2 grid sm:order-none"
       />
 
       {/* Matchups section */}
-      <div className="flex flex-col gap-2">
+      <div className="order-1 flex flex-col gap-2 sm:order-none">
         <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3 border-b border-[var(--term-border)]">
           <SectionDivider
             label="Matchups"
@@ -689,12 +689,13 @@ export default function GamesPage() {
           <GameSlateRefreshNotice slate={slate} />
         </div>
         <GameSlateRefreshWarning message={slate.refreshMessage} />
-        <p className="m-0" style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}>
-          Scores are final-only. LIVE is estimated from scheduled tip-off. Checked is when this view was fetched, not when the source last changed.
-        </p>
-        {/* After the list on a phone, so the first game stays above the fold. */}
-        <BoardGuide className="max-sm:order-last" />
         <Matchups slate={slate} />
+        <details className="fc-disclosure">
+          <summary>About rest advantage and game status</summary>
+          <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Rest gap is a model-score difference, not a win probability. Conditions for unplayed games are projected from the schedule.</p>
+          <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Scores are final-only. LIVE is estimated from scheduled tip-off. Checked is when this view was fetched, not when the source last changed.</p>
+        </details>
+        <BoardGuide />
       </div>
       </div>
       <aside aria-label="Upcoming edges" className="flex min-w-0 flex-col gap-6">

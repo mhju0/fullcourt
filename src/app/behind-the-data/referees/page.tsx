@@ -9,6 +9,7 @@ import {
   ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import { DataTable } from "@/components/ui/data-table";
 import driftData from "@/data/referee-career-drift.json";
 import legendsData from "@/data/referee-legends.json";
 import styleData from "@/data/referee-foul-style.json";
@@ -59,26 +60,25 @@ export default function RefereeMethodPage() {
       topic="referees"
       eyebrow="BEHIND THE DATA · ARCHIVE"
       title="Archived referee methods"
-      description="How foul patterns are compared across officials' games, with season adjustments, sample thresholds, and tests against random assignments. Calls are recorded at crew level."
+      description="How foul patterns are compared across officials' games: season adjustments, sample bars, and tests against random assignment. Calls are credited to the whole crew."
     >
       <Link href="/behind-the-data/referees/archive" className="reference-button w-fit">Open the archived foul-pattern table →</Link>
       <Section label="THE UNIT IS A CREW'S GAME" title="What an official's row represents">
-        <Prose>Three officials work each game, but the play-by-play does not identify who made a call. Each foul is attributed to the crew.</Prose>
-        <Formula>{`a game credits all three officials equally
-     ⇒ an official's rate includes calls made by their crewmates
-     ⇒ it does not isolate that official's individual effect`}</Formula>
-        <Prose>Officials work with different partners over time. This can reduce the influence of one crewmate, but it does not establish random assignments or remove all confounding. The figures describe games an official worked, not calls they made.</Prose>
+        <Prose>Three officials work each game, but the play-by-play does not say who made a call. So every foul is credited to the whole crew.</Prose>
+        <Formula>{`each game counts for all 3 officials
+  ⇒ a rate includes crewmates' calls
+  ⇒ it cannot isolate one official`}</Formula>
+        <Prose>Officials rotate partners over time, which softens any one crewmate&rsquo;s pull. That is not random assignment, so it does not remove every confound. The figures describe games an official worked, not calls they made.</Prose>
       </Section>
       <Section label="WHERE THE NUMBERS COME FROM" title="The research samples" disclosure>
         <Prose>
-          The analysis uses cached ESPN play-by-play and box scores, so each test can use the
-          same game records. These are archived studies through {style.lastSeason}, not a
-          current-season officiating feed. The seasonal Last Two Minute reports use a
-          separate collection and publication process.
+          The studies use saved ESPN play-by-play and box scores, so every test reads the same
+          game records. They are archived studies through {style.lastSeason}, not a live
+          officiating feed. The league&rsquo;s Last Two Minute reports are a separate source.
         </Prose>
         <Prose>
-          The <strong>three game counts</strong> reflect different input requirements and
-          extraction dates. Each analysis reports its own denominator.
+          There are <strong>three game counts</strong>, because each study needs different
+          inputs and was extracted at a different time. Each reports its own total.
         </Prose>
         <ValueGrid
           values={[
@@ -88,30 +88,27 @@ export default function RefereeMethodPage() {
           ]}
         />
         <Note>
-          Timing covers more games than the foul mix because a play stream survives in games whose
-          box score does not. The folklore chapter covers more than either because it was rebuilt
-          later, on a filter that admits the games where ESPN lists a <em>standby fourth</em>{" "}
-          official alongside the three who worked, a case the earlier extracts dropped.
-          Playoff games are counted only there, and only for the questions that are about the
-          postseason.
+          Timing covers more games than the foul mix, because some games have a play stream but
+          no box score. The folklore study covers more than either. It was rebuilt later and
+          keeps games where ESPN lists a <em>standby fourth</em> official, which the earlier
+          extracts dropped. Only the folklore study uses playoff games, and only for its
+          playoff questions.
         </Note>
       </Section>
 
       <Section label="HOW A TENDENCY IS MEASURED" title="Comparing foul shares within each season" disclosure>
         <Prose>
-          Officiating changes with the rulebook. The league called a different game in{" "}
-          {style.firstSeason} than in {style.lastSeason}, so comparing an official&rsquo;s raw
-          rate to a pooled average would credit them with the era they happened to work in. Every
-          figure is therefore a deviation from the league&rsquo;s <em>own</em> average in the
-          same season, and on <strong>shares</strong> rather than counts wherever pace could
-          otherwise masquerade as a tendency.
+          The rulebook changes, and so does the way games are called. {style.firstSeason} and{" "}
+          {style.lastSeason} are different games. So each figure is a gap from the
+          league&rsquo;s average <em>in the same season</em>. It uses <strong>shares</strong>{" "}
+          of fouls, not counts, wherever game pace could pass for a tendency.
         </Prose>
         <Formula>
-          {`deviation = official's share of foul type T
-            − the league's share of T, that season
+          {`gap = official's share of foul type
+      − league share, same season
 
-emphasised when |z| ≥ ${NOTABLE_Z}, at that official's own sample size
-published only for officials with ≥ ${MIN_GAMES} games`}
+bold   when |z| ≥ ${NOTABLE_Z}
+shown  official has ${MIN_GAMES}+ games`}
         </Formula>
         <ValueGrid
           values={[
@@ -121,106 +118,116 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           ]}
         />
         <Note>
-          The bar cuts both ways and is meant to. At |z| ≥ {NOTABLE_Z}, about one cell in
-          twenty clears it from noise alone, roughly {CHANCE_TYPE_CELLS} of the {TYPE_CELLS}{" "}
-          type cells in this table, so a bold cell does not establish an individual tendency. The page does not lead with a name on
-          that basis. Muted cells are shown rather than hidden, because a table of only the
-          significant ones invites the reader to find a pattern that was selected for them.
+          About one cell in twenty clears |z| ≥ {NOTABLE_Z} by chance alone. That is roughly{" "}
+          {CHANCE_TYPE_CELLS} of the {TYPE_CELLS} cells in this table, so a bold cell does not
+          prove an individual tendency, and the page does not lead with a name. Muted cells stay
+          visible. A table of only the striking cells would hand the reader a pattern picked
+          for them.
         </Note>
       </Section>
 
       <Section label="THE WINDOW" title="Why each row uses the latest 200 games" disclosure>
         <Prose>
-          Careers in this data run from {MIN_GAMES} games to more than 600, and a z-score bar
-          moves with sample size: an effect that clears |z| ≥ {NOTABLE_Z} at n = 700
-          may not clear it at n = 200. The recorded foul mix also changes over time. A
-          pre-registered drift test split every official with ≥{" "}
-          {driftData.minCareerForSplit} games into their most recent{" "}
-          {driftData.windowGames} games and everything earlier:{" "}
-          {driftData.drift.beyond} of {driftData.drift.cells} cells sat beyond |zΔ| ≥{" "}
-          {NOTABLE_Z} ({driftData.drift.sharePct}%), where chance produces about{" "}
-          {driftData.drift.chancePct}%. This suggests that career averages can obscure changes
-          over time.
+          Careers here run from {MIN_GAMES} games to more than 600. A z-score bar moves with
+          sample size: an effect that clears |z| ≥ {NOTABLE_Z} over 700 games may not over 200.
+          Foul patterns also drift over a career.
         </Prose>
         <Prose>
-          So since 2026-08-24 the table scores every official on their{" "}
-          <strong>most recent {driftData.windowGames} games</strong>, the publication bar, so
-          every published row is a full window, the same n and the same bolding bar on every
-          line. At n = {driftData.windowGames} the bar is harder to clear, so
-          the table bolds {WINDOW_BOLD_CELLS} type cells where the career basis
-          bolded {CAREER_BOLD_CELLS}. The full-span figures ship alongside in
-          the same artifact for anyone comparing.
+          A pre-registered test split every official with {driftData.minCareerForSplit}+ games
+          into their latest {driftData.windowGames} games and everything before.{" "}
+          {driftData.drift.beyond} of {driftData.drift.cells} cells moved beyond |zΔ| ≥{" "}
+          {NOTABLE_Z} ({driftData.drift.sharePct}%), where chance gives about{" "}
+          {driftData.drift.chancePct}%. Career averages can hide real change.
+        </Prose>
+        <Prose>
+          So since 2026-08-24, each official is scored on their{" "}
+          <strong>latest {driftData.windowGames} games</strong>. Every row has the same sample
+          and the same bar. That bar is harder to clear at {driftData.windowGames} games: the
+          table bolds {WINDOW_BOLD_CELLS} cells, where career totals bolded{" "}
+          {CAREER_BOLD_CELLS}. The career figures are in the same published file.
         </Prose>
         <Note>
-          The per-season split was measured in the same pre-registration and, against
-          expectation, cleared its declared bars ({driftData.seasonSplit.sharePct}% of
-          official-season cells beyond |z| ≥ {NOTABLE_Z};{" "}
-          {driftData.seasonSplit.signAgreementPct}% within-official sign agreement). It still
-          is not shown in the browse table because adding a season axis would make it much
-          larger. The published artifact retains those results.
+          The same pre-registration tested a season-by-season split. It cleared its bars (
+          {driftData.seasonSplit.sharePct}% of official-season cells beyond |z| ≥ {NOTABLE_Z};{" "}
+          {driftData.seasonSplit.signAgreementPct}% sign agreement within an official). It is
+          left out of the table only because a season axis would make it far larger. The
+          published file keeps those results.
         </Note>
       </Section>
 
       <Section label="THE TEST THAT CARRIES THE VERDICT" title="Comparing officials with random assignments" disclosure>
         <Prose>
-          Counting how many officials clear a bar is not enough to say officials differ, because
-          some always will. The verdict comes instead from a single question asked once:{" "}
-          <strong>is the spread between officials wider than the spread you get by dealing the
-          same games out at random?</strong>
+          Some officials will always clear a bar, so counting them proves nothing. The verdict
+          comes from one question:{" "}
+          <strong>are officials more spread out than the same games dealt out at random?</strong>
         </Prose>
         <Formula>
-          {`observed:  the spread of per-official means
-null:      redraw each official's games at random from the
-           same seasons, holding games-per-season fixed
-           (2,000 times)
+          {`observed  spread of officials' means
 
-verdict:   how often the null's spread reaches the observed one`}
+null      reshuffle each official's
+          games within each season,
+          2,000 times
+
+verdict   how often the null spread
+          reaches the observed one`}
         </Formula>
         <Prose>
-          Holding games-per-season fixed is what stops an era doing the work: two officials who
-          worked different decades cannot be made to differ by the league&rsquo;s foul rate
-          changing between them. And because it is <em>one</em> test rather than one per official,
-          the test does not select an individual official from many comparisons. Other
-          questions on the page still need their own treatment of multiple testing.
+          Reshuffling within seasons keeps the era out of it: two officials from different
+          decades cannot look different just because league foul rates changed. And because it
+          is <em>one</em> test, not one per official, it cannot single out a name by luck. Other
+          questions on the page still need their own correction for multiple tests.
         </Prose>
       </Section>
 
       <Section label="INTERPRETING AN EXTREME PAIR" title="Unusual official-player records and chance" disclosure>
         <Prose>
-          The folklore chapter compares official-player records with the extremes expected
-          from checking many pairs. An unusual record alone does not establish bias.
+          Check enough official-and-player pairs and some records will look extreme by chance.
+          The folklore study compares each record with that expectation. An unusual record
+          alone does not show bias.
         </Prose>
-        <Formula>
-          {`pairs examined                       ${floor.pairsTested.toLocaleString()}
-minimum shared playoff games        ${floor.minSharedGames}
-
-approximate minimum-p reference     ${floor.mostExtremePFromNoise}
-the most famous pair actually       ${legends.legend.p}
-
-cleared p < 0.01                    ${floor.clearedPoint01}   (simple reference ${floor.expectedPoint01})
-cleared p < 0.05                    ${floor.clearedPoint05}   (simple reference ${floor.expectedPoint05})`}
-        </Formula>
+        <DataTable
+          rows={[
+            { label: "Pairs examined", value: floor.pairsTested.toLocaleString() },
+            { label: "Minimum shared playoff games", value: String(floor.minSharedGames) },
+            { label: "Smallest p expected from chance", value: String(floor.mostExtremePFromNoise) },
+            { label: "The most famous pair", value: String(legends.legend.p) },
+          ]}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "MEASURE", cell: (r) => r.label },
+            { label: "VALUE", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.value },
+          ]}
+        />
+        <DataTable
+          rows={[
+            { cutoff: "p < 0.01", found: floor.clearedPoint01, chance: floor.expectedPoint01 },
+            { cutoff: "p < 0.05", found: floor.clearedPoint05, chance: floor.expectedPoint05 },
+          ]}
+          rowKey={(r) => r.cutoff}
+          columns={[
+            { label: "CUTOFF", cell: (r) => r.cutoff },
+            { label: "PAIRS UNDER IT", unit: "FOUND", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.found },
+            { label: "BY CHANCE", unit: "EXPECTED", numeric: true, style: { color: "var(--term-text-muted)" }, cell: (r) => r.chance },
+          ]}
+        />
         <Prose>
-          Across {floor.pairsTested.toLocaleString()} pairs, a rough minimum-p reference is
-          about {floor.mostExtremePFromNoise}. This 1/N reference approximates the expected
-          minimum for independent tests with uniformly distributed null p-values. These
-          pairs share games and players, so it is not a calibrated minimum-p distribution
-          or an adjusted significance threshold. The featured pair’s result is less extreme
-          than that reference. The count references use N multiplied by each p-value cutoff;
-          they are descriptive comparisons, not a global significance test.
+          With {floor.pairsTested.toLocaleString()} pairs, the smallest p-value chance alone
+          should produce is about {floor.mostExtremePFromNoise} (one divided by the number of
+          pairs). The famous pair is less extreme than that. The chance counts are the number of
+          pairs times each cutoff.
         </Prose>
         <Note>
-          One-sided and two-sided p-values are not interchangeable. The reference accompanies
-          a <strong>two-sided</strong> sweep, so every pair compared against it is quoted
-          two-sided too. That consistency does not remove the approximation’s limitations.
+          These are rough references, not a significance test. They assume independent pairs,
+          and these pairs share games and players. One-sided and two-sided p-values also differ;
+          the sweep is <strong>two-sided</strong>, so every pair is quoted two-sided too.
         </Note>
       </Section>
 
       <Section label="FIXED BEFORE ANYTHING WAS RUN" title="Preregistered questions and decision rules" disclosure>
         <Prose>
-          Testing many questions and reporting only favorable results can exaggerate the
-          evidence. The questions and decision rules were committed <strong>before</strong>{" "}
-          the analyses ran.
+          Testing many questions and reporting only the good ones exaggerates the evidence. So
+          the questions and decision rules were written down <strong>before</strong> any
+          analysis ran.
         </Prose>
         <ValueGrid
           values={[
@@ -230,17 +237,14 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (simple reference 
           ]}
         />
         <Prose>
-          Two consequences are visible on the surface. The Q4 &ldquo;clutch&rdquo; question was{" "}
-          <em>gated</em> behind a coarser per-quarter test, so the narrow window was only allowed
-          to proceed if the broad test passed. It passed; the narrow window then ran and came
-          back null, and that result is published.
-          And the five famous claims were named in writing before the postseason was even fetched,
-          reducing the risk of choosing claims after seeing their results.
+          Two results of that. The Q4 &ldquo;clutch&rdquo; question could only run if a broader
+          per-quarter test passed first. It passed; the clutch test then came back null, and
+          that is published. And the five famous claims were named in writing before the
+          playoff data was even fetched, so none was chosen after seeing its result.
         </Prose>
         <Note>
-          The protocol required publishing null results. The reported tests include player
-          foul rates, player win records, star foul trouble, crowd effects, and make-up calls,
-          including those that did not meet their declared evidence thresholds.
+          Every null is published: player foul rates, player win records, star foul trouble,
+          crowd effects and make-up calls, including tests that missed their evidence bars.
         </Note>
       </Section>
 
@@ -250,8 +254,8 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (simple reference 
             "It cannot attribute a call to an individual. Each figure describes the games an official worked with two crewmates.",
             "It cannot judge whether a call was correct. The figures measure call frequency, not accuracy.",
             `It cannot see before ${style.firstSeason}. Named officials are available further back, but the play-by-play detail these measures need is not.`,
-            "It cannot test the playoff legends properly. A pair shares a handful of postseason games in a lifetime; both eras of the most famous claim fall below the minimum this page requires before it will judge a pair at all.",
-            "It cannot undo how a claim was found. A record the public discovered by scanning outcomes can only be confirmed on games nobody had seen when they found it, and there are rarely enough of those.",
+            "It cannot properly test the playoff legends. A pair shares only a handful of playoff games in a career; both eras of the most famous claim fall below this page's minimum for judging a pair.",
+            "It cannot undo how a claim was found. A record spotted by scanning past results can only be confirmed on games nobody had seen yet, and there are rarely enough of those.",
             "It cannot separate officiating from changes in how teams play while leading or trailing. The score-state gradient is an association, not a causal estimate.",
           ]}
         />

@@ -18,12 +18,18 @@ async function stubAnalysis(page: Page) {
 
 test("season fallback describes unavailable rest coverage even when final scores exist", async ({ page }) => {
   await stubAnalysis(page);
+  await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+    data: { seasons: ["2025-26"] }, error: null,
+  } }));
+  await page.route("**/api/season-readiness?*", route => route.fulfill({ json: {
+    data: { season: "2026-27", ready: true, expectedAfterDate: null }, error: null,
+  } }));
   await page.route("**/api/season-report?*", route => {
     const season = new URL(route.request().url()).searchParams.get("season")!;
     return route.fulfill({ json: { data: report(season, season === "2026-27"), error: null } });
   });
   await page.goto("/season");
-  await expect(page.getByTestId("season-default-note")).toContainText("Showing the 2025-26 report while 2026-27 season results are unavailable.");
+  await expect(page.getByTestId("season-default-note")).toContainText("Showing the 2025-26 report.");
   await expect(page.getByTestId("season-default-note")).not.toContainText("no completed games yet");
   await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
 });
@@ -92,6 +98,7 @@ for (const count of [1200, 1230]) {
     await page.route("**/api/schedule-disparity?*", route => route.fulfill({ json: { data: schedule(count), error: null } }));
     await page.route("**/api/season-report?*", route => route.fulfill({ json: { data: report("2026-27", true), error: null } }));
     await page.goto("/schedule?season=2026-27");
+    await page.getByText("Why these totals can change", { exact: true }).click();
     await expect(page.getByText("This season has unsettled games", { exact: false })).toBeVisible();
     await expect(page.getByText("compared games are projected", { exact: false })).toBeVisible();
     const missing = page.getByTestId("schedule-missing-fixtures");

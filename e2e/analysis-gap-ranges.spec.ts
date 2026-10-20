@@ -58,7 +58,7 @@ const backtest: AnalysisResponse = {
   seasonWinRates: seasons,
 };
 
-test("each gap-size bar opens exactly its own games, with the home team as the rested side", async ({ page }) => {
+test("each gap-size bar selects a group before browsing exactly its own games, with the home team as the rested side", async ({ page }) => {
   const searches: URLSearchParams[] = [];
   await page.route("**/api/analysis", (route: Route) => route.fulfill({ json: { data: backtest, error: null } }));
   await page.route("**/api/games/search?*", (route) => {
@@ -80,8 +80,15 @@ test("each gap-size bar opens exactly its own games, with the home team as the r
   await expect(rangeChart.getByText("n=3,756", { exact: true })).toBeVisible();
   // The Small bar is a sliver with its whisker drawn across it; a click there still opens it.
   await rangeChart.locator(".recharts-bar-rectangle path").first().click();
+  await expect(page.getByRole("status").filter({ hasText: "Small gap selected" })).toBeVisible();
+  await expect(page.getByLabel("Rest gap filter")).toHaveValue("");
+  await page.getByRole("button", { name: "Browse selected games" }).click();
   await expect(page.getByLabel("Rest gap filter")).toHaveValue("small");
+  await expect(page.getByLabel("Rest gap filter")).toBeFocused();
   await rangeChart.locator(".recharts-bar-rectangle path").nth(2).click();
+  await expect(page.getByRole("status").filter({ hasText: "Large gap selected" })).toBeVisible();
+  await expect(page.getByLabel("Rest gap filter")).toHaveValue("small");
+  await page.getByRole("button", { name: "Browse selected games" }).click();
   await expect(page.getByLabel("Rest gap filter")).toHaveValue("large");
   await expect.poll(() => searches.at(-1)?.get("gap")).toBe("large");
   expect(searches.at(-1)?.get("minRA")).toBeNull();

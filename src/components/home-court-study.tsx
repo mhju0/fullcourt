@@ -18,7 +18,7 @@ import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
 import { liftOverBaseline } from "@/lib/rest-split-facts";
 import { KeepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
-import { WIDTH } from "@/lib/terminal-styles";
+import { termSelectClass, termSelectStyle, WIDTH } from "@/lib/terminal-styles";
 
 const muted = "text-[var(--term-text-muted)]";
 const VIEW = { width: 900, height: 330, left: 56, right: 34, top: 22, bottom: 42 };
@@ -135,11 +135,17 @@ export function HomeCourtStudy() {
             <input type="checkbox" checked={showLarge} onChange={(event) => setShowLarge(event.target.checked)} aria-describedby="home-court-caveat" />
             <span>Show large rest gaps (5+)</span>
           </label>
+          <label className="flex w-full flex-col gap-2 sm:w-64">
+            <span className="text-[15px]">Inspect season</span>
+            <select className={`${termSelectClass} min-h-11 w-full`} style={{ ...termSelectStyle, fontSize: 16 }} value={selected?.season ?? ""} onChange={(event) => setSelectedSeason(event.target.value)}>
+              {rows.map((row) => <option key={row.season} value={row.season}>{row.season}{row.isComplete ? "" : " · season to date"}</option>)}
+            </select>
+          </label>
         </div>
-        <div className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Chart legend">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6" aria-label="Chart legend">
           <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.homeSwatch}`} aria-hidden="true" />Home win rate</span>
           <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.restSwatch}`} aria-hidden="true" />Rested at home · 0.5+</span>
-          {showLarge ? <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.largeSwatch}`} aria-hidden="true" />Rested at home · 5+</span> : null}
+          {showLarge ? <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.largeSwatch}`} aria-hidden="true" />Rested at home · 5+ (raw)</span> : null}
         </div>
         <HomeCourtChart rows={rows} selected={selected} onSelect={setSelectedSeason} showLarge={showLarge} />
         {selected ? <SeasonInspection row={selected} showLarge={showLarge} /> : null}
@@ -205,7 +211,6 @@ export function HomeCourtStudy() {
 
 function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonly HomeCourtStudySeason[]; selected: HomeCourtStudySeason | null; onSelect: (season: string) => void; showLarge: boolean }) {
   const frameRef = useRef<HTMLDivElement>(null);
-  const pointRef = useRef<SVGGElement>(null);
   const [width, setWidth] = useState(VIEW.width);
   useEffect(() => {
     const frame = frameRef.current;
@@ -260,7 +265,6 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
         ))}
         {selected ? (
           <g
-            ref={pointRef}
             className={styles.point}
             role="button"
             tabIndex={0}
@@ -278,7 +282,6 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
               if (destination !== null) {
                 event.preventDefault();
                 onSelect(rows[destination].season);
-                requestAnimationFrame(() => pointRef.current?.focus());
               }
             }}
           >
@@ -297,18 +300,19 @@ function SeasonInspection({ row, showLarge }: { row: HomeCourtStudySeason; showL
   const gap = restedHomeGap(row);
   const largeGap = largeRestGapVersusHome(row);
   return (
-    <div className={styles.inspection} aria-live="polite">
-      <div className={styles.homeRegion} data-testid="home-court-home-inspection">
-        <p className="fc-control-label">Season</p>
-        <p className={`mono ${styles.season}`}>{row.season}</p>
+    <div className={styles.inspection} data-testid="home-court-season-inspection" aria-live="polite">
+      <div className={styles.inspectionHeading}>
+        <h3 className={`mono ${styles.season}`}>{row.season}</h3>
         {!row.isComplete ? <p className={styles.count}>Season to date · through {row.latestEvidenceDate}</p> : null}
-        <p className="fc-control-label">Home win rate</p>
+      </div>
+      <div className={styles.homeRegion} data-testid="home-court-home-inspection">
+        <div><p className={styles.comparisonLabel}>Home win rate · venue baseline</p>
+        <p className={styles.count}>{row.homeWins.toLocaleString()} wins /&nbsp;{row.homeGames.toLocaleString()} games</p></div>
         <p className={`mono ${styles.homeRate}`}>{formatRate(row.homeBaselinePct)}</p>
-        <p className={styles.count}>{row.homeWins.toLocaleString()} wins /&nbsp;{row.homeGames.toLocaleString()} games</p>
       </div>
       <div className={styles.comparisonRegion}>
         <SeasonComparison label="Rested at home · 0.5+" rate={gap === null ? "Too early" : formatRate(row.winPct)} wins={row.restedTeamWins} games={row.games} gap={gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`} kind="rest" />
-        {showLarge ? <SeasonComparison label="Rested at home · 5+" rate={row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)} wins={row.largeRestGap.restedTeamWins} games={row.largeRestGap.games} gap={largeGap === null ? "Unavailable" : `${signedNumber(largeGap, 1)}\u00a0pp`} kind="large" /> : null}
+        {showLarge ? <SeasonComparison label="Rested at home · 5+ (raw)" rate={row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)} wins={row.largeRestGap.restedTeamWins} games={row.largeRestGap.games} gap={largeGap === null ? "Unavailable" : `${signedNumber(largeGap, 1)}\u00a0pp`} kind="large" /> : null}
       </div>
     </div>
   );
@@ -316,11 +320,11 @@ function SeasonInspection({ row, showLarge }: { row: HomeCourtStudySeason; showL
 
 function SeasonComparison({ label, rate, wins, games, gap, kind }: { label: string; rate: string; wins: number; games: number; gap: string; kind: "rest" | "large" }) {
   return <div className={`${styles.comparisonRow} ${kind === "rest" ? styles.restComparison : styles.largeComparison}`} data-testid={`home-court-${kind}-inspection`}>
-    <p className={styles.comparisonLabel}>{label}</p>
-    <div className={styles.comparisonMetrics}>
-      <p className={`mono ${styles.rate} ${rate.endsWith("%") ? "" : styles.unavailableRate}`}>{rate}</p>
-      <div className={styles.gap}><p className={styles.gapLabel}>Vs home rate</p><p className={`mono ${styles.gapValue} ${gap.endsWith("pp") ? "" : styles.unavailableRate}`}>{gap}</p></div>
+    <div>
+      <h4 className={styles.comparisonLabel}>{label}</h4>
       <p className={styles.count}>{wins.toLocaleString()} wins /&nbsp;{games.toLocaleString()} games</p>
+      <p className={styles.gap}><span className={styles.gapLabel}>Vs home rate </span><span className={`mono ${styles.gapValue}`}>{gap}</span></p>
     </div>
+    <p className={`mono ${styles.rate} ${rate.endsWith("%") ? "" : styles.unavailableRate}`}>{rate}</p>
   </div>;
 }

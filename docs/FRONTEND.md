@@ -16,7 +16,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer. Two tiles (RESTED TEAM AT HOME, and its LARGE GAP slice) with the gap floor in numbers; a gap-size chart of small/medium/large against the venue baseline with 95% whiskers, where a bar opens exactly its games; an era chart reading each five-season era against its own home rate; and home court by season. The explorer defaults to the rested team at home and filters by rest gap and rested team (D-102) |
 | `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
-| `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
+| `/shot-quality` | Expected shot value by location; one court at all widths with model selection and a shared location readout |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
 | `/officiating` | Selected NBA L2M findings and games-first report browser; source verdicts, clean games, shareable filters |
@@ -105,6 +105,14 @@ operand after it. `keepTogether()` (`src/components/ui/keep-together.tsx`) does 
 children; `Prose`, `Note`, `LimitList`, `DataTable` headers and the Data Status values already
 apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep a season
 column `nowrap`, and keep a table header to two lines on a phone.
+
+Behind the Data method pages (2026-10-21). A `Formula` line is at most 38 characters, the most
+12px Geist Mono fits at 375px; break a long expression across aligned lines instead of letting
+it scroll. `behind-the-data-formula-width.test.ts` renders every method page and enforces it.
+A method table keeps its rate and baseline columns on a phone: no `minWidth`, at most four
+columns, and a row's sample count goes under its label rather than in its own column. An ablation table may keep separate counts when they are the quantities being compared. A list of named
+inputs with long explanations is a list, not a table. `Subhead` groups a long section and `Term`
+pairs one named term with its formula (`src/components/behind-the-data-parts.tsx`).
 
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
 the month buttons and date chips wrap, so a whole month shows at once. Both are the same 60×48 box

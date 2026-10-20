@@ -20,11 +20,15 @@ test.beforeEach(async ({ page }) => {
 });
 
 for (const width of [1280, 390]) {
-  test(`unpublished current results show one guide and no historical table at ${width}px`, async ({ page }, info) => {
+  test(`latest publication defaults and explicit current stays awaiting at ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await playerExport(page);
     await page.goto("/shooting");
     const main = page.locator("main");
+    await expect(main.locator("#pr-season")).toHaveValue("2025");
+    await expect(main.getByTestId("player-row")).toHaveCount(1);
+    await expect(main).toContainText("2026-27 awaiting results");
+    await main.locator("#pr-season").selectOption("2026");
     await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
     await expect(main.getByTestId("season-data-guide")).toHaveCount(1);
     await expect(main.locator("#pr-season")).toHaveValue("2026");
@@ -52,6 +56,12 @@ for (const width of [1280, 390]) {
     await expect(main.locator("#pr-season")).toHaveValue("2025");
     await expect(main.getByTestId("player-row")).toHaveCount(1);
     await page.goBack();
+    await expect(main.locator("#pr-season")).toHaveValue("2026");
+    await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
+    await page.goBack();
+    await expect(main.locator("#pr-season")).toHaveValue("2025");
+    await expect(main.getByTestId("player-row")).toHaveCount(1);
+    await page.goForward();
     await expect(main.locator("#pr-season")).toHaveValue("2026");
     await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
   });
@@ -103,7 +113,7 @@ test("a current-containing export preserves retry, career and historical-expansi
   await page.reload();
   await expect(main.getByTestId("season-data-guide")).toHaveCount(0);
   await expect(main.locator("#pr-season")).toHaveValue("2026");
-  await expect(main.getByTestId("season-row").filter({ hasText: "2026-27" })).toContainText("98,765");
+  await expect(main.getByTestId("season-row").filter({ hasText: "2026-27" })).toContainText("70.0%");
   await main.locator("#pr-season").selectOption("career");
   await expect(main.getByTestId("player-row")).toHaveCount(1);
 });
@@ -119,5 +129,6 @@ test("an export loading failure is retryable instead of appearing as unpublished
   await expect(main.getByTestId("season-data-guide")).toHaveCount(0);
   fail = false;
   await main.getByRole("button", { name: "Retry player data" }).click();
-  await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
+  await expect(main.locator("#pr-season")).toHaveValue("2025");
+  await expect(main.getByTestId("player-row")).toHaveCount(1);
 });

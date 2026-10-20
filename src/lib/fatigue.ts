@@ -108,6 +108,9 @@ const SCHEDULE_STRESS_MAX_MULT = 1.42;
 
 const SCHEDULE_STRESS_CURVE = 0.058;
 
+/** Most stress one window can add, so a single extreme window cannot carry the multiplier. */
+const SCHEDULE_STRESS_WINDOW_CAP = 1.15;
+
 /** Consecutive away games (incl. tonight if away) before this kicks in. */
 const ROAD_STREAK_SOFT = 2;
 
@@ -181,6 +184,9 @@ export const FATIGUE_CONSTANTS = Object.freeze({
   overtimeSingle: OVERTIME_SINGLE_BONUS,
   overtimeMulti: OVERTIME_MULTI_BONUS,
   densityMaxMultiplier: SCHEDULE_STRESS_MAX_MULT,
+  densityCurve: SCHEDULE_STRESS_CURVE,
+  densityWindowCap: SCHEDULE_STRESS_WINDOW_CAP,
+  densityWindows: WINDOW_STRESS,
   roadStreakFree: ROAD_STREAK_SOFT,
   roadStreakPerGame: ROAD_STREAK_PER_GAME,
   displacementBonus: TIME_ZONE_DISPLACEMENT_BONUS,
@@ -361,7 +367,7 @@ function scheduleStress(
     if (n <= w.baseline) continue;
     const denom = Math.max(1, w.tough - w.baseline);
     const excess = (n - w.baseline) / denom;
-    stressPoints += Math.min(1.15, Math.max(0, excess));
+    stressPoints += Math.min(SCHEDULE_STRESS_WINDOW_CAP, Math.max(0, excess));
   }
   const mult = 1 + Math.min(
     SCHEDULE_STRESS_MAX_MULT - 1,

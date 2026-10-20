@@ -62,7 +62,34 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("current player publication holds", () => {
-  it.each(["", "year=2026"])("keeps an unpublished current selection on one guide without earlier results (%s)", (search) => {
+  it.each([false, true])("defaults to actual published player rows while current is held (readiness error=%s)", (failure) => {
+    state.failure = failure;
+    const html = renderPlayer();
+    expect(html).toContain('value="2025" selected=""');
+    expect(html).toContain('data-testid="player-row"');
+    expect(html).not.toContain('data-testid="season-data-guide"');
+    expect(html).not.toContain("98,765");
+  });
+
+  it("uses the newest actual player publication across a calendar gap", () => {
+    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: [[0, 2024, 0, 25, 70, 1000, 50, 200, 48, 300, 52]] };
+    const html = renderPlayer();
+    expect(html).toContain('value="2024" selected=""');
+    expect(html).toContain("player in 2024-25");
+    expect(html).toContain("2026-27");
+    expect(html).toContain("awaiting results");
+  });
+
+  it("opens current only when its publication and readiness both exist", () => {
+    state.ready = true;
+    state.search = "player=Test+Player";
+    expect(renderPlayer()).toContain('value="2026" selected=""');
+    expect(renderPlayer()).toContain("60.0%");
+    expect(renderPlayer()).toContain("70.0%");
+    expect(renderPlayer().match(/data-testid="season-row"/g)).toHaveLength(2);
+  });
+
+  it.each(["year=2026"])("keeps an unpublished current selection on one guide without earlier results (%s)", (search) => {
     state.search = search;
     state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
     const html = renderPlayer();
@@ -76,6 +103,7 @@ describe("current player publication holds", () => {
   });
 
   it("keeps current results awaiting even when GP readiness passes but the player publication is absent", () => {
+    state.search = "year=2026";
     state.ready = true;
     state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
     expect(renderPlayer()).toContain("Awaiting results");

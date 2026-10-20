@@ -50,9 +50,12 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   await expect(finding).toContainText('55.0%');
   await expect(finding).toContainText('2024-25');
   await expect(finding).not.toContainText('2025-26');
-  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveCount(0);
+  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveValue('2024-25');
   const chartButton = page.getByTestId('home-court-chart').getByRole('button');
   await expect(chartButton).toHaveAccessibleName(/^2024-25/);
+  await page.getByRole('combobox', { name: 'Inspect season' }).selectOption('2015-16');
+  await expect(chartButton).toHaveAccessibleName(/^2015-16/);
+  await expect(page.getByTestId('home-court-season-inspection').getByRole('heading', { name: '2015-16', exact: true })).toBeVisible();
   await chartButton.focus();
   await page.keyboard.press('End');
   const inspection = page.locator('[aria-live="polite"]');
@@ -113,7 +116,7 @@ test('mobile chart and expanded table stay within the page and support keyboard 
   await page.setViewportSize({ width: 390, height: 844 });
   await mockStudy(page);
   await page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' }).check();
-  const inspectionSeason = page.getByTestId('home-court-home-inspection');
+  const inspectionSeason = page.getByTestId('home-court-season-inspection');
   const chart = page.getByTestId('home-court-chart');
   await chart.scrollIntoViewIfNeeded();
   const firstPoint = await chart.locator('g[aria-hidden="true"] > circle').first().boundingBox();
@@ -145,7 +148,7 @@ test('mobile chart and expanded table stay within the page and support keyboard 
 test('large gaps are opt-in, preserve selection, and expose filled markers with observed counts', async ({ page }) => {
   await mockStudy(page);
   const toggle = page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' });
-  const inspectionSeason = page.getByTestId('home-court-home-inspection');
+  const inspectionSeason = page.getByTestId('home-court-season-inspection');
   const chart = page.getByTestId('home-court-chart');
   await expect(toggle).not.toBeChecked();
   await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
@@ -196,13 +199,13 @@ test('large gaps keep zero-sample seasons empty and show isolated zero and 100 p
   await expect(page.getByTestId('home-court-large-inspection')).toContainText('Unavailable');
 });
 
-test('stacked comparisons keep the home baseline fixed and subtract the displayed annual rates', async ({ page }) => {
+test('season-first comparisons keep the home baseline above rates and subtract displayed annual rates', async ({ page }) => {
   await mockStudyData(page, { seasonWinRates: [{ ...completed[0], season: '2025-26', homeGames: 1225, homeWins: 679,
     homeBaselinePct: 55.4, games: 603, restedTeamWins: 334, winPct: 55.4,
     largeRestGap: { games: 42, restedTeamWins: 22, winPct: 22 / 42 * 100 } }] });
   const home = page.getByTestId('home-court-home-inspection');
   const ordinary = page.getByTestId('home-court-rest-inspection');
-  await expect(home).toContainText('2025-26');
+  await expect(page.getByTestId('home-court-season-inspection').getByRole('heading', { name: '2025-26', exact: true })).toBeVisible();
   await expect(home).toContainText('55.4%');
   await expect(home).toContainText('679 wins / 1,225 games');
   await expect(ordinary).toContainText('334 wins / 603 games');
@@ -222,7 +225,8 @@ test('stacked comparisons keep the home baseline fixed and subtract the displaye
   const ordinaryBox = await ordinary.boundingBox();
   expect(largeBox!.x).toBe(ordinaryBox!.x);
   expect(largeBox!.y).toBeGreaterThan(ordinaryBox!.y);
-  expect(largeBox!.x).toBeGreaterThan(after!.x);
+  expect(largeBox!.x).toBe(after!.x);
+  expect(ordinaryBox!.y).toBeGreaterThan(after!.y);
   const chart = page.getByTestId('home-court-chart');
   await expect(chart.locator('[data-selected-series]')).toHaveCount(3);
   await expect(chart.locator('circle[fill="none"], circle[fill="transparent"], circle[fill="var(--term-surface)"]')).toHaveCount(0);

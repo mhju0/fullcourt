@@ -224,7 +224,7 @@ export function ScheduleDisparityContent() {
   const stamp = formatDataAsOf(data)
 
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-4 sm:gap-8">
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
       {error && data ? <p role="status">Refresh unavailable. Showing the last loaded schedule.</p> : null}
       <div style={termCardStyle}>
@@ -245,6 +245,7 @@ export function ScheduleDisparityContent() {
             {data.league.projectedGames > 0
               ? ` · ${data.league.projectedGames.toLocaleString()} PROJECTED`
               : ""}
+            {data.missingFixtureGames ? ` · ${data.missingFixtureGames.toLocaleString()} FIXTURES MISSING` : ""}
             {/* The season's own data date, and on every season rather than only a provisional
                 one: a finished season's stamp is the more useful of the two, because it is the
                 one a reader checks months later. Nothing renders before the first final game —
@@ -257,36 +258,7 @@ export function ScheduleDisparityContent() {
             &nbsp;
           </p>
         ) : null}
-        {data && data.missingFixtureGames !== null && data.missingFixtureGames > 0 ? (
-          <p data-testid="schedule-missing-fixtures" style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
-            The published schedule is missing {data.missingFixtureGames.toLocaleString()} regular-season fixtures.
-            {" "}Totals can change as fixtures are added or rescheduled.
-          </p>
-        ) : null}
-        {data?.provisional ? (
-          <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
-            This season has unsettled games, so these figures may revise.
-            {data.league.projectedGames > 0 ? (
-              <>
-                {" "}
-                {data.league.projectedGames === data.league.measuredGames
-                  ? `All ${data.league.measuredGames.toLocaleString()}`
-                  : `${data.league.projectedGames.toLocaleString()} of the ${data.league.measuredGames.toLocaleString()}`}{" "}
-                compared games are projected: an earlier game is still unplayed, so their fatigue
-                comes from the published schedule.
-                The ranking is a preview and will move as games are played.
-              </>
-            ) : null}
-            {data.league.measuredGames === 0 ? (
-              <>
-                {" "}
-                No game has a fatigue score yet, so the fatigue columns show a dash rather than
-                zero. Rest days, back-to-backs and three-in-fours use the currently published
-                calendar.
-              </>
-            ) : null}
-          </p>
-        ) : null}
+
       </div>
 
       {data && most && least ? (
@@ -327,9 +299,6 @@ export function ScheduleDisparityContent() {
           ))}
         </div>
       ) : null}
-      {/* Under the figures it qualifies, not above them: on a phone this sentence and the
-          provisional note together pushed every number below the first screen. */}
-      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth converts historical rest-group rates into win equivalents, not wins a team actually gained or a causal estimate.</p>
 
       <div style={termCardStyle}>
         <p
@@ -402,6 +371,47 @@ export function ScheduleDisparityContent() {
           </ol>
         )}
       </div>
+
+      {/* Under the figures it qualifies, not above them: on a phone this sentence and the
+          provisional note together pushed every number below the first screen. */}
+      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth converts historical rest-group rates into win equivalents, not wins a team actually gained or a causal estimate.</p>
+
+
+      {data && (data.provisional || Boolean(data.missingFixtureGames)) ? (
+        <details className="fc-disclosure">
+          <summary>Why these totals can change</summary>
+        {data && data.missingFixtureGames !== null && data.missingFixtureGames > 0 ? (
+          <p data-testid="schedule-missing-fixtures" style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+            The published schedule is missing {data.missingFixtureGames.toLocaleString()} regular-season fixtures.
+            {" "}Totals can change as fixtures are added or rescheduled.
+          </p>
+        ) : null}
+        {data?.provisional ? (
+          <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+            This season has unsettled games, so these figures may revise.
+            {data.league.projectedGames > 0 ? (
+              <>
+                {" "}
+                {data.league.projectedGames === data.league.measuredGames
+                  ? `All ${data.league.measuredGames.toLocaleString()}`
+                  : `${data.league.projectedGames.toLocaleString()} of the ${data.league.measuredGames.toLocaleString()}`}{" "}
+                compared games are projected: an earlier game is still unplayed, so their fatigue
+                comes from the published schedule.
+                The ranking is a preview and will move as games are played.
+              </>
+            ) : null}
+            {data.league.measuredGames === 0 ? (
+              <>
+                {" "}
+                No game has a fatigue score yet, so the fatigue columns show a dash rather than
+                zero. Rest days, back-to-backs and three-in-fours use the currently published
+                calendar.
+              </>
+            ) : null}
+          </p>
+        ) : null}
+        </details>
+      ) : null}
 
       {data && teams.length > 0 ? (
         <>

@@ -2020,3 +2020,45 @@ against that implementation for runtime, scorer, lockfile and generated outputs.
 receipt binds both candidates and the original/redacted metadata hashes; do not rewrite the
 approved proof or describe redacted metadata as the original bytes. See the dated
 [audit ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v10-public-source-metadata-embed-key-exposure-2026-10-20).
+
+## 2026-10-21: Approved result-season defaults, pending implementation
+
+The owner approved the mobile-audit follow-up recommendation: result-oriented tabs default
+to their latest published usable season on both mobile and desktop. An explicitly selected
+new season remains selected and shows Awaiting rather than silently substituting prior data.
+This changes the default direction recorded for Shooting in D-118; it is approved design,
+not a claim that runtime behavior has already changed.
+
+Games, By Team and Schedule Edge keep the current schedule. Current-season results still
+require the existing all-teams-ten-valid-finals readiness condition where applicable AND
+actual module publication. Playoff Rest follows playoff publication, not that regular-season
+checkpoint. Historical analyses keep their own study windows. Preserve explicit season URLs,
+Back/Forward behavior, publication gaps, venue baselines and existing sample gates. Previous
+results must be labelled with their actual season; new-season status should be concise.
+The report contains policy previews; implementation and release verification remain future work.
+
+Follow-up owner review: per-study page switching is a report-only control, not a new set
+of boxed tabs inside Season Report. D05 is pending further review with the graph, selected
+season and raw RA 5+ toggle connected. D10 is also pending: preserve the existing player
+comparison table/chart style and simplify its columns and headers, rather than replacing
+it with player cards. The second exported decision file approves D06's selection summary
+and explicit browse action, D07's single-map model toggle retaining the selected location,
+D08's annual readout, and D09's 15px body with text-role corrections. These are approved
+directions, not claims of implemented or deployed behavior.
+
+
+## D-133 — Approved mobile UX and published result defaults (2026-10-21)
+
+The owner approved all ten audit choices, including the revised D02, D05 and D10.
+D01 prioritizes a full matchup; D03 puts Schedule summary and rankings before detailed
+status; D04 presents coverage by field with From, Source and Note. D05 links the graph,
+season selector and baseline/rested-home/raw-5+ readout. D06 requires an explicit Browse
+action after selection. D07 keeps one court and the selected location across model changes.
+D08 adds a measured-season readout. D09 keeps 15px prose and repairs text roles. D10 keeps
+the comparison table with four columns and advanced filters behind a disclosure.
+
+This supersedes the pending D05/D10 status above and the old Shooting current-season
+default. Actual module publication and current-season readiness are independent requirements;
+explicit current-season selection remains Awaiting. Schedule APIs remain available to
+Schedule Edge. No coefficients, generated analytics, schema or historical predictions change.
+The owner separately authorized final security review, main merge and production release.

@@ -1,6 +1,7 @@
 "use client";
 
 import { defaultNbaSeason, parseSeasonStartYear } from "@/lib/nba-season";
+import { latestUsableResultSeason } from "@/lib/result-season";
 import { SeasonDataGuide } from "@/components/season-data-guide";
 import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
@@ -38,8 +39,6 @@ import {
   termTdStyle,
   WIDTH,
 } from "@/lib/terminal-styles";
-import { competitionRanks } from "@/lib/rank";
-import { RankBadge } from "@/components/ui/rank-badge";
 import { signedNumber } from "@/lib/signed-number";
 import { MessageCard } from "@/components/ui/message-card";
 import { errMsg } from "@/lib/fetcher";
@@ -67,45 +66,15 @@ const VOLUME_OPTIONS = [
   { value: 900, label: "900+ attempts" },
 ];
 
-/**
- * `width` drives a <colgroup>. Auto layout hands leftover table width to whichever
- * columns hold text, which put a chasm between TEAM and AGE while AGE and G sat on top
- * of each other; pinning every column and leaving PLAYER as the only elastic one sends
- * all the slack to the one column that can use it. `#` is right-aligned like the ranks
- * it labels — as a left-aligned header it floated a column-width away from its numbers.
- *
- * Everything from `Team` rightward blanks while a player is open: those numbers are repeated
- * verbatim by one of the rows below — the browsed season, or Career — so the row drops to a
- * name plate over the group.
- */
 function playerColumns(
   toggle: (player: number) => void,
   isOpen: (row: BrowseRow) => boolean,
-  /**
-   * eFG% standing within the rows as filtered right now (ADR 0010, D1) — positional, aligned
-   * with the rows the table renders. In view, not league-wide: a rank that ignored the volume
-   * floor and filters would crown someone the reader cannot even see.
-   */
-  efgRanks: (number | null)[],
 ): DataColumn<BrowseRow, SortKey>[] {
-  /** Blanks while open. The first two columns keep theirs; the other eight are the repeat. */
-  const whenClosed =
-    <T,>(render: (row: BrowseRow, index: number) => T) =>
-    (row: BrowseRow, index: number) =>
-      isOpen(row) ? null : render(row, index);
-
   return [
-    {
-      label: "#",
-      align: "right",
-      width: "44px",
-      style: DIM_TD,
-      cell: (_row, i) => i + 1,
-    },
     {
       label: "Player",
       sortKey: "name",
-      width: "auto",
+      width: "37%",
       style: { fontWeight: 500 },
       cell: (row) => (
         <button
@@ -131,104 +100,28 @@ function playerColumns(
       ),
     },
     {
-      label: "Team",
-      width: "72px",
-      style: { fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" },
-      cell: whenClosed((row) => row.context),
-    },
-    {
-      label: "Age",
-      unit: "years",
-      sortKey: "age",
-      numeric: true,
-      width: "56px",
-      style: DIM_TD,
-      cell: whenClosed((row) => row.age),
-    },
-    {
-      label: "G",
-      unit: "games",
-      sortKey: "games",
-      numeric: true,
-      width: "56px",
-      style: DIM_TD,
-      cell: whenClosed((row) => row.games),
-    },
-    {
-      label: "FGA",
-      unit: "attempts",
-      sortKey: "fga",
-      numeric: true,
-      width: "76px",
-      style: NUM_TD,
-      cell: whenClosed((row) => row.fga.toLocaleString()),
-    },
-    {
-      // The one ranked column here, and rank-in-view on purpose. The "#" column already ranks
-      // whatever the reader sorted by; this rider keeps the page's core metric's standing
-      // visible while the table is sorted by anything else. "Rest effect" is deliberately NOT
-      // ranked — a difference of two ~30-attempt arms carries the error bars this page spends
-      // a whole filter warning about, and a rank would crown exactly that noise.
-      label: "eFG%",
-      unit: "1ST = BEST IN VIEW",
-      sortKey: "efg",
-      numeric: true,
-      width: "128px",
-      style: NUM_TD,
-      cell: whenClosed((row, i) => (
-        <>
-          {fmt(row.efg)}
-          {efgRanks[i] !== null && efgRanks[i] !== undefined ? (
-            <RankBadge
-              rank={efgRanks[i]}
-              of={efgRanks.length}
-              population="players in view"
-            />
-          ) : null}
-        </>
-      )),
-    },
-    {
       label: "No rest",
-      unit: "eFG% and attempts",
+      unit: "eFG% · att.",
       sortKey: "noRestEfg",
       numeric: true,
-      width: "128px",
-      style: { fontFamily: MONO_FONT_STACK },
-      cell: whenClosed((row) => (
-        <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />
-      )),
+      width: "21%",
+      cell: (row) => <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />,
     },
     {
-      label: (
-        <>
-          <span className={styles.longLabel}>2–29 days off</span>
-          <span className={styles.shortLabel}>2–29 off</span>
-        </>
-      ),
-      unit: "eFG% and attempts",
+      label: "2–29 off",
+      unit: "eFG% · att.",
       sortKey: "restedEfg",
       numeric: true,
-      width: "128px",
-      style: { fontFamily: MONO_FONT_STACK },
-      cell: whenClosed((row) => (
-        <ArmValue efg={row.restedEfg} fga={row.restedFga} />
-      )),
+      width: "24%",
+      cell: (row) => <ArmValue efg={row.restedEfg} fga={row.restedFga} />,
     },
     {
-      label: (
-        <>
-          <span className={styles.longLabel}>Difference</span>
-          <span className={styles.shortLabel}>Diff.</span>
-        </>
-      ),
+      label: "Gap",
       unit: "pp",
       sortKey: "effect",
-      align: "right",
-      width: "108px",
-      cell: whenClosed((row) => (
-        <EffectValue value={row.effect} quiet={row.underEvidenced} />
-      )),
+      numeric: true,
+      width: "18%",
+      cell: (row) => <EffectValue value={row.effect} quiet={row.underEvidenced} />,
     },
   ];
 }
@@ -256,7 +149,7 @@ function EffectValue({
     );
   const strength = Math.min(Math.abs(value) / 10, 1);
   const positive = value > 0;
-  const alpha = value === 0 ? 0 : (0.05 + 0.2 * strength) * (quiet ? 0.45 : 1);
+  const alpha = quiet || value === 0 ? 0 : 0.05 + 0.2 * strength;
   return (
     <span
       className={styles.effect}
@@ -301,17 +194,6 @@ const ARM_TD: React.CSSProperties = {
 const FILTER_LABEL =
   "mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]";
 
-const NUM_TD: React.CSSProperties = {
-  ...termTdStyle,
-  textAlign: "right",
-  fontFamily: MONO_FONT_STACK,
-  fontVariantNumeric: "tabular-nums",
-};
-const DIM_TD: React.CSSProperties = {
-  ...NUM_TD,
-  color: "var(--term-text-muted)",
-};
-
 export function PlayerRestContent() {
   const { data, error, isLoading, isValidating, mutate } = useSWR<PlayerRestPayload>(
     DATA_URL,
@@ -340,12 +222,15 @@ export function PlayerRestContent() {
     () => [currentYear, ...(index?.years ?? []).filter((year) => year !== currentYear)],
     [currentYear, index],
   );
+  const defaultSeason = latestUsableResultSeason(
+    (index?.years ?? []).map(seasonLabel), currentSeason, readiness.ready,
+  );
   const activeYear =
     rawYear === "career"
       ? "career"
       : rawYear && availableYears.includes(Number(rawYear))
         ? Number(rawYear)
-        : currentYear;
+        : defaultSeason ? parseSeasonStartYear(defaultSeason) : currentYear;
   const heldPublication = hasCurrentPublication && !readiness.ready;
   const heldCurrent = activeYear === currentYear && (!hasCurrentPublication || !readiness.ready);
   const heldCareer = activeYear === "career" && heldPublication;
@@ -433,11 +318,9 @@ export function PlayerRestContent() {
     heldCareer,
   ]);
 
-  // Recomputed with every filter change, because the rank is a claim about the current view.
-  const efgRanks = useMemo(() => competitionRanks(rows, (r) => r.efg), [rows]);
   const columns = useMemo(
-    () => playerColumns(toggle, (row) => openPlayer === row.player, efgRanks),
-    [toggle, openPlayer, efgRanks],
+    () => playerColumns(toggle, (row) => openPlayer === row.player),
+    [toggle, openPlayer],
   );
 
   const seasonSelector = <SeasonSelector
@@ -499,18 +382,34 @@ export function PlayerRestContent() {
           Refresh unavailable. Showing the last loaded player export.
         </p>
       ) : null}
-      {/* Two rows, not one wrapping row. Six controls plus the result count could not fit a
-          1440px line, so the count — the one thing that answers "did my filter do anything" —
-          was the piece that wrapped away from everything else. Row one is the four filters;
-          row two is find-a-name plus the count it produces. Each label/select pair is its own
-          flex box so a wrap can never separate a label from the control it names. */}
       <div className="flex flex-col gap-3">
-        {/* Season and Team share one baseline: both labels sit above their control, and at
-            phone widths the pair is two equal columns. The Filters disclosure is its own row,
-            so its hairlines run the full width rather than boxing one word mid-row. */}
-        <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2 sm:flex sm:flex-wrap">
+        <div className="grid items-end gap-3 sm:grid-cols-[160px_minmax(0,260px)]">
           {seasonSelector}
-
+          <label className="flex min-w-0 flex-col gap-2">
+            <span className={FILTER_LABEL}>Find a player</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search player"
+            aria-label="Search player"
+            /* Not one of the WIDTH content columns: a search box sizes to the longest name
+               someone will type, which is an intrinsic cap on a control. */
+            /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
+               see termSelectClass in terminal-styles.ts for the whole reasoning. */
+            className="fc-control mono w-full placeholder:text-[var(--term-text-muted)]"
+            style={{
+              border: "1px solid var(--term-control-border)",
+              borderRadius: "var(--term-radius)",
+            }}
+          />
+          </label>
+        </div>
+          <details className="fc-disclosure">
+            <summary>
+              Advanced filters ({Number(Boolean(team)) + Number(minFga > 0) + Number(Boolean(pos)) + Number(evidencedOnly)})
+            </summary>
+            <div className="flex flex-wrap gap-4 py-3">
           <span className="flex min-w-0 flex-col gap-2">
             <label className={FILTER_LABEL} htmlFor="pr-team">
               Team
@@ -530,13 +429,6 @@ export function PlayerRestContent() {
               ))}
             </select>
           </span>
-        </div>
-
-          <details className="fc-disclosure">
-            <summary>
-              Filters ({Number(minFga > 0) + Number(Boolean(pos)) + Number(evidencedOnly)})
-            </summary>
-            <div className="flex flex-wrap gap-4 py-3">
               <span className="flex flex-col gap-2">
                 <label className={FILTER_LABEL} htmlFor="pr-volume">
                   Volume
@@ -582,28 +474,14 @@ export function PlayerRestContent() {
             />
             Hide uncertain differences
           </label>
+          <button type="button" className="fc-text-link min-h-11 text-left underline" onClick={() => update({ team: null, volume: null, position: null, certain: null })}>
+            Reset advanced filters
+          </button>
           </details>
-
-        <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search player"
-            aria-label="Search player"
-            /* Not one of the WIDTH content columns: a search box sizes to the longest name
-               someone will type, which is an intrinsic cap on a control. */
-            /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
-               see termSelectClass in terminal-styles.ts for the whole reasoning. */
-            className="fc-control mono w-full max-w-[260px] placeholder:text-[var(--term-text-muted)]"
-            style={{
-              border: "1px solid var(--term-control-border)",
-              borderRadius: "var(--term-radius)",
-            }}
-          />
-
-
-
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          {!rawYear && defaultSeason && defaultSeason < currentSeason ? (
+            <p role="status" className="text-[12px] text-[var(--term-text-muted)]">{currentSeason} awaiting results</p>
+          ) : null}
           <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
             {activeYear === "career"
@@ -613,32 +491,9 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p className={styles.readingKey}><KeepTogether>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</KeepTogether></p>
-      <details className="fc-disclosure">
-        <summary>Rest definitions and uncertainty</summary>
-        <p>No rest means played yesterday. 2–29 days off means two to 29 full days between the player&apos;s appearances, including games the player sat out; season openers and returns from longer absences are left out. The difference is 2–29 days off minus no rest, in percentage points.</p>
-        <div className={styles.legend} id="pr-color-note">
-          <span style={{ color: "#991b1b" }}>− Lower with rest</span>
-          <span style={{ color: "#166534" }}>+ Higher with rest</span>
-          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Below one estimated standard error: the difference is small relative to its uncertainty. This is not a 95% significance threshold.</span>
-        </div>
-      </details>
+      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
-        {/* `table-fixed` so the browser sizes columns from the colgroup below instead of
-            measuring every cell. Career mode renders ~1,300 rows / ~13,000 cells, and under auto
-            layout each filter or sort change re-measured all of them. Measured in Chrome at
-            1440px, career mode, 40 interleaved A/B pairs after discarded warm-up: median
-            style+layout 114.6ms auto → 108.0ms fixed (~6%). Interleaving matters — a naive
-            sequential A-then-B run reported 12% because the second arm inherited a warm layout
-            cache. It is also the more correct layout: the colgroup declares 44px for `#`, which
-            auto layout was quietly widening to 49px.
-
-            `content-visibility: auto` on the rows was measured here and is WORSE, not better —
-            13% slower via stylesheet, 44% via inline styles, i.e. the direction is unambiguous
-            even though the magnitude is not. Size containment does not apply to table rows, so
-            the browser still lays every row out and only pays the containment bookkeeping on
-            top. Do not add it back on this table. */}
         <DataTable
           className="table-fixed text-[12px]"
           wrapperClassName={`fc-rest-table overflow-auto ${styles.table}`}
@@ -673,6 +528,17 @@ export function PlayerRestContent() {
           </p>
         )}
       </div>
+
+      <details className="fc-disclosure">
+        <summary>Rest definitions and uncertainty</summary>
+        <p>No rest means played yesterday. 2–29 days off means two to 29 full days between the player&apos;s appearances, including games the player sat out; season openers and returns from longer absences are left out. The difference is 2–29 days off minus no rest, in percentage points.</p>
+        <div className={styles.legend} id="pr-color-note">
+          <span style={{ color: "#991b1b" }}>− Lower with rest</span>
+          <span style={{ color: "#166534" }}>+ Higher with rest</span>
+          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Below one estimated standard error: the difference is small relative to its uncertainty. This is not a 95% significance threshold.</span>
+        </div>
+      </details>
+
 
       <details className="fc-disclosure"><summary>Coverage and how to read small samples</summary>
       <p
@@ -740,7 +606,6 @@ function PlayerExpansion({
               className={`fc-sub${s[S.YEAR] === browsedYear ? " fc-here" : ""}`}
               data-testid="season-row"
             >
-              <td style={termTdStyle} />
               <td
                 style={{
                   ...termTdStyle,
@@ -750,20 +615,8 @@ function PlayerExpansion({
                 }}
               >
                 {seasonLabel(s[S.YEAR])}
+                <small className={styles.seasonContext}>{sr.context}</small>
               </td>
-              <td
-                style={{
-                  ...termTdStyle,
-                  fontFamily: MONO_FONT_STACK,
-                  color: "var(--term-text-muted)",
-                }}
-              >
-                {sr.context}
-              </td>
-              <td style={DIM_TD}>{sr.age}</td>
-              <td style={DIM_TD}>{sr.games}</td>
-              <td style={NUM_TD}>{sr.fga.toLocaleString()}</td>
-              <td style={NUM_TD}>{fmt(sr.efg)}</td>
               <td style={ARM_TD}>
                 <ArmValue efg={sr.noRestEfg} fga={sr.noRestFga} />
               </td>
@@ -780,7 +633,6 @@ function PlayerExpansion({
 
       {totals && (
         <tr className="fc-sub fc-total" data-testid="career-row">
-          <td style={termTdStyle} />
           <td
             style={{
               ...termTdStyle,
@@ -791,19 +643,6 @@ function PlayerExpansion({
           >
             Career
           </td>
-          <td style={termTdStyle} />
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>
-            {totals.ageLo && totals.ageHi
-              ? `${totals.ageLo}–${totals.ageHi}`
-              : "—"}
-          </td>
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>
-            {totals.games.toLocaleString()}
-          </td>
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>
-            {totals.fga.toLocaleString()}
-          </td>
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>{fmt(totals.efg)}</td>
           <td style={ARM_TD}>
             <ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} />
           </td>
@@ -825,9 +664,8 @@ function PlayerExpansion({
 
       {estimate && (
         <tr className="fc-sub fc-groupend">
-          <td style={termTdStyle} />
           <td
-            colSpan={9}
+            colSpan={4}
             style={{
               ...termTdStyle,
               whiteSpace: "normal",
@@ -850,16 +688,14 @@ function PlayerExpansion({
       )}
       {heldFromYear !== undefined ? (
         <tr className="fc-sub fc-groupend" data-testid="career-data-held">
-          <td style={termTdStyle} />
-          <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 15, color: "var(--term-text-muted)" }}>
+          <td colSpan={4} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 15, color: "var(--term-text-muted)" }}>
             Career totals and estimates are unavailable while current-season data awaits release. Earlier season results remain available.
           </td>
         </tr>
       ) : !estimate && (
         <tr className="fc-sub fc-groupend">
-          <td style={termTdStyle} />
           <td
-            colSpan={9}
+            colSpan={4}
             style={{
               ...termTdStyle,
               whiteSpace: "normal",

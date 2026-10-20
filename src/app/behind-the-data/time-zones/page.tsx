@@ -8,8 +8,10 @@ import {
   ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import { DataTable } from "@/components/ui/data-table";
 import timeZoneData from "@/data/timezone-null.json";
 import { FATIGUE_CONSTANTS } from "@/lib/fatigue";
+import { TYPE } from "@/lib/terminal-styles";
 import { signedNumber } from "@/lib/signed-number";
 import {
   rawSwingPoints,
@@ -37,129 +39,158 @@ const neither = tripRow(data, "no long shift either way");
 const primary = termRow(data, data.primaryTerm);
 const westShortTerm = termRow(data, "d_west3_short");
 
+const H = protocol.thresholdHours;
+
+/** A row label with its game count beneath it, so a phone keeps the rate columns on screen. */
+function LabelWithGames({ label, games }: { label: string; games: number }) {
+  return (
+    <>
+      {label}
+      <br />
+      <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+        {games.toLocaleString()} games
+      </span>
+    </>
+  );
+}
+
 export default function TimeZonesMethodPage() {
   return (
     <BehindTheDataShell
       topic="time-zones"
       eyebrow="BEHIND THE DATA · TIME ZONES"
       title="Time zones"
-      description="Does playing east of the team’s home time zone on short rest help explain game outcomes? The pre-registered test found no improvement in held-out predictions."
+      description="Does playing far east of home on short rest help explain results? A pre-registered test found it did not improve held-out predictions."
     >
       <Section label="WHAT WAS ASKED" title="The question tested">
         <Prose>
-          The fatigue model already carries time-zone displacement, and the weight-fitting work
-          recorded in <strong>ADR 0006</strong> measured it as a{" "}
-          <em>main effect in the earlier regular-season research</em> and found no added predictive value.
-          This test asks a narrower question: a visitor playing at a venue at least
-          {" "}{protocol.thresholdHours} clock hours <strong>east of its modeled home base</strong>
-          {" "}on <strong>short rest</strong>. Short rest means the visitor played the previous night.
-          The shift compares the home base with tonight’s venue, not the previous game’s venue,
-          and does not establish the direction or timing of a flight.
+          The fatigue model already includes time-zone shifts. The weight-fitting work in{" "}
+          <strong>ADR 0006</strong> tested them as a general effect and found they added no
+          predictive value. This test asks something narrower.
         </Prose>
         <Prose>
-          The protocol specified four candidate terms before the analysis ran, including one
-          primary term for evaluating the hypothesis. The original protocol was declared on
-          August 18, 2026; the figures below were regenerated on {data.measuredOn} from
-          corrected inputs. This research retains its completed regular-season cohort from
-          2002-03 onward, including neutral and bubble games. It therefore differs from the
-          public rested-home win-rate population.
+          <strong>The question:</strong> does a visitor do worse at a venue at least {H} clock
+          hours <strong>east of its home base</strong>, on <strong>short rest</strong> (it
+          played the night before)? The shift compares home base with tonight&rsquo;s arena,
+          not with the last game&rsquo;s, so it says nothing about the actual flight.
         </Prose>
         <ValueGrid
           values={[
-            { label: "Threshold", value: `≥ ${protocol.thresholdHours}h`, sub: "civil-clock shift from home base" },
+            { label: "Threshold", value: `≥ ${H}h`, sub: "clock shift from home base" },
             { label: "Held-out seasons", value: String(protocol.folds), sub: `${protocol.heldOutGames.toLocaleString()} held-out games` },
-            { label: "Deciding term", value: data.primaryTerm, sub: `${primary.games} games in the full research sample` },
+            { label: "Deciding term", value: data.primaryTerm, sub: `${primary.games} games in the full sample` },
           ]}
         />
+        <Note>
+          Four candidate terms were fixed before the analysis, one of them the deciding term.
+          The protocol was declared on August 18, 2026; the figures were rebuilt on{" "}
+          {data.measuredOn} from corrected inputs. The sample is every completed
+          regular-season game from 2002-03 on, including neutral-site and bubble games, so it
+          differs from the headline win-rate sample.
+        </Note>
         <details className="fc-disclosure"><summary>How clock displacement was recorded</summary><Note>
-          The exporter adds a signed clock-shift field. The existing zone count is absolute,
-          and the jet-lag feature combines direction with an acclimation proxy, so neither
-          separates the two directions cleanly. Exporting the signed field adds no scoring
-          term. The operational model already uses direction internally.
+          The export adds a signed clock-shift field. The existing zone count has no sign, and
+          the jet-lag feature mixes direction with time to adjust, so neither separates east
+          from west cleanly. The new field adds no scoring term. The live model already uses
+          direction internally.
         </Note></details>
       </Section>
 
       <Section label="THE RAW SPLIT" title="Raw clock-displacement comparisons" disclosure>
         <Prose>
-          Before controlling for team strength, a visitor playing at a venue whose clock is{" "}
-          {protocol.thresholdHours} hours or more <strong>behind its home base</strong> loses{" "}
-          {west.homeWinPct.toFixed(2)}% of the time; one with that shift{" "}
-          <strong>ahead of its home base</strong> loses {east.homeWinPct.toFixed(2)}%, a{" "}
+          Before accounting for team strength, visitors playing far <strong>west</strong> of
+          home lost {west.homeWinPct.toFixed(2)}% of the time, and those playing far{" "}
+          <strong>east</strong> lost {east.homeWinPct.toFixed(2)}%. That is a{" "}
           {rawSwingPoints(data).toFixed(1)}-point swing around a{" "}
           {protocol.baselineHomeWinPct.toFixed(2)}% baseline.
         </Prose>
-        <Formula>
-          {`venue shift from base       games    home win %
-
-all games in the era       ${protocol.gamesInEra.toLocaleString().padStart(6)}       ${protocol.baselineHomeWinPct.toFixed(2)}
-east ≥ ${protocol.thresholdHours}h                  ${east.games.toLocaleString().padStart(6)}       ${east.homeWinPct.toFixed(2)}
-east ≥ ${protocol.thresholdHours}h, short rest      ${eastShort.games.toLocaleString().padStart(6)}       ${eastShort.homeWinPct.toFixed(2)}
-west ≥ ${protocol.thresholdHours}h                  ${west.games.toLocaleString().padStart(6)}       ${west.homeWinPct.toFixed(2)}
-west ≥ ${protocol.thresholdHours}h, short rest      ${westShort.games.toLocaleString().padStart(6)}       ${westShort.homeWinPct.toFixed(2)}
-no long shift either way   ${neither.games.toLocaleString().padStart(6)}       ${neither.homeWinPct.toFixed(2)}`}
-        </Formula>
+        <DataTable
+          rows={[
+            { label: "All games in the era", games: protocol.gamesInEra, pct: protocol.baselineHomeWinPct },
+            { label: `East ${H}h+`, games: east.games, pct: east.homeWinPct },
+            { label: `East ${H}h+, short rest`, games: eastShort.games, pct: eastShort.homeWinPct },
+            { label: `West ${H}h+`, games: west.games, pct: west.homeWinPct },
+            { label: `West ${H}h+, short rest`, games: westShort.games, pct: westShort.homeWinPct },
+            { label: "No long shift", games: neither.games, pct: neither.homeWinPct },
+          ]}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "VISITOR'S SHIFT", unit: "FROM HOME BASE", cell: (r) => <LabelWithGames label={r.label} games={r.games} /> },
+            { label: "HOME WON", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.pct.toFixed(2) },
+          ]}
+        />
         <Note>
-          The raw comparison runs against the pre-registered expectation that eastward
-          displacement would be worse: visitors playing east of home won more often than
-          those playing west of home. Team composition and geography must be examined before
-          attributing that difference to jet lag.
+          This runs against the pre-registered expectation that east would be worse: visitors
+          playing east of home won more often than those playing west. Before blaming or
+          crediting jet lag, the teams and places involved need a look.
         </Note>
       </Section>
 
       <Section label="TEAM STRENGTH AND GEOGRAPHY" title="Differences in team strength and geography" disclosure>
         <Prose>
-          The east and west groups contain different teams and venues. In ordinary mainland
-          matchups, a {protocol.thresholdHours}-hour shift usually connects Eastern and Pacific
-          time zones. This does not match otherwise identical journeys, and the home sides
-          differ in their season-to-date records. The strength control uses each team’s prior
-          wins and games, shrunk toward .500 with an eight-game prior.
+          The east and west groups are different teams in different places. On the mainland, a{" "}
+          {H}-hour shift usually means Eastern to Pacific time or back, and the home
+          teams in each group had different records. Strength here is each team&rsquo;s record
+          in earlier games, pulled toward .500 with an eight-game prior. A
+          positive home edge means the home team was the stronger side.
         </Prose>
-        <Formula>
-          {`strength edge to the HOME side, by venue shift from base
-(positive = the home team was the better side)
-
-east ≥ ${protocol.thresholdHours}h        ${signedNumber(east.strengthEdgeToHome ?? 0, 4)}      home win ${east.homeWinPct.toFixed(2)}%
-west ≥ ${protocol.thresholdHours}h        ${signedNumber(west.strengthEdgeToHome ?? 0, 4)}      home win ${west.homeWinPct.toFixed(2)}%
-no long shift   ${signedNumber(neither.strengthEdgeToHome ?? 0, 4)}      home win ${neither.homeWinPct.toFixed(2)}%`}
-        </Formula>
+        <DataTable
+          rows={[
+            { label: `East ${H}h+`, edge: east.strengthEdgeToHome ?? 0, pct: east.homeWinPct },
+            { label: `West ${H}h+`, edge: west.strengthEdgeToHome ?? 0, pct: west.homeWinPct },
+            { label: "No long shift", edge: neither.strengthEdgeToHome ?? 0, pct: neither.homeWinPct },
+          ]}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "VISITOR'S SHIFT", cell: (r) => r.label },
+            { label: "HOME EDGE", unit: "STRENGTH", numeric: true, cell: (r) => signedNumber(r.edge, 4) },
+            { label: "HOME WON", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.pct.toFixed(2) },
+          ]}
+        />
         <Prose>
-          The strength edge <strong>flips sign between the clock-displacement groups</strong>, and the win
-          rate follows it. Team strength is therefore a confound in the raw{" "}
-          {rawSwingPoints(data).toFixed(1)}-point swing. The held-out test below asks whether
-          direction adds predictive information after those differences are accounted for.
+          The strength edge <strong>flips sign between the groups</strong>, and the win rate
+          follows it. So team strength explains the raw {rawSwingPoints(data).toFixed(1)}-point
+          swing at least in part. The held-out test below asks whether direction adds anything
+          once strength is accounted for.
         </Prose>
         <Note>
-          In this sample, overlap between the primary term and the model’s visiting-altitude
-          term is {primary.alsoAltitudePct.toFixed(1)}%. The primary test therefore does not
-          identify a joint altitude-and-long-shift effect.
+          {primary.alsoAltitudePct.toFixed(1)}% of the deciding term&rsquo;s games are also
+          altitude games, so this test cannot measure a combined altitude-and-shift effect.
         </Note>
       </Section>
 
       <Section label="HELD-OUT EVALUATION" title="Testing on seasons excluded from training" disclosure>
         <Prose>
-          The test asks whether adding these terms improves predictions for held-out games,
-          season by season, using the same walk-forward
-          protocol ADR 0006 used. Its baseline fits back-to-back, visiting altitude, prior
-          overtime and density together with a team-strength control. These research fits
-          do not replace the operational fatigue coefficients.
+          Each season is predicted by a model trained only on earlier seasons, the same
+          walk-forward method as ADR 0006. The baseline has team strength plus four fatigue
+          terms: back-to-back, visiting altitude, prior overtime and density. These research
+          fits do not replace the live model&rsquo;s constants.
         </Prose>
-        <Formula>
-          {`held-out log loss (lower is better)
-
-strength only                    ${logLoss.strengthOnly.toFixed(5)}
-+ the four fatigue terms         ${logLoss.baseline.toFixed(5)}     ${signedNumber(logLoss.baselineWorth, 5)}
-+ east/west × short rest         ${logLoss.withCandidates.toFixed(5)}     ${signedNumber(logLoss.candidatesWorth, 5)}`}
-        </Formula>
+        <DataTable
+          rows={[
+            { label: "Strength only", loss: logLoss.strengthOnly, worth: null },
+            { label: "+ four fatigue terms", loss: logLoss.baseline, worth: logLoss.baselineWorth },
+            { label: "+ east/west × short rest", loss: logLoss.withCandidates, worth: logLoss.candidatesWorth },
+          ]}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "MODEL", cell: (r) => r.label },
+            { label: "LOG LOSS", numeric: true, cell: (r) => r.loss.toFixed(5) },
+            { label: "WORTH", numeric: true, style: { fontWeight: 700 }, cell: (r) => (r.worth === null ? "—" : signedNumber(r.worth, 5)) },
+          ]}
+        />
         <Prose>
-          The candidate contribution (baseline loss minus augmented loss) is{" "}
-          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong>, a {logLoss.candidatesWorth < 0 ? "small deterioration" : "negligible change"}. Positive
-          “worth” means lower loss; negative means worse predictions.
-          The
-          sign-clamped fit pinned <code>{data.primaryTerm}</code> at zero in{" "}
+          Lower log loss is better. Worth is the drop in log loss from adding a row&rsquo;s
+          terms, so a positive worth helps.
+          The time-zone terms are worth{" "}
+          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong>, a{" "}
+          {logLoss.candidatesWorth < 0 ? "small step backward" : "negligible change"}. The fit,
+          which could only give the deciding term a cost, set <code>{data.primaryTerm}</code>{" "}
+          to zero in{" "}
           <strong>
             {protocol.folds - primary.foldsNonZero} of {protocol.folds}
           </strong>{" "}
-          folds. This constrained model did not retain a positive cost for the primary term.
+          seasons.
         </Prose>
         <ValueGrid
           values={[
@@ -173,84 +204,89 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
       <Section label="SENSITIVITY" title="A wider reading of short rest" disclosure>
         <Prose>
           The protocol defined short rest as &ldquo;at most one day of rest&rdquo;. The test
-          reads that as the visitor playing the previous night. Read as at most one day off,
-          which also admits a visitor with one full calendar day off between games, the short-rest cells grow to{" "}
-          {data.sensitivity.eastShortGames.toLocaleString()} eastward and{" "}
-          {data.sensitivity.westShortGames.toLocaleString()} westward games.
+          read that as playing the night before. Read more widely, to also include one full day
+          off, the short-rest groups grow to {data.sensitivity.eastShortGames.toLocaleString()}{" "}
+          eastward and {data.sensitivity.westShortGames.toLocaleString()} westward games.
         </Prose>
         <Prose>
-          The verdict does not change, though the margin {Math.sign(data.sensitivity.candidatesWorth) === Math.sign(logLoss.candidatesWorth) ? "moves" : "changes sign"}. The four
-          candidates are worth{" "}
+          The verdict holds, though the margin{" "}
+          {Math.sign(data.sensitivity.candidatesWorth) === Math.sign(logLoss.candidatesWorth) ? "moves" : "changes sign"}.
+          The four candidates are worth{" "}
           <strong>{signedNumber(data.sensitivity.candidatesWorth, 5)}</strong>, against{" "}
-          {signedNumber(logLoss.baselineWorth, 5)} for the four fatigue terms they would join, and{" "}
+          {signedNumber(logLoss.baselineWorth, 5)} for the four fatigue terms, and{" "}
           <code>{data.primaryTerm}</code> is non-zero in {data.sensitivity.primaryFoldsNonZero} of{" "}
-          {protocol.folds} folds. This check is shown beside the pre-registered result, not in
-          place of it: changing the definition after seeing the outcome would be choosing the
-          test by its answer.
+          {protocol.folds} seasons.
         </Prose>
+        <Note>
+          This check sits beside the pre-registered result, not in place of it. Changing the
+          definition after seeing the answer would be picking the test by its answer.
+        </Note>
       </Section>
 
       <Section label="OVERLAP WITH EXISTING TERMS" title="Overlap with existing schedule factors" disclosure>
         <Prose>
-          The westward short-rest term, <code>{westShortTerm.term}</code>, has a mean weight of {westShortTerm.meanWeight.toFixed(4)} in{" "}
-          {westShortTerm.foldsNonZero} of {protocol.folds} folds, with a coefficient of variation
-          of {westShortTerm.cv?.toFixed(2)}. By the stability standard ADR 0006 set, that is a
-          stable term.
+          The westward short-rest term, <code>{westShortTerm.term}</code>, has a mean weight of{" "}
+          {westShortTerm.meanWeight.toFixed(4)}, non-zero in {westShortTerm.foldsNonZero} of{" "}
+          {protocol.folds} seasons, with a coefficient of variation of{" "}
+          {westShortTerm.cv?.toFixed(2)}. By ADR 0006&rsquo;s standard, that is stable. Added to
+          the baseline alone, it is worth {signedNumber(westShortTerm.aloneVsBaseline, 5)}.
         </Prose>
         <Prose>
-          It is worth {signedNumber(westShortTerm.aloneVsBaseline, 5)} when added to
-          the baseline on its own. It overlaps heavily with the existing back-to-back term:
+          But it mostly repeats the back-to-back term. Of its {westShortTerm.games} games:
         </Prose>
-        <Formula>
-          {`${westShortTerm.term}     ${westShortTerm.games} games
-                    ${westShortTerm.visitorBackToBackPct.toFixed(1)}% visitor on a back-to-back
-                    ${westShortTerm.backToBackTermPct.toFixed(1)}% already carry the back-to-back term
-                    ${westShortTerm.alsoAltitudePct.toFixed(1)}% are also visiting altitude`}
-        </Formula>
+        <DataTable
+          rows={[
+            { label: "Visitor on a back-to-back", pct: westShortTerm.visitorBackToBackPct },
+            { label: "Already carry the back-to-back term", pct: westShortTerm.backToBackTermPct },
+            { label: "Also visiting altitude", pct: westShortTerm.alsoAltitudePct },
+          ]}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "OVERLAP", cell: (r) => r.label },
+            { label: "SHARE", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.pct.toFixed(1) },
+          ]}
+        />
         <Prose>
-          Every one of these visitors played the night before, and most of the games already
-          carry the model&rsquo;s back-to-back term. That term compares the two teams, so it is
-          zero on the nights both played the evening before. A stable coefficient
-          does not establish an independent contribution. The single-term comparison measures
-          what the candidate adds beyond the existing baseline, as required by ADR 0006.
+          Every one of these visitors played the night before. The back-to-back term compares
+          the two teams, so it is zero when both played the night before. That is why not
+          all of these games carry it. A stable weight does not mean an independent effect. Under ADR
+          0006, what counts is what a term adds beyond the baseline.
         </Prose>
       </Section>
 
       <Section label="WHAT THIS DOES NOT SAY" title="What this means for the current model" disclosure>
         <Prose>
-          This test did not change any constant in <code>fatigue.ts</code>. It also did not
-          validate the existing directional multipliers.
+          This test changed no constant in <code>fatigue.ts</code>. It also did not confirm the
+          direction multipliers already there:
         </Prose>
         <Formula>
-          {`shipped today:   eastward multiplier   ${FATIGUE_CONSTANTS.eastwardMultiplier}
-                 westward multiplier   ${FATIGUE_CONSTANTS.westwardMultiplier}
-
-this test found: no added predictive value from direction`}
+          {`eastward multiplier  ${FATIGUE_CONSTANTS.eastwardMultiplier}
+westward multiplier  ${FATIGUE_CONSTANTS.westwardMultiplier}`}
         </Formula>
         <Prose>
-          The model treats an eastward home-base-to-venue shift as{" "}
+          The model treats an eastward shift as{" "}
           {(
             FATIGUE_CONSTANTS.eastwardMultiplier / FATIGUE_CONSTANTS.westwardMultiplier
           ).toFixed(2)}
-          × as costly as a westward one. This measurement is <strong>not evidence that asymmetry
-          is right.</strong> The test found no added predictive value from the directional terms.
-          The ratified constants remain in the model, but this analysis does not verify them.
+          × as costly as a westward one. This test is <strong>not evidence that the asymmetry
+          is right.</strong> It found no added predictive value from direction. The ratified
+          constants stay in the model, unverified by this analysis.
         </Prose>
         <Note>
-          The question and evaluation rule were written down before the analysis ran. The result
-          is published even though the tested terms did not improve predictions.
+          The question and the evaluation rule were written down before the analysis ran. The
+          result is published even though the terms did not help.
         </Note>
       </Section>
 
       <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
-            `Clock displacement remains tied to team geography. The strength control does not match otherwise identical trips, and displacement from home does not establish the direction of the most recent journey.`,
-            `It cannot see rest and direction as anything but a schedule fact. Nothing here observes a flight, a departure time, a hotel, or a minute of anyone's sleep. "Short rest" is a gap between dates on a calendar.`,
-            `It cannot rule out smaller effects. The test found no predictive improvement across ${protocol.folds} held-out seasons; that does not establish that the biological effect is zero.`,
-            "It cannot speak to the playoffs. The protocol is regular-season walk-forward, and a postseason series has travel patterns and rest gaps this population does not contain.",
-            `It cannot test the joint effect of altitude and these long shifts. Observed overlap between the primary term and the altitude term is ${primary.alsoAltitudePct.toFixed(1)}%.`,
-            "Testing additional ideas on the same corpus increases the risk of selecting a chance result. New questions need a declared evaluation protocol.",
+            "Clock shift stays tied to geography. The strength control does not match otherwise identical trips, and a shift from home base says nothing about the most recent trip.",
+            `Rest and direction are calendar facts here. Nothing observes a flight, a departure time, a hotel or anyone's sleep. "Short rest" is a gap between dates.`,
+            `It cannot rule out a smaller effect. No predictive gain across ${protocol.folds} held-out seasons does not mean the biological effect is zero.`,
+            "It says nothing about the playoffs. The test is regular-season only, and playoff series have travel and rest patterns this sample does not contain.",
+            `It cannot test altitude and long shifts together. ${primary.alsoAltitudePct.toFixed(1)}% of the deciding term's games are altitude games.`,
+            "Each new idea tested on the same games raises the chance of a fluke. New questions need their own declared protocol.",
           ]}
         />
       </Section>

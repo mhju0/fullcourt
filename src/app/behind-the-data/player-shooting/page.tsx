@@ -21,79 +21,80 @@ export default function PlayerShootingMethodPage() {
       topic="player-shooting"
       eyebrow="BEHIND THE DATA · PLAYER SHOOTING BY REST"
       title="Player Shooting by Rest"
-      description="Player shooting on no rest compared with two to 29 days off, with attempt counts and uncertainty shown for each split."
+      description="Player shooting on no rest compared with two to 29 days off, with shot counts and uncertainty for each split."
     >
       <Section label="THE SPLIT" title="The two rest groups">
         <Prose>
-          Rest is measured from the player&rsquo;s own recorded appearances in competitive NBA
-          games. A player returning after several days away can be rested even when the team
-          played the night before.
-        </Prose>
-        <Prose>
-          A confirmed appearance counts even without a shot attempt. NBA Cup games can also
-          contribute to the rest history; the shooting percentages use regular-season shots.
+          Rest is counted from the player&rsquo;s own games, not the team&rsquo;s. A player
+          back after a week away is rested even if the team played last night.
         </Prose>
         <Formula>
-          {`no rest       played again the very next day
-2–29 days off two to 29 full days between appearances
-rest effect   eFG% on 2–29 days off − eFG% on no rest`}
+          {`no rest     played the day before
+rested      2 to 29 full days off
+
+rest effect = eFG% rested
+            − eFG% no rest`}
         </Formula>
+        <Prose>
+          An appearance counts even with no shot attempt. NBA Cup games count toward rest; the
+          shooting numbers use regular-season shots only.
+        </Prose>
         <Note>
-          Games after exactly one day off are excluded from this comparison, as are games
-          after 30 or more full days off, including season openers and returns from long absences.
-          The Orlando bubble is excluded from the shooting outcomes, although its appearances
-          can contribute to rest history.
+          Left out: games after exactly one day off, and games after 30 or more days off, such
+          as season openers and returns from long absences. Orlando bubble shots are left out
+          too, though bubble games still count toward rest.
         </Note>
       </Section>
 
       <Section label="THE METRIC" title="Shooting efficiency: eFG%">
         <Prose>
-          Shooting is measured as <strong>effective field goal percentage</strong>, which credits
-          a three-pointer at 1.5 times a two-pointer to account for the extra point. Raw field
-          goal percentage counts every made shot equally.
+          Shooting is measured as <strong>effective field goal percentage</strong> (eFG%). It
+          counts a made three as 1.5 made twos, for the extra point.
         </Prose>
-        <Formula>{`eFG% = 100 × (FGM + 0.5 × 3PM) / FGA`}</Formula>
+        <Formula>{`eFG% = 100 × (FGM + 0.5 × 3PM)
+             ÷ FGA`}</Formula>
       </Section>
 
       <Section label="HOW MUCH IS NOISE" title="Attempts and uncertainty" disclosure>
         <Prose>
-          A rest effect is a difference of two percentages, each from a limited number of
-          attempts, so it carries real uncertainty. For season splits, the page approximates
-          the standard error of that difference with the formula below. Differences smaller
-          than one estimated standard error are muted; this is not a 95% significance test.
+          A rest effect is the difference of two percentages, each from a limited number of
+          shots, so it carries noise. For one-season splits, the page estimates that noise as a
+          standard error:
         </Prose>
-        <Formula>{`standard error ≈ √( 2500 / noRestFGA + 2500 / restedFGA )`}</Formula>
+        <Formula>{`SE ≈ √( 2500 ÷ FGA no rest
+       + 2500 ÷ FGA rested )`}</Formula>
         <Prose>
-          The 2500 comes from a binary outcome with a 50% make probability, expressed in
-          percentage points. It is an approximation: eFG% weights three-pointers differently,
-          and attempts within a game are not necessarily independent. Fewer attempts produce
-          a larger uncertainty estimate.
+          A difference smaller than one standard error is shown muted. That is a rough flag,
+          not a 95% significance test. The 2500 assumes each shot is a 50/50 make, in
+          percentage points. It is an approximation: eFG% weights threes differently, and shots
+          in one game are not fully independent. Fewer shots mean a larger SE.
         </Prose>
         <ValueGrid
           values={[
-            { label: "Default attempt floor", value: "300+", sub: "total field goal attempts, not per group" },
+            { label: "Default attempt floor", value: "300+", sub: "total shots, not per group" },
             { label: "Rest states compared", value: "0 vs 2–29", sub: "days off between appearances" },
             { label: "Metric", value: "eFG%", sub: "threes weighted 1.5×" },
           ]}
         />
         <Note>
-          Lowering the adjustable attempt floor includes more players, but their splits
-          generally have fewer attempts and greater uncertainty.
+          Lowering the attempt floor adds players, but their splits rest on fewer shots and are
+          noisier.
         </Note>
         <Note>
-          This study is published as a separate export. Available seasons reflect that export;
-          nightly game updates do not automatically add player shooting results.
+          This study comes from a separate export, so it covers the seasons in that export.
+          Nightly game updates do not add to it.
         </Note>
       </Section>
 
       <Section label="CAREER ESTIMATES" title="How career estimates are adjusted" disclosure>
         <Prose>
-          Career estimates require at least 150 attempts in each rest group. Their standard
-          errors use each group&rsquo;s observed eFG% in a similar binary approximation,
-          rather than fixing it at 50%. The export
-          shrinks each raw gap toward the mean gap among eligible players, with more shrinkage
-          when its standard error is larger. This reduces uncertain extremes; it does not
-          remove differences in opponents, shot selection, or reasons for missing games.
+          Career estimates need at least 150 shots in each rest group. Their standard errors
+          use each group&rsquo;s own eFG% instead of a fixed 50%.
+        </Prose>
+        <Prose>
+          Each raw gap is then pulled toward the average gap of all eligible players. Noisier
+          gaps are pulled harder. This tames extreme values from small samples. It does not
+          remove differences in opponents, shot selection or why games were missed.
         </Prose>
       </Section>
 
@@ -101,11 +102,11 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
         <LimitList
           items={[
             "Shot difficulty. A rested player taking harder shots against a set defence can shoot worse while playing better.",
-            "Why a player missed games. An injury and planned rest can produce the same gap between appearances without providing the same recovery.",
-            "Preseason and exhibition games are outside the appearance history. If unresolved participation could change a rest group, the affected shots are excluded from both groups.",
+            "Why a player missed games. An injury and planned rest leave the same gap but not the same recovery.",
+            "Preseason and exhibition games are not in the appearance history. When an unknown appearance could change a player's rest group, those shots are dropped from both groups.",
             "Opponent quality and defensive scheme.",
             "Minutes and fatigue within a game. This is about rest before tip-off, not late-game legs.",
-            "A single season can contain too few attempts to distinguish a rest association from sampling variation. Compare the uncertainty and season-by-season results before interpreting a split.",
+            "One season can hold too few shots to tell a real rest pattern from chance. Check the uncertainty and other seasons before reading much into a split.",
           ]}
         />
       </Section>

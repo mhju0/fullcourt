@@ -20,10 +20,10 @@ const METHODS = [
 ];
 
 const NULL_RESULTS = [
-  { title: "Season win totals", href: "/behind-the-data/schedule-edge#the-market-check", finding: "Favorable schedules did not consistently predict beating preseason win-total lines in the archived sample." },
-  { title: "Time zones", href: "/behind-the-data/time-zones", finding: "Clock displacement between a team’s modeled home base and the game venue added no clear predictive value in the tested models." },
-  { title: "Referee folklore", href: "/behind-the-data/referees", finding: "The examined official-player records did not establish bias. Many-pair chance comparisons put unusual records in context." },
-  { title: "Playoff winner selection", href: "/behind-the-data/playoff-predictions#what-the-model-actually-wins-at", finding: "Winner accuracy was close to always picking the home-court team. Probability estimates improved." },
+  { title: "Season win totals", href: "/behind-the-data/schedule-edge#the-market-check", finding: "Teams with friendlier schedules did not consistently beat their preseason win-total lines." },
+  { title: "Time zones", href: "/behind-the-data/time-zones", finding: "A time-zone shift between a team's home and the arena added no clear predictive value in the tested models." },
+  { title: "Referee folklore", href: "/behind-the-data/referees", finding: "The official-player records did not show bias. Across many pairs, the unusual ones were in line with chance." },
+  { title: "Playoff winner selection", href: "/behind-the-data/playoff-predictions#what-the-model-actually-wins-at", finding: "Picking winners was about as accurate as always taking the home-court team. The probabilities did improve." },
 ];
 
 export default function BehindTheDataPage() {

@@ -79,3 +79,24 @@ test.describe("Availability Cost page", () => {
     await expect(page).toHaveURL(/\/availability$/);
   });
 });
+
+
+test("annual selection shows the chosen rate and denominator next to the control", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/availability");
+  const section = page.getByRole("region", { name: "Best-player absences over time" });
+  const select = section.getByRole("combobox", { name: "Measured season" });
+  const first = AVAILABILITY_TREND_SEASONS[0]!;
+  const last = AVAILABILITY_TREND_SEASONS.at(-1)!;
+  await expect(select).toHaveValue(last.season);
+  await select.selectOption(first.season);
+  const readout = section.getByRole("status");
+  await expect(readout).toContainText(first.season);
+  await expect(readout).toContainText(`${(first.rate * 100).toFixed(1)}%`);
+  await expect(readout).toContainText(`${first.teamGames.toLocaleString()} included team-games`);
+  await select.focus();
+  await expect(select).toBeFocused();
+  await select.selectOption(last.season);
+  await expect(readout).toContainText(last.season);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

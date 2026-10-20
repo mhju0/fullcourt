@@ -15,6 +15,7 @@ import {
   REST_DAYS_CAP,
 } from "@/lib/schedule-disparity";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
+import { TYPE } from "@/lib/terminal-styles";
 import { signedNumber } from "@/lib/signed-number";
 import {
   HOME_COURT_SPAN_PP,
@@ -40,124 +41,132 @@ export default function ScheduleEdgeMethodPage() {
       topic="schedule-edge"
       eyebrow="BEHIND THE DATA · SCHEDULE EDGE"
       title="Schedule edge"
-      description="A within-season comparison of favorable and unfavorable rest gaps, with a win-equivalent estimate based on historical rates."
+      description="How each team's schedule is scored for and against it within one season, and what that is worth in wins."
     >
       <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
-          For a counted game, played or projected, the fatigue gap against that night&rsquo;s
-          opponent is the same rest advantage the rest of the site uses. A game counts
-          as <strong>favorable</strong> when the opponent was the more tired side by at least{" "}
-          {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team
-          itself was. The season total is the difference. A game is excluded from these counts if either side
-          has no previous game in that season’s workload history. Both fatigue scores must
-          exist to measure an edge; missing scores are not neutral.
+          Every game has a rest advantage: the gap between the two teams&rsquo; fatigue scores.
+          A game is <strong>favorable</strong> when the opponent is more tired by at least{" "}
+          {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team is.
+          The season total is one minus the other.
         </Prose>
         <Formula>
-          {`netEdgeGames = favorableGames − unfavorableGames
+          {`net = favorable − unfavorable
 
-favorable     fatigue gap ≥ +${NEUTRAL_REST_ADVANTAGE_THRESHOLD} in the team's favor
-unfavorable   fatigue gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} against
-${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
+favorable    gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, team fresher
+unfavorable  gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, team tired
+${BIG_EDGE_FATIGUE_THRESHOLD}+ edge      gap ≥ ${BIG_EDGE_FATIGUE_THRESHOLD}, either side`}
         </Formula>
+        <Prose>
+          Played and projected games both count. A game is left out when either team has no
+          earlier game that season, because its fatigue score has nothing to build on. A missing
+          score is not treated as an even game.
+        </Prose>
         <Note>
-          Because every game is counted once from each side, the league&rsquo;s net edge games
-          sum to zero by construction. That is a useful check rather than a finding: a season
-          where the totals did not cancel would mean a bug.
+          Every game is counted once from each side, so the league&rsquo;s net totals add up to
+          zero. That is a check on the arithmetic, not a finding.
         </Note>
       </Section>
 
       <Section label="WHAT AN EDGE IS WORTH" title="What Worth means" disclosure>
         <Prose>
-          <strong>Worth</strong>{" "}adds each game&rsquo;s historical rest-state win-rate difference
-          from its venue baseline. This calculation does not fit a new model or use the
-          team&rsquo;s results. Teams with the same schedule conditions receive the same
-          estimate even if their win totals differ.
+          <strong>Worth</strong> turns a schedule into wins. Each game puts the team in one of
+          six groups: fresher, even or more tired, at home or on the road. Each group has a
+          historical win rate. Worth adds up how far each game&rsquo;s group sits from its venue
+          baseline.
+        </Prose>
+        <Formula>
+          {`worth = sum of every game's lift
+
+lift  = (group win % − venue win %)
+        ÷ 100`}
+        </Formula>
+        <Prose>
+          Worth does not use a team’s actual win record to award wins. It adds historical
+          rest-group lifts for that schedule. Past game margins can affect the fatigue
+          groups through the workload discount for blowouts.
         </Prose>
         <ValueGrid
           values={[
             {
               label: "Fresher side, at home",
               value: signedNumber(REST_STATE_LIFT_PP.restedHome, 2),
-              sub: "pp of win rate vs the home baseline",
+              sub: "points vs the home baseline",
             },
             {
-              label: "Tireder side, at home",
+              label: "More tired side, at home",
               value: signedNumber(REST_STATE_LIFT_PP.tiredHome, 2),
-              sub: "pp vs the home baseline, facing a fresher visitor",
+              sub: "points vs the home baseline",
             },
             {
-              label: "A rest edge, against home court",
+              label: "Rest gap vs home court",
               value: `${Math.round(REST_SHARE_OF_HOME_COURT * 100)}%`,
               sub: `${REST_SPAN_PP.toFixed(1)} points against ${HOME_COURT_SPAN_PP.toFixed(1)}`,
             },
           ]}
         />
         <Prose>
-          The two rest groups sit at different distances from the home baseline. The gap
-          between them is {REST_SPAN_PP.toFixed(1)} percentage points; the home-road gap is{" "}
-          {HOME_COURT_SPAN_PP.toFixed(1)}. Rest is roughly{" "}
-          {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of that home-road gap. These comparisons
-          describe historical groups rather than causal effects.
+          At home, going from more tired to fresher moves the win rate by{" "}
+          {REST_SPAN_PP.toFixed(1)} points. Going from road to home moves it by{" "}
+          {HOME_COURT_SPAN_PP.toFixed(1)}. So rest is worth about{" "}
+          {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court. These are historical
+          groups, not measured causes.
         </Prose>
         <Note>
-          Net season values are small because favorable and unfavorable games partly
-          offset each other, and each game is priced at a small difference from its venue baseline.
+          Season totals are small. Favorable and unfavorable games cancel each other out, and
+          each game moves the total by only a fraction of a win.
         </Note>
         <Note>
-          Worth includes scored season openers and excludes neutral-site games, which have
-          no home/road baseline. The net-edge counts and rest-day comparisons exclude any
-          game where either side has no previous game in the season’s workload history.
+          Worth includes season openers and leaves out neutral-site games, which have no home
+          baseline. The net counts above still leave out games where either team has no earlier
+          game that season.
         </Note>
-        <details className="fc-disclosure"><summary>Season-opener revision</summary><Prose>Excluding openers previously made this page and Season Report disagree by a tenth of a win for the same team.</Prose></details>
+        <details className="fc-disclosure">
+          <summary>Season-opener revision</summary>
+          <Prose>
+            Worth used to leave out season openers too. That made this page and Season Report
+            disagree by a tenth of a win for the same team.
+          </Prose>
+        </details>
       </Section>
 
       {/* Moved here whole from the foot of /schedule on 2026-08-24 (ADR 0009); the page keeps
           a one-paragraph sentry with the r. Both render the same committed benchmark JSON. */}
       <Section label="THE MARKET CHECK" title="Preseason win totals: no consistent relationship" disclosure>
         <Prose>
-          Across {benchmark.seasonsCovered} seasons of archived lines, teams with more
-          favorable schedules did not consistently beat their preseason win-total lines:
+          Did teams with friendlier schedules beat their preseason win-total lines? Across{" "}
+          {benchmark.seasonsCovered} seasons of archived lines, not consistently:
         </Prose>
         <DataTable
           wrapperClassName="overflow-x-auto"
           width="numeric"
-          minWidth={360}
           rows={benchmark.buckets}
           rowKey={(b) => b.label}
           columns={[
-            { label: "Net edge games", cell: (b) => b.label },
+            { label: "Net edge", unit: "games", cell: (b) => <>{b.label}<br /><span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>{b.n} team-seasons</span></> },
             {
               label: "Went over",
-              unit: "percent of the bucket",
+              unit: "share of teams",
               numeric: true,
               style: { fontWeight: 700 },
               cell: (b) => pct(b.overs, b.n),
             },
-            {
-              label: "Team-seasons",
-              numeric: true,
-              style: { color: "var(--term-text-muted)" },
-              cell: (b) => b.n,
-            },
           ]}
         />
         <Prose>
-          The correlation between a team&rsquo;s net edge
-          games and its finish against the line is r&nbsp;=&nbsp;
-          {signedNumber(benchmark.correlation.r, 4)} across {benchmark.correlation.n}{" "}
-          team-seasons. The archive does not show
-          a consistent relationship between net edge and beating the line. It does not prove
-          that markets fully price the schedule or rule out every possible betting strategy.
+          The correlation between net edge games and finishing over the line is
+          r&nbsp;=&nbsp;{signedNumber(benchmark.correlation.r, 4)} across{" "}
+          {benchmark.correlation.n} team-seasons. The archive does not show a consistent
+          relationship between net edge and beating the line. That does not prove the market
+          prices the schedule fully, or rule out every betting strategy.
         </Prose>
         <Note>
           Lines from the {benchmark.source}, {benchmark.firstSeason} through{" "}
-          {benchmark.lastSeason}. No lines were published for the 1998-99 lockout, and 2019-20
-          is skipped here because its season was suspended at 63 to 67 games; a preseason win
-          total never got a full schedule to resolve against. {benchmark.pushes} pushes are
-          excluded from the rates; overs hit {pct(benchmark.overall.overs, benchmark.overall.n)}{" "}
-          overall in this archive. The archive&rsquo;s win
-          count matched this site&rsquo;s own game records for every one of the{" "}
-          {benchmark.teamSeasons} team-seasons before anything was computed.
+          {benchmark.lastSeason}. The 1998-99 lockout had no lines. 2019-20 is skipped because
+          it stopped at 63 to 67 games, so no win total could resolve. {benchmark.pushes} pushes
+          are left out. Overs hit {pct(benchmark.overall.overs, benchmark.overall.n)} overall.
+          Before anything was computed, the archive&rsquo;s win counts matched this site&rsquo;s
+          records for all {benchmark.teamSeasons} team-seasons.
         </Note>
       </Section>
 
@@ -167,60 +176,57 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
             {
               label: "Counts as an edge",
               value: `${NEUTRAL_REST_ADVANTAGE_THRESHOLD}`,
-              sub: "fatigue-score units, shared with every page",
+              sub: "fatigue points, same on every page",
             },
             {
-              label: `Counts as a ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge`,
+              label: `Counts as a ${BIG_EDGE_FATIGUE_THRESHOLD}+ edge`,
               value: `${BIG_EDGE_FATIGUE_THRESHOLD}`,
-              sub: "fatigue-score units; medium and large edges",
+              sub: "fatigue points: medium and large gaps",
             },
             {
               label: "Days off capped at",
               value: `${REST_DAYS_CAP - 1}`,
-              sub: `per side, before differencing (${REST_DAYS_CAP} days since the last game)`,
+              sub: `per team (${REST_DAYS_CAP} days since the last game)`,
             },
           ]}
         />
         <Prose>
-          The {NEUTRAL_REST_ADVANTAGE_THRESHOLD} threshold is
-          the same line the whole site uses to decide whether a game is worth calling at all.
-          Using a different one here would let a game count as a schedule edge while the Games
-          page called it too close to matter.
+          The {NEUTRAL_REST_ADVANTAGE_THRESHOLD} line is the same one every page uses to decide
+          whether a game has an edge at all. A different line here could count a game as a
+          schedule edge that the Games page calls too close to matter.
         </Prose>
         <Prose>
-          The rest-days cap limits unusually long gaps, such as the All-Star break, in the
-          separate net-days-off total. It does not change fatigue-score edge counts or Worth. Capping at{" "}
-          {REST_DAYS_CAP - 1} days off per side before differencing keeps the season total
-          describing schedule disparity rather than calendar arithmetic. The cap is not where
-          the fatigue model stops crediting rest: its freshness credit starts after three days
-          since the last game and keeps growing from there.
+          The days-off cap applies only to the separate net-days-off total. It stops long breaks,
+          such as the All-Star break, from swamping that total. Each team&rsquo;s days off are
+          capped at {REST_DAYS_CAP - 1} before the two are compared. Edge counts and Worth use
+          fatigue scores and are not capped. The fatigue model itself keeps crediting rest past
+          three days.
         </Prose>
       </Section>
 
       <Section label="WHAT ELSE IS COUNTED" title="Back-to-backs and dense stretches" disclosure>
         <Prose>
-          Alongside the headline, the schedule breakdown compares each team’s back-to-backs
-          and dense stretches with its opponents’. A positive edge means opponents faced
-          more of those situations. These comparisons follow schedule dates, share the
-          opener gate above, and do not use fatigue-score thresholds. Played Cup finals
-          and other context-only rows can affect workload windows without adding ranked games.
+          The schedule breakdown also compares each team&rsquo;s back-to-backs and dense
+          stretches with its opponents&rsquo;. A positive number means the opponents had more of
+          them. These counts come straight from game dates, not fatigue scores, and skip the same
+          opening games as above. NBA Cup finals and other unranked games still add to workload.
         </Prose>
         <Note>
-          A dense-window flag describes the game that <em>closes</em> the window, not every game
-          inside it. Counting each game in a 3-in-4 stretch as a 3-in-4 would treble the total.
+          A dense-stretch flag goes on the game that <em>ends</em> the stretch, not every game in
+          it. Flagging all three games of a 3-in-4 would count it three times.
         </Note>
       </Section>
 
       <Section label="WHAT THIS CANNOT SEE" title="Coverage and limitations" disclosure>
         <LimitList
           items={[
-            "2019-20 is excluded from this ranking because its published non-bubble schedules have unequal lengths. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",
-            "Rankings compare teams within a season. Schedule length, travel patterns, and back-to-back frequency change across eras.",
-            "After the season’s first unresolved game date, later games use projected fatigue from the published schedule; the page counts those projections. On the first unresolved date, prior workload is already known. Rankings can move as games are played.",
-            "In the current NBA Cup calendar, 80 of each team’s 82 regular-season games are initially assigned. The other two depend on Cup results, so a forward-looking total remains incomplete until those fixtures are added. A Cup championship adds workload but is not a regular-season target.",
-            "It inherits every limit of the fatigue model it is built on, including no injuries, no rotations and no knowledge of team quality.",
-            "A favorable schedule is not a prediction. It says a team has more favorable than unfavorable modeled fatigue gaps in the counted games; it does not establish team quality.",
-            "The Worth column uses pooled historical rates since 1985-86. A displayed season's observed rates can differ, so this estimate does not explain that season's actual wins and losses.",
+            "2019-20 is left out of the ranking. Teams played different numbers of games before the bubble, so they had different chances to build an edge.",
+            "Rankings compare teams within one season. Schedule length, travel and back-to-back counts change across eras.",
+            "Games after a team’s first unplayed date use projected fatigue from the published schedule. That first unplayed date can still use measured history. The page counts projected comparisons; rankings can change as games are played.",
+            "In the current NBA Cup format, 80 of each team's 82 games are set in advance. The other two depend on Cup results, so a forward-looking total is incomplete until they are added. A Cup final adds workload but does not count as a regular-season game.",
+            "It inherits every limit of the fatigue model: no injuries, no rotations, no team quality.",
+            "A favorable schedule is not a prediction. It means more favorable than unfavorable fatigue gaps, nothing about how good the team is.",
+            "Worth uses rates pooled since 1985-86. One season's real rates can differ, so Worth does not explain a season's actual record.",
           ]}
         />
       </Section>
