@@ -478,3 +478,9 @@ reconstruction mismatches. Its current baseline is 17,190 wins in
 28,117 calls. Historical figures in earlier amendments remain dated records.
 Fresh figures live in producer JSON and its pinning tests; the new calculation does not
 adopt fitted weights, establish causality, or turn model selection into independent evidence.
+
+**Note, 2026-10-20 (after v1.0.8).** The "current baseline" in the amendment above was current
+when written (v1.0.3). The v1.0.7 overtime and v1.0.8 arena corrections regenerated the ablation
+artifact from a new source CSV, so that baseline is now a dated record like the earlier ones.
+Read the current baseline and source hash from `ml/fatigue_ablation_facts.json` (`baseline`,
+`sourceSha256`). No coefficient changed.

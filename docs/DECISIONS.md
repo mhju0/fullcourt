@@ -266,7 +266,7 @@ Naver and KBL all preserve pinch-zoom), and a VoiceOver walkthrough refused 2026
 explicit *"do not silently reopen this row"*.
 *Evidence:* `docs/UIUX_CHECKLIST.md`.
 
-### D-33 · `/referees` is published — **ACTIVE (reverses D-11)**
+### D-33 · `/referees` is published — **SUPERSEDED by D-60** (the module is published as `/officiating`; `/referees` redirects)
 **Decided 2026-08-22**, on the owner's explicit instruction, after being held back since
 2026-07-30. Publishing or unpublishing a route is a deliberate product act, **never a side effect
 of a docs change** — if a stale doc says otherwise, the doc is wrong.

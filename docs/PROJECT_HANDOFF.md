@@ -108,78 +108,23 @@ The [opening-quarter](research/2026-10-20-opening-quarter-travel-review.md),
 D-120 keeps Mileage wording; D-121/ADR 0011 and D-122 prepared v1.0.3. Actual airports/home
 stops, Cup assignments and physical-device/opening-night observation remain unresolved.
 
-## v1.0.3 production closeout — 2026-10-20
+## Condensed v1.0.3–v1.0.8 correction chain — 2026-10-20
 
-Owner-approved PR #182 / `0f30d345` and exact after-state passed canonical verification;
-writers were restored and coefficients/predictions preserved. The
-[delivery report](research/2026-10-20-historical-recalculation.md) owns detailed evidence.
-Intermittent Google Fonts builds remain monitored; researched local fonts were not adopted.
+v1.0.3 (#182), v1.0.4 player appearance/team identity (D-123–D-125, #184), v1.0.5 serverless
+pool (D-126, #185), v1.0.6 homepage history and methods copy (D-127/D-128, #186), v1.0.7
+overtime inputs (D-129/ADR 0015, #187) and v1.0.8 arena/Shooting (D-131/D-132, #189) each
+passed canonical verification; coefficients and graded predictions were preserved. Their
+records own the evidence: [recalculation](research/2026-10-20-historical-recalculation.md),
+[player source](research/2026-10-20-player-appearance-rest-correction.md),
+[methods](research/2026-10-20-methods-accuracy-audit.md),
+[overtime](research/2026-10-20-overtime-correction/README.md),
+[arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md) (including V11, the
+homepage built before the data apply and later rebuilt).
 
-## Player-source correction — 2026-10-20
-
-D-123–D-125 / v1.0.4 correct appearance/team identity and integer numerators while retaining
-unknowns and the outcome protocol. The [record](research/2026-10-20-player-appearance-rest-correction.md)
-pins producer/full-cache evidence; raw backups remain in isolated worktrees.
-
-## Serverless transaction-pool candidate — 2026-10-20
-
-D-126's v1.0.5 preparation used unpipelined node-postgres, guarded checkout, bounded waits
-and verified TLS; data/schema/model remained unchanged. PostgreSQL lifecycle/recovery and
-endpoint probes passed; deployment acceptance was pending then and is superseded below.
-
-## Historical homepage and methods audit — 2026-10-20
-
-D-127 restores the common full-history homepage population. D-128 / v1.0.6 correct methods
-copy without changing artifacts; the [record](research/2026-10-20-methods-accuracy-audit.md)
-retains source limits. v1.0.4/v1.0.5 canonical verification subsequently passed.
-
-## Numeric source follow-up in preparation — 2026-10-20
-
-D-129 / ADR 0015 prepared 346 overtime/683 fatigue corrections and preserved history.
-Local replay/rollback, producers and browser/API checks passed; production was not claimed
-at that entry. The [overtime record](research/2026-10-20-overtime-correction/README.md) retains
-preparation and later v1.0.7 / PR #187 (`65605ae`) production acceptance. Cleanup was queued.
-
-## Post-PR-187 independent correction candidate — 2026-10-20
-
-D-131 rechecked all released fatigue sides before sourcing arena/Shooting fixes. Local
-transition/producers/independent checks passed; approval/application were pending then. The
-[source record](research/2026-10-20-arena-shooting/README.md) and
-[audit ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md) retain all dated details.
-Section 7 remains report-only; 2026-27 grading stays deferred.
-
-## Approved arena candidate and recurrence record — 2026-10-20
-
-Independent review accepted `64790668`; the owner approved manifest `6cc5f11f…` and asked
-for the durable ledger. That entry recorded pending cutover, not deployed acceptance.
-Exact source/manifest bindings and prediction history remained protected.
-
-## Sanitized arena release publication — 2026-10-20
-
-D-132 separated original private execution evidence from the sanitized public tree.
-Secret alert #1 remained open; earlier exposure was not purged. CI installed the existing
-pinned Python dependencies. The dated entry preceded application and canonical verification.
-
-## Queued research maintenance follows arena correction — 2026-10-20
-
-The v1.0.9 candidate integrated the arena closure with preserved v1.0.7 receipts. Local
-1,463 Vitest / 81 ML / 58 script-Python / 26 Node plus types/lint/docs/build passed; guarded
-intermediates matched accepted AFTER bytes. The [maintenance record](research/2026-10-20-repository-maintenance.md#arena-closure-follow-up-for-v109--2026-10-20)
-retains checks and private archive locations. No cleanup push/deployment was claimed.
-
-## Homepage cutover readback failed; rebuild pending — 2026-10-20
-
-The root built `6ddf73f4` before applying the data correction. Canonical browser checks
-caught stale prerendered home values despite API parity; maintenance was restored and writers
-remained paused. [V11](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
-retains the failed receipts and staged HTML/browser/API gate. Rebuild was pending at that entry.
-
-## Research provenance review correction — 2026-10-20
-
-Review added `tsconfig.json` provenance and real TypeScript import resolution; valid alias
-mutation rejects both receipts without output writes. A readonly-clone export/prepare rerun
-retained CSV bytes with new receipts; closure/82 ML/types/lint/links passed. Cleanup remains
-local, with no runtime math or publication change.
+Carried forward: intermittent Google Fonts builds stay monitored; Section 7 is report-only and
+2026-27 grading stays deferred; actual airports, Cup assignments, physical devices and the
+first real slate remain unobserved. Raw backups and private receipts that lived in the
+per-task worktrees are now local-only under `docs/audit/worktree-archive-2026-10-20/`.
 
 ## v1.0.8 canonical acceptance; v1.0.9 prepared — 2026-10-20
 
@@ -195,3 +140,14 @@ pins full hashes and private receipt identities; older pending entries above are
 Secret alert #1 is still open; revocation/history purge is unknown. Existing device/slate/Cup/
 travel limits remain. Cleanup implementation `ffc9be7b` is reviewed; final documentation
 review/publication remains pending.
+
+## v1.0.9 release closeout — 2026-10-20
+PR #190 merged as `c5e504e`; tag/release v1.0.9 and canonical deployment `dpl_HbmiLvRZLNtmcU33FzwVrvLTtmc6` verified. Seven live requests (3,440 values) matched; homepage 390/1440px and real-API headline E2E passed. Main local research inputs validate; old files/private evidence preserved and local PostgreSQL stopped. Final receipt: `docs/audit/repository-cleanup-20261020/release/release-acceptance.json` (SHA256 `f5c3843930f8e8583395a75ba72dc931343d91e24662a09fe2ec5ecb66d9621a`). Secret alert #1 remains open; historical exposure/revocation unresolved. This local closeout supplements the merged ledger; no further production data change.
+
+## Post-v1.0.9 accuracy audit and local cleanup — 2026-10-20
+
+An independent audit of the repository, docs and live site against code, artifacts and a
+read-only database recount found no wrong published figure. It found stale status and
+method text, mislabelled copy and two provenance gaps; fixes ship as separate docs, copy
+and artifact-provenance PRs. All per-task worktrees were removed; their unique evidence is
+in the local archive named above, with branch SHAs in its README.
