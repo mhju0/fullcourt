@@ -1,5 +1,12 @@
 # Release history
 
+## 1.0.12 — 2026-10-20
+
+- Keep season labels, "5+ points" and win/game counts whole at phone widths on Season
+  Report, Availability, the board guide and Home Court; reword the chart's key help.
+- Refresh browser specs that expected an empty Shooting default to have players, copy
+  replaced in v1.0.6 and later, or classic scrollbars. No published figure changes.
+
 ## 1.0.11 — 2026-10-20
 
 - Read Season Report's other-seasons rested-home rate beside those seasons' home win rate,
