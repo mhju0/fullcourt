@@ -15,6 +15,12 @@ export interface OfficialFact {
   decision:{status:'verified'|'unknown';overtimePeriods:number|null;reasons:string[]};
 }
 interface OfficialSide {teamId:number;tricode:string;canonicalAbbr:string;score:number;minutes?:string|null;periods:{period:number;periodType:string;score:number}[]}
+interface RawOfficialSide {teamId:number;teamTricode:string;score:number;statistics?:{minutes?:string|null};periods:OfficialSide['periods']}
+export interface RawOfficialGame extends Omit<OfficialFact['observed'],'home'|'away'> {homeTeam:RawOfficialSide;awayTeam:RawOfficialSide}
+export function matchRawOfficialObservation(game:RawOfficialGame,fact:OfficialFact):void {
+  for(const field of ['gameId','gameCode','gameEt','gameStatus','gameStatusText','period'] as const)if(hash(game[field]??null)!==hash(fact.observed[field]??null))throw new Error('Normalized observation differs from raw official game');
+  for(const side of ['home','away'] as const){const raw=game[`${side}Team`];const observed=fact.observed[side]!;if(hash({teamId:raw.teamId,tricode:raw.teamTricode,score:raw.score,minutes:raw.statistics?.minutes??null,periods:raw.periods})!==hash({teamId:observed.teamId,tricode:observed.tricode,score:observed.score,minutes:observed.minutes??null,periods:observed.periods}))throw new Error('Normalized observation differs from raw official side');}
+}
 export interface SourceBridge { sourceInputCanonicalHash:string; sourceSnapshotSha256:string; freshBeforeHash:string; originalTargetProjectionHash:string; freshTargetProjectionHash:string; originalFinalHistorySemanticHash:string; freshFinalHistorySemanticHash:string; originalTeamMappingHash:string; freshTeamMappingHash:string }
 export interface ProofBinding {path:string;sha256:string;inputCanonicalHash:string;verified:number;unknown:number;expected:number;factsHash:string;validatorSha256:string;bridge:SourceBridge;supplementalAccepted:number;supplementalAdjudicationsSha256:string;effectivePositiveOT:number;supplementalPositiveOT:number;supplementalAcceptedGameIds:number[]}
 export interface InputChange {id:number;externalId:string;identity:string;before:number;after:number;factSha256:string;adjudication:'official-periods'|'bulls-guide-19890131'}
@@ -95,9 +101,8 @@ export function loadProof(path:string,expectedSha256:string,before:Snapshot,expe
       if(fact.decision.status==='verified'||supplementalGame(fact)) {
         const match=body.toString().match(/<script\b[^>]*\bid=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/);
         if(!match)throw new Error('Verified fact has no raw official embedded data');
-        const game=JSON.parse(match[1]).props.pageProps.game;
-        for(const field of ['gameId','gameCode','gameEt','gameStatus','gameStatusText','period'] as const)if(hash(game[field]??null)!==hash(fact.observed[field]??null))throw new Error('Normalized observation differs from raw official game');
-        for(const side of ['home','away'] as const){const raw=game[side+'Team'];const observed=fact.observed[side]!;if(hash({teamId:raw.teamId,tricode:raw.teamTricode,score:raw.score,minutes:raw.statistics?.minutes,periods:raw.periods})!==hash({teamId:observed.teamId,tricode:observed.tricode,score:observed.score,minutes:observed.minutes,periods:observed.periods}))throw new Error('Normalized observation differs from raw official side');}
+        const game=JSON.parse(match[1]).props.pageProps.game as RawOfficialGame;
+        matchRawOfficialObservation(game,fact);
       }
     }
     if(fact.decision.status==='unknown') {

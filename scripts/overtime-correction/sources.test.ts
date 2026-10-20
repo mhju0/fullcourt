@@ -1,8 +1,11 @@
 import {describe,it,expect} from 'vitest';
+import {readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {gunzipSync} from 'node:zlib';
 import factJson from './fixtures/official-0028801021.json';
 import fiveOvertimeJson from './fixtures/official-0028900045.json';
 import {normalizeOfficialAbbreviation} from './observation';
-import {validateVerifiedFact,matchFactToGame,calculateBridge,type OfficialFact} from './sources';
+import {validateVerifiedFact,matchFactToGame,calculateBridge,matchRawOfficialObservation,bytesHash,type RawOfficialGame,type OfficialFact} from './sources';
 import type {Snapshot} from './core';
 const fact=()=>structuredClone(factJson) as OfficialFact;
 describe('independent official numbered-period acceptance',()=>{
@@ -67,4 +70,20 @@ describe('source corpus to fresh backup semantic bridge',()=>{
     if(kind==='final-score')fresh.games[0].home_score=127;
     expect(()=>calculateBridge(original,fresh,[1],'a'.repeat(64))).toThrow('drift');
   });
+});
+
+it.skipIf(!process.env.OVERTIME_SOURCE_PROOF_DIR)('accepts retained authentic raw-game evidence with absent optional minutes normalized to null',()=>{
+  const f=fact(),compressed=readFileSync(resolve(process.env.OVERTIME_SOURCE_PROOF_DIR!,f.source.rawPath!)),body=gunzipSync(compressed);
+  expect(bytesHash(compressed)).toBe(f.source.rawGzipSha256);expect(bytesHash(body)).toBe(f.source.bodySha256);
+  const embedded=body.toString().match(/<script\b[^>]*\bid=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/)!;
+  const raw=JSON.parse(embedded[1]).props.pageProps.game as RawOfficialGame;
+  f.observed.gameStatusText=raw.gameStatusText??null;
+  expect(()=>matchRawOfficialObservation(raw,f)).not.toThrow();
+  delete raw.homeTeam.statistics!.minutes;delete raw.awayTeam.statistics;
+  f.observed.home!.minutes=null;f.observed.away!.minutes=null;
+  expect(()=>matchRawOfficialObservation(raw,f)).not.toThrow();expect(validateVerifiedFact(f)).toBe(1);
+  delete raw.gameStatusText;f.observed.gameStatusText=null;
+  expect(()=>matchRawOfficialObservation(raw,f)).not.toThrow();expect(validateVerifiedFact(f)).toBe(1);
+  raw.homeTeam.statistics={minutes:'365:00'};expect(()=>matchRawOfficialObservation(raw,f)).toThrow('raw official side');
+  f.observed.home!.minutes='365:00';expect(()=>matchRawOfficialObservation(raw,f)).not.toThrow();expect(()=>validateVerifiedFact(f)).toThrow('minutes');
 });
