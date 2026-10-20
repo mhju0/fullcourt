@@ -78,12 +78,12 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
             {
               label: "Fresher side, at home",
               value: signedNumber(REST_STATE_LIFT_PP.restedHome, 2),
-              sub: "points of win probability",
+              sub: "pp of win rate vs the home baseline",
             },
             {
               label: "Tireder side, at home",
               value: signedNumber(REST_STATE_LIFT_PP.tiredHome, 2),
-              sub: "facing a fresher visitor",
+              sub: "pp vs the home baseline, facing a fresher visitor",
             },
             {
               label: "A rest edge, against home court",

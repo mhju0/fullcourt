@@ -108,7 +108,7 @@ export function priorRoundGamesLabel(
   if (gamesPlayed === null) return null;
   const sweep = isBestOf7 ? 4 : 3;
   const distance = isBestOf7 ? 7 : 5;
-  if (gamesPlayed <= sweep) return `swept in ${gamesPlayed}`;
+  if (gamesPlayed <= sweep) return `swept ${gamesPlayed}–0`;
   if (gamesPlayed >= distance) return `survived a ${gamesPlayed}`;
   return `closed in ${gamesPlayed}`;
 }
@@ -120,7 +120,7 @@ export function priorRoundGamesLabel(
  * ITS OWN previous series' format — never with `isBestOf7`, which describes the series being
  * displayed. Round 1 was best-of-5 through 2001-02, so on a round-2 card from that era a
  * 5-game previous round is `survived a 5` while the current series' best-of-7 flag would
- * mislabel it `closed in 5`, and a 4-game one is `closed in 4`, not `swept in 4`.
+ * mislabel it `closed in 5`, and a 4-game one is `closed in 4`, not `swept 4–0`.
  */
 export function grindLineLabels(series: {
   homeCourtPriorGames: number | null;

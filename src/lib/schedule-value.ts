@@ -54,9 +54,9 @@ export interface RestStateCounts {
  * "the home team was the tired side" are the same games counted from opposite ends —
  * `RESTED_ON_ROAD` *is* the home-tired row, read from the road.
  *
- * Note the asymmetry, which is real and survives into every figure below: being the fresher
- * side at home is worth about +1.26, while facing a fresher visitor costs about 2.27. Rest hurts the tired
- * team about twice as much as it helps the rested one.
+ * Note the asymmetry, which is real and survives into every figure below: facing a fresher
+ * visitor lowers the home rate about twice as much as being the fresher side raises it. Rest
+ * hurts the tired team more than it helps the rested one.
  */
 export const REST_STATE_LIFT_PP: Readonly<Record<keyof RestStateCounts, number>> = (() => {
   const homeBase = REST_SPLIT_BASELINE.homeWins / REST_SPLIT_BASELINE.games;

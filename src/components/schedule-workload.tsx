@@ -90,7 +90,7 @@ function ScheduleTax({
           lookup, not a league table.
 
           The rank riders (ADR 0010, D1) sit on the two density columns and only those: the
-          table is sorted by miles, so a rank there restates the row number, and JET-LAGGED is a
+          table is sorted by miles, so a rank there restates the row number, and TIME ZONES is a
           sibling measure rather than a key one. B2B and 3-IN-4 are the two figures a reader
           looks their own team up for, and they arrive out of sort order — the rider is what
           says "14 back-to-backs" is 3rd-most without making the reader re-sort by eye. Counts,
@@ -105,7 +105,8 @@ function ScheduleTax({
         columns={[
           { label: "TEAM", cell: (t) => t.abbreviation },
           {
-            label: "TRAVEL MILES",
+            label: "MILEAGE",
+            unit: "MILES · SEASON",
             numeric: true,
             cell: (t) => t.travelMiles.toLocaleString(),
           },
@@ -144,7 +145,7 @@ function ScheduleTax({
             ),
           },
           {
-            label: "JET-LAGGED",
+            label: "TIME ZONES",
             unit: "ROAD GAMES · 2+ ZONES",
             numeric: true,
             cell: (t) => t.jetLagGames,

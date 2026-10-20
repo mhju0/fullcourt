@@ -618,6 +618,24 @@ export function allSeasonNormExcluding(
 }
 
 /**
+ * The home win rate over the same seasons `allSeasonNormExcluding` pools, so the
+ * historical rest rate is read against its own years' home court rather than alone.
+ */
+export function allSeasonHomeRateExcluding(
+  seasonWinRates: readonly { season: string; homeGames: number; homeWins: number }[],
+  season: string
+): number | null {
+  let games = 0;
+  let wins = 0;
+  for (const row of seasonWinRates) {
+    if (row.season === season) continue;
+    games += row.homeGames;
+    wins += row.homeWins;
+  }
+  return games === 0 ? null : winPct(wins, games);
+}
+
+/**
  * Which of the three things the page is allowed to say about a season's rate.
  *
  * "Inside the band" means the season and the norm are not distinguishable at
