@@ -38,9 +38,9 @@ const COVERAGE = [
   },
   {
     field: "Overtime periods",
-    from: "Historical coverage varies",
-    source: "ESPN; archived period scores and team minutes",
-    note: "Confirmed earlier overtime is backfilled. Unverified zeroes still mean unknown, not no overtime.",
+    from: NBA_SEASONS[0],
+    source: "ESPN; NBA box scores; reviewed team records",
+    note: "Period scores and team minutes confirm historical overtime. Reviewed supporting records resolve specific archive conflicts. Unverified zeroes remain unknown.",
   },
   {
     field: "Tip-off times",
@@ -186,7 +186,7 @@ export default function DataAndLimitsPage() {
       <Section label="KNOWN GAPS" title="Known data gaps" disclosure>
         <LimitList
           items={[
-            "Archived corrections restore confirmed earlier overtime, but some games still lack period-count confirmation. An unverified stored zero does not establish that the game ended in regulation.",
+            "Some archived box-score fields disagree. Reviewed corrections retain each source conflict and the evidence used to resolve the affected field.",
             "Known earlier neutral games and alternate home arenas use dated venue corrections. The register is not a complete audit of every historical arena; uncovered venues can still use the listed host’s modeled base.",
             "Arena locations reflect documented relocations and temporary bases. Straight-line Mileage does not observe the airport used, the actual flight route, overnight stays or intermediate trips home.",
           ]}

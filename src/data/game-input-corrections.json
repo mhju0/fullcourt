@@ -2438,6 +2438,921 @@
       ]
     },
     {
+      "date": "1988-11-04",
+      "homeAbbr": "BOS",
+      "awayAbbr": "NYK",
+      "auditGameId": 30200,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800007"
+      ]
+    },
+    {
+      "date": "1988-11-05",
+      "homeAbbr": "HOU",
+      "awayAbbr": "DAL",
+      "auditGameId": 30189,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800016"
+      ]
+    },
+    {
+      "date": "1988-11-05",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DEN",
+      "auditGameId": 30187,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800013"
+      ]
+    },
+    {
+      "date": "1988-11-09",
+      "homeAbbr": "DET",
+      "awayAbbr": "ATL",
+      "auditGameId": 30167,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800034"
+      ]
+    },
+    {
+      "date": "1988-11-11",
+      "homeAbbr": "IND",
+      "awayAbbr": "NYK",
+      "auditGameId": 30156,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800048"
+      ]
+    },
+    {
+      "date": "1988-11-12",
+      "homeAbbr": "LAC",
+      "awayAbbr": "PHX",
+      "auditGameId": 30144,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800057"
+      ]
+    },
+    {
+      "date": "1988-11-15",
+      "homeAbbr": "DEN",
+      "awayAbbr": "LAL",
+      "auditGameId": 30129,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800074"
+      ]
+    },
+    {
+      "date": "1988-11-18",
+      "homeAbbr": "CHI",
+      "awayAbbr": "ATL",
+      "auditGameId": 30111,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800089"
+      ]
+    },
+    {
+      "date": "1988-11-18",
+      "homeAbbr": "MIA",
+      "awayAbbr": "GSW",
+      "auditGameId": 30114,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800088"
+      ]
+    },
+    {
+      "date": "1988-11-30",
+      "homeAbbr": "LAC",
+      "awayAbbr": "NYK",
+      "auditGameId": 30038,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800161"
+      ]
+    },
+    {
+      "date": "1988-12-01",
+      "homeAbbr": "SAC",
+      "awayAbbr": "DEN",
+      "auditGameId": 30034,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800170"
+      ]
+    },
+    {
+      "date": "1988-12-03",
+      "homeAbbr": "PHX",
+      "awayAbbr": "LAC",
+      "auditGameId": 30016,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800187"
+      ]
+    },
+    {
+      "date": "1988-12-04",
+      "homeAbbr": "LAL",
+      "awayAbbr": "WAS",
+      "auditGameId": 30012,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800188"
+      ]
+    },
+    {
+      "date": "1988-12-06",
+      "homeAbbr": "NYK",
+      "awayAbbr": "DEN",
+      "auditGameId": 30005,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800192"
+      ]
+    },
+    {
+      "date": "1988-12-10",
+      "homeAbbr": "BKN",
+      "awayAbbr": "CHA",
+      "auditGameId": 29973,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800221"
+      ]
+    },
+    {
+      "date": "1988-12-11",
+      "homeAbbr": "POR",
+      "awayAbbr": "SAS",
+      "auditGameId": 29970,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800232"
+      ]
+    },
+    {
+      "date": "1988-12-14",
+      "homeAbbr": "BKN",
+      "awayAbbr": "LAL",
+      "auditGameId": 29955,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800245"
+      ]
+    },
+    {
+      "date": "1988-12-15",
+      "homeAbbr": "HOU",
+      "awayAbbr": "GSW",
+      "auditGameId": 29948,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800252"
+      ]
+    },
+    {
+      "date": "1988-12-21",
+      "homeAbbr": "BKN",
+      "awayAbbr": "DAL",
+      "auditGameId": 29912,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800293"
+      ]
+    },
+    {
+      "date": "1988-12-23",
+      "homeAbbr": "CLE",
+      "awayAbbr": "OKC",
+      "auditGameId": 29896,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800306"
+      ]
+    },
+    {
+      "date": "1989-01-03",
+      "homeAbbr": "CHI",
+      "awayAbbr": "LAC",
+      "auditGameId": 29855,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800344"
+      ]
+    },
+    {
+      "date": "1989-01-03",
+      "homeAbbr": "NYK",
+      "awayAbbr": "BOS",
+      "auditGameId": 29851,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800347"
+      ]
+    },
+    {
+      "date": "1989-01-06",
+      "homeAbbr": "POR",
+      "awayAbbr": "SAC",
+      "auditGameId": 29833,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800366"
+      ]
+    },
+    {
+      "date": "1989-01-06",
+      "homeAbbr": "WAS",
+      "awayAbbr": "MIL",
+      "auditGameId": 29834,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800368"
+      ]
+    },
+    {
+      "date": "1989-01-11",
+      "homeAbbr": "SAS",
+      "awayAbbr": "HOU",
+      "auditGameId": 29803,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800398"
+      ]
+    },
+    {
+      "date": "1989-01-15",
+      "homeAbbr": "MIA",
+      "awayAbbr": "IND",
+      "auditGameId": 29777,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800425"
+      ]
+    },
+    {
+      "date": "1989-01-16",
+      "homeAbbr": "PHI",
+      "awayAbbr": "CHA",
+      "auditGameId": 29769,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800435"
+      ]
+    },
+    {
+      "date": "1989-01-29",
+      "homeAbbr": "WAS",
+      "awayAbbr": "CLE",
+      "auditGameId": 29696,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800506"
+      ]
+    },
+    {
+      "date": "1989-01-31",
+      "homeAbbr": "CHI",
+      "awayAbbr": "DET",
+      "auditGameId": 29679,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800519"
+      ]
+    },
+    {
+      "date": "1989-02-01",
+      "homeAbbr": "PHI",
+      "awayAbbr": "WAS",
+      "auditGameId": 29676,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800524"
+      ]
+    },
+    {
+      "date": "1989-02-04",
+      "homeAbbr": "PHX",
+      "awayAbbr": "ATL",
+      "auditGameId": 29657,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800549"
+      ]
+    },
+    {
+      "date": "1989-02-16",
+      "homeAbbr": "LAC",
+      "awayAbbr": "GSW",
+      "auditGameId": 29600,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800598"
+      ]
+    },
+    {
+      "date": "1989-02-17",
+      "homeAbbr": "PHI",
+      "awayAbbr": "BKN",
+      "auditGameId": 29596,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800608"
+      ]
+    },
+    {
+      "date": "1989-02-18",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DET",
+      "auditGameId": 29591,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800610"
+      ]
+    },
+    {
+      "date": "1989-02-28",
+      "homeAbbr": "MIA",
+      "awayAbbr": "DAL",
+      "auditGameId": 29524,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800676"
+      ]
+    },
+    {
+      "date": "1989-03-02",
+      "homeAbbr": "GSW",
+      "awayAbbr": "IND",
+      "auditGameId": 29512,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800686"
+      ]
+    },
+    {
+      "date": "1989-03-05",
+      "homeAbbr": "POR",
+      "awayAbbr": "IND",
+      "auditGameId": 29494,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800708"
+      ]
+    },
+    {
+      "date": "1989-03-10",
+      "homeAbbr": "MIA",
+      "awayAbbr": "DEN",
+      "auditGameId": 29462,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800736"
+      ]
+    },
+    {
+      "date": "1989-03-17",
+      "homeAbbr": "BKN",
+      "awayAbbr": "WAS",
+      "auditGameId": 29416,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800789"
+      ]
+    },
+    {
+      "date": "1989-03-17",
+      "homeAbbr": "GSW",
+      "awayAbbr": "ATL",
+      "auditGameId": 29418,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800788"
+      ]
+    },
+    {
+      "date": "1989-03-25",
+      "homeAbbr": "MIL",
+      "awayAbbr": "CLE",
+      "auditGameId": 29366,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800836"
+      ]
+    },
+    {
+      "date": "1989-03-25",
+      "homeAbbr": "WAS",
+      "awayAbbr": "IND",
+      "auditGameId": 29367,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800837"
+      ]
+    },
+    {
+      "date": "1989-03-28",
+      "homeAbbr": "PHI",
+      "awayAbbr": "BOS",
+      "auditGameId": 29349,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800855"
+      ]
+    },
+    {
+      "date": "1989-03-29",
+      "homeAbbr": "UTA",
+      "awayAbbr": "DET",
+      "auditGameId": 29340,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800859"
+      ]
+    },
+    {
+      "date": "1989-04-01",
+      "homeAbbr": "CHA",
+      "awayAbbr": "POR",
+      "auditGameId": 29321,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800882"
+      ]
+    },
+    {
+      "date": "1989-04-01",
+      "homeAbbr": "DEN",
+      "awayAbbr": "LAL",
+      "auditGameId": 29320,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800881"
+      ]
+    },
+    {
+      "date": "1989-04-07",
+      "homeAbbr": "ATL",
+      "awayAbbr": "HOU",
+      "auditGameId": 29288,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800917"
+      ]
+    },
+    {
+      "date": "1989-04-07",
+      "homeAbbr": "CHI",
+      "awayAbbr": "DET",
+      "auditGameId": 29287,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800920"
+      ]
+    },
+    {
+      "date": "1989-04-08",
+      "homeAbbr": "MIA",
+      "awayAbbr": "HOU",
+      "auditGameId": 29276,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800926"
+      ]
+    },
+    {
+      "date": "1989-04-08",
+      "homeAbbr": "SAS",
+      "awayAbbr": "IND",
+      "auditGameId": 29278,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800922"
+      ]
+    },
+    {
+      "date": "1989-04-13",
+      "homeAbbr": "LAC",
+      "awayAbbr": "GSW",
+      "auditGameId": 29249,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800952"
+      ]
+    },
+    {
+      "date": "1989-04-16",
+      "homeAbbr": "DAL",
+      "awayAbbr": "HOU",
+      "auditGameId": 29228,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800975"
+      ]
+    },
+    {
+      "date": "1989-04-17",
+      "homeAbbr": "CHA",
+      "awayAbbr": "BOS",
+      "auditGameId": 29224,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800982"
+      ]
+    },
+    {
+      "date": "1989-04-17",
+      "homeAbbr": "GSW",
+      "awayAbbr": "OKC",
+      "auditGameId": 29223,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028800979"
+      ]
+    },
+    {
+      "date": "1989-04-21",
+      "homeAbbr": "LAC",
+      "awayAbbr": "OKC",
+      "auditGameId": 29194,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028801005"
+      ]
+    },
+    {
+      "date": "1989-04-23",
+      "homeAbbr": "POR",
+      "awayAbbr": "SAC",
+      "auditGameId": 29177,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028801021"
+      ]
+    },
+    {
+      "date": "1989-05-02",
+      "homeAbbr": "MIL",
+      "awayAbbr": "ATL",
+      "auditGameId": 114665,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048800017"
+      ]
+    },
+    {
+      "date": "1989-05-02",
+      "homeAbbr": "PHI",
+      "awayAbbr": "NYK",
+      "auditGameId": 114666,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048800018"
+      ]
+    },
+    {
+      "date": "1989-05-05",
+      "homeAbbr": "CHI",
+      "awayAbbr": "CLE",
+      "auditGameId": 114658,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048800026"
+      ]
+    },
+    {
+      "date": "1989-05-05",
+      "homeAbbr": "MIL",
+      "awayAbbr": "ATL",
+      "auditGameId": 114659,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048800027"
+      ]
+    },
+    {
+      "date": "1989-05-09",
+      "homeAbbr": "NYK",
+      "awayAbbr": "CHI",
+      "auditGameId": 114652,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048800032"
+      ]
+    },
+    {
       "date": "1989-06-02",
       "homeAbbr": "CHI",
       "awayAbbr": "DET",
@@ -2450,6 +3365,936 @@
       },
       "sources": [
         "https://www.nba.com/news/history-nba-champions"
+      ]
+    },
+    {
+      "date": "1989-11-03",
+      "homeAbbr": "CHI",
+      "awayAbbr": "CLE",
+      "auditGameId": 31305,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900009"
+      ]
+    },
+    {
+      "date": "1989-11-08",
+      "homeAbbr": "CLE",
+      "awayAbbr": "ORL",
+      "auditGameId": 31273,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900037"
+      ]
+    },
+    {
+      "date": "1989-11-09",
+      "homeAbbr": "HOU",
+      "awayAbbr": "DEN",
+      "auditGameId": 31263,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900044"
+      ]
+    },
+    {
+      "date": "1989-11-09",
+      "homeAbbr": "MIL",
+      "awayAbbr": "OKC",
+      "auditGameId": 31264,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 5
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900045"
+      ]
+    },
+    {
+      "date": "1989-11-10",
+      "homeAbbr": "MIN",
+      "awayAbbr": "PHI",
+      "auditGameId": 31258,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900055"
+      ]
+    },
+    {
+      "date": "1989-11-14",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DAL",
+      "auditGameId": 31234,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900077"
+      ]
+    },
+    {
+      "date": "1989-11-17",
+      "homeAbbr": "CLE",
+      "awayAbbr": "ATL",
+      "auditGameId": 31212,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900096"
+      ]
+    },
+    {
+      "date": "1989-11-21",
+      "homeAbbr": "MIN",
+      "awayAbbr": "UTA",
+      "auditGameId": 31189,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900126"
+      ]
+    },
+    {
+      "date": "1989-11-21",
+      "homeAbbr": "NYK",
+      "awayAbbr": "HOU",
+      "auditGameId": 31183,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900120"
+      ]
+    },
+    {
+      "date": "1989-12-01",
+      "homeAbbr": "LAL",
+      "awayAbbr": "DET",
+      "auditGameId": 31120,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900191"
+      ]
+    },
+    {
+      "date": "1989-12-08",
+      "homeAbbr": "MIA",
+      "awayAbbr": "ORL",
+      "auditGameId": 31080,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900228"
+      ]
+    },
+    {
+      "date": "1989-12-11",
+      "homeAbbr": "UTA",
+      "awayAbbr": "CLE",
+      "auditGameId": 31061,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900247"
+      ]
+    },
+    {
+      "date": "1989-12-12",
+      "homeAbbr": "IND",
+      "awayAbbr": "MIN",
+      "auditGameId": 31055,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900256"
+      ]
+    },
+    {
+      "date": "1989-12-20",
+      "homeAbbr": "MIN",
+      "awayAbbr": "LAL",
+      "auditGameId": 31003,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900310"
+      ]
+    },
+    {
+      "date": "1989-12-20",
+      "homeAbbr": "PHX",
+      "awayAbbr": "IND",
+      "auditGameId": 31005,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900308"
+      ]
+    },
+    {
+      "date": "1989-12-27",
+      "homeAbbr": "SAC",
+      "awayAbbr": "BOS",
+      "auditGameId": 30957,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900350"
+      ]
+    },
+    {
+      "date": "1989-12-29",
+      "homeAbbr": "DAL",
+      "awayAbbr": "POR",
+      "auditGameId": 30951,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900363"
+      ]
+    },
+    {
+      "date": "1989-12-30",
+      "homeAbbr": "DAL",
+      "awayAbbr": "DEN",
+      "auditGameId": 30942,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900370"
+      ]
+    },
+    {
+      "date": "1989-12-30",
+      "homeAbbr": "WAS",
+      "awayAbbr": "CHI",
+      "auditGameId": 30936,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900373"
+      ]
+    },
+    {
+      "date": "1990-01-06",
+      "homeAbbr": "DEN",
+      "awayAbbr": "UTA",
+      "auditGameId": 30903,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900408"
+      ]
+    },
+    {
+      "date": "1990-01-06",
+      "homeAbbr": "HOU",
+      "awayAbbr": "PHI",
+      "auditGameId": 30894,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900411"
+      ]
+    },
+    {
+      "date": "1990-01-07",
+      "homeAbbr": "NYK",
+      "awayAbbr": "LAC",
+      "auditGameId": 30891,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900417"
+      ]
+    },
+    {
+      "date": "1990-01-09",
+      "homeAbbr": "NYK",
+      "awayAbbr": "WAS",
+      "auditGameId": 30881,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900427"
+      ]
+    },
+    {
+      "date": "1990-01-09",
+      "homeAbbr": "PHX",
+      "awayAbbr": "LAL",
+      "auditGameId": 30877,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900431"
+      ]
+    },
+    {
+      "date": "1990-01-12",
+      "homeAbbr": "IND",
+      "awayAbbr": "NYK",
+      "auditGameId": 30862,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900453"
+      ]
+    },
+    {
+      "date": "1990-01-15",
+      "homeAbbr": "PHX",
+      "awayAbbr": "CHA",
+      "auditGameId": 30837,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900467"
+      ]
+    },
+    {
+      "date": "1990-01-20",
+      "homeAbbr": "DAL",
+      "awayAbbr": "CLE",
+      "auditGameId": 30801,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900501"
+      ]
+    },
+    {
+      "date": "1990-02-06",
+      "homeAbbr": "DEN",
+      "awayAbbr": "IND",
+      "auditGameId": 30693,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900616"
+      ]
+    },
+    {
+      "date": "1990-02-06",
+      "homeAbbr": "POR",
+      "awayAbbr": "LAL",
+      "auditGameId": 30692,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900615"
+      ]
+    },
+    {
+      "date": "1990-02-13",
+      "homeAbbr": "UTA",
+      "awayAbbr": "MIN",
+      "auditGameId": 30668,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900638"
+      ]
+    },
+    {
+      "date": "1990-02-14",
+      "homeAbbr": "CLE",
+      "awayAbbr": "IND",
+      "auditGameId": 30658,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900650"
+      ]
+    },
+    {
+      "date": "1990-02-14",
+      "homeAbbr": "LAL",
+      "awayAbbr": "POR",
+      "auditGameId": 30659,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900646"
+      ]
+    },
+    {
+      "date": "1990-02-14",
+      "homeAbbr": "ORL",
+      "awayAbbr": "CHI",
+      "auditGameId": 30660,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900648"
+      ]
+    },
+    {
+      "date": "1990-02-16",
+      "homeAbbr": "LAC",
+      "awayAbbr": "WAS",
+      "auditGameId": 30645,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900660"
+      ]
+    },
+    {
+      "date": "1990-02-16",
+      "homeAbbr": "PHI",
+      "awayAbbr": "OKC",
+      "auditGameId": 30650,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900662"
+      ]
+    },
+    {
+      "date": "1990-02-17",
+      "homeAbbr": "NYK",
+      "awayAbbr": "CLE",
+      "auditGameId": 30637,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900671"
+      ]
+    },
+    {
+      "date": "1990-02-20",
+      "homeAbbr": "SAS",
+      "awayAbbr": "LAL",
+      "auditGameId": 30620,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900690"
+      ]
+    },
+    {
+      "date": "1990-02-25",
+      "homeAbbr": "BKN",
+      "awayAbbr": "CHI",
+      "auditGameId": 30581,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900720"
+      ]
+    },
+    {
+      "date": "1990-02-27",
+      "homeAbbr": "DET",
+      "awayAbbr": "HOU",
+      "auditGameId": 30574,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900741"
+      ]
+    },
+    {
+      "date": "1990-02-28",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAS",
+      "auditGameId": 30562,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900742"
+      ]
+    },
+    {
+      "date": "1990-03-01",
+      "homeAbbr": "CHA",
+      "awayAbbr": "LAC",
+      "auditGameId": 30555,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900747"
+      ]
+    },
+    {
+      "date": "1990-03-02",
+      "homeAbbr": "DET",
+      "awayAbbr": "PHI",
+      "auditGameId": 30551,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900755"
+      ]
+    },
+    {
+      "date": "1990-03-03",
+      "homeAbbr": "ORL",
+      "awayAbbr": "WAS",
+      "auditGameId": 30545,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900770"
+      ]
+    },
+    {
+      "date": "1990-03-10",
+      "homeAbbr": "MIN",
+      "awayAbbr": "PHX",
+      "auditGameId": 30498,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900812"
+      ]
+    },
+    {
+      "date": "1990-03-14",
+      "homeAbbr": "LAC",
+      "awayAbbr": "MIA",
+      "auditGameId": 30471,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900836"
+      ]
+    },
+    {
+      "date": "1990-03-16",
+      "homeAbbr": "IND",
+      "awayAbbr": "ATL",
+      "auditGameId": 30454,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900851"
+      ]
+    },
+    {
+      "date": "1990-03-17",
+      "homeAbbr": "SAC",
+      "awayAbbr": "UTA",
+      "auditGameId": 30450,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900855"
+      ]
+    },
+    {
+      "date": "1990-03-21",
+      "homeAbbr": "PHX",
+      "awayAbbr": "CHA",
+      "auditGameId": 30424,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900884"
+      ]
+    },
+    {
+      "date": "1990-03-24",
+      "homeAbbr": "WAS",
+      "awayAbbr": "PHI",
+      "auditGameId": 30401,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900907"
+      ]
+    },
+    {
+      "date": "1990-03-25",
+      "homeAbbr": "DAL",
+      "awayAbbr": "DET",
+      "auditGameId": 30391,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900914"
+      ]
+    },
+    {
+      "date": "1990-03-26",
+      "homeAbbr": "LAC",
+      "awayAbbr": "MIN",
+      "auditGameId": 30386,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900920"
+      ]
+    },
+    {
+      "date": "1990-03-28",
+      "homeAbbr": "CLE",
+      "awayAbbr": "CHI",
+      "auditGameId": 30371,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900931"
+      ]
+    },
+    {
+      "date": "1990-03-30",
+      "homeAbbr": "CHI",
+      "awayAbbr": "NYK",
+      "auditGameId": 30363,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900946"
+      ]
+    },
+    {
+      "date": "1990-04-03",
+      "homeAbbr": "OKC",
+      "awayAbbr": "POR",
+      "auditGameId": 30335,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900976"
+      ]
+    },
+    {
+      "date": "1990-04-04",
+      "homeAbbr": "MIL",
+      "awayAbbr": "IND",
+      "auditGameId": 30331,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028900979"
+      ]
+    },
+    {
+      "date": "1990-04-09",
+      "homeAbbr": "PHX",
+      "awayAbbr": "UTA",
+      "auditGameId": 30296,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028901013"
+      ]
+    },
+    {
+      "date": "1990-04-18",
+      "homeAbbr": "PHX",
+      "awayAbbr": "POR",
+      "auditGameId": 30235,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028901073"
+      ]
+    },
+    {
+      "date": "1990-04-19",
+      "homeAbbr": "HOU",
+      "awayAbbr": "DEN",
+      "auditGameId": 30231,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028901080"
+      ]
+    },
+    {
+      "date": "1990-04-19",
+      "homeAbbr": "SAC",
+      "awayAbbr": "OKC",
+      "auditGameId": 30227,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028901078"
+      ]
+    },
+    {
+      "date": "1990-04-20",
+      "homeAbbr": "IND",
+      "awayAbbr": "DET",
+      "auditGameId": 30217,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0028901086"
+      ]
+    },
+    {
+      "date": "1990-05-15",
+      "homeAbbr": "POR",
+      "awayAbbr": "SAS",
+      "auditGameId": 114707,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048900049"
+      ]
+    },
+    {
+      "date": "1990-05-19",
+      "homeAbbr": "POR",
+      "awayAbbr": "SAS",
+      "auditGameId": 114703,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048900054"
       ]
     },
     {
@@ -2483,6 +4328,36 @@
       ]
     },
     {
+      "date": "1990-06-07",
+      "homeAbbr": "DET",
+      "awayAbbr": "POR",
+      "auditGameId": 114688,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0048900069"
+      ]
+    },
+    {
+      "date": "1990-11-02",
+      "homeAbbr": "CHA",
+      "awayAbbr": "NYK",
+      "auditGameId": 32412,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000003"
+      ]
+    },
+    {
       "date": "1990-11-02",
       "homeAbbr": "UTA",
       "awayAbbr": "PHX",
@@ -2499,6 +4374,21 @@
       },
       "sources": [
         "https://www.nba.com/news/history-this-date-in-nba-nov"
+      ]
+    },
+    {
+      "date": "1990-11-03",
+      "homeAbbr": "PHI",
+      "awayAbbr": "BKN",
+      "auditGameId": 32396,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000014"
       ]
     },
     {
@@ -2521,6 +4411,2226 @@
       ]
     },
     {
+      "date": "1990-11-03",
+      "homeAbbr": "SAC",
+      "awayAbbr": "POR",
+      "auditGameId": 32395,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000021"
+      ]
+    },
+    {
+      "date": "1990-11-06",
+      "homeAbbr": "LAL",
+      "awayAbbr": "POR",
+      "auditGameId": 32382,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000035"
+      ]
+    },
+    {
+      "date": "1990-11-13",
+      "homeAbbr": "OKC",
+      "awayAbbr": "NYK",
+      "auditGameId": 32342,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000080"
+      ]
+    },
+    {
+      "date": "1990-11-15",
+      "homeAbbr": "HOU",
+      "awayAbbr": "LAL",
+      "auditGameId": 32321,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000093"
+      ]
+    },
+    {
+      "date": "1990-11-15",
+      "homeAbbr": "ORL",
+      "awayAbbr": "UTA",
+      "auditGameId": 32322,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000094"
+      ]
+    },
+    {
+      "date": "1990-11-16",
+      "homeAbbr": "PHI",
+      "awayAbbr": "WAS",
+      "auditGameId": 32314,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000097"
+      ]
+    },
+    {
+      "date": "1990-11-16",
+      "homeAbbr": "PHX",
+      "awayAbbr": "LAC",
+      "auditGameId": 32318,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000101"
+      ]
+    },
+    {
+      "date": "1990-11-20",
+      "homeAbbr": "DAL",
+      "awayAbbr": "MIN",
+      "auditGameId": 32292,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000121"
+      ]
+    },
+    {
+      "date": "1990-11-21",
+      "homeAbbr": "IND",
+      "awayAbbr": "DET",
+      "auditGameId": 32287,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000131"
+      ]
+    },
+    {
+      "date": "1990-11-24",
+      "homeAbbr": "WAS",
+      "awayAbbr": "IND",
+      "auditGameId": 32260,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000148"
+      ]
+    },
+    {
+      "date": "1990-11-28",
+      "homeAbbr": "CHA",
+      "awayAbbr": "MIL",
+      "auditGameId": 32242,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000180"
+      ]
+    },
+    {
+      "date": "1990-12-01",
+      "homeAbbr": "OKC",
+      "awayAbbr": "POR",
+      "auditGameId": 32222,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000201"
+      ]
+    },
+    {
+      "date": "1990-12-04",
+      "homeAbbr": "PHI",
+      "awayAbbr": "MIL",
+      "auditGameId": 32199,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000209"
+      ]
+    },
+    {
+      "date": "1990-12-05",
+      "homeAbbr": "MIL",
+      "awayAbbr": "CLE",
+      "auditGameId": 32197,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000219"
+      ]
+    },
+    {
+      "date": "1990-12-12",
+      "homeAbbr": "LAL",
+      "awayAbbr": "DAL",
+      "auditGameId": 32150,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000266"
+      ]
+    },
+    {
+      "date": "1990-12-14",
+      "homeAbbr": "CLE",
+      "awayAbbr": "SAS",
+      "auditGameId": 32139,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000275"
+      ]
+    },
+    {
+      "date": "1990-12-19",
+      "homeAbbr": "IND",
+      "awayAbbr": "WAS",
+      "auditGameId": 32110,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000308"
+      ]
+    },
+    {
+      "date": "1990-12-20",
+      "homeAbbr": "HOU",
+      "awayAbbr": "ORL",
+      "auditGameId": 32102,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000314"
+      ]
+    },
+    {
+      "date": "1990-12-21",
+      "homeAbbr": "PHX",
+      "awayAbbr": "SAS",
+      "auditGameId": 32091,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000321"
+      ]
+    },
+    {
+      "date": "1990-12-26",
+      "homeAbbr": "WAS",
+      "awayAbbr": "PHI",
+      "auditGameId": 32071,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000350"
+      ]
+    },
+    {
+      "date": "1991-01-05",
+      "homeAbbr": "ATL",
+      "awayAbbr": "MIN",
+      "auditGameId": 32001,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000411"
+      ]
+    },
+    {
+      "date": "1991-01-07",
+      "homeAbbr": "BKN",
+      "awayAbbr": "DAL",
+      "auditGameId": 31995,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000422"
+      ]
+    },
+    {
+      "date": "1991-01-07",
+      "homeAbbr": "PHI",
+      "awayAbbr": "SAS",
+      "auditGameId": 31994,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000421"
+      ]
+    },
+    {
+      "date": "1991-01-11",
+      "homeAbbr": "DET",
+      "awayAbbr": "POR",
+      "auditGameId": 31969,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000453"
+      ]
+    },
+    {
+      "date": "1991-01-12",
+      "homeAbbr": "DET",
+      "awayAbbr": "MIA",
+      "auditGameId": 31953,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000456"
+      ]
+    },
+    {
+      "date": "1991-01-14",
+      "homeAbbr": "LAC",
+      "awayAbbr": "HOU",
+      "auditGameId": 31948,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000469"
+      ]
+    },
+    {
+      "date": "1991-01-15",
+      "homeAbbr": "BKN",
+      "awayAbbr": "GSW",
+      "auditGameId": 31944,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000473"
+      ]
+    },
+    {
+      "date": "1991-01-17",
+      "homeAbbr": "HOU",
+      "awayAbbr": "DET",
+      "auditGameId": 31927,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000487"
+      ]
+    },
+    {
+      "date": "1991-01-18",
+      "homeAbbr": "CLE",
+      "awayAbbr": "UTA",
+      "auditGameId": 31919,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000493"
+      ]
+    },
+    {
+      "date": "1991-01-18",
+      "homeAbbr": "DAL",
+      "awayAbbr": "LAC",
+      "auditGameId": 31918,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000492"
+      ]
+    },
+    {
+      "date": "1991-01-18",
+      "homeAbbr": "PHI",
+      "awayAbbr": "GSW",
+      "auditGameId": 31925,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000495"
+      ]
+    },
+    {
+      "date": "1991-01-21",
+      "homeAbbr": "NYK",
+      "awayAbbr": "PHI",
+      "auditGameId": 31905,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000514"
+      ]
+    },
+    {
+      "date": "1991-01-25",
+      "homeAbbr": "BKN",
+      "awayAbbr": "LAL",
+      "auditGameId": 31876,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000536"
+      ]
+    },
+    {
+      "date": "1991-01-29",
+      "homeAbbr": "LAC",
+      "awayAbbr": "NYK",
+      "auditGameId": 31847,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000566"
+      ]
+    },
+    {
+      "date": "1991-02-02",
+      "homeAbbr": "CLE",
+      "awayAbbr": "MIN",
+      "auditGameId": 31819,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000593"
+      ]
+    },
+    {
+      "date": "1991-02-02",
+      "homeAbbr": "SAS",
+      "awayAbbr": "HOU",
+      "auditGameId": 31823,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000591"
+      ]
+    },
+    {
+      "date": "1991-02-03",
+      "homeAbbr": "HOU",
+      "awayAbbr": "GSW",
+      "auditGameId": 31813,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000599"
+      ]
+    },
+    {
+      "date": "1991-02-03",
+      "homeAbbr": "MIN",
+      "awayAbbr": "PHI",
+      "auditGameId": 31817,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000600"
+      ]
+    },
+    {
+      "date": "1991-02-15",
+      "homeAbbr": "CHA",
+      "awayAbbr": "MIL",
+      "auditGameId": 31759,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000655"
+      ]
+    },
+    {
+      "date": "1991-02-17",
+      "homeAbbr": "ORL",
+      "awayAbbr": "MIL",
+      "auditGameId": 31746,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000673"
+      ]
+    },
+    {
+      "date": "1991-02-19",
+      "homeAbbr": "PHI",
+      "awayAbbr": "OKC",
+      "auditGameId": 31732,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000681"
+      ]
+    },
+    {
+      "date": "1991-02-20",
+      "homeAbbr": "IND",
+      "awayAbbr": "ORL",
+      "auditGameId": 31726,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000692"
+      ]
+    },
+    {
+      "date": "1991-02-24",
+      "homeAbbr": "DET",
+      "awayAbbr": "LAL",
+      "auditGameId": 31699,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000719"
+      ]
+    },
+    {
+      "date": "1991-02-26",
+      "homeAbbr": "NYK",
+      "awayAbbr": "WAS",
+      "auditGameId": 31688,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000727"
+      ]
+    },
+    {
+      "date": "1991-02-26",
+      "homeAbbr": "SAS",
+      "awayAbbr": "POR",
+      "auditGameId": 31681,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000735"
+      ]
+    },
+    {
+      "date": "1991-03-05",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CLE",
+      "auditGameId": 31634,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000783"
+      ]
+    },
+    {
+      "date": "1991-03-10",
+      "homeAbbr": "POR",
+      "awayAbbr": "BOS",
+      "auditGameId": 31602,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000812"
+      ]
+    },
+    {
+      "date": "1991-03-12",
+      "homeAbbr": "ATL",
+      "awayAbbr": "PHI",
+      "auditGameId": 31593,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000827"
+      ]
+    },
+    {
+      "date": "1991-03-12",
+      "homeAbbr": "DEN",
+      "awayAbbr": "LAC",
+      "auditGameId": 31589,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000824"
+      ]
+    },
+    {
+      "date": "1991-03-13",
+      "homeAbbr": "UTA",
+      "awayAbbr": "BOS",
+      "auditGameId": 31585,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000833"
+      ]
+    },
+    {
+      "date": "1991-03-14",
+      "homeAbbr": "NYK",
+      "awayAbbr": "MIA",
+      "auditGameId": 31572,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000838"
+      ]
+    },
+    {
+      "date": "1991-03-15",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIN",
+      "auditGameId": 31566,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000845"
+      ]
+    },
+    {
+      "date": "1991-03-15",
+      "homeAbbr": "PHI",
+      "awayAbbr": "MIA",
+      "auditGameId": 31571,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000847"
+      ]
+    },
+    {
+      "date": "1991-03-16",
+      "homeAbbr": "OKC",
+      "awayAbbr": "UTA",
+      "auditGameId": 31561,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000855"
+      ]
+    },
+    {
+      "date": "1991-03-20",
+      "homeAbbr": "BKN",
+      "awayAbbr": "MIN",
+      "auditGameId": 31528,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000885"
+      ]
+    },
+    {
+      "date": "1991-03-22",
+      "homeAbbr": "DAL",
+      "awayAbbr": "NYK",
+      "auditGameId": 31514,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000894"
+      ]
+    },
+    {
+      "date": "1991-03-23",
+      "homeAbbr": "DEN",
+      "awayAbbr": "MIL",
+      "auditGameId": 31511,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000909"
+      ]
+    },
+    {
+      "date": "1991-03-26",
+      "homeAbbr": "BKN",
+      "awayAbbr": "PHI",
+      "auditGameId": 31491,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000926"
+      ]
+    },
+    {
+      "date": "1991-03-26",
+      "homeAbbr": "SAS",
+      "awayAbbr": "NYK",
+      "auditGameId": 31490,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000923"
+      ]
+    },
+    {
+      "date": "1991-03-29",
+      "homeAbbr": "LAL",
+      "awayAbbr": "POR",
+      "auditGameId": 31468,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000949"
+      ]
+    },
+    {
+      "date": "1991-03-31",
+      "homeAbbr": "BOS",
+      "awayAbbr": "CHI",
+      "auditGameId": 31457,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000962"
+      ]
+    },
+    {
+      "date": "1991-03-31",
+      "homeAbbr": "IND",
+      "awayAbbr": "GSW",
+      "auditGameId": 31454,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029000960"
+      ]
+    },
+    {
+      "date": "1991-04-07",
+      "homeAbbr": "CHI",
+      "awayAbbr": "PHI",
+      "auditGameId": 31412,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029001002"
+      ]
+    },
+    {
+      "date": "1991-04-12",
+      "homeAbbr": "CHA",
+      "awayAbbr": "MIN",
+      "auditGameId": 31381,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029001040"
+      ]
+    },
+    {
+      "date": "1991-04-16",
+      "homeAbbr": "NYK",
+      "awayAbbr": "PHI",
+      "auditGameId": 31346,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029001060"
+      ]
+    },
+    {
+      "date": "1991-04-16",
+      "homeAbbr": "WAS",
+      "awayAbbr": "MIL",
+      "auditGameId": 31355,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029001067"
+      ]
+    },
+    {
+      "date": "1991-04-19",
+      "homeAbbr": "CLE",
+      "awayAbbr": "BOS",
+      "auditGameId": 31330,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029001082"
+      ]
+    },
+    {
+      "date": "1991-04-27",
+      "homeAbbr": "MIL",
+      "awayAbbr": "PHI",
+      "auditGameId": 114814,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049000011"
+      ]
+    },
+    {
+      "date": "1991-05-14",
+      "homeAbbr": "LAL",
+      "awayAbbr": "GSW",
+      "auditGameId": 114775,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049000051"
+      ]
+    },
+    {
+      "date": "1991-05-17",
+      "homeAbbr": "DET",
+      "awayAbbr": "BOS",
+      "auditGameId": 114772,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049000053"
+      ]
+    },
+    {
+      "date": "1991-06-07",
+      "homeAbbr": "LAL",
+      "awayAbbr": "CHI",
+      "auditGameId": 114759,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049000066"
+      ]
+    },
+    {
+      "date": "1991-11-01",
+      "homeAbbr": "HOU",
+      "awayAbbr": "LAL",
+      "auditGameId": 33516,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100012"
+      ]
+    },
+    {
+      "date": "1991-11-02",
+      "homeAbbr": "DAL",
+      "awayAbbr": "LAL",
+      "auditGameId": 33505,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100024"
+      ]
+    },
+    {
+      "date": "1991-11-02",
+      "homeAbbr": "DEN",
+      "awayAbbr": "HOU",
+      "auditGameId": 33506,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100013"
+      ]
+    },
+    {
+      "date": "1991-11-02",
+      "homeAbbr": "WAS",
+      "awayAbbr": "BOS",
+      "auditGameId": 33498,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100022"
+      ]
+    },
+    {
+      "date": "1991-11-05",
+      "homeAbbr": "LAL",
+      "awayAbbr": "LAC",
+      "auditGameId": 33485,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100028"
+      ]
+    },
+    {
+      "date": "1991-11-08",
+      "homeAbbr": "CHA",
+      "awayAbbr": "MIL",
+      "auditGameId": 33470,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100059"
+      ]
+    },
+    {
+      "date": "1991-11-08",
+      "homeAbbr": "SAS",
+      "awayAbbr": "CLE",
+      "auditGameId": 33466,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100057"
+      ]
+    },
+    {
+      "date": "1991-11-13",
+      "homeAbbr": "MIN",
+      "awayAbbr": "WAS",
+      "auditGameId": 33436,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100090"
+      ]
+    },
+    {
+      "date": "1991-11-14",
+      "homeAbbr": "CLE",
+      "awayAbbr": "OKC",
+      "auditGameId": 33427,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100093"
+      ]
+    },
+    {
+      "date": "1991-11-15",
+      "homeAbbr": "BKN",
+      "awayAbbr": "WAS",
+      "auditGameId": 33425,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100105"
+      ]
+    },
+    {
+      "date": "1991-11-16",
+      "homeAbbr": "MIL",
+      "awayAbbr": "MIA",
+      "auditGameId": 33410,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100107"
+      ]
+    },
+    {
+      "date": "1991-11-22",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CHI",
+      "auditGameId": 33378,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100143"
+      ]
+    },
+    {
+      "date": "1991-11-23",
+      "homeAbbr": "DAL",
+      "awayAbbr": "UTA",
+      "auditGameId": 33366,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100156"
+      ]
+    },
+    {
+      "date": "1991-11-26",
+      "homeAbbr": "OKC",
+      "awayAbbr": "GSW",
+      "auditGameId": 33349,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100168"
+      ]
+    },
+    {
+      "date": "1991-11-26",
+      "homeAbbr": "POR",
+      "awayAbbr": "MIL",
+      "auditGameId": 33351,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100172"
+      ]
+    },
+    {
+      "date": "1991-11-29",
+      "homeAbbr": "POR",
+      "awayAbbr": "CHI",
+      "auditGameId": 33334,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100185"
+      ]
+    },
+    {
+      "date": "1991-11-30",
+      "homeAbbr": "PHX",
+      "awayAbbr": "UTA",
+      "auditGameId": 33323,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100198"
+      ]
+    },
+    {
+      "date": "1991-12-06",
+      "homeAbbr": "DEN",
+      "awayAbbr": "LAC",
+      "auditGameId": 33283,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100238"
+      ]
+    },
+    {
+      "date": "1991-12-06",
+      "homeAbbr": "PHI",
+      "awayAbbr": "POR",
+      "auditGameId": 33288,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100233"
+      ]
+    },
+    {
+      "date": "1991-12-07",
+      "homeAbbr": "ATL",
+      "awayAbbr": "NYK",
+      "auditGameId": 33275,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100242"
+      ]
+    },
+    {
+      "date": "1991-12-10",
+      "homeAbbr": "DAL",
+      "awayAbbr": "MIA",
+      "auditGameId": 33265,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100261"
+      ]
+    },
+    {
+      "date": "1991-12-13",
+      "homeAbbr": "LAC",
+      "awayAbbr": "UTA",
+      "auditGameId": 33243,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100281"
+      ]
+    },
+    {
+      "date": "1991-12-18",
+      "homeAbbr": "MIA",
+      "awayAbbr": "IND",
+      "auditGameId": 33209,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100312"
+      ]
+    },
+    {
+      "date": "1991-12-21",
+      "homeAbbr": "IND",
+      "awayAbbr": "BKN",
+      "auditGameId": 33185,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100338"
+      ]
+    },
+    {
+      "date": "1991-12-26",
+      "homeAbbr": "SAC",
+      "awayAbbr": "OKC",
+      "auditGameId": 33161,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100355"
+      ]
+    },
+    {
+      "date": "1991-12-27",
+      "homeAbbr": "MIN",
+      "awayAbbr": "GSW",
+      "auditGameId": 33156,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100366"
+      ]
+    },
+    {
+      "date": "1991-12-28",
+      "homeAbbr": "ATL",
+      "awayAbbr": "MIN",
+      "auditGameId": 33152,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100376"
+      ]
+    },
+    {
+      "date": "1991-12-28",
+      "homeAbbr": "NYK",
+      "awayAbbr": "IND",
+      "auditGameId": 33151,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100374"
+      ]
+    },
+    {
+      "date": "1992-01-02",
+      "homeAbbr": "CHA",
+      "awayAbbr": "LAC",
+      "auditGameId": 33127,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100397"
+      ]
+    },
+    {
+      "date": "1992-01-02",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIA",
+      "auditGameId": 33132,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100395"
+      ]
+    },
+    {
+      "date": "1992-01-04",
+      "homeAbbr": "SAS",
+      "awayAbbr": "HOU",
+      "auditGameId": 33113,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100413"
+      ]
+    },
+    {
+      "date": "1992-01-05",
+      "homeAbbr": "NYK",
+      "awayAbbr": "PHX",
+      "auditGameId": 33107,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100415"
+      ]
+    },
+    {
+      "date": "1992-01-10",
+      "homeAbbr": "MIA",
+      "awayAbbr": "HOU",
+      "auditGameId": 33075,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100454"
+      ]
+    },
+    {
+      "date": "1992-01-11",
+      "homeAbbr": "MIL",
+      "awayAbbr": "SAC",
+      "auditGameId": 33062,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100461"
+      ]
+    },
+    {
+      "date": "1992-01-14",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CHA",
+      "auditGameId": 33045,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100477"
+      ]
+    },
+    {
+      "date": "1992-01-14",
+      "homeAbbr": "WAS",
+      "awayAbbr": "IND",
+      "auditGameId": 33051,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100470"
+      ]
+    },
+    {
+      "date": "1992-01-17",
+      "homeAbbr": "LAC",
+      "awayAbbr": "ATL",
+      "auditGameId": 33028,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100493"
+      ]
+    },
+    {
+      "date": "1992-01-19",
+      "homeAbbr": "PHX",
+      "awayAbbr": "POR",
+      "auditGameId": 33013,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100509"
+      ]
+    },
+    {
+      "date": "1992-01-22",
+      "homeAbbr": "CLE",
+      "awayAbbr": "IND",
+      "auditGameId": 32995,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100529"
+      ]
+    },
+    {
+      "date": "1992-01-25",
+      "homeAbbr": "DEN",
+      "awayAbbr": "MIL",
+      "auditGameId": 32965,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100551"
+      ]
+    },
+    {
+      "date": "1992-01-28",
+      "homeAbbr": "CHA",
+      "awayAbbr": "DET",
+      "auditGameId": 32957,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100567"
+      ]
+    },
+    {
+      "date": "1992-01-28",
+      "homeAbbr": "GSW",
+      "awayAbbr": "POR",
+      "auditGameId": 32956,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100565"
+      ]
+    },
+    {
+      "date": "1992-01-31",
+      "homeAbbr": "IND",
+      "awayAbbr": "ATL",
+      "auditGameId": 32932,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100590"
+      ]
+    },
+    {
+      "date": "1992-01-31",
+      "homeAbbr": "UTA",
+      "awayAbbr": "PHX",
+      "auditGameId": 32937,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100588"
+      ]
+    },
+    {
+      "date": "1992-01-31",
+      "homeAbbr": "WAS",
+      "awayAbbr": "NYK",
+      "auditGameId": 32942,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100584"
+      ]
+    },
+    {
+      "date": "1992-02-03",
+      "homeAbbr": "UTA",
+      "awayAbbr": "CHI",
+      "auditGameId": 32913,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100608"
+      ]
+    },
+    {
+      "date": "1992-02-05",
+      "homeAbbr": "PHI",
+      "awayAbbr": "CLE",
+      "auditGameId": 32898,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100619"
+      ]
+    },
+    {
+      "date": "1992-02-17",
+      "homeAbbr": "HOU",
+      "awayAbbr": "MIN",
+      "auditGameId": 32843,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100683"
+      ]
+    },
+    {
+      "date": "1992-02-19",
+      "homeAbbr": "ATL",
+      "awayAbbr": "WAS",
+      "auditGameId": 32821,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100695"
+      ]
+    },
+    {
+      "date": "1992-02-27",
+      "homeAbbr": "SAC",
+      "awayAbbr": "NYK",
+      "auditGameId": 32769,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100753"
+      ]
+    },
+    {
+      "date": "1992-02-27",
+      "homeAbbr": "UTA",
+      "awayAbbr": "OKC",
+      "auditGameId": 32772,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100751"
+      ]
+    },
+    {
+      "date": "1992-03-01",
+      "homeAbbr": "MIL",
+      "awayAbbr": "ATL",
+      "auditGameId": 32748,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100772"
+      ]
+    },
+    {
+      "date": "1992-03-03",
+      "homeAbbr": "PHX",
+      "awayAbbr": "HOU",
+      "auditGameId": 32740,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100784"
+      ]
+    },
+    {
+      "date": "1992-03-04",
+      "homeAbbr": "DET",
+      "awayAbbr": "IND",
+      "auditGameId": 32730,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100789"
+      ]
+    },
+    {
+      "date": "1992-03-06",
+      "homeAbbr": "ATL",
+      "awayAbbr": "IND",
+      "auditGameId": 32719,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100803"
+      ]
+    },
+    {
+      "date": "1992-03-13",
+      "homeAbbr": "CLE",
+      "awayAbbr": "LAL",
+      "auditGameId": 32673,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100853"
+      ]
+    },
+    {
+      "date": "1992-03-14",
+      "homeAbbr": "NYK",
+      "awayAbbr": "BKN",
+      "auditGameId": 32664,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100864"
+      ]
+    },
+    {
+      "date": "1992-03-15",
+      "homeAbbr": "BOS",
+      "awayAbbr": "POR",
+      "auditGameId": 32657,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100867"
+      ]
+    },
+    {
+      "date": "1992-03-18",
+      "homeAbbr": "MIA",
+      "awayAbbr": "IND",
+      "auditGameId": 32633,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100890"
+      ]
+    },
+    {
+      "date": "1992-03-19",
+      "homeAbbr": "PHI",
+      "awayAbbr": "CHA",
+      "auditGameId": 32626,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100893"
+      ]
+    },
+    {
+      "date": "1992-03-20",
+      "homeAbbr": "DET",
+      "awayAbbr": "BOS",
+      "auditGameId": 32625,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100899"
+      ]
+    },
+    {
+      "date": "1992-03-20",
+      "homeAbbr": "IND",
+      "awayAbbr": "MIL",
+      "auditGameId": 32623,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100900"
+      ]
+    },
+    {
+      "date": "1992-03-23",
+      "homeAbbr": "ATL",
+      "awayAbbr": "GSW",
+      "auditGameId": 32603,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100921"
+      ]
+    },
+    {
+      "date": "1992-03-28",
+      "homeAbbr": "BKN",
+      "awayAbbr": "GSW",
+      "auditGameId": 32567,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100955"
+      ]
+    },
+    {
+      "date": "1992-03-31",
+      "homeAbbr": "DEN",
+      "awayAbbr": "MIN",
+      "auditGameId": 32551,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100974"
+      ]
+    },
+    {
+      "date": "1992-03-31",
+      "homeAbbr": "SAC",
+      "awayAbbr": "GSW",
+      "auditGameId": 32549,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100973"
+      ]
+    },
+    {
+      "date": "1992-04-03",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAC",
+      "auditGameId": 32524,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100996"
+      ]
+    },
+    {
+      "date": "1992-04-03",
+      "homeAbbr": "SAS",
+      "awayAbbr": "ORL",
+      "auditGameId": 32532,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029100995"
+      ]
+    },
+    {
+      "date": "1992-04-14",
+      "homeAbbr": "MIL",
+      "awayAbbr": "DET",
+      "auditGameId": 32459,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029101065"
+      ]
+    },
+    {
+      "date": "1992-04-19",
+      "homeAbbr": "LAL",
+      "awayAbbr": "LAC",
+      "auditGameId": 32419,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029101106"
+      ]
+    },
+    {
+      "date": "1992-04-25",
+      "homeAbbr": "BOS",
+      "awayAbbr": "IND",
+      "auditGameId": 114886,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100009"
+      ]
+    },
+    {
+      "date": "1992-04-28",
+      "homeAbbr": "DET",
+      "awayAbbr": "NYK",
+      "auditGameId": 114880,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100020"
+      ]
+    },
+    {
+      "date": "1992-04-29",
+      "homeAbbr": "LAL",
+      "awayAbbr": "POR",
+      "auditGameId": 114875,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100023"
+      ]
+    },
+    {
+      "date": "1992-05-10",
+      "homeAbbr": "BOS",
+      "awayAbbr": "CLE",
+      "auditGameId": 114853,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100044"
+      ]
+    },
+    {
+      "date": "1992-05-11",
+      "homeAbbr": "PHX",
+      "awayAbbr": "POR",
+      "auditGameId": 114852,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100046"
+      ]
+    },
+    {
+      "date": "1992-05-26",
+      "homeAbbr": "POR",
+      "awayAbbr": "UTA",
+      "auditGameId": 114834,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100064"
+      ]
+    },
+    {
+      "date": "1992-06-05",
+      "homeAbbr": "CHI",
+      "awayAbbr": "POR",
+      "auditGameId": 114829,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049100069"
+      ]
+    },
+    {
       "date": "1992-11-06",
       "homeAbbr": "HOU",
       "awayAbbr": "OKC",
@@ -2540,6 +6650,51 @@
       ]
     },
     {
+      "date": "1992-11-06",
+      "homeAbbr": "LAC",
+      "awayAbbr": "LAL",
+      "auditGameId": 34622,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200001"
+      ]
+    },
+    {
+      "date": "1992-11-07",
+      "homeAbbr": "DEN",
+      "awayAbbr": "SAS",
+      "auditGameId": 34616,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200018"
+      ]
+    },
+    {
+      "date": "1992-11-07",
+      "homeAbbr": "MIN",
+      "awayAbbr": "GSW",
+      "auditGameId": 34608,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200012"
+      ]
+    },
+    {
       "date": "1992-11-07",
       "homeAbbr": "OKC",
       "awayAbbr": "HOU",
@@ -2556,6 +6711,1026 @@
       },
       "sources": [
         "https://www.nba.com/news/history-this-date-in-nba-nov"
+      ]
+    },
+    {
+      "date": "1992-11-11",
+      "homeAbbr": "CHI",
+      "awayAbbr": "DET",
+      "auditGameId": 34591,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200040"
+      ]
+    },
+    {
+      "date": "1992-11-12",
+      "homeAbbr": "GSW",
+      "awayAbbr": "CLE",
+      "auditGameId": 34582,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200046"
+      ]
+    },
+    {
+      "date": "1992-11-17",
+      "homeAbbr": "LAC",
+      "awayAbbr": "DET",
+      "auditGameId": 34546,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200076"
+      ]
+    },
+    {
+      "date": "1992-11-20",
+      "homeAbbr": "CHA",
+      "awayAbbr": "GSW",
+      "auditGameId": 34533,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200099"
+      ]
+    },
+    {
+      "date": "1992-11-20",
+      "homeAbbr": "LAL",
+      "awayAbbr": "CHI",
+      "auditGameId": 34532,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200097"
+      ]
+    },
+    {
+      "date": "1992-11-20",
+      "homeAbbr": "PHI",
+      "awayAbbr": "MIA",
+      "auditGameId": 34535,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200096"
+      ]
+    },
+    {
+      "date": "1992-11-23",
+      "homeAbbr": "BOS",
+      "awayAbbr": "ATL",
+      "auditGameId": 34514,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200115"
+      ]
+    },
+    {
+      "date": "1992-12-04",
+      "homeAbbr": "BKN",
+      "awayAbbr": "SAS",
+      "auditGameId": 34443,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200190"
+      ]
+    },
+    {
+      "date": "1992-12-10",
+      "homeAbbr": "NYK",
+      "awayAbbr": "CHA",
+      "auditGameId": 34401,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200227"
+      ]
+    },
+    {
+      "date": "1992-12-11",
+      "homeAbbr": "ATL",
+      "awayAbbr": "DEN",
+      "auditGameId": 34398,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200231"
+      ]
+    },
+    {
+      "date": "1992-12-11",
+      "homeAbbr": "POR",
+      "awayAbbr": "IND",
+      "auditGameId": 34394,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200230"
+      ]
+    },
+    {
+      "date": "1992-12-15",
+      "homeAbbr": "MIN",
+      "awayAbbr": "BOS",
+      "auditGameId": 34374,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200257"
+      ]
+    },
+    {
+      "date": "1992-12-16",
+      "homeAbbr": "LAC",
+      "awayAbbr": "GSW",
+      "auditGameId": 34364,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200268"
+      ]
+    },
+    {
+      "date": "1992-12-19",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MIN",
+      "auditGameId": 34336,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200292"
+      ]
+    },
+    {
+      "date": "1992-12-21",
+      "homeAbbr": "WAS",
+      "awayAbbr": "CLE",
+      "auditGameId": 34332,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200298"
+      ]
+    },
+    {
+      "date": "1992-12-22",
+      "homeAbbr": "MIL",
+      "awayAbbr": "SAC",
+      "auditGameId": 34324,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200300"
+      ]
+    },
+    {
+      "date": "1992-12-23",
+      "homeAbbr": "MIN",
+      "awayAbbr": "SAC",
+      "auditGameId": 34316,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200310"
+      ]
+    },
+    {
+      "date": "1992-12-26",
+      "homeAbbr": "MIL",
+      "awayAbbr": "NYK",
+      "auditGameId": 34301,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200326"
+      ]
+    },
+    {
+      "date": "1992-12-26",
+      "homeAbbr": "POR",
+      "awayAbbr": "PHI",
+      "auditGameId": 34309,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200329"
+      ]
+    },
+    {
+      "date": "1993-01-02",
+      "homeAbbr": "NYK",
+      "awayAbbr": "LAC",
+      "auditGameId": 34270,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200358"
+      ]
+    },
+    {
+      "date": "1993-01-03",
+      "homeAbbr": "POR",
+      "awayAbbr": "HOU",
+      "auditGameId": 34259,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200369"
+      ]
+    },
+    {
+      "date": "1993-01-03",
+      "homeAbbr": "SAS",
+      "awayAbbr": "PHX",
+      "auditGameId": 34258,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200370"
+      ]
+    },
+    {
+      "date": "1993-01-12",
+      "homeAbbr": "UTA",
+      "awayAbbr": "MIA",
+      "auditGameId": 34202,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200426"
+      ]
+    },
+    {
+      "date": "1993-01-14",
+      "homeAbbr": "POR",
+      "awayAbbr": "MIA",
+      "auditGameId": 34193,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200438"
+      ]
+    },
+    {
+      "date": "1993-01-15",
+      "homeAbbr": "BKN",
+      "awayAbbr": "PHI",
+      "auditGameId": 34184,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200448"
+      ]
+    },
+    {
+      "date": "1993-01-16",
+      "homeAbbr": "CHI",
+      "awayAbbr": "ORL",
+      "auditGameId": 34170,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200453"
+      ]
+    },
+    {
+      "date": "1993-01-18",
+      "homeAbbr": "PHI",
+      "awayAbbr": "ORL",
+      "auditGameId": 34164,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200464"
+      ]
+    },
+    {
+      "date": "1993-01-20",
+      "homeAbbr": "MIA",
+      "awayAbbr": "PHI",
+      "auditGameId": 34152,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200480"
+      ]
+    },
+    {
+      "date": "1993-01-22",
+      "homeAbbr": "GSW",
+      "awayAbbr": "OKC",
+      "auditGameId": 34134,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200496"
+      ]
+    },
+    {
+      "date": "1993-01-24",
+      "homeAbbr": "WAS",
+      "awayAbbr": "LAL",
+      "auditGameId": 34119,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200506"
+      ]
+    },
+    {
+      "date": "1993-01-26",
+      "homeAbbr": "WAS",
+      "awayAbbr": "MIA",
+      "auditGameId": 34108,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200515"
+      ]
+    },
+    {
+      "date": "1993-01-27",
+      "homeAbbr": "MIN",
+      "awayAbbr": "PHX",
+      "auditGameId": 34107,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200525"
+      ]
+    },
+    {
+      "date": "1993-01-27",
+      "homeAbbr": "PHI",
+      "awayAbbr": "IND",
+      "auditGameId": 34101,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200524"
+      ]
+    },
+    {
+      "date": "1993-01-29",
+      "homeAbbr": "ORL",
+      "awayAbbr": "BOS",
+      "auditGameId": 34093,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200539"
+      ]
+    },
+    {
+      "date": "1993-01-30",
+      "homeAbbr": "WAS",
+      "awayAbbr": "CHA",
+      "auditGameId": 34080,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200552"
+      ]
+    },
+    {
+      "date": "1993-02-04",
+      "homeAbbr": "BKN",
+      "awayAbbr": "OKC",
+      "auditGameId": 34051,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200575"
+      ]
+    },
+    {
+      "date": "1993-02-04",
+      "homeAbbr": "LAC",
+      "awayAbbr": "CHI",
+      "auditGameId": 34054,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200577"
+      ]
+    },
+    {
+      "date": "1993-02-08",
+      "homeAbbr": "LAL",
+      "awayAbbr": "DAL",
+      "auditGameId": 34026,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200602"
+      ]
+    },
+    {
+      "date": "1993-02-08",
+      "homeAbbr": "PHI",
+      "awayAbbr": "NYK",
+      "auditGameId": 34029,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200600"
+      ]
+    },
+    {
+      "date": "1993-02-14",
+      "homeAbbr": "BKN",
+      "awayAbbr": "MIA",
+      "auditGameId": 33987,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200646"
+      ]
+    },
+    {
+      "date": "1993-02-14",
+      "homeAbbr": "ORL",
+      "awayAbbr": "NYK",
+      "auditGameId": 33986,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200644"
+      ]
+    },
+    {
+      "date": "1993-02-15",
+      "homeAbbr": "MIA",
+      "awayAbbr": "DEN",
+      "auditGameId": 33979,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200648"
+      ]
+    },
+    {
+      "date": "1993-02-16",
+      "homeAbbr": "DET",
+      "awayAbbr": "ORL",
+      "auditGameId": 33969,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200660"
+      ]
+    },
+    {
+      "date": "1993-03-02",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CLE",
+      "auditGameId": 33900,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200733"
+      ]
+    },
+    {
+      "date": "1993-03-05",
+      "homeAbbr": "CHI",
+      "awayAbbr": "SAS",
+      "auditGameId": 33875,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200755"
+      ]
+    },
+    {
+      "date": "1993-03-05",
+      "homeAbbr": "LAL",
+      "awayAbbr": "PHI",
+      "auditGameId": 33874,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200757"
+      ]
+    },
+    {
+      "date": "1993-03-08",
+      "homeAbbr": "NYK",
+      "awayAbbr": "ORL",
+      "auditGameId": 33854,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200774"
+      ]
+    },
+    {
+      "date": "1993-03-15",
+      "homeAbbr": "DEN",
+      "awayAbbr": "MIA",
+      "auditGameId": 33812,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200819"
+      ]
+    },
+    {
+      "date": "1993-03-19",
+      "homeAbbr": "POR",
+      "awayAbbr": "HOU",
+      "auditGameId": 33777,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200853"
+      ]
+    },
+    {
+      "date": "1993-03-25",
+      "homeAbbr": "SAC",
+      "awayAbbr": "POR",
+      "auditGameId": 33742,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200889"
+      ]
+    },
+    {
+      "date": "1993-03-29",
+      "homeAbbr": "ATL",
+      "awayAbbr": "POR",
+      "auditGameId": 33712,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200917"
+      ]
+    },
+    {
+      "date": "1993-04-04",
+      "homeAbbr": "SAS",
+      "awayAbbr": "NYK",
+      "auditGameId": 33670,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200959"
+      ]
+    },
+    {
+      "date": "1993-04-06",
+      "homeAbbr": "ATL",
+      "awayAbbr": "NYK",
+      "auditGameId": 33658,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200973"
+      ]
+    },
+    {
+      "date": "1993-04-08",
+      "homeAbbr": "GSW",
+      "awayAbbr": "LAL",
+      "auditGameId": 33651,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029200979"
+      ]
+    },
+    {
+      "date": "1993-04-13",
+      "homeAbbr": "ATL",
+      "awayAbbr": "CLE",
+      "auditGameId": 33617,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201015"
+      ]
+    },
+    {
+      "date": "1993-04-15",
+      "homeAbbr": "UTA",
+      "awayAbbr": "POR",
+      "auditGameId": 33599,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201030"
+      ]
+    },
+    {
+      "date": "1993-04-17",
+      "homeAbbr": "DAL",
+      "awayAbbr": "SAC",
+      "auditGameId": 33582,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201044"
+      ]
+    },
+    {
+      "date": "1993-04-22",
+      "homeAbbr": "CHI",
+      "awayAbbr": "DET",
+      "auditGameId": 33550,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201080"
+      ]
+    },
+    {
+      "date": "1993-04-22",
+      "homeAbbr": "HOU",
+      "awayAbbr": "MIN",
+      "auditGameId": 33551,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201078"
+      ]
+    },
+    {
+      "date": "1993-04-23",
+      "homeAbbr": "MIA",
+      "awayAbbr": "WAS",
+      "auditGameId": 33546,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201085"
+      ]
+    },
+    {
+      "date": "1993-04-25",
+      "homeAbbr": "SAS",
+      "awayAbbr": "HOU",
+      "auditGameId": 33525,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0029201106"
+      ]
+    },
+    {
+      "date": "1993-05-01",
+      "homeAbbr": "BOS",
+      "awayAbbr": "CHA",
+      "auditGameId": 114962,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200009"
+      ]
+    },
+    {
+      "date": "1993-05-06",
+      "homeAbbr": "IND",
+      "awayAbbr": "NYK",
+      "auditGameId": 114945,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200027"
+      ]
+    },
+    {
+      "date": "1993-05-07",
+      "homeAbbr": "SAS",
+      "awayAbbr": "POR",
+      "auditGameId": 114944,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200030"
+      ]
+    },
+    {
+      "date": "1993-05-09",
+      "homeAbbr": "PHX",
+      "awayAbbr": "LAL",
+      "auditGameId": 114939,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200034"
+      ]
+    },
+    {
+      "date": "1993-05-12",
+      "homeAbbr": "NYK",
+      "awayAbbr": "CHA",
+      "auditGameId": 114934,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200041"
+      ]
+    },
+    {
+      "date": "1993-05-14",
+      "homeAbbr": "CHA",
+      "awayAbbr": "NYK",
+      "auditGameId": 114930,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200044"
+      ]
+    },
+    {
+      "date": "1993-05-22",
+      "homeAbbr": "OKC",
+      "awayAbbr": "HOU",
+      "auditGameId": 114917,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 1
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200057"
       ]
     },
     {
@@ -2631,6 +7806,21 @@
       },
       "sources": [
         "https://www.nba.com/news/history-nba-champions"
+      ]
+    },
+    {
+      "date": "1993-06-13",
+      "homeAbbr": "CHI",
+      "awayAbbr": "PHX",
+      "auditGameId": 114901,
+      "fields": {
+        "overtimePeriods": {
+          "before": 0,
+          "after": 3
+        }
+      },
+      "sources": [
+        "docs/research/2026-10-20-overtime-correction/source-adjudications.json#0049200073"
       ]
     },
     {

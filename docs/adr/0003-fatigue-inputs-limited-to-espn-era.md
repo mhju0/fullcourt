@@ -76,3 +76,17 @@ claimed for that missingness.
 These are verified input corrections, not fitted coefficient changes. The source registry,
 frozen correction candidate and regenerated outputs own the current evidence; original
 figures above remain the historical decision record.
+
+## 2026-10-20 amendment — remaining overtime source set confirmed
+
+A subsequent source pass checked all 5,815 previously unconfirmed final games against
+retained NBA box scores. Strict period/minute evidence confirms 5,801; reviewed,
+fixture-specific supporting records resolve the remaining 14 archive-field conflicts.
+The resulting 346 positive overtime corrections preserve exact counts, including five
+periods of overtime. Original conflicting source fields are retained rather than rewritten.
+See ADR 0015 and the dated overtime-correction source record for the frozen evidence.
+
+This supersedes the preceding amendment's open 5,815-game overtime gap. Older tip times
+and the completeness of the physical-venue register remain separate limits. The original
+2002 training floor remains the preselected evaluation protocol; improved historical
+coverage is not permission to change its window or tune the ratified coefficients.

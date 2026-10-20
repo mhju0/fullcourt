@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "validatorVersion": "official-nba-periods-v1",
+  "gameId": 29679,
+  "externalId": "0028800519",
+  "date": "1989-01-31",
+  "season": "1988-89",
+  "homeAbbr": "CHI",
+  "awayAbbr": "DET",
+  "stored": {
+    "homeScore": 98,
+    "awayScore": 104,
+    "overtimePeriods": 0
+  },
+  "source": {
+    "url": "https://www.nba.com/game/0028800519/box-score",
+    "finalUrl": "https://www.nba.com/game/0028800519/box-score",
+    "capturedAt": "2026-10-20T01:34:45.090597+00:00",
+    "completedAt": "2026-10-20T01:34:46.858464+00:00",
+    "httpStatus": 200,
+    "bodyBytes": 270368,
+    "bodySha256": "80843899e8f05abe988ed8c8ebdc809638751c0a7f716550843d1302d8e45a35",
+    "rawPath": "raw/0028800519/80843899e8f05abe988ed8c8ebdc809638751c0a7f716550843d1302d8e45a35.html.gz",
+    "rawGzipSha256": "870e3bd19b87328e3ddc653b9ad0b1f0eb60a4e89cef2d85a2f2e32f7c6875df",
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "ETag": "\"mbrgtrdq1y5tr4\"",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "Date": "Tue, 20 Oct 2026 01:34:46 GMT"
+    },
+    "attemptHistory": []
+  },
+  "observed": {
+    "gameId": "0028800519",
+    "gameCode": "19890131/DETCHI",
+    "gameEt": "1989-01-31T20:00:00Z",
+    "gameStatus": 3,
+    "period": 5,
+    "home": {
+      "teamId": 1610612741,
+      "tricode": "CHI",
+      "canonicalAbbr": "CHI",
+      "score": 98,
+      "minutes": "265:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 29
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 18
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 21
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 23
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 7
+        }
+      ]
+    },
+    "away": {
+      "teamId": 1610612765,
+      "tricode": "DET",
+      "canonicalAbbr": "DET",
+      "score": 104,
+      "minutes": "265:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 26
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 22
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 18
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 26
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 12
+        }
+      ]
+    }
+  },
+  "decision": {
+    "status": "unknown",
+    "overtimePeriods": null,
+    "reasons": [
+      "not_tied_before_overtime_period_5"
+    ]
+  }
+}

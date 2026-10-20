@@ -36,7 +36,7 @@ const winPctToSeedRatio = (
 ).toFixed(1);
 
 /**
- * The model's feature set, in descending order of how much it actually moves the prediction.
+ * Features ranked by the separate regularized interpretation fit.
  *
  * `weight` is the standardized logistic coefficient, sourced from
  * `PLAYOFF_MODEL_COEFFICIENTS` (`ml/PHASE3_REPORT.md` §4) rather than hand-typed — the honest
@@ -46,7 +46,7 @@ const winPctToSeedRatio = (
  *
  * `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31, swapping `entry_rest_diff`
  * (raw days of rest) for `prior_grind_diff` (format-aware prior-round grind). The `v1` rows are
- * retained in the DB — this table describes the current, `v2` fit. Stated in rendered copy
+ * retained in the DB — this table interprets the current `v2` feature set. Stated in rendered copy
  * below (not just here) so a reader without the source sees it too.
  */
 const FEATURES = [
@@ -100,7 +100,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="THE FEATURES" title="Model inputs and weights" descriptor={`${FEATURES.length} inputs`} disclosure>
+      <Section label="THE FEATURES" title="Model inputs and interpretation" descriptor={`${FEATURES.length} inputs`} disclosure>
         <DataTable
           rows={FEATURES}
           rowKey={(f) => f.name}
@@ -130,9 +130,11 @@ export default function PlayoffPredictionsMethodPage() {
           ]}
         />
         <Note>
-          These are the full-sample fit’s standardized logistic coefficients, measured in
-          log-odds per standard deviation of each feature. Walk-forward folds fit their own
-          scalers and weights. All four full-sample coefficients are positive, but feature
+          These standardized coefficients come from a separate regularized full-sample
+          fit (L2, C = 1), used to compare the features. They are measured in log-odds per
+          standard deviation and are not the weights used for the displayed series
+          probabilities. Those use unregularized logistic fits, with a separate scaler and
+          fit for each walk-forward training window. All four interpretation coefficients are positive, but feature
           differences can be negative, so they can favor the opponent. Coefficient size
           does not establish a causal effect or the value of removing a feature.
           <br />

@@ -4,7 +4,8 @@ Protocol, decided before any of this was run:
 
 * **Walk-forward.** For each test season from 2010-11 on, fit on every season from 2002-03 up
   to the one before it and predict the test season blind. Pooled over 16 seasons. 2002 is the
-  floor because overtime, tip-off times and neutral-site flags only exist from then (ADR 0003).
+  remains the protocol's original coverage floor (ADR 0003). Subsequent historical overtime
+  and venue corrections do not expand this preselected evaluation window.
 * **Net of venue.** Every model carries a home-court intercept, so the fatigue weights measure
   what rest adds on top of knowing who is at home rather than quietly absorbing it.
 * **Sign-clamped.** Physically, carrying a fatigue factor cannot make a team play better. Terms

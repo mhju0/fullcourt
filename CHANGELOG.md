@@ -1,5 +1,15 @@
 # Release history
 
+## 1.0.7 — 2026-10-20
+
+- Confirm the remaining historical overtime source gap with retained NBA box scores
+  and reviewed supporting records; correct 346 game inputs while preserving exact
+  multi-overtime counts and earlier fixture corrections.
+- Recalculate fatigue and dependent win-rate, schedule and methodology publications
+  with the existing coefficients. Preserve resolved predictions and playoff records.
+- Clarify that the playoff coefficient table is a separate regularized interpretation
+  fit, while displayed series probabilities use unregularized fits.
+
 ## 1.0.6 — 2026-10-20
 
 - Restore the homepage large-rest-gap comparison to all eligible completed regular

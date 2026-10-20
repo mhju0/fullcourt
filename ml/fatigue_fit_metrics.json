@@ -1,6 +1,6 @@
 {
   "generatedBy": "ml/fit_fatigue_weights.py",
-  "modelTableSha256": "0a3c945e2eefb190fb2bcb137805b5549885f2682aae6f52266f5bb42819a684",
+  "modelTableSha256": "30df45f3d5588e2dff46868c39e9d77fe2b53c821c2165e68b7f868134ad47fe",
   "trainFloor": 2002,
   "firstTestSeason": 2010,
   "heldOutGames": 19118,

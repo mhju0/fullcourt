@@ -1,9 +1,9 @@
 {
   "counterfactual": {
     "homeBar": 3,
-    "calls": 45700,
+    "calls": 45694,
     "coveragePct": 97,
-    "correct": 27332,
+    "correct": 27328,
     "accuracyPct": 59.8,
     "roadCalls": 1145,
     "roadLosses": 611,
@@ -11,8 +11,8 @@
   },
   "sample": {
     "scoredGames": 47094,
-    "neutral": 8308,
-    "decided": 38786,
+    "neutral": 8309,
+    "decided": 38785,
     "firstSeason": "1985-86",
     "lastSeason": "2025-26",
     "seasons": 41
@@ -24,52 +24,52 @@
     "roadWinPct": 40.1
   },
   "restedAtHome": {
-    "games": 28117,
-    "wins": 17190,
+    "games": 28109,
+    "wins": 17180,
     "winPct": 61.1,
     "ranges": [
       {
         "key": "small",
-        "games": 17359,
-        "wins": 10398,
+        "games": 17342,
+        "wins": 10385,
         "winPct": 59.9
       },
       {
         "key": "medium",
-        "games": 6859,
-        "wins": 4248,
+        "games": 6866,
+        "wins": 4252,
         "winPct": 61.9
       },
       {
         "key": "large",
-        "games": 3899,
-        "wins": 2544,
+        "games": 3901,
+        "wins": 2543,
         "winPct": 65.2
       }
     ]
   },
   "restedOnRoad": {
-    "games": 10669,
+    "games": 10676,
     "wins": 4530,
-    "winPct": 42.5,
+    "winPct": 42.4,
     "ranges": [
       {
         "key": "small",
-        "games": 8929,
+        "games": 8934,
         "wins": 3755,
-        "winPct": 42.1
+        "winPct": 42
       },
       {
         "key": "medium",
         "games": 1495,
-        "wins": 662,
-        "winPct": 44.3
+        "wins": 661,
+        "winPct": 44.2
       },
       {
         "key": "large",
-        "games": 245,
-        "wins": 113,
-        "winPct": 46.1
+        "games": 247,
+        "wins": 114,
+        "winPct": 46.2
       }
     ]
   },
@@ -77,29 +77,29 @@
     {
       "label": "All seasons",
       "seasons": 41,
-      "games": 10669,
+      "games": 10676,
       "wins": 4530,
-      "winPct": 42.5,
+      "winPct": 42.4,
       "roadBaselinePct": 40.1,
-      "liftPp": 2.4,
+      "liftPp": 2.3,
       "ranges": [
         {
           "key": "small",
-          "games": 8929,
+          "games": 8934,
           "wins": 3755,
-          "winPct": 42.1
+          "winPct": 42
         },
         {
           "key": "medium",
           "games": 1495,
-          "wins": 662,
-          "winPct": 44.3
+          "wins": 661,
+          "winPct": 44.2
         },
         {
           "key": "large",
-          "games": 245,
-          "wins": 113,
-          "winPct": 46.1
+          "games": 247,
+          "wins": 114,
+          "winPct": 46.2
         }
       ]
     },
