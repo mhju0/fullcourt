@@ -9,7 +9,7 @@ export type { Snapshot, Row };
 export const frozenPaths=[
   'src/lib/fatigue.ts','src/lib/fatigue-recent-games.ts','src/lib/physical-venue.ts','src/lib/bubble-venue.ts','src/lib/fatigue-windows.ts','src/lib/team-era-coordinates.ts','src/lib/neutral-venues.ts','src/lib/game-input-corrections.ts','src/data/game-input-corrections.json','src/data/fixture-venue-corrections.json','src/lib/haversine.ts','src/lib/rest-advantage-evidence.ts','src/lib/season-regime.ts','src/lib/game-status.ts','src/lib/db/schema.ts','pnpm-lock.yaml',
   'scripts/history-correction/core.ts','scripts/history-correction/authorization.ts','scripts/history-correction/playoff-contract.ts','scripts/history-correction/playoff-feature-corrections.json','scripts/history-correction/playoff-prediction-revision.json',
-  'scripts/overtime-correction/core.ts','scripts/overtime-correction/semantics.ts','scripts/overtime-correction/sources.ts','scripts/overtime-correction/authorization.ts','scripts/overtime-correction/prepare.ts','scripts/overtime-correction/run.ts','scripts/overtime-correction/capture-baseline.ts','scripts/overtime-correction/bridge.ts','scripts/overtime-correction/rehearse.ts','scripts/overtime-correction/cli-errors.ts',
+  'scripts/overtime-correction/core.ts','scripts/overtime-correction/semantics.ts','scripts/overtime-correction/sources.ts','scripts/overtime-correction/observation.ts','scripts/overtime-correction/official-team-aliases.json','scripts/overtime-correction/supplement.ts','scripts/overtime-correction/supplemental-adjudications.json','scripts/overtime-correction/approved-headline-cases.json','scripts/overtime-correction/authorization.ts','scripts/overtime-correction/prepare.ts','scripts/overtime-correction/run.ts','scripts/overtime-correction/capture-baseline.ts','scripts/overtime-correction/bridge.ts','scripts/overtime-correction/rehearse.ts','scripts/overtime-correction/cli-errors.ts',
 ] as const;
 export interface BaselineEvidence {
   schemaVersion:1;databaseTimeZone:string;capturedAt:string;sixTableHash:string;semanticInputHash:string;differences:0;sides:number;targetFingerprint:string;rowCounts:Record<string,number>;
@@ -19,7 +19,7 @@ export interface Manifest {
   beforeHash:string;afterHash:string;beforeSemanticInputHash:string;afterSemanticInputHash:string;
   before:Snapshot;after:Snapshot;baseline:BaselineEvidence;baselineEvidence:{path:string;sha256:string};
   sourceHashes:Record<string,string>;sourceProof:ProofBinding;sourceBridge:{path:string;sha256:string;value:SourceBridge};inputChanges:InputChange[];
-  report:{scoredSides:number;changedFatigueSides:number;fatigueChanges:{id:number;gameId:number;fields:string[]}[];changedPredictionIds:number[];resolvedPredictionHash:string;sourceVerified:number;sourceUnknown:number};
+  report:{scoredSides:number;changedFatigueSides:number;fatigueChanges:{id:number;gameId:number;fields:string[]}[];changedPredictionIds:number[];resolvedPredictionHash:string;sourceVerified:number;sourceUnknown:number;supplementalAccepted:number};
 }
 const resolved=(snapshot:Snapshot)=>snapshot.predictions.filter(row=>row.actual_winner_id!==null);
 export function changedPredictionIds(before:Snapshot,after:Snapshot):number[] {
@@ -62,7 +62,7 @@ export function verifyManifest(manifest:Manifest):void {
   if(hash(recomputed.rows)!==hash(manifest.after.fatigue_scores))throw new Error('Candidate fatigue/timestamp transition differs from complete semantic replay');
   const predictions=rebuildForecasts({...manifest.before,games:manifest.after.games,fatigue_scores:recomputed.rows},manifest.asOf,manifest.computedAt);
   if(hash(predictions)!==hash(manifest.after.predictions))throw new Error('Candidate forecasts differ from prior approved eligibility/rebuild policy');
-  const expectedReport={scoredSides:manifest.after.fatigue_scores.length,changedFatigueSides:recomputed.changed.length,fatigueChanges:recomputed.changed,changedPredictionIds:changedPredictionIds(manifest.before,manifest.after),resolvedPredictionHash:hash(resolved(manifest.before)),sourceVerified:proof.binding.verified,sourceUnknown:proof.binding.unknown};
+  const expectedReport={scoredSides:manifest.after.fatigue_scores.length,changedFatigueSides:recomputed.changed.length,fatigueChanges:recomputed.changed,changedPredictionIds:changedPredictionIds(manifest.before,manifest.after),resolvedPredictionHash:hash(resolved(manifest.before)),sourceVerified:proof.binding.verified,sourceUnknown:proof.binding.unknown,supplementalAccepted:proof.binding.supplementalAccepted};
   if(hash(expectedReport)!==hash(manifest.report))throw new Error('OT report does not reconcile to actual transition');
 }
 export async function applyManifest(sql:postgres.Sql,manifest:Manifest,direction:'apply'|'rollback',failAfterTable?:'games'|'fatigue_scores'|'predictions',authorization?:Authorization):Promise<'applied'|'rolled-back'|'already-current'> {

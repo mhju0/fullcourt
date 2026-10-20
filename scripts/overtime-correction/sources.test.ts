@@ -1,5 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import factJson from './fixtures/official-0028801021.json';
+import fiveOvertimeJson from './fixtures/official-0028900045.json';
+import {normalizeOfficialAbbreviation} from './observation';
 import {validateVerifiedFact,matchFactToGame,calculateBridge,type OfficialFact} from './sources';
 import type {Snapshot} from './core';
 const fact=()=>structuredClone(factJson) as OfficialFact;
@@ -9,12 +11,29 @@ describe('independent official numbered-period acceptance',()=>{
     expect(f.observed.home!.periods.slice(0,4).reduce((n,p)=>n+p.score,0)).toBe(114);
     expect(f.observed.away!.periods.slice(0,4).reduce((n,p)=>n+p.score,0)).toBe(114);
   });
-  it('retains an exact five-OT integer rather than capping it at two',()=>{
-    const f=fact();const home=f.observed.home!,away=f.observed.away!;
-    home.periods[4].score=6;
-    for(const [i,h,a]of [[6,5,5],[7,4,4],[8,6,6],[9,8,7]]){home.periods.push({period:i,periodType:'OVERTIME',score:h});away.periods.push({period:i,periodType:'OVERTIME',score:a});}
-    f.observed.period=9;home.score=f.stored.homeScore=143;away.score=f.stored.awayScore=142;f.decision.overtimePeriods=5;
+  it('accepts the actual 1989 SEA-MIL five-OT final and rejects a capped count',()=>{
+    const f=structuredClone(fiveOvertimeJson) as OfficialFact;
+    expect(f.observed.away!.tricode).toBe('SEA');expect(f.observed.away!.canonicalAbbr).toBe('OKC');expect(f.observed.home!.minutes).toBe('365:00');
     expect(validateVerifiedFact(f)).toBe(5);f.decision.overtimePeriods=2;expect(()=>validateVerifiedFact(f)).toThrow('Exact overtime');
+  });
+  it.each([['SEA','OKC'],['WSB','WAS'],['PHL','PHI'],['GOS','GSW'],['SAN','SAS'],['NJN','BKN'],['CHH','CHA'],['NOH','NOP']])('uses the frozen official alias %s to %s', (raw,canonical)=>expect(normalizeOfficialAbbreviation(raw)).toBe(canonical));
+  it.each(['wrong-home-raw','wrong-away-raw','wrong-code-away','wrong-code-home','reversed-code','forged-canonical'])('independently refuses %s despite a trusted-looking normalized label',kind=>{
+    const f=fact();
+    if(kind==='wrong-home-raw')f.observed.home!.tricode='BOS';
+    if(kind==='wrong-away-raw')f.observed.away!.tricode='BOS';
+    if(kind==='wrong-code-away')f.observed.gameCode='19890423/BOSPOR';
+    if(kind==='wrong-code-home')f.observed.gameCode='19890423/SACNYK';
+    if(kind==='reversed-code')f.observed.gameCode='19890423/PORSAC';
+    if(kind==='forged-canonical'){f.observed.gameCode='19890423/BOSNYK';f.observed.home!.canonicalAbbr='POR';f.observed.away!.canonicalAbbr='SAC';}
+    expect(()=>validateVerifiedFact(f)).toThrow(/pairing/);
+  });
+  it.each(['365:00','240:00','265:01','265:60','garbage'])('refuses available team minutes %s inconsistent with the actual one-OT observation',minutes=>{
+    const f=fact();f.observed.home!.minutes=minutes;expect(()=>validateVerifiedFact(f)).toThrow('minutes');
+  });
+  it.each(['Final','Final/OT2','Final/2OT','In Progress'])('refuses available contradictory status %s',text=>{const f=fact();f.observed.gameStatusText=text;expect(()=>validateVerifiedFact(f)).toThrow(/status/);});
+  it('accepts authentic explicit OT-count spellings and permits genuinely missing optional fields',()=>{
+    for(const text of ['Final/OT5','Final/5OT']){const f=structuredClone(fiveOvertimeJson) as OfficialFact;f.observed.gameStatusText=text;expect(validateVerifiedFact(f)).toBe(5);}
+    const f=fact();f.observed.gameStatusText='Final/OT';expect(validateVerifiedFact(f)).toBe(1);delete f.observed.gameStatusText;delete f.observed.home!.minutes;f.observed.away!.minutes=null;expect(validateVerifiedFact(f)).toBe(1);
   });
   it.each(['missing-period','duplicate-period','wrong-score','untied-regulation','wrong-date','nonfinal','unknown'])( 'refuses %s evidence',kind=>{
     const f=fact();

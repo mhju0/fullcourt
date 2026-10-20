@@ -1,0 +1,1367 @@
+[
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 31091,
+    "externalId": "0028900220",
+    "date": "1989-12-06",
+    "season": "1989-90",
+    "homeAbbr": "SAS",
+    "awayAbbr": "GSW",
+    "stored": {
+      "homeScore": 121,
+      "awayScore": 119,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900220/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900220/box-score",
+      "capturedAt": "2026-10-20T01:48:27.842510+00:00",
+      "completedAt": "2026-10-20T01:48:29.108137+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 270549,
+      "bodySha256": "51d5d473492e3f6ce4302608e252658bb59a26b53879b003d9ca9f364469fee5",
+      "rawPath": "raw/0028900220/51d5d473492e3f6ce4302608e252658bb59a26b53879b003d9ca9f364469fee5.html.gz",
+      "rawGzipSha256": "722ea9ec5c3866081a9231b4ea66a0b3579ee0c1a6a29b345facbb8bf2f51607",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"k60cgxfat35tw5\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:48:29 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900220",
+      "gameCode": "19891206/GOSSAN",
+      "gameEt": "1989-12-06T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612759,
+        "tricode": "SAN",
+        "canonicalAbbr": "SAS",
+        "score": 121,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 30
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 33
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 30
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612744,
+        "tricode": "GOS",
+        "canonicalAbbr": "GSW",
+        "score": 117,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 36
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 31
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 31040,
+    "externalId": "0028900266",
+    "date": "1989-12-14",
+    "season": "1989-90",
+    "homeAbbr": "BKN",
+    "awayAbbr": "IND",
+    "stored": {
+      "homeScore": 78,
+      "awayScore": 102,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900266/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900266/box-score",
+      "capturedAt": "2026-10-20T01:48:05.721054+00:00",
+      "completedAt": "2026-10-20T01:48:07.278408+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 271996,
+      "bodySha256": "e0b4791741dce554adb925f8a9e5a10dd9efddafe7f7b445132cc509d255c1a0",
+      "rawPath": "raw/0028900266/e0b4791741dce554adb925f8a9e5a10dd9efddafe7f7b445132cc509d255c1a0.html.gz",
+      "rawGzipSha256": "8405e705fbeae8292a9784ea5e04cd02c5f5020c61edd92788287d9570630300",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"ppc3lzixen5v0c\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:48:07 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900266",
+      "gameCode": "19891214/INDNJN",
+      "gameEt": "1989-12-14T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612751,
+        "tricode": "NJN",
+        "canonicalAbbr": "BKN",
+        "score": 98,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 9
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 20
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 20
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612754,
+        "tricode": "IND",
+        "canonicalAbbr": "IND",
+        "score": 102,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 25
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 22
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 28
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "home_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 31031,
+    "externalId": "0028900270",
+    "date": "1989-12-15",
+    "season": "1989-90",
+    "homeAbbr": "POR",
+    "awayAbbr": "GSW",
+    "stored": {
+      "homeScore": 111,
+      "awayScore": 116,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900270/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900270/box-score",
+      "capturedAt": "2026-10-20T01:48:01.442803+00:00",
+      "completedAt": "2026-10-20T01:48:03.271341+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 270624,
+      "bodySha256": "8d1527265e0b3dd5e923a9122cab28472f8c0d3736ea0225ed5b76300836660b",
+      "rawPath": "raw/0028900270/8d1527265e0b3dd5e923a9122cab28472f8c0d3736ea0225ed5b76300836660b.html.gz",
+      "rawGzipSha256": "d23b75ec00c3901a2eaf1c8b5304ecb45b886eb2046d42452224c488b00fefaa",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"up1m9fs5rb5ty8\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:48:03 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900270",
+      "gameCode": "19891215/GOSPOR",
+      "gameEt": "1989-12-15T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612757,
+        "tricode": "POR",
+        "canonicalAbbr": "POR",
+        "score": 111,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 33
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 32
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 22
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612744,
+        "tricode": "GOS",
+        "canonicalAbbr": "GSW",
+        "score": 113,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 20
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 31
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 36
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30924,
+    "externalId": "0028900387",
+    "date": "1990-01-03",
+    "season": "1989-90",
+    "homeAbbr": "HOU",
+    "awayAbbr": "IND",
+    "stored": {
+      "homeScore": 117,
+      "awayScore": 103,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900387/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900387/box-score",
+      "capturedAt": "2026-10-20T01:46:59.476763+00:00",
+      "completedAt": "2026-10-20T01:47:00.886570+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 269855,
+      "bodySha256": "cb9b97db019b38772c1ca71a2d416d17c0469dd3540625ceb83b7522c31de53a",
+      "rawPath": "raw/0028900387/cb9b97db019b38772c1ca71a2d416d17c0469dd3540625ceb83b7522c31de53a.html.gz",
+      "rawGzipSha256": "9508abd23cf1d86241a6f50f903d3596a42e9a9168702e60c774aefa55e324ac",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"17zc1pmjinp5tcv\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:47:00 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900387",
+      "gameCode": "19900103/INDHOU",
+      "gameEt": "1990-01-03T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612745,
+        "tricode": "HOU",
+        "canonicalAbbr": "HOU",
+        "score": 111,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 36
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 26
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 26
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612754,
+        "tricode": "IND",
+        "canonicalAbbr": "IND",
+        "score": 103,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 17
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 33
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "home_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30795,
+    "externalId": "0028900514",
+    "date": "1990-01-22",
+    "season": "1989-90",
+    "homeAbbr": "ORL",
+    "awayAbbr": "PHX",
+    "stored": {
+      "homeScore": 103,
+      "awayScore": 126,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900514/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900514/box-score",
+      "capturedAt": "2026-10-20T01:45:41.052018+00:00",
+      "completedAt": "2026-10-20T01:45:42.556931+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 269424,
+      "bodySha256": "952963c8318a9d96483fd870c4cbb9ff41f1eb7304ca951e4a240dc8cb071710",
+      "rawPath": "raw/0028900514/952963c8318a9d96483fd870c4cbb9ff41f1eb7304ca951e4a240dc8cb071710.html.gz",
+      "rawGzipSha256": "b035e2d8767dd85b777a47e40b12a56ce125d052643b6bfdc7d5098991046d50",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"q7wim7xlno5t0w\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:45:42 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900514",
+      "gameCode": "19900122/PHXORL",
+      "gameEt": "1990-01-22T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612753,
+        "tricode": "ORL",
+        "canonicalAbbr": "ORL",
+        "score": 103,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 24
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612756,
+        "tricode": "PHX",
+        "canonicalAbbr": "PHX",
+        "score": 123,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 32
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 34
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 32
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30664,
+    "externalId": "0028900645",
+    "date": "1990-02-14",
+    "season": "1989-90",
+    "homeAbbr": "MIL",
+    "awayAbbr": "DEN",
+    "stored": {
+      "homeScore": 127,
+      "awayScore": 117,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900645/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900645/box-score",
+      "capturedAt": "2026-10-20T01:44:29.098631+00:00",
+      "completedAt": "2026-10-20T01:44:30.802523+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 271015,
+      "bodySha256": "7bab6d3fca802b6f0dc5691952812dada7755e4761c29a9ef235f218b4d464cc",
+      "rawPath": "raw/0028900645/7bab6d3fca802b6f0dc5691952812dada7755e4761c29a9ef235f218b4d464cc.html.gz",
+      "rawGzipSha256": "cbfb094554a59a750121c5dd1747cc81ac927614b789685acfb4607c5b244197",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"115wbfelpsy5u93\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:44:30 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900645",
+      "gameCode": "19900214/DENMIL",
+      "gameEt": "1990-02-14T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612749,
+        "tricode": "MIL",
+        "canonicalAbbr": "MIL",
+        "score": 127,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 37
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 31
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 32
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612743,
+        "tricode": "DEN",
+        "canonicalAbbr": "DEN",
+        "score": 107,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 32
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 26
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 30
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30649,
+    "externalId": "0028900664",
+    "date": "1990-02-16",
+    "season": "1989-90",
+    "homeAbbr": "SAS",
+    "awayAbbr": "UTA",
+    "stored": {
+      "homeScore": 100,
+      "awayScore": 86,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900664/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900664/box-score",
+      "capturedAt": "2026-10-20T01:44:22.684205+00:00",
+      "completedAt": "2026-10-20T01:44:24.596840+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 269770,
+      "bodySha256": "d269a7c5f39eed27215ca6cf2c0e566f446a6a1d39ee7847cdbf909efaef14d4",
+      "rawPath": "raw/0028900664/d269a7c5f39eed27215ca6cf2c0e566f446a6a1d39ee7847cdbf909efaef14d4.html.gz",
+      "rawGzipSha256": "1e51deb21b034e4e2552d981fd746b313a8db972db4d0d56b45ce579016d60f0",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"qtfke5xau55tai\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:44:24 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900664",
+      "gameCode": "19900216/UTHSAN",
+      "gameEt": "1990-02-16T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612759,
+        "tricode": "SAN",
+        "canonicalAbbr": "SAS",
+        "score": 100,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 25
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 25
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 22
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 28
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612762,
+        "tricode": "UTH",
+        "canonicalAbbr": "UTA",
+        "score": 96,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 22
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 13
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30563,
+    "externalId": "0028900743",
+    "date": "1990-02-28",
+    "season": "1989-90",
+    "homeAbbr": "ATL",
+    "awayAbbr": "IND",
+    "stored": {
+      "homeScore": 102,
+      "awayScore": 99,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900743/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900743/box-score",
+      "capturedAt": "2026-10-20T01:43:42.258585+00:00",
+      "completedAt": "2026-10-20T01:43:43.606093+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 270321,
+      "bodySha256": "01df1de44d00aedd3a88f169c98d6cd927337e0f17ccae9cea468e5a91054d16",
+      "rawPath": "raw/0028900743/01df1de44d00aedd3a88f169c98d6cd927337e0f17ccae9cea468e5a91054d16.html.gz",
+      "rawGzipSha256": "c7ebdf842102d4a881d111f647ef959d322a9f96ffa851ccc686ad643e685cfb",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"oca7a6jjpd5tpt\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:43:43 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900743",
+      "gameCode": "19900228/INDATL",
+      "gameEt": "1990-02-28T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612737,
+        "tricode": "ATL",
+        "canonicalAbbr": "ATL",
+        "score": 102,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 17
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 30
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 30
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 25
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612754,
+        "tricode": "IND",
+        "canonicalAbbr": "IND",
+        "score": 98,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 23
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 29
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 22
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 25
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30524,
+    "externalId": "0028900781",
+    "date": "1990-03-06",
+    "season": "1989-90",
+    "homeAbbr": "NYK",
+    "awayAbbr": "POR",
+    "stored": {
+      "homeScore": 100,
+      "awayScore": 112,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900781/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900781/box-score",
+      "capturedAt": "2026-10-20T01:43:15.232095+00:00",
+      "completedAt": "2026-10-20T01:43:16.500539+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 269469,
+      "bodySha256": "0df3dbb5f55a56f1322c69e04e42353e14fac21b6adf6325c0aad7c7ac098bcf",
+      "rawPath": "raw/0028900781/0df3dbb5f55a56f1322c69e04e42353e14fac21b6adf6325c0aad7c7ac098bcf.html.gz",
+      "rawGzipSha256": "e6d45c0fa6dcd3f0c81584789946d7c5293504392c367bb944c7427eaad8ac3a",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"cqm1q82hd65t25\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:43:16 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900781",
+      "gameCode": "19900306/PORNYK",
+      "gameEt": "1990-03-06T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612752,
+        "tricode": "NYK",
+        "canonicalAbbr": "NYK",
+        "score": 110,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 35
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 17
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612757,
+        "tricode": "POR",
+        "canonicalAbbr": "POR",
+        "score": 112,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 31
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 29
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "home_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30511,
+    "externalId": "0028900800",
+    "date": "1990-03-08",
+    "season": "1989-90",
+    "homeAbbr": "SAC",
+    "awayAbbr": "CHA",
+    "stored": {
+      "homeScore": 111,
+      "awayScore": 102,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900800/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900800/box-score",
+      "capturedAt": "2026-10-20T01:43:09.926268+00:00",
+      "completedAt": "2026-10-20T01:43:10.963033+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 268837,
+      "bodySha256": "a6253097f890c6e45d200ef4c42a29c27705d029dd72c95720756df489366248",
+      "rawPath": "raw/0028900800/a6253097f890c6e45d200ef4c42a29c27705d029dd72c95720756df489366248.html.gz",
+      "rawGzipSha256": "3fe8a31dcea98c9b19245ad2c894c5b94d301f60c4527eae8a9fef60b694c529",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"9o4vw9ra5d5skl\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:43:10 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900800",
+      "gameCode": "19900308/CHHSAC",
+      "gameEt": "1990-03-08T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612758,
+        "tricode": "SAC",
+        "canonicalAbbr": "SAC",
+        "score": 111,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 24
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 30
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 29
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612766,
+        "tricode": "CHH",
+        "canonicalAbbr": "CHA",
+        "score": 104,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 19
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 28
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30452,
+    "externalId": "0028900857",
+    "date": "1990-03-17",
+    "season": "1989-90",
+    "homeAbbr": "CLE",
+    "awayAbbr": "IND",
+    "stored": {
+      "homeScore": 118,
+      "awayScore": 102,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900857/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900857/box-score",
+      "capturedAt": "2026-10-20T01:42:42.135602+00:00",
+      "completedAt": "2026-10-20T01:42:43.133249+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 272152,
+      "bodySha256": "07870c8d1565d8cab32cfb5d601ad7aba37ee90b822f4e371d4bafa5c37e32ce",
+      "rawPath": "raw/0028900857/07870c8d1565d8cab32cfb5d601ad7aba37ee90b822f4e371d4bafa5c37e32ce.html.gz",
+      "rawGzipSha256": "983fb5ac1f0d01bf6d628e647983881aacedc1b59e8d3c638946a230a45d1a37",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"dxpdb63bx45v4o\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:42:43 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900857",
+      "gameCode": "19900317/INDCLE",
+      "gameEt": "1990-03-17T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612739,
+        "tricode": "CLE",
+        "canonicalAbbr": "CLE",
+        "score": 118,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 37
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 25
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612754,
+        "tricode": "IND",
+        "canonicalAbbr": "IND",
+        "score": 112,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 32
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 18
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 26
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 26
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30345,
+    "externalId": "0028900958",
+    "date": "1990-04-01",
+    "season": "1989-90",
+    "homeAbbr": "BOS",
+    "awayAbbr": "ORL",
+    "stored": {
+      "homeScore": 133,
+      "awayScore": 125,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900958/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900958/box-score",
+      "capturedAt": "2026-10-20T01:41:46.135002+00:00",
+      "completedAt": "2026-10-20T01:41:47.655074+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 269975,
+      "bodySha256": "bf0c07f4c314178a67b49b621b1fa7dc6a4f28dabc8601ee561761e8a355e438",
+      "rawPath": "raw/0028900958/bf0c07f4c314178a67b49b621b1fa7dc6a4f28dabc8601ee561761e8a355e438.html.gz",
+      "rawGzipSha256": "895042b6e43cfbc0d6a92f2e341c13b0dde9eca02cbd36c684136cba06bc56df",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"xdbtmlpapb5tg7\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:41:47 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900958",
+      "gameCode": "19900401/ORLBOS",
+      "gameEt": "1990-04-01T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612738,
+        "tricode": "BOS",
+        "canonicalAbbr": "BOS",
+        "score": 132,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 33
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 33
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 35
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 32
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612753,
+        "tricode": "ORL",
+        "canonicalAbbr": "ORL",
+        "score": 125,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 37
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 27
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 26
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 35
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "home_final_score_mismatch"
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "validatorVersion": "official-nba-periods-v1",
+    "gameId": 30328,
+    "externalId": "0028900981",
+    "date": "1990-04-04",
+    "season": "1989-90",
+    "homeAbbr": "DEN",
+    "awayAbbr": "CHA",
+    "stored": {
+      "homeScore": 112,
+      "awayScore": 116,
+      "overtimePeriods": 0
+    },
+    "source": {
+      "url": "https://www.nba.com/game/0028900981/box-score",
+      "finalUrl": "https://www.nba.com/game/0028900981/box-score",
+      "capturedAt": "2026-10-20T01:41:36.224012+00:00",
+      "completedAt": "2026-10-20T01:41:38.500651+00:00",
+      "httpStatus": 200,
+      "bodyBytes": 271030,
+      "bodySha256": "90db199847186c7cf3bad3176ff377a6cfbe3017dbab5d10938acd3744a28851",
+      "rawPath": "raw/0028900981/90db199847186c7cf3bad3176ff377a6cfbe3017dbab5d10938acd3744a28851.html.gz",
+      "rawGzipSha256": "3a1e5f8053b0ab16fc6aafd76ac5d9b3766ab1f3430547e682706faf446569f7",
+      "headers": {
+        "Content-Type": "text/html; charset=utf-8",
+        "ETag": "\"i0nhazo2h35u9i\"",
+        "Cache-Control": "max-age=0, no-cache, no-store",
+        "Date": "Tue, 20 Oct 2026 01:41:38 GMT"
+      },
+      "attemptHistory": []
+    },
+    "observed": {
+      "gameId": "0028900981",
+      "gameCode": "19900404/CHHDEN",
+      "gameEt": "1990-04-04T20:00:00Z",
+      "gameStatus": 3,
+      "period": 4,
+      "home": {
+        "teamId": 1610612743,
+        "tricode": "DEN",
+        "canonicalAbbr": "DEN",
+        "score": 112,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 25
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 30
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 29
+          }
+        ]
+      },
+      "away": {
+        "teamId": 1610612766,
+        "tricode": "CHH",
+        "canonicalAbbr": "CHA",
+        "score": 136,
+        "minutes": "240:00",
+        "periods": [
+          {
+            "period": 1,
+            "periodType": "REGULAR",
+            "score": 25
+          },
+          {
+            "period": 2,
+            "periodType": "REGULAR",
+            "score": 28
+          },
+          {
+            "period": 3,
+            "periodType": "REGULAR",
+            "score": 34
+          },
+          {
+            "period": 4,
+            "periodType": "REGULAR",
+            "score": 29
+          }
+        ]
+      }
+    },
+    "decision": {
+      "status": "unknown",
+      "overtimePeriods": null,
+      "reasons": [
+        "away_final_score_mismatch"
+      ]
+    }
+  }
+]

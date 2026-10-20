@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "validatorVersion": "official-nba-periods-v1",
+  "gameId": 31264,
+  "externalId": "0028900045",
+  "date": "1989-11-09",
+  "season": "1989-90",
+  "homeAbbr": "MIL",
+  "awayAbbr": "OKC",
+  "stored": {
+    "homeScore": 155,
+    "awayScore": 154,
+    "overtimePeriods": 0
+  },
+  "source": {
+    "url": "https://www.nba.com/game/0028900045/box-score",
+    "finalUrl": "https://www.nba.com/game/0028900045/box-score",
+    "capturedAt": "2026-10-20T01:49:53.837779+00:00",
+    "completedAt": "2026-10-20T01:49:54.608139+00:00",
+    "httpStatus": 200,
+    "bodyBytes": 272768,
+    "bodySha256": "3f141d1a5d1f542ace0557edf165d728e7cf37648064770ddeca2b2d3f9abaeb",
+    "rawPath": "raw/0028900045/3f141d1a5d1f542ace0557edf165d728e7cf37648064770ddeca2b2d3f9abaeb.html.gz",
+    "rawGzipSha256": "df2f610524e299fc94cb5c7b9d76421d9e5f4b60b3cec774978a622989425369",
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "ETag": "\"l53tkrpgmf5vls\"",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "Date": "Tue, 20 Oct 2026 01:49:54 GMT"
+    },
+    "attemptHistory": []
+  },
+  "observed": {
+    "gameId": "0028900045",
+    "gameCode": "19891109/SEAMIL",
+    "gameEt": "1989-11-09T20:00:00Z",
+    "gameStatus": 3,
+    "period": 9,
+    "home": {
+      "teamId": 1610612749,
+      "tricode": "MIL",
+      "canonicalAbbr": "MIL",
+      "score": 155,
+      "minutes": "365:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 19
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 31
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 34
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 19
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 7
+        },
+        {
+          "period": 6,
+          "periodType": "OVERTIME",
+          "score": 10
+        },
+        {
+          "period": 7,
+          "periodType": "OVERTIME",
+          "score": 7
+        },
+        {
+          "period": 8,
+          "periodType": "OVERTIME",
+          "score": 11
+        },
+        {
+          "period": 9,
+          "periodType": "OVERTIME",
+          "score": 17
+        }
+      ]
+    },
+    "away": {
+      "teamId": 1610612760,
+      "tricode": "SEA",
+      "canonicalAbbr": "OKC",
+      "score": 154,
+      "minutes": "365:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 17
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 36
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 25
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 25
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 7
+        },
+        {
+          "period": 6,
+          "periodType": "OVERTIME",
+          "score": 10
+        },
+        {
+          "period": 7,
+          "periodType": "OVERTIME",
+          "score": 7
+        },
+        {
+          "period": 8,
+          "periodType": "OVERTIME",
+          "score": 11
+        },
+        {
+          "period": 9,
+          "periodType": "OVERTIME",
+          "score": 16
+        }
+      ]
+    }
+  },
+  "decision": {
+    "status": "verified",
+    "overtimePeriods": 5,
+    "reasons": []
+  }
+}

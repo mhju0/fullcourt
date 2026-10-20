@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 1,
+  "kind": "official-overtime-supplement",
+  "adjudications": [
+    {
+      "recordId": "bulls-guide-19890131-ot1",
+      "gameId": 29679,
+      "externalId": "0028800519",
+      "date": "1989-01-31",
+      "season": "1988-89",
+      "homeAbbr": "CHI",
+      "awayAbbr": "DET",
+      "homeScore": 98,
+      "awayScore": 104,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 1,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "80843899e8f05abe988ed8c8ebdc809638751c0a7f716550843d1302d8e45a35",
+      "strictRawGzipSha256": "870e3bd19b87328e3ddc653b9ad0b1f0eb60a4e89cef2d85a2f2e32f7c6875df",
+      "strictReasons": [
+        "not_tied_before_overtime_period_5"
+      ],
+      "regulationScores": {
+        "home": 91,
+        "away": 92
+      },
+      "source": {
+        "url": "https://chibullsdigital.com/mediaGuide/2022_ChicagoBulls_MG_NBA_HI.pdf",
+        "pdfPath": "supplements/bulls-2022-media-guide.pdf",
+        "pdfSha256": "113bf68ccc0d5b891f3bbc942a96f2c32b96caa6d3438299ebe92fc3ffebfe9e",
+        "physicalPage": 127,
+        "printedPage": 125,
+        "heading": "BULLS VS. PISTONS IN OVERTIME:",
+        "row": "01/31/89 Chicago 98-104 L",
+        "pageTextPath": "supplements/bulls-guide-page127.txt",
+        "pageTextSha256": "c706db4f514ac263dc65b7588f958ec98c8051ad4d055db2eb4b53badc7d48b6"
+      },
+      "type": "period_tie_anomaly_overtime_confirmed"
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900220",
+      "gameId": 31091,
+      "externalId": "0028900220",
+      "date": "1989-12-06",
+      "season": "1989-90",
+      "homeAbbr": "SAS",
+      "awayAbbr": "GSW",
+      "homeScore": 121,
+      "awayScore": 119,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "51d5d473492e3f6ce4302608e252658bb59a26b53879b003d9ca9f364469fee5",
+      "strictRawGzipSha256": "722ea9ec5c3866081a9231b4ea66a0b3579ee0c1a6a29b345facbb8bf2f51607",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 117,
+          "stored": 119,
+          "periodSum": 119
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1989-12-06",
+          "homeAbbr": "SAS",
+          "awayAbbr": "GSW",
+          "homeScore": 121,
+          "awayScore": 119
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900266",
+      "gameId": 31040,
+      "externalId": "0028900266",
+      "date": "1989-12-14",
+      "season": "1989-90",
+      "homeAbbr": "BKN",
+      "awayAbbr": "IND",
+      "homeScore": 78,
+      "awayScore": 102,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "e0b4791741dce554adb925f8a9e5a10dd9efddafe7f7b445132cc509d255c1a0",
+      "strictRawGzipSha256": "8405e705fbeae8292a9784ea5e04cd02c5f5020c61edd92788287d9570630300",
+      "strictReasons": [
+        "home_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.home.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "home",
+          "headline": 98,
+          "stored": 78,
+          "periodSum": 78
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1989-12-14",
+          "homeAbbr": "BKN",
+          "awayAbbr": "IND",
+          "homeScore": 78,
+          "awayScore": 102
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900270",
+      "gameId": 31031,
+      "externalId": "0028900270",
+      "date": "1989-12-15",
+      "season": "1989-90",
+      "homeAbbr": "POR",
+      "awayAbbr": "GSW",
+      "homeScore": 111,
+      "awayScore": 116,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "8d1527265e0b3dd5e923a9122cab28472f8c0d3736ea0225ed5b76300836660b",
+      "strictRawGzipSha256": "d23b75ec00c3901a2eaf1c8b5304ecb45b886eb2046d42452224c488b00fefaa",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 113,
+          "stored": 116,
+          "periodSum": 116
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1989-12-15",
+          "homeAbbr": "POR",
+          "awayAbbr": "GSW",
+          "homeScore": 111,
+          "awayScore": 116
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900387",
+      "gameId": 30924,
+      "externalId": "0028900387",
+      "date": "1990-01-03",
+      "season": "1989-90",
+      "homeAbbr": "HOU",
+      "awayAbbr": "IND",
+      "homeScore": 117,
+      "awayScore": 103,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "cb9b97db019b38772c1ca71a2d416d17c0469dd3540625ceb83b7522c31de53a",
+      "strictRawGzipSha256": "9508abd23cf1d86241a6f50f903d3596a42e9a9168702e60c774aefa55e324ac",
+      "strictReasons": [
+        "home_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.home.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "home",
+          "headline": 111,
+          "stored": 117,
+          "periodSum": 117
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-01-03",
+          "homeAbbr": "HOU",
+          "awayAbbr": "IND",
+          "homeScore": 117,
+          "awayScore": 103
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900514",
+      "gameId": 30795,
+      "externalId": "0028900514",
+      "date": "1990-01-22",
+      "season": "1989-90",
+      "homeAbbr": "ORL",
+      "awayAbbr": "PHX",
+      "homeScore": 103,
+      "awayScore": 126,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "952963c8318a9d96483fd870c4cbb9ff41f1eb7304ca951e4a240dc8cb071710",
+      "strictRawGzipSha256": "b035e2d8767dd85b777a47e40b12a56ce125d052643b6bfdc7d5098991046d50",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 123,
+          "stored": 126,
+          "periodSum": 126
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-01-22",
+          "homeAbbr": "ORL",
+          "awayAbbr": "PHX",
+          "homeScore": 103,
+          "awayScore": 126
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900645",
+      "gameId": 30664,
+      "externalId": "0028900645",
+      "date": "1990-02-14",
+      "season": "1989-90",
+      "homeAbbr": "MIL",
+      "awayAbbr": "DEN",
+      "homeScore": 127,
+      "awayScore": 117,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "7bab6d3fca802b6f0dc5691952812dada7755e4761c29a9ef235f218b4d464cc",
+      "strictRawGzipSha256": "cbfb094554a59a750121c5dd1747cc81ac927614b789685acfb4607c5b244197",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 107,
+          "stored": 117,
+          "periodSum": 117
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-02-14",
+          "homeAbbr": "MIL",
+          "awayAbbr": "DEN",
+          "homeScore": 127,
+          "awayScore": 117
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900664",
+      "gameId": 30649,
+      "externalId": "0028900664",
+      "date": "1990-02-16",
+      "season": "1989-90",
+      "homeAbbr": "SAS",
+      "awayAbbr": "UTA",
+      "homeScore": 100,
+      "awayScore": 86,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "d269a7c5f39eed27215ca6cf2c0e566f446a6a1d39ee7847cdbf909efaef14d4",
+      "strictRawGzipSha256": "1e51deb21b034e4e2552d981fd746b313a8db972db4d0d56b45ce579016d60f0",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 96,
+          "stored": 86,
+          "periodSum": 86
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-02-16",
+          "homeAbbr": "SAS",
+          "awayAbbr": "UTA",
+          "homeScore": 100,
+          "awayScore": 86
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900743",
+      "gameId": 30563,
+      "externalId": "0028900743",
+      "date": "1990-02-28",
+      "season": "1989-90",
+      "homeAbbr": "ATL",
+      "awayAbbr": "IND",
+      "homeScore": 102,
+      "awayScore": 99,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "01df1de44d00aedd3a88f169c98d6cd927337e0f17ccae9cea468e5a91054d16",
+      "strictRawGzipSha256": "c7ebdf842102d4a881d111f647ef959d322a9f96ffa851ccc686ad643e685cfb",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 98,
+          "stored": 99,
+          "periodSum": 99
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-02-28",
+          "homeAbbr": "ATL",
+          "awayAbbr": "IND",
+          "homeScore": 102,
+          "awayScore": 99
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900781",
+      "gameId": 30524,
+      "externalId": "0028900781",
+      "date": "1990-03-06",
+      "season": "1989-90",
+      "homeAbbr": "NYK",
+      "awayAbbr": "POR",
+      "homeScore": 100,
+      "awayScore": 112,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "0df3dbb5f55a56f1322c69e04e42353e14fac21b6adf6325c0aad7c7ac098bcf",
+      "strictRawGzipSha256": "e6d45c0fa6dcd3f0c81584789946d7c5293504392c367bb944c7427eaad8ac3a",
+      "strictReasons": [
+        "home_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.home.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "home",
+          "headline": 110,
+          "stored": 100,
+          "periodSum": 100
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-03-06",
+          "homeAbbr": "NYK",
+          "awayAbbr": "POR",
+          "homeScore": 100,
+          "awayScore": 112
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900800",
+      "gameId": 30511,
+      "externalId": "0028900800",
+      "date": "1990-03-08",
+      "season": "1989-90",
+      "homeAbbr": "SAC",
+      "awayAbbr": "CHA",
+      "homeScore": 111,
+      "awayScore": 102,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "a6253097f890c6e45d200ef4c42a29c27705d029dd72c95720756df489366248",
+      "strictRawGzipSha256": "3fe8a31dcea98c9b19245ad2c894c5b94d301f60c4527eae8a9fef60b694c529",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 104,
+          "stored": 102,
+          "periodSum": 102
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-03-08",
+          "homeAbbr": "SAC",
+          "awayAbbr": "CHA",
+          "homeScore": 111,
+          "awayScore": 102
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900857",
+      "gameId": 30452,
+      "externalId": "0028900857",
+      "date": "1990-03-17",
+      "season": "1989-90",
+      "homeAbbr": "CLE",
+      "awayAbbr": "IND",
+      "homeScore": 118,
+      "awayScore": 102,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "07870c8d1565d8cab32cfb5d601ad7aba37ee90b822f4e371d4bafa5c37e32ce",
+      "strictRawGzipSha256": "983fb5ac1f0d01bf6d628e647983881aacedc1b59e8d3c638946a230a45d1a37",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 112,
+          "stored": 102,
+          "periodSum": 102
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-03-17",
+          "homeAbbr": "CLE",
+          "awayAbbr": "IND",
+          "homeScore": 118,
+          "awayScore": 102
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900958",
+      "gameId": 30345,
+      "externalId": "0028900958",
+      "date": "1990-04-01",
+      "season": "1989-90",
+      "homeAbbr": "BOS",
+      "awayAbbr": "ORL",
+      "homeScore": 133,
+      "awayScore": 125,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "bf0c07f4c314178a67b49b621b1fa7dc6a4f28dabc8601ee561761e8a355e438",
+      "strictRawGzipSha256": "895042b6e43cfbc0d6a92f2e341c13b0dde9eca02cbd36c684136cba06bc56df",
+      "strictReasons": [
+        "home_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.home.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "home",
+          "headline": 132,
+          "stored": 133,
+          "periodSum": 133
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-04-01",
+          "homeAbbr": "BOS",
+          "awayAbbr": "ORL",
+          "homeScore": 133,
+          "awayScore": 125
+        }
+      }
+    },
+    {
+      "type": "headline_score_conflict_regulation_confirmed",
+      "recordId": "press-regulation-0028900981",
+      "gameId": 30328,
+      "externalId": "0028900981",
+      "date": "1990-04-04",
+      "season": "1989-90",
+      "homeAbbr": "DEN",
+      "awayAbbr": "CHA",
+      "homeScore": 112,
+      "awayScore": 116,
+      "beforeOvertimePeriods": 0,
+      "overtimePeriods": 0,
+      "strictFactSha256": null,
+      "strictRawBodySha256": "90db199847186c7cf3bad3176ff377a6cfbe3017dbab5d10938acd3744a28851",
+      "strictRawGzipSha256": "3a1e5f8053b0ab16fc6aafd76ac5d9b3766ab1f3430547e682706faf446569f7",
+      "strictReasons": [
+        "away_final_score_mismatch"
+      ],
+      "allowedMismatchFields": [
+        "observed.away.score"
+      ],
+      "headlineScoreConflicts": [
+        {
+          "side": "away",
+          "headline": 136,
+          "stored": 116,
+          "periodSum": 116
+        }
+      ],
+      "source": {
+        "url": null,
+        "rawPath": null,
+        "bodySha256": null,
+        "corroboration": {
+          "date": "1990-04-04",
+          "homeAbbr": "DEN",
+          "awayAbbr": "CHA",
+          "homeScore": 112,
+          "awayScore": 116
+        }
+      }
+    }
+  ]
+}

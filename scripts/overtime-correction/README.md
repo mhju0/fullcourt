@@ -11,8 +11,12 @@ review, immediate production approval and release acceptance.
 - Only `games.overtime_periods` may change. No game or fatigue identities are added,
   removed or rebound. Stored overtime is the exact official integer, including five or more.
 - All 5,815 source targets must have a frozen attempted result. Verified zero values
-  remain zero; unknown sources remain explicit unchanged holdouts. No outcome is guessed.
-  Every accepted observation is checked against numbered periods, regulation/intermediate
+  remain zero; unknown source decisions remain unchanged. Fourteen exact, separately typed adjudications
+  may support those facts through pinned primary evidence; other unknowns remain holdouts.
+  No outcome is guessed.
+  Raw team codes and both game-code tokens are independently normalized with the frozen
+  21-entry alias policy. Available team minutes and explicit final/OT text must agree with
+  numbered periods. Every accepted observation is checked against numbered periods, regulation/intermediate
   ties, score sums, final status, date, identity and retained raw official response bytes.
 - Teams and both complete playoff tables remain byte-identical. Resolved predictions are
   byte-identical. The entire fatigue domain is replayed with the ratified engine, without
@@ -60,6 +64,38 @@ before/after snapshots, source bridge, source proof and component/prediction cha
 The sidecar hashes exact manifest file bytes, not merely parsed JSON. `run.ts check`
 validates the frozen manifest and captures the complete state in a read-only transaction;
 it reports whether the shadow matches the exact before or after state, and performs no writes.
+
+
+## Specifically reviewed supplemental adjudications
+
+Strict raw NBA decisions and counts are preserved. The committed
+`supplemental-adjudications.json` supports only these fixed cases:
+
+- `period_tie_anomaly_overtime_confirmed`: game 29679 / `0028800519`, Chicago hosting
+  Detroit on 1989-01-31, 98–104. The official numbered periods and both 265-minute totals
+  establish exactly one OT; the strict parser retains the 91–92 regulation discrepancy.
+  The official Bulls guide's pinned PDF, physical page 127 / printed page 125, lists the
+  exact game under “BULLS VS. PISTONS IN OVERTIME:”. This supports OT occurrence without
+  rewriting the NBA quarter totals or either stored final score.
+- `headline_score_conflict_regulation_confirmed`: exactly thirteen listed 1989-90 fixtures.
+  Each remains a strict headline-score mismatch. Four numbered regular periods, period 4,
+  both 240-minute totals, no contradictory OT text and period sums equal to stored final
+  scores establish the regulation duration. Pinned contemporary press corroborates only
+  the date, pairing and final scores; a score capsule alone does not establish duration.
+  These thirteen cases add supported zero-OT coverage and produce no database game change.
+
+Every case pins its exact fixture, raw NBA body/gzip hashes, allowed discrepancy fields,
+strict reasons, final fact-file hash and corroborating primary-source byte hash. The
+checked-in skeleton intentionally has unfilled final fact hashes and press provenance;
+preparation refuses it until root completes the final offline source freeze and pins those
+fields. No generic “accept unknown” or tie/score-check bypass exists.
+
+The loader exposes effective acceptance in `sourceProof.supplementalAcceptedGameIds`,
+`supplementalAccepted`, `supplementalPositiveOT`, `supplementalAdjudicationsSha256` and
+`effectivePositiveOT`; raw `verified` / `unknown` counts are unchanged. The Python registry
+merger can consume the records selected by those accepted IDs after verifying the recorded
+adjudications SHA. `inputChanges` includes only nonzero database deltas, with an explicit
+`adjudication` kind; the thirteen zero-OT coverage records remain in the typed evidence.
 
 ## Verification
 
