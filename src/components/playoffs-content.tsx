@@ -44,7 +44,7 @@ function correctnessAccent(status: CorrectnessStatus): string {
   if (status === "correct") return TERM_ACCENT.blue
   if (status === "incorrect") return TERM_ACCENT.red
   // "pending" is neutral grey, not tan — tan does not separate from red for
-  // deuteranopia (ΔE 3.2), which made an upset and a pending series look alike.
+  // deuteranopia (ΔE 3.2), which made a missed pick and a pending series look alike.
   return TERM_ACCENT.neutral
 }
 
@@ -57,7 +57,7 @@ function correctnessTextAccent(status: CorrectnessStatus): string {
 
 function CorrectnessBadge({ status }: { status: CorrectnessStatus }) {
   const accent = correctnessTextAccent(status)
-  const label = status === "correct" ? "✓ CORRECT" : status === "incorrect" ? "✗ UPSET" : "—"
+  const label = status === "correct" ? "✓ CORRECT" : status === "incorrect" ? "✗ MISSED" : "—"
   return (
     <span
       className="mono inline-flex items-center gap-1"
@@ -148,7 +148,8 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
       <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}><KeepTogether>
         SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
         (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
-        POSITIVE STILL MEANS THE SAME THING.
+        POSITIVE STILL MEANS THE SAME THING. THE MODEL DOES NOT USE ENTRY REST DIFF; IT IS SHOWN FOR
+        CONTEXT.
       </KeepTogether></p>
     </div>
   )

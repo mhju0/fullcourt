@@ -217,10 +217,12 @@ export default function PlayoffPredictionsMethodPage() {
         <Prose>
           Across second-round-or-later series with regular-season win percentages within
           eight percentage points of each other, without
-          holding the team&rsquo;s own prior round fixed, the rates are{" "}
+          holding the team&rsquo;s own prior round fixed, teams won{" "}
           <strong>
-            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct.toFixed(1)}% becomes{" "}
-            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.winPct.toFixed(1)}%
+            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct.toFixed(1)}% against an
+            opponent that closed early and{" "}
+            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.winPct.toFixed(1)}% against one that
+            went long
           </strong>{" "}
           ({PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.n} series against{" "}
           {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.n}), a gap of{" "}
@@ -359,7 +361,7 @@ export default function PlayoffPredictionsMethodPage() {
           Accuracy differs by round in this sample. In Round 1, <strong>prior_grind_diff</strong>{" "}
           is always 0 because there is no prior round. The model still uses its other features,
           but its accuracy falls below the always-home-court rule. From Round 2 onward its
-          observed accuracy is higher. This split alone does not isolate the grind term&rsquo;s contribution.
+          observed accuracy is higher than that rule&rsquo;s. This split alone does not isolate the grind term&rsquo;s contribution.
         </Prose>
         <DataTable
           minWidth={520}

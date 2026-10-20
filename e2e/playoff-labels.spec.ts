@@ -60,7 +60,7 @@ test("does not promote a known-results fit when earlier history is missing", asy
   item.predictions.fullInsample!.predictedWinnerCorrect = true;
   await openSeries(page, item);
   await expect(page.getByText("Estimate unavailable: insufficient earlier history.", { exact: true })).toBeVisible();
-  await expect(page.getByText(/✓ CORRECT|✗ UPSET/)).toHaveCount(0);
+  await expect(page.getByText(/✓ CORRECT|✗ MISSED/)).toHaveCount(0);
   await expect(page.getByText("80.0%", { exact: true })).not.toBeVisible();
 });
 
@@ -69,7 +69,7 @@ test("preserves pending outcomes and missing estimates without fabricating zero 
     predictions: { fullInsample: null, walkForwardOos: null } }));
   await expect(page.getByText("Actual result: pending", { exact: true })).toBeVisible();
   await expect(page.getByText("—-—", { exact: true })).toBeVisible();
-  await expect(page.getByText(/✓ CORRECT|✗ UPSET/)).toHaveCount(0);
+  await expect(page.getByText(/✓ CORRECT|✗ MISSED/)).toHaveCount(0);
   await page.getByText("Fit using known results", { exact: true }).click();
   await expect(page.getByText("Known-results estimate unavailable.", { exact: true })).toBeVisible();
 });

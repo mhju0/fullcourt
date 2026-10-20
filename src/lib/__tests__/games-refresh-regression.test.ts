@@ -83,6 +83,7 @@ describe("quiet Games refresh notice", () => {
   it("labels response receipt as a view check without announcing every success", () => {
     const html = renderToStaticMarkup(createElement(GameSlateRefreshNotice, { slate: notice }));
     expect(html).toMatch(/Checked <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
+    expect(html).toContain(">4:00 PM ET</time>");
     expect(html).toContain('aria-label="Refresh view"');
     expect(html).not.toContain('role="status"');
   });

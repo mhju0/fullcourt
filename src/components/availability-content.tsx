@@ -1,5 +1,5 @@
 import {
-  AVAILABILITY_BEST_OUT_BY_SEASON,
+  AVAILABILITY_TREND_SEASONS,
   AVAILABILITY_EFFECTS,
   AVAILABILITY_FREQUENCY,
   AVAILABILITY_NOISE,
@@ -160,7 +160,7 @@ function FrequencySection() {
 
 /** Missing-source seasons keep their calendar slots; observed rates are not a league census. */
 function TrendSection() {
-  const seasons = AVAILABILITY_BEST_OUT_BY_SEASON
+  const seasons = AVAILABILITY_TREND_SEASONS
   const first = seasons[0]!
   const last = seasons.at(-1)!
   const max = Math.max(...seasons.map((s) => s.rate), 0.01)
