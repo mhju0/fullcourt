@@ -102,7 +102,7 @@ availability, and Officiating use published artifacts. Officiating loads report 
 | Layer | Implementation |
 | --- | --- |
 | Interface | Next.js, React, TypeScript, Tailwind CSS, Base UI, Recharts, SWR; CSS motion |
-| Data access | Next.js route handlers, Zod, Drizzle ORM, postgres-js, Supabase PostgreSQL |
+| Data access | Next.js route handlers, Zod, Drizzle ORM, node-postgres, Supabase PostgreSQL |
 | Ingest and analysis | Python and TypeScript scripts; scikit-learn models run offline |
 | Checks | Vitest, Playwright, Python contracts |
 | Hosting and scheduled jobs | Vercel and GitHub Actions |

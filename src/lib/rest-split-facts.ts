@@ -55,6 +55,9 @@ function freezeRestRow(row: typeof facts.restedAtHome): RestRow {
 /** What the measurement ran over. */
 export const REST_SPLIT_SAMPLE = Object.freeze(facts.sample);
 
+/** Seasons the backtest measured. Not `NBA_SEASONS.length`, which lists a season before its first game. */
+export const BACKTEST_SEASON_COUNT: number = facts.sample.seasons;
+
 /**
  * How often each side wins regardless of rest.
  *

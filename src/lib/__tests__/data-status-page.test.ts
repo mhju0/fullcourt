@@ -18,8 +18,8 @@ import { getHistoricalEvidenceCoverage } from "@/lib/rest-advantage-evidence-ser
 describe("Data Status rendered model coverage", () => {
   it("renders the full fatigue population rather than the non-neutral venue baseline", async () => {
     const html = renderToStaticMarkup(await DataStatusPage());
-    expect(html.replaceAll("\u00a0", " ")).toContain("47,143 final games with fatigue evidence");
-    expect(html).not.toContain("47,094 final games with fatigue evidence");
+    expect(html.replaceAll("\u00a0", " ")).toContain("47,143 final regular-season games with fatigue evidence, neutral sites included");
+    expect(html).not.toContain("47,094 final regular-season games");
     expect(html).toContain("2026-04-12");
   });
 
@@ -28,7 +28,7 @@ describe("Data Status rendered model coverage", () => {
     vi.mocked(getHistoricalEvidenceCoverage).mockRejectedValueOnce(new Error("database timeout"));
     const html = renderToStaticMarkup(await DataStatusPage());
     expect(html).toContain("Unavailable");
-    expect(html).not.toContain("final games with fatigue evidence");
+    expect(html).not.toContain("games with fatigue evidence");
     errorLog.mockRestore();
   });
 });

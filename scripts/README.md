@@ -18,8 +18,8 @@ Dependencies are in `requirements.txt`, `scripts/requirements.txt`, and `ml/requ
 | Rest/model research | `export_fatigue_features.ts`, `measure_home_rest_confound.ts`, `measure_rest_eras.ts`, `measure_uncalled_half.ts`, `verify_rest_eras_adversarial.ts`, `verify_q1_noise.ts`, `fetch_win_totals.ts` | [Analysis inventory](../ml/README.md), ADR 0006 |
 | Documentation and UI checks | `screenshots.mjs`, `check-doc-links.mjs`, `audit_design_scale.mjs` | [Testing](../docs/TESTING_AND_CICD.md) |
 
-`reset_predictions.ts` is a destructive maintenance tool; its presence is not permission to run
-it. `nba_ot_periods.py` remains a legacy dependency of historical schedule ingestion, not dead
+`reset_predictions.ts` keeps its legacy name but is read-only since v1.0.8: it prints prediction
+counts and refuses `--apply` before loading any environment or database module. `nba_ot_periods.py` remains a legacy dependency of historical schedule ingestion, not dead
 code. `season_window.py` and `schedule_upsert_contract.py` are shared ingest contracts.
 
 Published outputs in `src/data/`, `public/data/`, and model-facts modules must match their

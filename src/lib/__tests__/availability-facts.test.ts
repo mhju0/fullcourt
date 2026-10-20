@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   AVAILABILITY_BEST_OUT_BY_SEASON,
+  AVAILABILITY_TREND_SEASONS,
   AVAILABILITY_DEFINITION,
   AVAILABILITY_EFFECTS,
   AVAILABILITY_FREQUENCY,
@@ -48,6 +49,11 @@ describe("availability facts mirror the generated report", () => {
 
   it("every season's best-player-out rate matches", () => {
     expect(AVAILABILITY_BEST_OUT_BY_SEASON).toEqual(facts.seasonBestOutRate);
+  });
+
+  it("the trend chart covers exactly the measured sample's seasons", () => {
+    expect(AVAILABILITY_TREND_SEASONS[0]!.season).toBe(facts.sample.firstSeason);
+    expect(AVAILABILITY_TREND_SEASONS.at(-1)!.season).toBe(facts.sample.lastSeason);
   });
 });
 
