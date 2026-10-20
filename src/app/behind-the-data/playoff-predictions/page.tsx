@@ -59,7 +59,7 @@ const FEATURES = [
   {
     name: "seed_diff",
     weight: PLAYOFF_MODEL_COEFFICIENTS.seed_diff,
-    what: "The seed gap.",
+    what: "The opponent’s seed minus the home-court team’s seed.",
     why: "Seeds are rebuilt from win percentage and tie rules, so they can differ from the official seeding of the time.",
   },
   {
@@ -95,7 +95,7 @@ function WithSub({ value, sub }: { value: React.ReactNode; sub: string }) {
     <>
       {value}
       <br />
-      <span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 400, whiteSpace: "nowrap" }}>{sub}</span>
+      <span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 400 }}>{sub}</span>
     </>
   );
 }
@@ -129,13 +129,15 @@ p < 0.5  →  pick the opponent`}
 
       <Section label="THE FEATURES" title="Model inputs and interpretation" descriptor={`${FEATURES.length} inputs`} disclosure>
         <Prose>
-          Four inputs, each the home-court team minus the opponent. The number beside each is
-          its standardized weight, in log-odds per standard deviation.
+          Four inputs, signed so a positive value favors the home-court team. Win percentage
+          and head-to-head wins use home-court minus opponent; seed and prior grind use
+          opponent minus home-court. The number beside each input is its standardized
+          weight, in log-odds per standard deviation.
         </Prose>
         <ul className="flex flex-col gap-3" style={{ maxWidth: WIDTH.prose }}>
           {FEATURES.map((f) => (
             <li key={f.name} style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text)" }}>
-              <strong className="mono">{f.name}</strong>{" "}
+              <strong className="mono" style={{ marginRight: 12 }}>{f.name}</strong>{" "}
               <span className="mono" style={{ fontVariantNumeric: "tabular-nums", color: "var(--term-blue-text)", fontWeight: 700 }}>
                 {signedNumber(f.weight, 2)}
               </span>

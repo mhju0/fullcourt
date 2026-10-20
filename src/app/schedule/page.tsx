@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function SchedulePage() {
   return (
-    <div className="flex flex-col gap-12">
+    <div className="flex flex-col gap-4 sm:gap-8">
       {/* "The hand each team was dealt" against Season Report's "as played" — see the note
           there. "Not a prediction" and "much of the gap is structural" are load-bearing and
           pinned by e2e; reword around them, never out of them. */}

@@ -3,7 +3,6 @@
 import { useCallback, useState } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
-import { StudySeasonGuide } from "@/components/study-season-guide"
 import { SeasonDataGuide } from "@/components/season-data-guide"
 import { defaultNbaSeason } from "@/lib/nba-season"
 import { SeasonSelector } from "@/components/season-selector"
@@ -145,11 +144,10 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
         <FeatureCell k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
         <FeatureCell k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
       </div>
-      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}><KeepTogether>
-        SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
-        (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
-        POSITIVE STILL MEANS THE SAME THING. THE MODEL DOES NOT USE ENTRY REST DIFF; IT IS SHOWN FOR
-        CONTEXT.
+      <p className="mt-1" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}><KeepTogether>
+        Positive favors the home-court team ({series.homeCourtTeam.abbreviation}). Seed and
+        prior grind use opponent − home-court; the other rows use home-court − opponent.
+        Entry rest is shown for context and is not a model input.
       </KeepTogether></p>
     </div>
   )
@@ -348,7 +346,7 @@ export function PlayoffsContent() {
   const { data, error: swrError, isLoading: loading } = useSWR<PlayoffsResponse>(
     validRequestedSeason ? `/api/playoffs?season=${validRequestedSeason}` : "/api/playoffs",
     apiFetcher,
-    { revalidateOnFocus: false, keepPreviousData: true }
+    { revalidateOnFocus: false }
   )
   const error = swrError ? errMsg(swrError) : null
   const season = validRequestedSeason ?? data?.season ?? PLAYOFF_SEASONS.at(-1)!
@@ -393,9 +391,9 @@ export function PlayoffsContent() {
       {controls}
       {fallbackNote ? <p role="status" className="mono text-xs text-[var(--term-text-muted)]">{fallbackNote}</p> : null}
 
-      {data.rounds.length > 0 && (!requestedSeason || requestedSeason === defaultNbaSeason()) ? <StudySeasonGuide latestPublishedSeason={data.latestPublishedSeason}
-        body={`The series explorer is published through ${data.latestPublishedSeason}. New-season coverage will follow the playoffs and updated series data.`}
-        previousHref={`/playoffs?season=${data.latestPublishedSeason}`} /> : null}
+      {data.rounds.length > 0 && !validRequestedSeason && season < defaultNbaSeason() ? <p role="status" className="text-body text-[var(--term-text-muted)]">
+        Showing {season}, the latest published bracket. New-season coverage follows the playoffs and updated series data.
+      </p> : null}
       {data.rounds.length === 0 && season >= defaultNbaSeason() ? <SeasonDataGuide season={season}
         body="This season’s playoff bracket and series results have not been published. Coverage follows the playoffs and updated series data."
         previousHref={`/playoffs?season=${data.latestPublishedSeason}`}

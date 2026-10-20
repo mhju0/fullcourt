@@ -10,13 +10,7 @@ export const metadata: Metadata = {
   description: "How missing players relate to the final score margin in NBA games: historical associations, measured after games.",
 };
 
-/**
- * Every figure is a published constant from `availability-facts.ts`, so the whole page is a
- * server component with no fetch, no client bundle and no loading state — the same shape as
- * the Playoff Rest argument. `MethodLink` renders nothing until a matching section exists in
- * `BEHIND_THE_DATA_SECTIONS`, so it lights up when one is written rather than needing a change
- * here.
- */
+/** Published figures render on the server; the annual selector is an isolated client component. */
 export default function AvailabilityPage() {
   return (
     <div className="flex flex-col gap-12">

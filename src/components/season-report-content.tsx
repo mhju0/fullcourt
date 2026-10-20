@@ -8,7 +8,8 @@ import { useSeasonUrl } from "@/hooks/useSeasonUrl";
 import { apiFetcher } from "@/lib/fetcher";
 import { formatDataAsOf } from "@/lib/data-as-of";
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display";
-import { browsableSeasons, defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season";
+import { browsableSeasons, defaultNbaSeason } from "@/lib/nba-season";
+import { latestUsableResultSeason, type SeasonReportPublication } from "@/lib/result-season";
 import {
   ABNORMAL_SEASON_NOTES,
   allSeasonHomeRateExcluding,
@@ -25,7 +26,6 @@ import { signedNumber } from "@/lib/signed-number";
 import { TYPE, WIDTH } from "@/lib/terminal-styles";
 
 const LATEST_SEASON = defaultNbaSeason();
-const PRIOR_SEASON = browsableSeasons().filter((season) => season < LATEST_SEASON).at(-1) ?? NBA_SEASONS[0];
 const reportKey = (season: string) => `/api/season-report?season=${season}&schema=home-court-v1`;
 const muted = "text-[var(--term-text-muted)]";
 
@@ -36,11 +36,17 @@ export function SeasonReportContent() {
   );
   const needsReadiness = !explicit || urlSeason === LATEST_SEASON;
   const readiness = useSeasonReadiness(LATEST_SEASON, needsReadiness);
-  const awaitingLatest = !explicit && !readiness.ready;
-  const season = awaitingLatest ? PRIOR_SEASON : urlSeason;
-  const heldSelection = season === LATEST_SEASON && !readiness.ready;
+  const publication = useSWR<SeasonReportPublication>("/api/season-report-publication", apiFetcher,
+    { revalidateOnFocus: true, refreshInterval: 60_000 });
+  const publishedSeasons = publication.data?.seasons ?? [];
+  const defaultSeason = latestUsableResultSeason(publishedSeasons, LATEST_SEASON, readiness.ready && !publication.error);
+  const season = explicit ? urlSeason : defaultSeason ?? LATEST_SEASON;
+  const previousPublished = latestUsableResultSeason(publishedSeasons, LATEST_SEASON, false);
+  const awaitingLatest = !explicit && defaultSeason !== null && defaultSeason < LATEST_SEASON;
+  const heldSelection = season === LATEST_SEASON &&
+    (!readiness.ready || !publishedSeasons.includes(LATEST_SEASON) || Boolean(publication.error));
   const { data: loaded, error, isLoading, isValidating, mutate } = useSWR<SeasonReportResponse>(
-    heldSelection ? null : reportKey(season),
+    heldSelection || (!explicit && !defaultSeason) ? null : reportKey(season),
     apiFetcher,
     { revalidateOnFocus: false },
   );
@@ -91,21 +97,29 @@ export function SeasonReportContent() {
           </p>
         ) : null}
       </div>
-      {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
+      {fallbackNote ? <p role="status">{fallbackNote.replace(`Showing ${urlSeason}.`, `Showing ${season}.`)}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          {keepTogether(readiness.error
-            ? `Showing the ${PRIOR_SEASON} report. Availability of ${LATEST_SEASON} results could not be checked.`
-            : !readiness.data
-              ? `Showing the ${PRIOR_SEASON} report while checking ${LATEST_SEASON} season data.`
-              : `Showing the ${PRIOR_SEASON} report while ${LATEST_SEASON} season results are unavailable.`)}
+          {keepTogether(`Showing the ${season} report. ${LATEST_SEASON} results are ${readiness.error ? "unconfirmed" : "awaiting publication and season data"}.`)}
         </p>
       ) : null}
-      {needsReadiness ? (
+      {publication.error && (!explicit || urlSeason === LATEST_SEASON) ? (
+        <MessageCard tone="error" title="COULD NOT CHECK PUBLISHED REPORTS"
+          body="Published season availability could not be checked."
+          action={<button type="button" className="fc-text-link min-h-11" onClick={() => { void publication.mutate().catch(() => undefined); }}>Retry published reports</button>} />
+      ) : null}
+      {!explicit && !publication.data && !publication.error ? <p role="status">Checking published seasons…</p> : null}
+      {heldSelection && publication.data ? (
         <div data-testid={heldSelection && readiness.awaiting ? "season-awaiting-results" : undefined}>
-          <SeasonReadinessNotice readiness={readiness} season={LATEST_SEASON} showExpectedTiming
+          {!publishedSeasons.includes(LATEST_SEASON) && readiness.ready ? (
+            <SeasonDataGuide title="Awaiting results" season={LATEST_SEASON}
+              body="The new season’s report has not been published yet."
+              previousHref={previousPublished ? `/season?season=${previousPublished}` : undefined}
+              previousLabel={previousPublished ? `View ${previousPublished} report` : undefined} />
+          ) : <SeasonReadinessNotice readiness={readiness} season={LATEST_SEASON} showExpectedTiming
             body="The new season’s results are not available yet. Explore the previous report or follow the current schedule."
-            previousHref={`/season?season=${PRIOR_SEASON}`} previousLabel={`View ${PRIOR_SEASON} report`} />
+            previousHref={previousPublished ? `/season?season=${previousPublished}` : undefined}
+            previousLabel={previousPublished ? `View ${previousPublished} report` : undefined} />}
         </div>
       ) : null}
       {note ? (

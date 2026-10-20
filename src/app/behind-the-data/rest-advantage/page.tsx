@@ -85,7 +85,7 @@ function RestRowTable() {
       rowKey={(r) => r.label}
       columns={[
         {
-          label: "RESTED TEAM",
+          label: "RESTED",
           unit: "GAMES",
           cell: (r) => <LabelWithGames label={r.label} games={r.games} />,
         },
@@ -97,15 +97,15 @@ function RestRowTable() {
           cell: (r) => `${r.winPct.toFixed(1)}%`,
         },
         {
-          label: "BASELINE",
-          unit: "SAME SIDE",
+          label: "BASE",
+          unit: "same side %",
           numeric: true,
           style: { color: "var(--term-text-muted)" },
           cell: (r) => `${r.baseline.toFixed(1)}%`,
         },
         {
-          label: "VS BASELINE",
-          unit: "PCT POINTS",
+          label: "GAP",
+          unit: "pp",
           numeric: true,
           style: { fontWeight: 700 },
           cell: (r) => signedNumber(liftOverBaseline(r.winPct, r.baseline), 1),
@@ -139,7 +139,7 @@ function RestRowTable() {
 }
 
 /** A row label with its game count beneath it, so a phone keeps the rate columns on screen. */
-function LabelWithGames({ label, games }: { label: string; games: number | string }) {
+function LabelWithGames({ label, games }: { label: React.ReactNode; games: number | string }) {
   return (
     <>
       {label}
@@ -186,13 +186,7 @@ function RoadGapSizeTable() {
       rows={rows}
       rowKey={(r) => r.key}
       columns={[
-        { label: "REST GAP", unit: "SIZE", cell: (r) => r.label },
-        {
-          label: "GAMES",
-          unit: "COUNT",
-          numeric: true,
-          cell: (r) => <span style={{ color: thin(r) }}>{r.games.toLocaleString()}</span>,
-        },
+        { label: "REST GAP", unit: "SIZE", cell: (r) => <LabelWithGames label={r.label} games={r.games} /> },
         {
           label: "WON",
           unit: "WIN RATE",
@@ -251,15 +245,15 @@ function RoadEraTable() {
           cell: (era) => `${era.winPct.toFixed(1)}%`,
         },
         {
-          label: "BASELINE",
-          unit: "THAT ERA",
+          label: "BASE",
+          unit: "era %",
           numeric: true,
           style: { color: "var(--term-text-muted)" },
           cell: (era) => `${era.roadBaselinePct.toFixed(1)}%`,
         },
         {
-          label: "VS BASELINE",
-          unit: "PCT POINTS",
+          label: "GAP",
+          unit: "pp",
           numeric: true,
           style: { fontWeight: 700 },
           cell: (era) => signedNumber(era.liftPp, 1),
@@ -358,8 +352,9 @@ fade      = 1 − gamesInZone ÷ zones
         <Subhead>Multipliers: scale the load</Subhead>
         <Term
           name="Back-to-back"
-          formula={`backToBack = ${K.b2bMultiplier} + ${K.b2bPerHour} × (${K.b2bNominalHours} − hours)
-             kept between ${K.b2bMin.toFixed(2)} and ${K.b2bMax.toFixed(2)}
+          formula={`backToBack = ${K.b2bMultiplier}
+             + ${K.b2bPerHour} × (${K.b2bNominalHours} − hours)
+             range ${K.b2bMin.toFixed(2)} to ${K.b2bMax.toFixed(2)}
 hours      = tip-off to tip-off
 otherwise  = 1`}
         >
@@ -369,7 +364,7 @@ otherwise  = 1`}
         </Term>
         <Term
           name="Altitude"
-          formula={`altitude = ${K.altitudeMultiplier} at a high-altitude arena
+          formula={`altitude = ${K.altitudeMultiplier} at high altitude
            1 everywhere else`}
         >
           Applies to a visitor in Denver or Utah, and to both teams at a neutral site at

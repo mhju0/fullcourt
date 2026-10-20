@@ -72,7 +72,7 @@ test.describe("Player Shooting by Rest", () => {
     await expect(page.locator("#pr-volume")).toHaveValue("300");
     // The floor has to bite, or "best eFG%" is a list of 180-attempt centres.
     const floored = await page.getByTestId("player-row").count();
-    await page.getByText(/^Filters \(/).click();
+    await page.getByText(/^Advanced filters \(/).click();
     await page.selectOption("#pr-volume", "0");
     expect(await page.getByTestId("player-row").count()).toBeGreaterThan(floored);
   });
@@ -95,17 +95,15 @@ test.describe("Player Shooting by Rest", () => {
     await open(page, "lebron");
     await expect(page.getByTestId("career-row")).toHaveCount(1);
 
-    const sum = await page.evaluate(() => {
-      const digits = (el: Element | null) => Number(el?.textContent?.replace(/[^0-9.]/g, "") ?? 0);
-      const rows = [...document.querySelectorAll('[data-testid="season-row"]')];
-      return {
-        games: rows.reduce((a, r) => a + digits(r.children[4]), 0),
-        fga: rows.reduce((a, r) => a + digits(r.children[5]), 0),
-      };
+    const sum = await page.getByTestId("season-row").evaluateAll(rows => {
+      const attempts = (row: Element, column: number) => Number(row.children[column].querySelector("small")?.textContent?.replace(/[^0-9]/g, "") ?? 0);
+      return [1, 2].map(column => rows.reduce((total, row) => total + attempts(row, column), 0));
     });
-    const career = await page.getByTestId("career-row").locator("td").allTextContents();
-    expect(Number(career[4].replace(/[^0-9]/g, ""))).toBe(sum.games);
-    expect(Number(career[5].replace(/[^0-9]/g, ""))).toBe(sum.fga);
+    const career = page.getByTestId("career-row");
+    for (const [index, column] of [2, 3].entries()) {
+      const attempts = await career.locator(`td:nth-child(${column}) small`).textContent();
+      expect(Number(attempts!.replace(/[^0-9]/g, ""))).toBe(sum[index]);
+    }
   });
 
   test("finds accented names typed without their accents", async ({ page }) => {
@@ -119,7 +117,7 @@ test.describe("Player Shooting by Rest", () => {
     await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
-    const header = page.getByRole("columnheader", { name: /Difference/ });
+    const header = page.getByRole("columnheader", { name: /Gap/ });
     await header.click();
     await expect(header).toHaveAttribute("aria-sort", "descending");
     const top = await page.getByTestId("player-row").first().textContent();
@@ -134,7 +132,7 @@ test.describe("Player Shooting by Rest", () => {
     await page.getByTestId("player-row").first().waitFor(READY);
 
     await page.selectOption("#pr-season", "career");
-    await page.getByText(/^Filters \(/).click();
+    await page.getByText(/^Advanced filters \(/).click();
     await page.selectOption("#pr-volume", "0");
     // Every listed player carries an effect; nobody is ranked on a number we lack.
     const dashes = await page
@@ -162,12 +160,13 @@ test.describe("Player Shooting by Rest", () => {
     await page.getByTestId("player-row").first().waitFor(READY);
 
     const all = await page.getByTestId("player-row").count();
+    await page.getByText(/^Advanced filters \(/).click();
     await page.selectOption("#pr-team", "OKC");
     const okc = await page.getByTestId("player-row").count();
     expect(okc).toBeGreaterThan(0);
     expect(okc).toBeLessThan(all);
     // Every visible team cell belongs to the franchise (the SEA arm matters only in pre-2008 seasons).
-    for (const cell of await page.getByTestId("player-row").locator("td:nth-child(3)").allTextContents()) {
+    for (const cell of await page.getByTestId("player-row").locator("td:first-child small").allTextContents()) {
       expect(cell).toMatch(/OKC|SEA/);
     }
   });
@@ -178,10 +177,15 @@ test.describe("Player Shooting by Rest", () => {
   await page.goto("/shooting?year=2025");
   const row = page.getByTestId("player-row").first();
   await row.waitFor(READY);
-  for (const column of [2, 8, 9, 10]) {
+  await expect(page.locator("thead th")).toHaveCount(4);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+  const uncertain = page.getByTestId("player-row").locator("td:last-child > span").filter({ has: page.locator("sup") }).first();
+  await expect(uncertain).toBeVisible();
+  expect(await uncertain.evaluate(el => getComputedStyle(el).backgroundColor)).toMatch(/, 0\)$/);
+  for (const column of [1, 2, 3, 4]) {
     await expect(row.locator(`td:nth-child(${column})`)).toBeVisible();
   }
-  for (const column of [8, 9]) await expect(row.locator(`td:nth-child(${column})`)).toContainText("att.");
+  for (const column of [2, 3]) await expect(row.locator(`td:nth-child(${column})`)).toContainText("att.");
   const control = row.getByRole("button");
   await expect(control).toHaveAccessibleName(/^Expand .+ shooting details$/);
   await expect(control.locator("svg")).toBeVisible();
@@ -196,7 +200,7 @@ test.describe("Player Shooting by Rest", () => {
   await page.keyboard.press("Space");
   await expect(control).toHaveAttribute("aria-expanded", "false");
   await page.getByRole("searchbox").fill("zzzzzzzz");
-  await expect(page.getByRole("status")).toContainText("No players match these filters");
+  await expect(page.getByRole("status").filter({ hasText: "No players match these filters" })).toBeVisible();
  });
 
 test("shooting filter and player links restore the same view", async ({ page }) => {
@@ -204,7 +208,7 @@ test("shooting filter and player links restore the same view", async ({ page }) 
   await expect(page.locator("#pr-season")).toHaveValue("2024");
   await expect(page.locator("#pr-volume")).toHaveValue("0");
   await expect(page.getByLabel("Hide uncertain differences")).toBeChecked();
-  await page.locator("summary").filter({ hasText: /^Filters/ }).click();
+  await page.locator("summary").filter({ hasText: /^Advanced filters/ }).click();
   await page.getByLabel("Hide uncertain differences").uncheck();
   await page.getByTestId("player-row").first().click();
   await page.reload();

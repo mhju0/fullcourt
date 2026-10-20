@@ -49,3 +49,9 @@
   .reference-section .reference-section-body { overflow: visible; }
   .reference-section pre { white-space: pre-wrap; overflow: visible; }
 }
+
+.reference-coverage article { padding: 24px 0; border-bottom: 1px solid var(--term-border); }
+.reference-coverage h3 { font-size: 18px; line-height: 1.3; font-weight: 600; margin-bottom: 12px; }
+.reference-coverage dl { margin: 0; }
+.reference-coverage dt { font-family: var(--font-geist-mono), monospace; font-size: 12px; line-height: 1.5; color: var(--term-text-muted); margin-top: 12px; }
+.reference-coverage dd { margin: 3px 0 0; font-size: 15px; line-height: 1.55; }

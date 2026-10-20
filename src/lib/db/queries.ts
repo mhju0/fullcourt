@@ -1579,6 +1579,23 @@ export async function getTeamDirectory(): Promise<
 
 // ─── Season Report query ─────────────────────────────────────────
 
+/** A report is usable only after a published valid final has both computed fatigue sides. */
+export async function getPublishedSeasonReportSeasons(): Promise<string[]> {
+  const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_report_publication");
+  const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_report_publication");
+  const rows = await db.select({ season: games.season }).from(games)
+    .innerJoinLateral(homeFatigue, sql`true`)
+    .innerJoinLateral(awayFatigue, sql`true`)
+    .where(publishableGames(and(
+      eq(games.status, "final"),
+      gte(games.homeScore, 0), gte(games.awayScore, 0),
+      sql`${games.homeScore} <> ${games.awayScore}`,
+    )))
+    .groupBy(games.season)
+    .orderBy(asc(games.season));
+  return rows.map((row) => String(row.season));
+}
+
 /** Published coverage plus all-season physical context consumed by calendar and Mileage readers. */
 export async function getSeasonGamesStamp(season: string): Promise<string> {
   const [row] = await db

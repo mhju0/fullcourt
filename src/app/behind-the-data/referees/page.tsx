@@ -108,7 +108,7 @@ export default function RefereeMethodPage() {
       − league share, same season
 
 bold   when |z| ≥ ${NOTABLE_Z}
-shown  when the official has ${MIN_GAMES}+ games`}
+shown  official has ${MIN_GAMES}+ games`}
         </Formula>
         <ValueGrid
           values={[
@@ -162,10 +162,10 @@ shown  when the official has ${MIN_GAMES}+ games`}
           <strong>are officials more spread out than the same games dealt out at random?</strong>
         </Prose>
         <Formula>
-          {`observed  spread of official averages
+          {`observed  spread of officials' means
 
 null      reshuffle each official's
-          games within the same seasons,
+          games within each season,
           2,000 times
 
 verdict   how often the null spread

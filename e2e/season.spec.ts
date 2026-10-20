@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Season Report", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+      data: { seasons: ["2015-16", "2019-20", "2024-25", "2025-26", "2026-27"] }, error: null,
+    } }));
+  });
   test("shows outcomes and preserves season selection through reload and navigation", async ({ page }) => {
     await page.goto("/season?season=2015-16");
     await expect(page.getByTestId("season-rest-win-rate")).toContainText("%");
@@ -41,7 +46,7 @@ test.describe("Season Report", () => {
     await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
     await expect(page.getByTestId("season-default-note")).toContainText("2026-27");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2025-26 vs history");
-    await expect(page.getByTestId("season-data-guide")).toContainText("Expected after the November 11 games (ET).");
+    await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
     await expect(page.getByTestId("season-awaiting-results")).toHaveCount(0);
     expect(currentReportReads).toBe(0);
   });

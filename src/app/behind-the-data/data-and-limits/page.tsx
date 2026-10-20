@@ -7,7 +7,7 @@ import {
   Section,
 } from "@/components/behind-the-data-parts";
 import { NBA_SEASONS } from "@/lib/nba-season";
-import { LEAD, TYPE, WIDTH } from "@/lib/terminal-styles";
+import { WIDTH } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import { AVAILABILITY_INPUT_COVERAGE } from "@/lib/availability-facts";
 import officiatingData from "@/data/officiating.json";
@@ -79,19 +79,18 @@ export default function DataAndLimitsPage() {
           Coverage depends on the field. Each entry gives the source and the earliest season
           used here. Individual studies filter further.
         </Prose>
-        <ul className="flex flex-col gap-4" style={{ maxWidth: WIDTH.prose }}>
+        <div className="reference-coverage" style={{ maxWidth: WIDTH.prose }}>
           {COVERAGE.map((row) => (
-            <li key={row.field} style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text)" }}>
-              <strong>{row.field}</strong>
-              <br />
-              <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
-                {/^\d/.test(row.from) ? `From ${row.from}` : row.from} · {row.source}
-              </span>
-              <br />
-              {row.note}
-            </li>
+            <article key={row.field}>
+              <h3>{row.field}</h3>
+              <dl>
+                <dt>From</dt><dd>{row.from}</dd>
+                <dt>Source</dt><dd>{row.source}</dd>
+                <dt>Note</dt><dd>{row.note}</dd>
+              </dl>
+            </article>
           ))}
-        </ul>
+        </div>
         <Note>
           Earlier input coverage remains uneven despite archived corrections. The same formula
           uses the fields available for each game, so a 1994 score and a 2024 score are not

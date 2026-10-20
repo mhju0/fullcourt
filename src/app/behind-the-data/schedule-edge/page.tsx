@@ -15,6 +15,7 @@ import {
   REST_DAYS_CAP,
 } from "@/lib/schedule-disparity";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
+import { TYPE } from "@/lib/terminal-styles";
 import { signedNumber } from "@/lib/signed-number";
 import {
   HOME_COURT_SPAN_PP,
@@ -53,7 +54,7 @@ export default function ScheduleEdgeMethodPage() {
           {`net = favorable − unfavorable
 
 favorable    gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, team fresher
-unfavorable  gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, team more tired
+unfavorable  gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, team tired
 ${BIG_EDGE_FATIGUE_THRESHOLD}+ edge      gap ≥ ${BIG_EDGE_FATIGUE_THRESHOLD}, either side`}
         </Formula>
         <Prose>
@@ -81,8 +82,9 @@ lift  = (group win % − venue win %)
         ÷ 100`}
         </Formula>
         <Prose>
-          Worth reads only the calendar, never the scores. Two teams with the same schedule get
-          the same Worth, whatever their records.
+          Worth does not use a team’s actual win record to award wins. It adds historical
+          rest-group lifts for that schedule. Past game margins can affect the fatigue
+          groups through the workload discount for blowouts.
         </Prose>
         <ValueGrid
           values={[
@@ -141,20 +143,13 @@ lift  = (group win % − venue win %)
           rows={benchmark.buckets}
           rowKey={(b) => b.label}
           columns={[
-            { label: "Net edge", unit: "games", cell: (b) => b.label },
+            { label: "Net edge", unit: "games", cell: (b) => <>{b.label}<br /><span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>{b.n} team-seasons</span></> },
             {
               label: "Went over",
               unit: "share of teams",
               numeric: true,
               style: { fontWeight: 700 },
               cell: (b) => pct(b.overs, b.n),
-            },
-            {
-              label: "Team-seasons",
-              unit: "count",
-              numeric: true,
-              style: { color: "var(--term-text-muted)" },
-              cell: (b) => b.n,
             },
           ]}
         />
@@ -227,7 +222,7 @@ lift  = (group win % − venue win %)
           items={[
             "2019-20 is left out of the ranking. Teams played different numbers of games before the bubble, so they had different chances to build an edge.",
             "Rankings compare teams within one season. Schedule length, travel and back-to-back counts change across eras.",
-            "Games not yet played use projected fatigue from the published schedule, and the page says how many. Rankings move as games are played.",
+            "Games after a team’s first unplayed date use projected fatigue from the published schedule. That first unplayed date can still use measured history. The page counts projected comparisons; rankings can change as games are played.",
             "In the current NBA Cup format, 80 of each team's 82 games are set in advance. The other two depend on Cup results, so a forward-looking total is incomplete until they are added. A Cup final adds workload but does not count as a regular-season game.",
             "It inherits every limit of the fatigue model: no injuries, no rotations, no team quality.",
             "A favorable schedule is not a prediction. It means more favorable than unfavorable fatigue gaps, nothing about how good the team is.",

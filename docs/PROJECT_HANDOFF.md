@@ -184,3 +184,16 @@ call. A one-time cloud routine checks the opening-night slate at 2026-10-21 05:0
 ## Behind the Data clarity pass — 2026-10-21
 
 Branch `docs/behind-the-data-clarity`. Rewrote all ten method pages for plain, short copy and phone width: the rest-advantage page now repeats the combining equation and gives every term its own formula (altitude included), grouped as loads, multipliers and adjustments. Every formula line is at most 40 characters (`behind-the-data-formula-width.test.ts`), padded-text "tables" became real tables, and no method table overflows at 390px. Rule recorded in FRONTEND.md. No coefficient changed; `fatigue.ts` only names the existing per-window stress cap and exports it. Open: hand-typed figures in data-and-limits prose (88, 971, 179, 135, 44 games) and "twenty points" on rest-advantage predate this pass and are still unpinned.
+
+
+## Approved mobile UX implementation and release preparation — 2026-10-21
+
+Owner approved all D01–D10, then explicitly requested final security audit, main merge and
+live deployment. Implemented current actual-publication defaults, explicit-current Awaiting,
+compact Games/Schedule/Shooting reading order, linked chart readouts, one-court model
+comparison, annual Availability selection and 15px explanatory text. The new read-only
+`/api/season-report-publication` discovers report seasons; schedule API behavior is preserved.
+Claude’s clarity commits are included, with three semantic copy regressions and375px
+formula/table overflow corrected. v1.1.0 is being prepared; release verification is pending.
+No schema, fatigue coefficient, published artifact or historical prediction was changed.
+Physical iPhone/Safari/VoiceOver and actual opening-night ingestion remain unverified.

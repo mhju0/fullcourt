@@ -55,9 +55,10 @@ export default function AvailabilityMethodPage() {
           out players who sat.
         </Prose>
         <Formula>
-          {`rotation  ${D.minAppearances}+ games with minutes in
-          the team's last ${D.rotationWindowGames} games this
-          season, averaging ${D.rotationMinutes}+ minutes
+          {`rotation  ${D.minAppearances}+ appearances with minutes
+          in the team's last ${D.rotationWindowGames} games
+          this season, averaging
+          ${D.rotationMinutes}+ minutes
 
 missing   in the rotation, but did
           not play tonight`}

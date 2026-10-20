@@ -12,11 +12,11 @@ import ShotValuePage from "@/app/behind-the-data/shot-value/page";
 import TimeZonesPage from "@/app/behind-the-data/time-zones/page";
 
 /**
- * The widest formula line that fits a 390px phone without sideways scrolling: the Formula
- * block leaves about 289px for 12px Geist Mono, whose 7.2px advance fits 40 characters. A
+ * The widest formula line that fits a 375px phone without sideways scrolling: the Formula
+ * block leaves about 274px for 12px Geist Mono, whose 7.2px advance fits 38 characters. A
  * wider line still scrolls, but the right-hand half of the arithmetic then starts off-screen.
  */
-const MAX_FORMULA_CHARS = 40;
+const MAX_FORMULA_CHARS = 38;
 
 const PAGES = {
   "rest-advantage": RestAdvantagePage,

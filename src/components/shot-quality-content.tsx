@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react"
 import useSWR from "swr"
-import { StudySeasonGuide } from "@/components/study-season-guide"
 import { SeasonDataGuide } from "@/components/season-data-guide"
 import { SeasonReadinessNotice } from "@/components/season-readiness-notice"
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness"
@@ -211,7 +210,7 @@ function HowToRead({
               <span style={{ color: "#065F74", fontWeight: 600 }}>deep teal is high-value</span> (rim, corner threes), pale teal is low-value (long mid-range).
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
-              Both courts use the same locations. The zone model assigns averages;
+              Both models use the same locations. Switch models to compare the selected spot. The zone model assigns averages;
               the location model uses coordinates to estimate differences within zones.
             </p>
           </div>
@@ -316,6 +315,7 @@ function ShotCourt({
   formatValue,
   title,
   subtitle,
+  compareModels = false,
 }: {
   cells: ShotQualityCell[]
   scaleFga: number
@@ -324,6 +324,7 @@ function ShotCourt({
   formatValue: (v: number) => string
   title: string
   subtitle: string
+  compareModels?: boolean
 }) {
   // Geometry only (independent of the color mode) so it memoizes across toggles.
   const markers = useMemo<Marker[]>(() => {
@@ -339,17 +340,28 @@ function ShotCourt({
   }, [cells, scaleFga])
 
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const locations = useMemo(() => markers.filter((m) => getValue(m.c) !== null)
-    .sort((a, b) => a.c.cellY - b.c.cellY || a.c.cellX - b.c.cellX), [markers, getValue])
+  const locations = useMemo(() => markers.filter((m) => compareModels ? m.c.baseline !== null || m.c.gbm !== null : getValue(m.c) !== null)
+    .sort((a, b) => a.c.cellY - b.c.cellY || a.c.cellX - b.c.cellX), [markers, getValue, compareModels])
   const activeIndex = Math.min(selectedIndex, Math.max(0, locations.length - 1))
   const selected = locations[activeIndex]
   const selectedValue = selected ? getValue(selected.c) : null
-  const description = selected && selectedValue !== null
-    ? `${selected.c.zoneBasic ?? "Unclassified zone"} · ${selected.c.fga.toLocaleString()} attempts · ${formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
+  const description = selected
+    ? `${selected.c.zoneBasic ?? "Unclassified zone"} · ${selected.c.fga.toLocaleString()} attempts · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
     : "No measured locations for this view."
+  const comparisonDescription = selected && compareModels
+    ? `Zone average: ${selected.c.baseline ? formatValue(selected.c.baseline.expectedEfg) : "Unavailable"}; Location model: ${selected.c.gbm ? formatValue(selected.c.gbm.expectedEfg) : "Unavailable"}. ${description}`
+    : description
 
   return (
     <figure className="flex flex-col gap-2">
+      {compareModels && selected ? <div className="mb-2 border border-[var(--term-border)] p-4" role="status" aria-live="polite">
+        <p className="text-[15px] font-semibold">{selected.c.zoneBasic ?? "Unclassified zone"}</p>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <div><p className="text-[15px] text-[var(--term-text-muted)]">Zone average</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.baseline ? formatValue(selected.c.baseline.expectedEfg) : "Unavailable"}</p></div>
+          <div><p className="text-[15px] text-[var(--term-text-muted)]">Location model</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.gbm ? formatValue(selected.c.gbm.expectedEfg) : "Unavailable"}</p></div>
+        </div>
+        <p className="mt-3 text-[15px] text-[var(--term-text-muted)]">{selected.c.fga.toLocaleString()} attempts at this location · {selected.c.cellX + 0.5} ft across, {selected.c.cellY + 0.5} ft upcourt from the rim</p>
+      </div> : null}
       <figcaption className="flex flex-col gap-1">
         <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-text)" }}>
           {title}
@@ -410,14 +422,30 @@ function ShotCourt({
           value={activeIndex}
           disabled={!locations.length}
           aria-label={`Inspect location on ${title} court`}
-          aria-valuetext={description}
+          aria-valuetext={comparisonDescription}
           onChange={(event) => setSelectedIndex(Number(event.target.value))}
           style={{ width: "100%", minHeight: 44, accentColor: "var(--term-accent)" }}
         />
       </label>
-      <p role="status" style={{ margin: 0, fontSize: TYPE.body, minHeight: "3em" }}>{description}</p>
+      {!compareModels ? <p role="status" style={{ margin: 0, fontSize: TYPE.body, minHeight: "3em" }}>{description}</p> : null}
     </figure>
   )
+}
+
+function ShotModelComparison({ cells, scaleFga, getColor, formatValue }: {
+  cells: ShotQualityCell[]
+  scaleFga: number
+  getColor: (value: number) => string
+  formatValue: (value: number) => string
+}) {
+  const [model, setModel] = useState<"baseline" | "gbm">("baseline")
+  return <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
+    <div className="grid grid-cols-2 gap-2" role="group" aria-label="Shot value model">
+      <button type="button" className="fc-control-button min-h-11 border border-[var(--term-border)] px-3 py-2 text-[15px] aria-pressed:border-[var(--term-accent)] aria-pressed:bg-[var(--term-surface-2)]" aria-pressed={model === "baseline"} onClick={() => setModel("baseline")}>Zone average</button>
+      <button type="button" className="fc-control-button min-h-11 border border-[var(--term-border)] px-3 py-2 text-[15px] aria-pressed:border-[var(--term-accent)] aria-pressed:bg-[var(--term-surface-2)]" aria-pressed={model === "gbm"} onClick={() => setModel("gbm")}>Location model</button>
+    </div>
+    <ShotCourt cells={cells} scaleFga={scaleFga} getValue={(cell) => cell[model]?.expectedEfg ?? null} getColor={getColor} formatValue={formatValue} title={model === "baseline" ? "Zone average" : "Location model"} subtitle={model === "baseline" ? "ZONE-AVERAGE (STEP SURFACE)" : "LOCATION MODEL (COURT COORDINATES)"} compareModels />
+  </div>
 }
 
 // ─── States ────────────────────────────────────────────────────────
@@ -426,8 +454,7 @@ function CourtSkeleton() {
   return (
     <div style={termCardStyle}>
       <Skeleton className="mb-3 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Skeleton className="w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)", aspectRatio: `${VB_W} / ${VB_H}` }} />
+      <div className="mx-auto w-full max-w-lg">
         <Skeleton className="w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)", aspectRatio: `${VB_W} / ${VB_H}` }} />
       </div>
     </div>
@@ -449,7 +476,7 @@ export function ShotQualityContent() {
   const { data: publication, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
     validRequestedSeason ? `/api/shot-quality?season=${validRequestedSeason}` : "/api/shot-quality",
     apiFetcher,
-    { revalidateOnFocus: false, keepPreviousData: true }
+    { revalidateOnFocus: false }
   )
   const currentSeason = defaultNbaSeason()
   const hasCurrentPublication = publication?.latestPublishedSeason === currentSeason
@@ -465,15 +492,14 @@ export function ShotQualityContent() {
   const data = usePrevious ? previous.data : publication
   const failure = swrError ?? (usePrevious ? previous.error : undefined)
   const error = failure ? errMsg(failure) : null
-  const season = validRequestedSeason ?? data?.season ?? currentSeason
-  const heldCurrent = hasCurrentPublication && season === currentSeason && !readiness.ready
+  const season = validRequestedSeason ?? (usePrevious ? previousSeason : data?.season) ?? currentSeason
+  const heldCurrent = Boolean(publication) && season === currentSeason && (!hasCurrentPublication || !readiness.ready)
   const dataMatchesSelection = Boolean(data && data.season === season && !heldCurrent)
   const setSeason = (value: string) => update({ season: value })
   const setMode = (value: ColorMode) => update({
     mode: value === "diff" ? "diff" : null,
     compare: value === "diff" ? null : compareModels ? "1" : null,
   })
-  const setCompareModels = (value: boolean) => update({ compare: value ? "1" : null })
   const fallbackNotes = [
     requestedSeason && !validRequestedSeason && data
       ? `${requestedSeason} is unavailable on this page. Showing ${data.season}.`
@@ -515,8 +541,6 @@ export function ShotQualityContent() {
   const fmtEfg = (v: number): string => `${(v * 100).toFixed(1)}% eFG`
   const fmtDiff = (v: number): string => `${signedNumber(v * 100, 1)}\u00a0pp`
 
-  const seqValue = (which: "baseline" | "gbm") => (c: ShotQualityCell): number | null =>
-    c[which]?.expectedEfg ?? null
   const seqColorFor = (v: number): string => seqColor((v - stats.seqLo) / (stats.seqHi - stats.seqLo))
   const diffValue = (c: ShotQualityCell): number | null =>
     c.gbm && c.baseline ? c.gbm.expectedEfg - c.baseline.expectedEfg : null
@@ -549,10 +573,13 @@ export function ShotQualityContent() {
 
   if (heldCurrent) return <div className="flex flex-col gap-12">
     {controls}
-    <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+    {!hasCurrentPublication ? <SeasonDataGuide title="Awaiting results" season={currentSeason}
+      body="The expected shot value surface for this season has not been published."
+      previousHref={publication ? `/shot-quality?season=${publication.latestPublishedSeason}` : undefined}
+      previousLabel={publication ? `View published results · ${publication.latestPublishedSeason}` : undefined} /> : <SeasonReadinessNotice readiness={readiness} season={currentSeason}
       body={previousSeason ? "New-season shot-value results are not available yet. Earlier published surfaces remain available." : "New-season shot-value results are not available yet."}
       previousHref={previousSeason ? `/shot-quality?season=${previousSeason}` : undefined}
-      previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />
+      previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />}
   </div>
 
   if ((isLoading && !data) || !data || !dataMatchesSelection) {
@@ -571,12 +598,10 @@ export function ShotQualityContent() {
       {controls}
       {fallbackNotes.map((note) => <p key={note} role="status" className="mono text-xs text-[var(--term-text-muted)]">{note}</p>)}
 
-      {usePrevious ? <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-        body="New-season shot-value results are not available yet. Showing the previous published surface."
-        previousHref={`/shot-quality?season=${season}`} previousLabel={`View published results · ${season}`} /> :
-        !isEmpty && (!validRequestedSeason || validRequestedSeason === currentSeason) ? <StudySeasonGuide latestPublishedSeason={data.latestPublishedSeason}
-          body={`Expected Shot Value is published through ${data.latestPublishedSeason}. New-season maps will appear after updated shot-location data is available.`}
-          previousHref={`/shot-quality?season=${data.latestPublishedSeason}`} /> : null}
+      {usePrevious ? <p role="status" className="text-body text-[var(--term-text-muted)]">Showing the previous published surface · {season}. {currentSeason} results are awaiting season data.</p> :
+        !isEmpty && !validRequestedSeason && season < currentSeason ? <p role="status" className="text-body text-[var(--term-text-muted)]">
+          Showing {season}, the latest published surface. {currentSeason} results are not available yet.
+        </p> : null}
 
       {isEmpty && season >= currentSeason ? <SeasonDataGuide season={season}
         body="The expected shot value surface for this season has not been published. New maps depend on updated shot-location data."
@@ -612,29 +637,7 @@ export function ShotQualityContent() {
           <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
 
           {mode === "value" ? (
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <button type="button" className="min-h-11 text-left text-[15px] font-semibold lg:hidden" aria-pressed={compareModels} onClick={() => setCompareModels(!compareModels)}>{compareModels ? "Hide model comparison" : "Compare models"}</button>
-              <div className={compareModels ? "" : "hidden lg:block"}>
-              <ShotCourt
-                cells={cells}
-                scaleFga={stats.scaleFga}
-                getValue={seqValue("baseline")}
-                getColor={seqColorFor}
-                formatValue={fmtEfg}
-                title="Zone average"
-                subtitle="ZONE-AVERAGE (STEP SURFACE)"
-              />
-              </div>
-              <ShotCourt
-                cells={cells}
-                scaleFga={stats.scaleFga}
-                getValue={seqValue("gbm")}
-                getColor={seqColorFor}
-                formatValue={fmtEfg}
-                title="Location model"
-                subtitle="LOCATION MODEL (COURT COORDINATES)"
-              />
-            </div>
+            <ShotModelComparison cells={cells} scaleFga={stats.scaleFga} getColor={seqColorFor} formatValue={fmtEfg} />
           ) : (
             <div className="mx-auto w-full md:max-w-md">
               <ShotCourt

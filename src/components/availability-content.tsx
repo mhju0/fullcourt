@@ -1,5 +1,4 @@
 import {
-  AVAILABILITY_TREND_SEASONS,
   AVAILABILITY_EFFECTS,
   AVAILABILITY_FREQUENCY,
   AVAILABILITY_NOISE,
@@ -9,7 +8,7 @@ import {
 import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import { StatFigure } from "@/components/ui/stat-tile"
-import { parseSeasonStartYear } from "@/lib/nba-season"
+import { AvailabilityTrend } from "@/components/availability-trend"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -158,74 +157,6 @@ function FrequencySection() {
   )
 }
 
-/** Missing-source seasons keep their calendar slots; observed rates are not a league census. */
-function TrendSection() {
-  const seasons = AVAILABILITY_TREND_SEASONS
-  const first = seasons[0]!
-  const last = seasons.at(-1)!
-  const max = Math.max(...seasons.map((s) => s.rate), 0.01)
-  const firstYear = parseSeasonStartYear(first.season)
-  const yearCount = parseSeasonStartYear(last.season) - firstYear + 1
-
-  return (
-    <section className="flex flex-col gap-3">
-      <SectionHeading>Best-player absences over time</SectionHeading>
-      <div style={termCardStyle}>
-        <p style={BODY}>
-          <span style={LEAD_IN}>
-            Best-player absences in the included games.
-          </span>{" "}
-          Source coverage varies by season, so these rates do not establish a league-wide trend.
-          Blank spaces mark seasons without an eligible sample.
-        </p>
-
-        <figure className="mt-6 flex flex-col gap-2">
-          <div
-            className="grid items-end gap-[2px]"
-            style={{ height: 96, gridTemplateColumns: `repeat(${yearCount}, minmax(0, 1fr))`, gridTemplateRows: "1fr" }}
-            role="img"
-            aria-label={`Best-player absence rate in included team-games. ${first.season}: ${(first.rate * 100).toFixed(1)} percent across ${first.teamGames} team-games. ${last.season}: ${(last.rate * 100).toFixed(1)} percent across ${last.teamGames} team-games. Source coverage varies; seasons without eligible data are blank.`}
-          >
-            {seasons.map((s) => (
-              <div
-                key={s.season}
-                title={`${s.season} — ${(s.rate * 100).toFixed(1)}% of ${s.teamGames.toLocaleString()} team-games`}
-                style={{
-                  gridColumn: parseSeasonStartYear(s.season) - firstYear + 1,
-                  height: `${(s.rate / max) * 100}%`,
-                  background:
-                    s.season === last.season ? "var(--term-blue)" : "var(--term-neutral)",
-                  borderRadius: "var(--term-radius-bar) var(--term-radius-bar) 0 0",
-                  minHeight: 2,
-                }}
-              />
-            ))}
-          </div>
-          <figcaption className="flex flex-wrap items-baseline justify-between gap-2">
-            <span
-              className="mono tabular-nums"
-              style={{ fontSize: TYPE.data, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
-            >
-              {first.season} · {(first.rate * 100).toFixed(1)}% · {first.teamGames.toLocaleString()} team-games
-            </span>
-            <span
-              className="mono tabular-nums"
-              style={{ fontSize: TYPE.data, letterSpacing: TRACK.sub, color: "var(--term-blue-text)", fontWeight: 700 }}
-            >
-              {last.season} · {(last.rate * 100).toFixed(1)}% · {last.teamGames.toLocaleString()} team-games
-            </span>
-          </figcaption>
-        </figure>
-
-        <p className="mt-4" style={BODY}>
-          Each rate uses the source-supported team-games available for that season. Small or
-          incomplete samples can differ from the league as a whole.
-        </p>
-      </div>
-    </section>
-  )
-}
-
 /**
  * Section D — the defensive result, and the reason this measurement was worth taking.
  *
@@ -329,7 +260,7 @@ export function AvailabilityContent() {
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       <ScaleSection />
       <FrequencySection />
-      <TrendSection />
+      <AvailabilityTrend />
       <ScheduleHoldsUpSection />
       <LimitsSection />
     </div>

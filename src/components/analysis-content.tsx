@@ -982,6 +982,7 @@ function ExploreGames({
 
 export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   const [drillSignal, setDrillSignal] = useState<DrillSignal>(null)
+  const [selectedGap, setSelectedGap] = useState<GapRangeKey | null>(null)
 
   const exploreRef = useRef<HTMLDivElement>(null)
   const drillTokenRef = useRef(0)
@@ -990,19 +991,20 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   // renders the failure rather than degrading around it.
   const { data, error, loading } = useBacktest()
 
-  const handleBarClick = useCallback(
-    (datum: unknown) => {
-      const d = datum as WinRateDatum
+  const browseSelectedGames = useCallback(
+    () => {
+      if (!selectedGap) return
       drillTokenRef.current += 1
-      setDrillSignal({ gap: d.range, token: drillTokenRef.current })
+      setDrillSignal({ gap: selectedGap, token: drillTokenRef.current })
       setTimeout(() => {
+        exploreRef.current?.querySelector<HTMLSelectElement>("#analysis-gap-filter")?.focus({ preventScroll: true })
         exploreRef.current?.scrollIntoView({
           behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
           block: "start",
         })
       }, 60)
     },
-    []
+    [selectedGap]
   )
 
   if (loading) return <AnalysisLoading asOf={asOf} />
@@ -1037,6 +1039,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         baselinePct: homeBaseline,
       }
     })
+  const selectedGapData = barData.find((row) => row.range === selectedGap)
   const rangeScale = deviationScale(barData.flatMap((d) => [d.deviation - d.error, d.deviation + d.error]))
 
   const winRateTooltipRenderer = (props: TooltipContentProps) => (
@@ -1118,12 +1121,11 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         </p>
       </div>
 
-      {/* Win rate by gap size. Three disjoint ranges, so each bar is its own games and a click
-          opens exactly those (D-102); the whiskers say how far each rate could move by chance. */}
+      {/* Three disjoint ranges; the whiskers show the original 95% confidence intervals. */}
       <div style={termCardStyle}>
         <SectionDivider
           label="DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME"
-          descriptor="CLICK A BAR TO SEE ITS GAMES"
+          descriptor="TAP A BAR OR CHOOSE A GROUP TO INSPECT"
         />
         <div className="mt-2 h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -1167,13 +1169,13 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 maxBarSize={72}
                 minPointSize={minBarSize}
                 style={{ cursor: "pointer" }}
-                onClick={handleBarClick}
+                onClick={(datum: unknown) => setSelectedGap((datum as WinRateDatum).range)}
                 isAnimationActive={false}
               >
                 {barData.map((d) => (
                   <Cell key={d.label} fill={deviationFill(d.deviation)} />
                 ))}
-                {/* The whisker sits over the bar's middle; a click on it still has to open the bar's games. */}
+                {/* Keep whiskers transparent to the bar selection beneath them. */}
                 <ErrorBar dataKey="error" isAnimationActive={false} pointerEvents="none" width={8} stroke="var(--term-text)" strokeWidth={1.5} />
               </Bar>
               {/* Declared after the bars so it draws on top. Solid ink at full weight:
@@ -1183,6 +1185,19 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           </ResponsiveContainer>
         </div>
         <BaselineLegend zeroLabel={claims.rangeZeroLabel} />
+        <div className="mt-4 grid gap-2 sm:grid-cols-3" role="group" aria-label="Inspect rest gap group">
+          {barData.map((row) => (
+            <button key={row.range} type="button" className="fc-control-button flex min-h-11 flex-col items-start gap-1 border border-[var(--term-border)] px-3 py-3 text-left aria-pressed:border-[var(--term-accent)] aria-pressed:bg-[var(--term-surface-2)]" aria-pressed={selectedGap === row.range} onClick={() => setSelectedGap(row.range)}>
+              <span className="font-semibold">{row.label} gap · {row.span}</span>
+              <span className="mono text-[15px]">{row.winPct.toFixed(1)}% · {row.games.toLocaleString()} games</span>
+              <span className="text-[15px] text-[var(--term-text-muted)]">{signedNumber(row.deviation, 1)} pp vs home baseline</span>
+            </button>
+          ))}
+        </div>
+        {selectedGapData ? <div className="mt-4 border-t border-[var(--term-border)] pt-4">
+          <p role="status" className="text-[15px]">{selectedGapData.label} gap selected · {selectedGapData.games.toLocaleString()} games · rested team at home. Win rate {selectedGapData.winPct.toFixed(1)}%; {signedNumber(selectedGapData.deviation, 1)} pp against the {homeBaseline.toFixed(1)}% home baseline. Whiskers show 95% confidence intervals.</p>
+          <button type="button" className="fc-control-button mt-3 min-h-11 border border-[var(--term-border)] px-4 py-2" onClick={browseSelectedGames}>Browse selected games</button>
+        </div> : null}
       </div>
 
       <div style={termCardStyle}>

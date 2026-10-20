@@ -1,5 +1,18 @@
 # Release history
 
+## 1.1.0 — 2026-10-21
+
+- Put complete matchups and schedule rankings earlier on phones; simplify Shooting to
+  a four-column rest comparison with player search and expandable advanced filters.
+- Default result studies to their latest usable published season across desktop and mobile;
+  keep an explicit new-season selection in Awaiting until its own results are ready.
+- Link Home Court season selection to its graph and raw 5+ comparison, add explicit
+  game browsing from chart selections and annual Availability readouts, and compare
+  shot models on one court while retaining the selected location.
+- Clarify all Behind the Data method pages, preserve per-input playoff signs, explain
+  projected-fatigue and Worth boundaries accurately, and fit formulas/tables on narrow phones.
+- Preserve published figures, fatigue coefficients, database schema and historical predictions.
+
 ## 1.0.12 — 2026-10-20
 
 - Keep season labels, "5+ points" and win/game counts whole at phone widths on Season

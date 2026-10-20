@@ -272,16 +272,15 @@ test.describe("Games page", () => {
   });
 });
 
-// D-78, D-79: the three slate measures are one line above the matchups; Edges Ahead stays
-// after the list; a phone gets the compact row with no view toggle and no rest-edge badge.
-test("mobile reads the slate summary before the matchups and has no view toggle", async ({ page }) => {
+// The first matchup leads on phones; slate totals and upcoming edges follow the list.
+test("mobile reads the matchups before the slate summary and has no view toggle", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/games?season=2025-26&date=2026-01-17&view=deep");
   const line = page.getByTestId("slate-summary-line");
   await expect(line).toContainText("GAMES");
   const lineBox = await line.boundingBox();
   const heading = await page.getByRole("heading", { name: "Matchups" }).boundingBox();
-  expect(lineBox!.y + lineBox!.height).toBeLessThanOrEqual(heading!.y);
+  expect(lineBox!.y).toBeGreaterThan(heading!.y + heading!.height);
   const main = await page.getByTestId("games-main").boundingBox();
   const summary = await page.getByRole("complementary", { name: "Upcoming edges" }).boundingBox();
   expect(summary!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
