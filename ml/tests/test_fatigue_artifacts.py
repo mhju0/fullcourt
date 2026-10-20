@@ -75,7 +75,7 @@ class FatigueArtifactTests(unittest.TestCase):
 
     def test_changed_producer_or_registry_invalidates_success(self):
         self.prepare()
-        for name in ["scripts/export_fatigue_features.ts", "src/lib/fatigue.ts", "src/data/fixture-venue-corrections.json", "src/data/arena-history.json", "src/lib/arena-history.ts", "ml/prepare_fatigue_dataset.py", "ml/fatigue_artifacts.py"]:
+        for name in ["scripts/export_fatigue_features.ts", "src/lib/fatigue.ts", "src/data/fixture-venue-corrections.json", "src/data/arena-history.json", "src/lib/arena-history.ts", "tsconfig.json", "ml/prepare_fatigue_dataset.py", "ml/fatigue_artifacts.py"]:
             with self.subTest(source=name):
                 path = self.root / name
                 original = path.read_bytes()
@@ -83,6 +83,21 @@ class FatigueArtifactTests(unittest.TestCase):
                 with self.assertRaises(artifacts.StaleFatigueArtifact):
                     artifacts.require_model_table(self.root)
                 path.write_bytes(original)
+
+    def test_changed_typescript_alias_invalidates_both_receipts_without_rewriting_outputs(self):
+        config = self.root / "tsconfig.json"
+        config.write_text(json.dumps({"compilerOptions": {"paths": {"@/*": ["./src/*"]}}}))
+        self.export_receipt()
+        self.prepare()
+        csv_before = (self.root / artifacts.TABLE).read_bytes()
+        receipt_before = artifacts.receipt_path(self.root, artifacts.TABLE).read_bytes()
+        config.write_text(json.dumps({"compilerOptions": {"paths": {"@/*": ["./other-source/*"]}}}))
+        for check in [artifacts.require_feature_export, artifacts.require_model_table]:
+            with self.subTest(check=check.__name__):
+                with self.assertRaisesRegex(artifacts.StaleFatigueArtifact, "exporter computation sources changed"):
+                    check(self.root)
+        self.assertEqual((self.root / artifacts.TABLE).read_bytes(), csv_before)
+        self.assertEqual(artifacts.receipt_path(self.root, artifacts.TABLE).read_bytes(), receipt_before)
 
     def test_missing_malformed_version_or_failed_export_receipt_is_not_blessed(self):
         receipt_path = artifacts.receipt_path(self.root, artifacts.FEATURES)

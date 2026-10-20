@@ -88,3 +88,17 @@ For a coordinated data correction, keep readers gated and writers paused while t
 The [V11 release-order record](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
 retains a failure where all API comparisons passed but a pre-apply homepage build still
 served old values. API-only parity cannot establish rendered-page acceptance.
+
+The existing `e2e/home.spec.ts` regression, “headline rates and samples use the same full
+completed-season history”, derives expected values from real `/api/analysis` responses at
+thresholds 0 and 5 and checks the rendered rates, samples, baseline, period/date and edge.
+After staged HTML parity, run it against the explicitly selected real deployment before
+accepting the release (root runs canonical verification after promotion):
+
+```sh
+PLAYWRIGHT_BASE_URL=https://fullcourt.fyi pnpm exec playwright test e2e/home.spec.ts -g 'headline rates and samples'
+```
+
+Use the exact staged URL for its pre-promotion run. Preserve the full 13-field staged
+homepage parity receipt alongside the browser result. The secret-free fixture-backed CI
+browser gate does not certify database-derived SSG on a real deployment.

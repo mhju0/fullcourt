@@ -231,3 +231,16 @@ inspect the actual staged homepage SSR/prerendered headline, denominator and bas
 then verify the hydrated browser at relevant widths and the corresponding APIs against the
 same accepted state. A successful deployment, correct APIs or an ISR interval alone cannot
 accept the release. Follow the [HTML cutover runbook](../../GENERATED_ARTIFACTS.md#database-derived-html-cutover).
+
+The existing real-deployment regression is `e2e/home.spec.ts`, test “headline rates and
+samples use the same full completed-season history”; it reads real analysis thresholds
+0/5 and checks the rendered homepage evidence. After staged HTML parity, run:
+
+```sh
+PLAYWRIGHT_BASE_URL=https://fullcourt.fyi pnpm exec playwright test e2e/home.spec.ts -g 'headline rates and samples'
+```
+
+Select the exact staged URL for pre-promotion verification, then canonical after promotion.
+Retain the full 13-field staged homepage parity receipt as well. Secret-free CI browser
+fixtures do not establish real database-derived SSG freshness. This record still awaits
+root's observed final canonical result.

@@ -1956,7 +1956,9 @@ local research outputs, and synchronize current local outputs to the verified re
 
 The active fatigue export/prepare/analysis chain must reject silently stale inputs. Publish
 content-bound success receipts only after successful generation and fidelity checks; bind
-preparation to the exact player/team cache inventory and producing source. Consumers check
+preparation to the exact player/team cache inventory and producing source. Pin `tsconfig.json`
+alongside the source inventory because alias resolution selects computation dependencies;
+resolve the closure test with that configuration rather than a separately hardcoded map. Consumers check
 before calculations or writes. Missing legacy receipts require actual regeneration, not
 retroactive certification. These guards establish local consistency, not production database
 freshness or upstream source truth. No coefficients, evaluation windows or analytics formulas

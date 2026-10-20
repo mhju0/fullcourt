@@ -21,5 +21,6 @@
   "src/lib/load-env-local.ts",
   "src/lib/neutral-venues.ts",
   "src/lib/physical-venue.ts",
-  "src/lib/team-era-coordinates.ts"
+  "src/lib/team-era-coordinates.ts",
+  "tsconfig.json"
 ]

@@ -35,9 +35,11 @@ python ml/prepare_fatigue_dataset.py
 The exporter reads the configured database and compares rebuilt scores with stored scores.
 It replaces `data/fatigue_features.csv` only after that fidelity check succeeds, and writes
 `data/fatigue_features.csv.provenance.json` last. The receipt pins the CSV bytes and the
-exporter's computation dependencies, venue/correction registries and dependency lock.
+exporter's computation dependencies, venue/correction registries, dependency lock and
+`tsconfig.json` import-resolution settings.
 `scripts/fatigue-artifact-sources.json` lists that source scope; a Vitest import-closure test
-requires every local exporter dependency to remain included. `--verify-only` checks fidelity
+resolves imports using that actual TypeScript configuration and requires every local
+exporter dependency to remain included. `--verify-only` checks fidelity
 without issuing or replacing a CSV receipt.
 
 Preparation validates that receipt, then pins its exact bytes, the feature CSV, preparation

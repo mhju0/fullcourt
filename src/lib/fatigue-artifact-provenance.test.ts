@@ -50,6 +50,10 @@ describe("fatigue feature export publication", () => {
   it("pins every local exporter import, computation registry and dependency lock", async () => {
     const root = process.cwd();
     const files: string[] = JSON.parse(await readFile(path.join(root, "scripts/fatigue-artifact-sources.json"), "utf8"));
+    const config = ts.readConfigFile(path.join(root, "tsconfig.json"), ts.sys.readFile);
+    expect(config.error).toBeUndefined();
+    const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
+    expect(parsed.errors).toEqual([]);
     const seen = new Set<string>();
     async function visit(file: string): Promise<void> {
       if (seen.has(file)) return;
@@ -59,19 +63,25 @@ describe("fatigue feature export publication", () => {
       const info = ts.preProcessFile(await readFile(path.join(root, file), "utf8"));
       for (const entry of info.importedFiles) {
         const name = entry.fileName;
-        if (!name.startsWith(".") && !name.startsWith("@/")) continue;
-        const base = name.startsWith("@/") ? path.join(root, "src", name.slice(2)) : path.resolve(root, path.dirname(file), name);
-        let resolved: string | undefined;
-        for (const candidate of [base, `${base}.ts`, path.join(base, "index.ts")]) {
-          try { await readFile(candidate); resolved = path.relative(root, candidate); break; } catch { /* Try the next TypeScript resolution. */ }
+        const resolvedModule = ts.resolveModuleName(name, path.join(root, file), parsed.options, ts.sys).resolvedModule;
+        if (!resolvedModule) {
+          const configuredAlias = Object.keys(parsed.options.paths ?? {}).some((pattern) => {
+            const wildcard = pattern.indexOf("*");
+            return wildcard < 0 ? name === pattern : name.startsWith(pattern.slice(0, wildcard)) && name.endsWith(pattern.slice(wildcard + 1));
+          });
+          expect(name.startsWith(".") || configuredAlias, `unresolved local import ${name} in ${file}`).toBe(false);
+          continue;
         }
-        expect(resolved, `unresolved local import ${name} in ${file}`).toBeDefined();
-        await visit(resolved!);
+        if (resolvedModule.isExternalLibraryImport) continue;
+        const resolved = path.relative(root, resolvedModule.resolvedFileName);
+        expect(resolved.startsWith(".."), `local import escapes repository: ${name} in ${file}`).toBe(false);
+        await visit(resolved);
       }
     }
     await visit("scripts/export_fatigue_features.ts");
     expect(files).toContain("scripts/fatigue-artifact-sources.json");
     expect(files).toContain("pnpm-lock.yaml");
     expect(files).toContain("package.json");
+    expect(files).toContain("tsconfig.json");
   });
 });

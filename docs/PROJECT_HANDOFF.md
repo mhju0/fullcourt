@@ -256,3 +256,13 @@ The same source is rebuilding against the corrected database (`4i7sjdouf` staged
 no SQL/model change is involved. [V11](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
 records the root's sequencing error and the required staged HTML/browser plus API gate.
 Remediation and canonical acceptance remain pending; root appends the measured final outcome.
+
+
+## Research provenance review correction — 2026-10-20
+
+Independent review added `tsconfig.json` to the exporter source binding. The closure test
+now uses actual TypeScript module resolution; a valid alias mutation rejects both receipts
+without rewriting output. Previous receipts are archived and a real readonly-clone
+export → prepare rerun retains the accepted CSV bytes with new valid provenance. Focused
+closure/82 ML contracts, types, lint and links pass. No runtime math or publication changes;
+V11's canonical acceptance remains root-owned and pending in this worktree.

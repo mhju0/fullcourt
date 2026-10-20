@@ -90,3 +90,21 @@ hashes and the archived old receipts are under
 `docs/audit/repository-cleanup-20261020/arena-followup-20261020/` in this worktree.
 No production connection, model fit, publication regeneration, cloud action, push or deployment
 was performed by this follow-up. Root owns the separate v1.0.8 canonical acceptance record.
+
+
+## TypeScript configuration provenance follow-up — 2026-10-20
+
+Independent review found that `tsconfig.json` also selects exporter computation sources
+through its import aliases. The source inventory now pins its exact bytes. The closure test
+uses the actual TypeScript configuration and module resolver, rejecting unresolved configured
+aliases, rather than maintaining a separate hardcoded `@/*` map. A valid-JSON alias mutation
+contract rejects both success receipts before analysis and preserves the existing model bytes.
+The immediately preceding CSV/receipt/report set is archived separately before actual export
+and preparation rerun; no old receipt is relabeled and no analytical formula changes.
+
+The rerun succeeded on the same SELECT-only accepted AFTER clone: both CSV hashes above
+remain byte-identical and both new receipts validate with `tsconfig.json` included. Focused
+closure tests (3), all ML Python contracts (82), typecheck, changed-file ESLint and documentation
+links pass. The prior full suite/build evidence remains recorded separately; no model or
+application runtime code changed in this follow-up. New private logs, hashes and archived
+receipts are under `docs/audit/repository-cleanup-20261020/tsconfig-followup-20261020/`.
