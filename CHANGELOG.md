@@ -1,5 +1,12 @@
 # Release history
 
+## 1.0.9 — 2026-10-20
+
+- Reject stale or failed local research exports before dependent analyses; bind successful
+  inputs to the complete arena dependency closure and exact player/team cache inventory.
+- Preserve prior research outputs and audit receipts while validating current intermediates
+  against the accepted arena correction, without refitting or changing publications.
+
 ## 1.0.8 — 2026-10-20
 
 - Resolve historical arena moves and individually sourced alternate homes while preserving

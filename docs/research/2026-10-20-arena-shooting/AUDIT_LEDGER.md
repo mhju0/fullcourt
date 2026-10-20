@@ -125,10 +125,11 @@ proxy and stored historical prediction versions. No 2026-27 grading was built or
 
 ## Evidence inventory and recurrence rules
 
-Portable evidence is committed: source reports, raw source bytes and hashes in this dated
-research packet, arena/fixture/alias registries, producer code and regression tests. Tests
-can establish implementation behavior against those facts; they cannot prove a provider
-has not changed or that a deployment used the accepted state.
+Portable evidence includes committed source reports, selected source responses and hashes
+in this dated research packet, arena/fixture/alias registries, producer code and regression
+tests. Larger raw captures and operational receipts remain ignored private evidence; a
+fresh clone does not contain every raw response. Tests establish implementation behavior
+against retained facts, not that a provider is unchanged or a deployment used the accepted state.
 
 Operational receipts are deliberately gitignored under
 `docs/audit/arena-shooting-correction/` (and Shooting's earlier
@@ -196,3 +197,97 @@ the original into a public release tree or silently update the frozen source pro
 Local checks for this correction: two targeted metadata tests and all 26 native Node tests
 pass; original-byte comparison verifies exactly one query-value substitution, valid JSON
 and private-file mode 0600. These checks did not contact the provider or test key validity.
+
+
+## V11: production build before data apply, 2026-10-20
+
+The root built production source `6ddf73f46a36e664fb505cd160ad92d324e748eb`
+(deployment shorthand `etnyt` in the private release receipts) before applying the approved
+database correction, intending to shorten the maintenance window. The homepage's
+database-derived prerender/ISR output, with `revalidate = 86400`, therefore retained the
+old headline: 65.2%, 3,901 games and +5.3 percentage points. After the approved apply,
+all 86 actual API responses / 50,581 compared leaves matched the corrected state, while
+the previously built homepage HTML still showed the earlier values. API parity did not
+establish page acceptance.
+
+Actual canonical browser checks caught the stale homepage at both 390px and 1440px.
+The other ten selected browser states and all four forced-logo-fallback cases passed.
+The root immediately restored maintenance; scheduled writers remain paused. The root
+owns this release-order error. Remediation rebuilds the same `6ddf73f4` source only after
+the database matches exact AFTER hash
+`83fc2c66f301f6ac115d4b2fdfe45883b5304d33a041569712a94fe3cbb18fa7`;
+staged deployment shorthand `4i7sjdouf` is building at this entry. No SQL change, refit,
+coefficient change or new analytical publication is part of that remediation.
+
+**Status: remediation pending; canonical acceptance is not established.** Preserve the
+failed HTML/browser receipts and subsequent rebuild/readback separately. Root must append
+the actual final deployment/SHA and canonical browser/API outcome before closing this entry.
+The ignored release packet holds operational proof; this ledger records the recurrence rule.
+
+Prevention: apply and independently verify the approved data state before building any
+database-derived static/prerendered output. If an earlier build must be reused, explicitly
+invalidate and re-render its affected output and prove the resulting HTML. Before promotion,
+inspect the actual staged homepage SSR/prerendered headline, denominator and baseline/lift,
+then verify the hydrated browser at relevant widths and the corresponding APIs against the
+same accepted state. A successful deployment, correct APIs or an ISR interval alone cannot
+accept the release. Follow the [HTML cutover runbook](../../GENERATED_ARTIFACTS.md#database-derived-html-cutover).
+
+The existing real-deployment regression is `e2e/home.spec.ts`, test “headline rates and
+samples use the same full completed-season history”; it reads real analysis thresholds
+0/5 and checks the rendered homepage evidence. After staged HTML parity, run:
+
+```sh
+PLAYWRIGHT_BASE_URL=https://fullcourt.fyi pnpm exec playwright test e2e/home.spec.ts -g 'headline rates and samples'
+```
+
+Select the exact staged URL for pre-promotion verification, then canonical after promotion.
+Retain the full 13-field staged homepage parity receipt as well. Secret-free CI browser
+fixtures do not establish real database-derived SSG freshness. This record still awaits
+root's observed final canonical result.
+
+
+## v1.0.8 production acceptance and V11 remediation completed — 2026-10-20
+
+The root reports final canonical acceptance of merge
+`6ddf73f46a36e664fb505cd160ad92d324e748eb`, published as
+[v1.0.8](https://github.com/mhju0/fullcourt/releases/tag/v1.0.8). The rebuilt production
+deployment is `dpl_6doQr64bTQ9LzGcjes14ViUGSFzz` (staged shorthand `4i7sjdouf`),
+serving `https://fullcourt.fyi`. This entry supersedes the earlier pending execution,
+build and canonical-acceptance states while preserving their chronology and failed receipts.
+
+The approved manifest
+`6cc5f11f24199936c118dc112ec47147eba275e8a7d522d5fbad87a71d0f70b6`
+was applied from the original private reviewed implementation and unchanged source proof
+`140647c61490bbe8ef20ef721a555346e66b6abe14d79c7fa8eeb537cd419036`.
+Fresh read-only production capture matches the complete approved AFTER hash
+`83fc2c66f301f6ac115d4b2fdfe45883b5304d33a041569712a94fe3cbb18fa7`:
+six tables, 186,953 rows and 3,282,412 fields exactly equal. All 27,420 graded predictions
+and all 3,149 playoff prediction versions remain preserved. Only eight approved existing
+future prediction gaps change; no historical reset or grading ran, and ratified coefficients
+remain unchanged. The sanitized
+public tree and original private execution proof retain their separate provenance.
+
+The rebuilt immutable deployment and canonical site each passed 86 actual API requests /
+50,581 compared leaves with zero mismatches. Canonical comparison result SHA-256:
+`23bd8d24da307382e1ad5730e9117f056203ad0b5735f6a2101e73962632f682`.
+The staged homepage's full 13-group HTML parity and analysis stamp passed. Actual final
+canonical homepage browser checks passed at 390px and 1440px, with zero selected axe
+violations and zero horizontal overflow. The existing real-deployment homepage regression
+passed (one test). The earlier ten non-home browser states and four logo-fallback cases
+remain same-`6ddf73f4` source evidence; those cases were not all rerun on the final rebuild.
+
+**V11 remediation is complete.** Building the same source after exact AFTER verification
+removed the stale prerendered homepage state; no additional SQL or model change was needed.
+The failed pre-apply-build evidence remains retained. The staged HTML/browser plus API
+release gate above remains required for future cutovers. All 12 Vercel cron definitions
+and the GitHub daily workflow are restored active; SSO protection is unchanged and automatic
+custom-domain assignment is restored to true. Tag/release v1.0.8 binds the exact merge.
+
+The original private operational packet retains
+`docs/audit/arena-shooting-correction/release/release-acceptance.json`, SHA-256
+`b7ee49dae6c8d6df02089338f6ce041300c83ae03e7cd9cbb218c20e6f8bf131`.
+This path identifies ignored evidence, not a public link or a portable fresh-clone receipt.
+Secret alert #1 remains **OPEN**: current extracted third-party embed metadata is redacted,
+but prior-public-history removal and revocation are unverified. Opening-night execution,
+physical-device/human checks, Cup assignments and unobserved travel limits remain open.
+The separately prepared v1.0.9 cleanup is local and awaits its own final review/publication.

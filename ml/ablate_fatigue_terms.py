@@ -33,12 +33,15 @@ from pathlib import Path
 
 import pandas as pd
 
+from fatigue_artifacts import require_feature_export
+
 from fatigue_rounding import require_score_fidelity, round_score
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
-DATA = Path(__file__).resolve().parent / "data"
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / "ml" / "data"
 CSV = DATA / "fatigue_features.csv"
 REPORT = DATA / "fatigue_ablations.txt"
 FACTS = DATA.parent / "fatigue_ablation_facts.json"
@@ -112,6 +115,7 @@ def above_coin_flip(mask, won) -> int:
 
 
 def main() -> None:
+    require_feature_export(ROOT)
     usecols = [
         "game_id", "date", "season", "game_type", "status",
         "is_home", "won", "score", "neutral_site", *COMPONENTS,

@@ -21,8 +21,10 @@ import { isHeldGame } from "@/lib/game-status";
  */
 
 import { createWriteStream } from "node:fs";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { finished } from "node:stream/promises";
+import { beginFeatureExport, finishFeatureExport } from "./fatigue-artifact-provenance";
 import { format, parseISO, subDays } from "date-fns";
 import { asc } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
@@ -41,7 +43,6 @@ import { loadEnvLocal } from "@/lib/load-env-local";
 type AppDb = NodePgDatabase<typeof Schema>;
 
 const OUT_DIR = path.join(process.cwd(), "ml", "data");
-const CSV_PATH = path.join(OUT_DIR, "fatigue_features.csv");
 const REPORT_PATH = path.join(OUT_DIR, "fatigue_export_report.txt");
 
 /** First index whose date is >= `date`. The lists are sorted, so both window ends are O(log n). */
@@ -190,7 +191,15 @@ function row(
 async function main(): Promise<void> {
   loadEnvLocal();
   const verifyOnly = process.argv.includes("--verify-only");
+  const generation = verifyOnly ? null : await beginFeatureExport(process.cwd());
+  try {
+    await exportFeatures(generation);
+  } finally {
+    if (generation) await rm(generation.temporary, { force: true });
+  }
+}
 
+async function exportFeatures(generation: Awaited<ReturnType<typeof beginFeatureExport>> | null): Promise<void> {
   const { db } = await import("@/lib/db");
   const appDb = db as AppDb;
 
@@ -296,7 +305,10 @@ async function main(): Promise<void> {
   );
 
   await mkdir(OUT_DIR, { recursive: true });
-  const out = verifyOnly ? null : createWriteStream(CSV_PATH, { encoding: "utf8" });
+  const out = generation ? createWriteStream(generation.temporary, { encoding: "utf8" }) : null;
+  const outputFinished = out ? finished(out) : null;
+  // Observe errors while scoring; awaiting outputFinished below still rejects the export.
+  void outputFinished?.catch(() => undefined);
   if (out) out.write(HEADER + "\n");
 
   let written = 0;
@@ -378,7 +390,10 @@ async function main(): Promise<void> {
     }
   }
 
-  if (out) await new Promise<void>((resolve) => out.end(resolve));
+  if (out) {
+    out.end();
+    await outputFinished;
+  }
 
   const byStatus = new Map<string, number>();
   for (const m of mismatches) {
@@ -414,9 +429,10 @@ async function main(): Promise<void> {
   await writeFile(REPORT_PATH, report, "utf8");
   console.log(`[export] report written to ${REPORT_PATH}`);
   console.log(report);
-  if (mismatches.length > 0 || failures.length > 0) {
+  if (mismatches.length > 0 || failures.length > 0 || compared < 1) {
     throw new Error("Fatigue export fidelity failed; do not use this export for derived analytics");
   }
+  if (generation) await finishFeatureExport(generation, { compared, mismatches: mismatches.length, failures: failures.length });
 }
 
 main().catch((err) => {

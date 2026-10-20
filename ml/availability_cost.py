@@ -32,6 +32,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from fatigue_artifacts import require_model_table
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
@@ -71,6 +73,7 @@ def ols_with_t(x: np.ndarray, y: np.ndarray, names: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
+    require_model_table(ROOT)
     log.info("loading validated regular-season player box scores")
     play, sides, coverage = load_regular_inputs(SHOOTING, FEATURES)
     log.info("player-games joined: %d", len(play))

@@ -26,3 +26,11 @@ Published outputs in `src/data/`, `public/data/`, and model-facts modules must m
 producers and tests. Raw caches in `ml/data/` and model binaries in `ml/shot_value/` are local
 and ignored; do not delete them as disposable UI output. New SQL belongs in manual records
 under `drizzle/`, not an automatic schema reconciliation.
+
+## Audit and research maintenance
+
+The [October 20 maintenance record](../docs/research/2026-10-20-repository-maintenance.md)
+separates active tools, reproducible build output and retained source evidence. The fatigue
+research chain requires successful content-bound export and preparation receipts; follow
+[the analysis inventory](../ml/README.md) rather than reusing an old model table. Frozen
+correction programs and their manifests remain historical records, not general update tools.

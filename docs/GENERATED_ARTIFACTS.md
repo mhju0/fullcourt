@@ -6,6 +6,12 @@ Run commands from the repository root, with the appropriate Python environment f
 write production data. Inspect the exported database target before any database operation.
 Never edit a published figure directly; regenerate and review its tests and corresponding copy.
 
+The active fatigue research tools require successful content provenance for both intermediate
+CSVs. Follow the [research input sequence](../ml/README.md#fatigue-research-input-provenance)
+before rebuilding Availability, time-zone or fatigue-evaluation output. A retained CSV without
+its success receipt fails closed; regenerating intermediates does not authorize a model fit or
+publication. The receipts prove local input consistency, not freshness against the current DB.
+
 | Published output | Producer / inputs | Consumer / guard | Regeneration |
 | --- | --- | --- | --- |
 | `src/data/referee-whistle.json`, `referee-foul-style.json` | `scripts/fetch_officials.ts`; ESPN officiating records and matched stored games | Historical referee research; `referee-whistle.test.ts`, `referee-foul-style.test.ts` | `corepack pnpm exec tsx scripts/fetch_officials.ts`; inspect script arguments and provider scope first |
@@ -63,3 +69,36 @@ writing `officials-games.json` or either published JSON. The count floor detects
 loss; it does not prove membership continuity or fresh provider fidelity. The boundary tests
 use field projections of retained ESPN responses with their original cache hashes, and check
 that refusal preserves existing outputs. Published figures are unchanged by this guard work.
+
+
+## Database-derived HTML cutover
+
+Database-backed static/prerendered pages and ISR output are generated artifacts too.
+For a coordinated data correction, keep readers gated and writers paused while the root:
+
+1. Applies the approved correction and independently verifies its exact AFTER state.
+2. Builds the matching source against that verified state. If reusing a build made against
+   earlier data, explicitly invalidates and re-renders the affected output. Waiting for an
+   ISR interval does not prove that a stale response has been replaced.
+3. Checks the actual staged homepage SSR/prerendered headline, game count and baseline/lift,
+   followed by its hydrated browser state and corresponding API values, before promotion.
+4. Verifies canonical HTML/browser and APIs on the promoted deployment before restoring
+   normal readers/writers and recording acceptance.
+
+The [V11 release-order record](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v11-production-build-before-data-apply-2026-10-20)
+retains a failure where all API comparisons passed but a pre-apply homepage build still
+served old values. API-only parity cannot establish rendered-page acceptance.
+
+The existing `e2e/home.spec.ts` regression, “headline rates and samples use the same full
+completed-season history”, derives expected values from real `/api/analysis` responses at
+thresholds 0 and 5 and checks the rendered rates, samples, baseline, period/date and edge.
+After staged HTML parity, run it against the explicitly selected real deployment before
+accepting the release (root runs canonical verification after promotion):
+
+```sh
+PLAYWRIGHT_BASE_URL=https://fullcourt.fyi pnpm exec playwright test e2e/home.spec.ts -g 'headline rates and samples'
+```
+
+Use the exact staged URL for its pre-promotion run. Preserve the full 13-field staged
+homepage parity receipt alongside the browser result. The secret-free fixture-backed CI
+browser gate does not certify database-derived SSG on a real deployment.

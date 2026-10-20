@@ -60,8 +60,8 @@ vi.mock("@/lib/daily-refresh-port", async importOriginal => {
 
 vi.mock("@/lib/game-status-write", () => ({
   writeGameStatus: async (_db: unknown, update: { expectedIdentity?: unknown; gameId: number; status: string; homeScore: number | null; awayScore: number | null; overtimePeriods: number | null }) => {
-    const {gameId: _id, overtimePeriods, expectedIdentity: _identity, ...values} = update;
-    updateSet({...values, ...(overtimePeriods !== null ? {overtimePeriods} : {})});
+    const {status, homeScore, awayScore, overtimePeriods} = update;
+    updateSet({status, homeScore, awayScore, ...(overtimePeriods !== null ? {overtimePeriods} : {})});
     const rows = await updateReturning();
     return {written: rows.length > 0, invalidated: 0};
   },

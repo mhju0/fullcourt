@@ -22,6 +22,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from fatigue_artifacts import require_model_table
 from scipy.optimize import minimize
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -64,6 +66,7 @@ def fit_clamped(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, float]:
 
 
 def main() -> None:
+    require_model_table(ROOT)
     df = pd.read_csv(TABLE, low_memory=False)
     df = df[df["season_start"] >= TRAIN_FLOOR].copy()
     df[TERMS] = df[TERMS].fillna(0.0)

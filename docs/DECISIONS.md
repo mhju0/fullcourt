@@ -1948,6 +1948,22 @@ Production acceptance requires the exact frozen candidate review, local rollback
 verification, immediate owner approval of the production update, and matching public data
 and deployment checks. Local preparation alone does not establish a repaired live site.
 
+## D-130 — Refuse stale research inputs; retain frozen audit evidence (2026-10-20)
+
+The owner requested repository/local cleanup after the numeric audit. Keep active analytical
+programs and immutable correction evidence. Remove reproducible build output, archive previous
+local research outputs, and synchronize current local outputs to the verified recalculation.
+
+The active fatigue export/prepare/analysis chain must reject silently stale inputs. Publish
+content-bound success receipts only after successful generation and fidelity checks; bind
+preparation to the exact player/team cache inventory and producing source. Pin `tsconfig.json`
+alongside the source inventory because alias resolution selects computation dependencies;
+resolve the closure test with that configuration rather than a separately hardcoded map. Consumers check
+before calculations or writes. Missing legacy receipts require actual regeneration, not
+retroactive certification. These guards establish local consistency, not production database
+freshness or upstream source truth. No coefficients, evaluation windows or analytics formulas
+change; frozen historical manifests and reports remain reproducible at their original paths.
+
 ## D-131 — Source actual historical arenas before recomputing their findings (2026-10-20)
 
 The owner requests independent verification of the post-PR-187 audit before a new production

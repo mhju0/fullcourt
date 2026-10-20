@@ -25,6 +25,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from fatigue_artifacts import require_model_table
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
@@ -168,6 +170,7 @@ def build_team_games() -> pd.DataFrame:
 
 
 def main() -> None:
+    require_model_table(ROOT)
     log.info("building team-game availability")
     av = build_team_games()
     log.info("team-games measured: %d", len(av))
