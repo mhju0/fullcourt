@@ -1,7 +1,9 @@
 # Independent venue, identity and coverage follow-up — 2026-10-20
 
-Status: locally implemented and recomputed. Exact-commit review and production acceptance
-are separate release gates. No new production data write. The owner
+Status: released in [v1.0.8](https://github.com/mhju0/fullcourt/releases/tag/v1.0.8) (PR #189,
+`6ddf73f4`); acceptance is recorded at the end of the [audit ledger](AUDIT_LEDGER.md). The
+preparation-time status follows: locally implemented and recomputed. Exact-commit review and production acceptance
+were separate release gates. No new production data write. The owner
 requires a reviewed manifest, fresh backup and conditional rollback, followed by explicit
 approval before production application. This record supersedes neither the retained audit
 nor v1.0.7 acceptance. Source/test evidence takes precedence over audit prose.

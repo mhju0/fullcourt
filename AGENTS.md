@@ -7,7 +7,7 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 - Verification budget, to keep a task to minutes on the owner's Mac: while working, run `pnpm typecheck`, ESLint on changed files, and the Vitest files that cover the change; run the full `pnpm test:run` (about 20s, capped at half the cores) once before committing. For e2e, run only the specs that cover the changed route or copy, against one `pnpm build && pnpm start` server reused across runs; rebuild only after code changes. Rerun failures alone before investigating them. The full e2e suite, `audit:alignment`, multi-width sweeps and other site-wide scans run only when the owner asks or before a release. Search inside the repository, never the whole disk. Stop the server you started when the task ends.
 - `pnpm test:e2e` starts its own server and needs a populated database. Set PLAYWRIGHT_PORT for another port, or PLAYWRIGHT_BASE_URL to test an existing server. It is not run in CI.
 - Merging to `main` deploys directly to Vercel production; verify the PR preview before merging.
-- Environment: .env.example. Database pages need DATABASE_URL and populated data. Python requirements: requirements.txt for local pipelines, scripts/requirements.txt for the daily workflow, ml/requirements.txt for modeling.
+- Environment: .env.example. Database pages need DATABASE_URL and populated data. Python requirements: requirements.txt for local pipelines, scripts/requirements.txt for manual pipeline tools (the scheduled daily workflow installs nothing), ml/requirements.txt for modeling.
 - src/lib/db/schema.ts is deliberately incomplete: shot_grid and shot_value_surface are queried with raw SQL. drizzle/ contains manual SQL records, not an automatic bootstrap. Do not run drizzle-kit push/generate or reconcile the database to the ORM schema. Prepare schema changes as SQL for the owner to apply manually.
 - src/lib/fatigue.ts contains ratified coefficients. Coefficient changes require an explicit owner decision; preserve the evaluation protocol in docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md, including its amendments.
 - Game dates are America/New_York calendar dates; use formatEasternDateKey(). Published regular-season game reads use publishableGames() in queries.ts. The headline counts isCalledSide() games (rested home team), keeps rested visitors separate, and compares rates with venue baselines.
@@ -76,9 +76,10 @@ test hold what replaced them.
 
 ## Module status
 
-**Nine product routes, all nine published.** `/referees` was the last one held back and went live
-on 2026-08-22 (see the note where its ban used to be). Status and phase history live in committed
-docs, not here:
+**Every product route is published.** The referee module was the last one held back and went
+live on 2026-08-22 (D-33). Since D-60 it is published as `/officiating`; `/referees` redirects
+there and the earlier studies live at `/behind-the-data/referees/archive`. Status and phase
+history live in committed docs, not here:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — project status, shipped modules, ongoing operational work
 - [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/archive/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
@@ -99,7 +100,8 @@ while touching branding.
 
 ## Hard bans
 
-- **`/referees` is published.** Publishing or unpublishing a route is a deliberate product act,
+- **Officiating is published.** `/officiating` is the live surface and `/referees` redirects to
+  it (D-60); never restore an in-progress card. Publishing or unpublishing a route is a deliberate product act,
   never a side effect of a docs change — if a stale doc says otherwise, the doc is wrong. Its
   guarantees are enforced by `referee-legends.test.ts` and `referee-timing.test.ts`. Quote a
   per-official figure only beside the count chance produces at the same bar, and keep the caveat
@@ -142,8 +144,10 @@ ml/prepare_fatigue_dataset.py        →  ml/data/fatigue_model_table.csv
 ml/fit_fatigue_weights.py            →  reads fatigue_model_table.csv
 ```
 
-Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on disk from the
-2026-08-02 run, so the fit succeeds against a stale table and reports numbers that look valid.
+Skipping `prepare` is refused: since v1.0.9 the fit, ablation, time-zone and Availability scripts
+check provenance through `ml/fatigue_artifacts.py` and raise `StaleFatigueArtifact` when the table
+on disk does not match the current export. Before that guard, a stale table from an earlier run
+was read without warning and produced numbers that looked valid.
 
 ## Domain rules that are easy to get wrong
 
@@ -164,8 +168,8 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
   cannot be pinned should be rewritten so it cannot age (`"every season since 1985-86"`, not a
   count).
 - **The app is light-only** ("Broadcast"). It went light → dark → light once; do not reintroduce a
-  dark token set without reading [docs/FRONTEND.md](docs/FRONTEND.md). `/` (the front door — it
-  absorbed the old `/about`) is the one deliberately dark surface and is scoped to itself; since
+  dark token set without reading [docs/FRONTEND.md](docs/FRONTEND.md). `/` (the front door)
+  is the one deliberately dark surface and is scoped to itself; since
   2026-08-28 the header joins that dark on `/` only, via the scoped `fc-chrome-front` class,
   never a global re-theme.
 
