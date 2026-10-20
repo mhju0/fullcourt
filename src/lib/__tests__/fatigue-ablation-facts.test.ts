@@ -47,7 +47,7 @@ describe("generated ablation facts", () => {
     const html = renderToStaticMarkup(RestAdvantagePage());
     const backToBack = facts.terms.find((term) => term.term === "Back-to-back")!;
     const workload = facts.terms.find((term) => term.term === "Recent workload (decay)")!;
-    expect(html).toContain(`Games selected by the back-to-back term but lost when it is removed won at ${backToBack.foundWinPct.toFixed(2)}%.`);
+    expect(html).toContain(`Games that only the back-to-back term picks won ${backToBack.foundWinPct.toFixed(2)}%.`);
     expect(html).toContain(`For recent workload, that rate is ${workload.foundWinPct.toFixed(2)}%.`);
     expect(html).not.toContain("win rates above 63%");
   });

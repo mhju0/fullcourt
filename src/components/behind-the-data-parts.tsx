@@ -38,6 +38,45 @@ export function Prose({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** A group heading inside a section, set as a label so it never competes with the h2. */
+export function Subhead({ children }: { children: React.ReactNode }) {
+  return (
+    <h3
+      className="mono"
+      style={{
+        fontSize: TYPE.label,
+        letterSpacing: TRACK.label,
+        textTransform: "uppercase",
+        color: "var(--term-text-muted)",
+        borderTop: "1px solid var(--term-border)",
+        paddingTop: 16,
+      }}
+    >
+      {children}
+    </h3>
+  );
+}
+
+/** One named term: a short explanation, then its formula directly under it. */
+export function Term({
+  name,
+  formula,
+  children,
+}: {
+  name: string;
+  formula?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <Prose>
+        <strong>{name}.</strong> {children}
+      </Prose>
+      {formula && <Formula>{formula}</Formula>}
+    </div>
+  );
+}
+
 /** Secondary register — caveats, limits, and anything qualifying the claim above it. */
 export function Note({ children }: { children: React.ReactNode }) {
   return (
