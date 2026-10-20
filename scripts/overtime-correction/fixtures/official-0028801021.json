@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "validatorVersion": "official-nba-periods-v1",
+  "gameId": 29177,
+  "externalId": "0028801021",
+  "date": "1989-04-23",
+  "season": "1988-89",
+  "homeAbbr": "POR",
+  "awayAbbr": "SAC",
+  "stored": {
+    "homeScore": 126,
+    "awayScore": 120,
+    "overtimePeriods": 0
+  },
+  "source": {
+    "url": "https://www.nba.com/game/0028801021/box-score",
+    "finalUrl": "https://www.nba.com/game/0028801021/box-score",
+    "capturedAt": "2026-10-20T01:29:48.258586+00:00",
+    "completedAt": "2026-10-20T01:29:49.500049+00:00",
+    "httpStatus": 200,
+    "bodyBytes": 269996,
+    "bodySha256": "80cdc1d072bfaf45cb69ba0597e5cc7e8156bd39aea13e9d04c47596e6320689",
+    "rawPath": "raw/0028801021/80cdc1d072bfaf45cb69ba0597e5cc7e8156bd39aea13e9d04c47596e6320689.html.gz",
+    "rawGzipSha256": "d188dbbe2adca8b75ac868d8ca21eab17c682cfd446441a2e3b9ae46891ce2f2",
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "ETag": "\"1ff07jntew5tgs\"",
+      "Cache-Control": "max-age=0, no-cache, no-store",
+      "Date": "Tue, 20 Oct 2026 01:29:49 GMT"
+    },
+    "attemptHistory": []
+  },
+  "observed": {
+    "gameId": "0028801021",
+    "gameCode": "19890423/SACPOR",
+    "gameEt": "1989-04-23T20:00:00Z",
+    "gameStatus": 3,
+    "period": 5,
+    "home": {
+      "teamId": 1610612757,
+      "tricode": "POR",
+      "canonicalAbbr": "POR",
+      "score": 126,
+      "minutes": "265:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 33
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 28
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 30
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 23
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 12
+        }
+      ]
+    },
+    "away": {
+      "teamId": 1610612758,
+      "tricode": "SAC",
+      "canonicalAbbr": "SAC",
+      "score": 120,
+      "minutes": "265:00",
+      "periods": [
+        {
+          "period": 1,
+          "periodType": "REGULAR",
+          "score": 35
+        },
+        {
+          "period": 2,
+          "periodType": "REGULAR",
+          "score": 22
+        },
+        {
+          "period": 3,
+          "periodType": "REGULAR",
+          "score": 26
+        },
+        {
+          "period": 4,
+          "periodType": "REGULAR",
+          "score": 31
+        },
+        {
+          "period": 5,
+          "periodType": "OVERTIME",
+          "score": 6
+        }
+      ]
+    }
+  },
+  "decision": {
+    "status": "verified",
+    "overtimePeriods": 1,
+    "reasons": []
+  }
+}
