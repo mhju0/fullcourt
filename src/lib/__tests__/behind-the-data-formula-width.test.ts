@@ -33,7 +33,6 @@ const PAGES = {
 
 function decode(text: string): string {
   return text
-    .replace(/<[^>]+>/g, "")
     .replace(/&#x27;|&#39;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, "<")

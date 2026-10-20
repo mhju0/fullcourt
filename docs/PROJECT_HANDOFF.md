@@ -194,6 +194,7 @@ compact Games/Schedule/Shooting reading order, linked chart readouts, one-court 
 comparison, annual Availability selection and 15px explanatory text. The new read-only
 `/api/season-report-publication` discovers report seasons; schedule API behavior is preserved.
 Claude’s clarity commits are included, with three semantic copy regressions and375px
-formula/table overflow corrected. v1.1.0 is being prepared; release verification is pending.
+formula/table overflow corrected. v1.1.0 carries these changes; final release evidence belongs to its immutable Git tag,
+GitHub release and dated local acceptance receipt.
 No schema, fatigue coefficient, published artifact or historical prediction was changed.
 Physical iPhone/Safari/VoiceOver and actual opening-night ingestion remain unverified.
