@@ -106,6 +106,14 @@ children; `Prose`, `Note`, `LimitList`, `DataTable` headers and the Data Status 
 apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep a season
 column `nowrap`, and keep a table header to two lines on a phone.
 
+Behind the Data method pages (2026-10-21). A `Formula` line is at most 40 characters, the most
+12px Geist Mono fits at 390px; break a long expression across aligned lines instead of letting
+it scroll. `behind-the-data-formula-width.test.ts` renders every method page and enforces it.
+A method table keeps its rate and baseline columns on a phone: no `minWidth`, at most four
+columns, and a row's count goes under its label rather than in its own column. A list of named
+inputs with long explanations is a list, not a table. `Subhead` groups a long section and `Term`
+pairs one named term with its formula (`src/components/behind-the-data-parts.tsx`).
+
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
 the month buttons and date chips wrap, so a whole month shows at once. Both are the same 60×48 box
 (`PICKER_BOX`), so each month sits exactly over a date chip. From `sm` the previous/next day arrows sit at the

@@ -8,6 +8,7 @@ import {
   ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import { DataTable } from "@/components/ui/data-table";
 import {
   AVAILABILITY_DEFINITION,
   AVAILABILITY_EFFECTS,
@@ -31,110 +32,119 @@ const WORST_SHIFT = Math.max(
   ...Object.values(AVAILABILITY_SCHEDULE_HOLDS_UP).map((t) => Math.abs(t.shiftPct))
 );
 
+/** Reader-facing names for the four schedule terms in the absence check. */
+const SCHEDULE_TERM_LABELS: Record<keyof typeof AVAILABILITY_SCHEDULE_HOLDS_UP, string> = {
+  backToBack: "Back-to-back",
+  visitingAltitude: "Altitude, visitor",
+  priorOvertime: "Overtime last game",
+  scheduleDensity: "Schedule density",
+};
+
 export default function AvailabilityMethodPage() {
   return (
     <BehindTheDataShell
       topic="availability"
       eyebrow="BEHIND THE DATA · AVAILABILITY COST"
       title="Availability cost"
-      description="How missing rotation players are associated with final margin. Availability is measured from completed games, so these results do not forecast tonight's lineup."
+      description="How missing rotation players relate to final margin. Absences are known only after a game is played, so nothing here forecasts tonight's lineup."
     >
       <Section label="WHAT COUNTS AS MISSING" title="Who counts as a missing player">
         <Prose>
-          A missing player belongs to the team&rsquo;s recent rotation but did not play
-          in the game. Rotation membership comes from <strong>prior participation</strong>,
-          because a box score may omit players who did not play. A long absence can count for
-          at most its first four games: after four straight missed games, the player no longer
-          has two appearances in the window. Players with fewer recent appearances can leave
-          the rotation sooner.
+          A missing player is someone in the team&rsquo;s recent rotation who did not play.
+          The rotation comes from <strong>earlier games</strong>, because a box score can leave
+          out players who sat.
         </Prose>
         <Formula>
-          {`rotation   at least ${D.minAppearances} appearances with positive recorded minutes
-           in the team's previous ${D.rotationWindowGames} regular-season games
-           this season, averaging ${D.rotationMinutes}+ minutes per appearance
-missing    a rotation member who did not play tonight`}
+          {`rotation  ${D.minAppearances}+ games with minutes in
+          the team's last ${D.rotationWindowGames} games this
+          season, averaging ${D.rotationMinutes}+ minutes
+
+missing   in the rotation, but did
+          not play tonight`}
         </Formula>
         <ValueGrid
           values={[
-            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "previous regular-season games this season" },
+            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "earlier games this season" },
             { label: "Rotation threshold", value: `${D.rotationMinutes} min`, sub: "average per appearance" },
             { label: "Typical rotation", value: `${AVAILABILITY_FREQUENCY.meanRotationSize.toFixed(1)}`, sub: "players, measured" },
           ]}
         />
+        <Prose>
+          A long absence counts for at most its first four games. After four straight misses,
+          the player no longer has {D.minAppearances} games in the window. A player with fewer
+          recent games can drop out sooner.
+        </Prose>
         <Note>
-          The window starts fresh each season, so a team can be measured from its sixth regular-season game, and
-          players who left in the off-season are never counted as missing. The short window lets
-          the rotation change with trades, coaching decisions, and injuries. Its thresholds reduce the influence of a single appearance but can miss
-          players whose minutes have already fallen during an injury.
+          The window restarts each season, so a team is measured from its sixth game, and
+          players who left in the off-season never count as missing. The short window follows
+          trades, coaching choices and injuries. It can miss a player whose minutes were
+          already falling before an injury.
         </Note>
         <Note>
-          A confirmed appearance counts as present even if its duration is unclear.
-          Games with unresolved participation or minutes that could change the comparison are
-          left out. This reduces the available sample, especially in older seasons. An unclear
-          box score is not treated as proof that a player was absent.
+          A confirmed appearance counts as present even when its minutes are unclear. Games
+          where unclear participation could change the result are left out, which thins older
+          seasons most. An unclear box score is never read as proof of an absence.
         </Note>
       </Section>
 
       <Section label="WHAT AN ABSENCE IS WORTH" title="Estimating a player's missing contribution" disclosure>
         <Prose>
-          Each absence is weighted by <strong>Game Score</strong>, a summary of box-score
-          production averaged over up to {D.qualityGames} regular-season appearances with
-          positive recorded minutes, with at least five required. The value is carried forward
-          from the player&rsquo;s latest qualifying appearance in the rotation window; its
-          average ends before that appearance, so that game&rsquo;s own production is not included.
+          Each absence is weighted by <strong>Game Score</strong>, a one-number summary of a
+          box score. A player&rsquo;s value is their Game Score average over up to{" "}
+          {D.qualityGames} earlier games with minutes (at least five), minus the team&rsquo;s
+          rotation median.
         </Prose>
         <Formula>
-          {`GmSc = PTS + 0.4·FGM − 0.7·FGA − 0.4·(FTA − FTM)
-       + 0.7·ORB + 0.3·DRB + STL + 0.7·AST + 0.7·BLK
-       − 0.4·PF − TOV
+          {`GmSc  = PTS + 0.4·FGM − 0.7·FGA
+      − 0.4·(FTA − FTM)
+      + 0.7·ORB + 0.3·DRB + STL
+      + 0.7·AST + 0.7·BLK
+      − 0.4·PF − TOV
 
-value = max(0, player's GmSc − the team's own rotation median)`}
+value = max(0, GmSc average
+               − rotation median)`}
         </Formula>
         <Prose>
-          The median among rotation members with usable quality estimates is a proxy for
-          replacement production. An absent player above that median contributes a positive
-          missing-value score; one at or below it contributes zero. This does not identify
-          who actually took the missing minutes.
+          The average is taken from the player&rsquo;s last game in the window and ends before it, so that
+          game&rsquo;s own line is not included. The rotation median stands in for a
+          replacement. A player above it adds positive value; one at or below it adds zero. It
+          does not say who actually took the minutes.
         </Prose>
         <Note>
-          A rotation player without enough usable prior appearances has no quality estimate
-          and contributes no missing-value weight. The rotation count can still include that player.
+          A rotation player without enough earlier games has no estimate and adds no value.
+          They still count toward the rotation size.
         </Note>
         <Note>
-          Five weightings were compared against the same baseline: minutes,
-          points, raw Game Score, Game Score above replacement, and a plain
-          best-player-out flag. Value above replacement had the lowest residual error. The
-          comparison is in <code>ml/availability_quality.py</code>; weighting by minutes alone
-          was the weakest of the continuous measures. This comparison describes model fit,
-          not a held-out forecast evaluation.
+          Five weightings were tried against the same baseline: minutes, points, raw Game
+          Score, Game Score above replacement, and a simple best-player-out flag. Value above
+          replacement fit best. Minutes alone was the weakest continuous measure. The comparison
+          is in <code>ml/availability_quality.py</code>. It measures fit, not a held-out
+          forecast.
         </Note>
       </Section>
 
       <Section label="TURNING THAT INTO POINTS" title="Estimating the association with final margin" disclosure>
         <Prose>
-          Each estimate comes from a regression model of the <strong>final score margin</strong>.
-          Margin retains the size of each result and expresses
-          the estimated associations in points.
+          Each estimate comes from a regression on the <strong>final score margin</strong>, so
+          results are in points.
         </Prose>
         <Formula>
           {`home margin ~ home court
-              + team strength (home − away)
-              + season position     (away − home)
-              + schedule terms      (away − home)
-              + absence value       (away − home)`}
+  + strength gap    (home − away)
+  + season position (away − home)
+  + schedule terms  (away − home)
+  + absence value   (away − home)`}
         </Formula>
         <Prose>
-          Schedule and absence terms are <strong>differenced</strong>, away minus home;
-          team strength uses home minus away. Equal values on both sides cancel.
-          Team strength is each side&rsquo;s win rate in its{" "}
-          <em>prior</em> games only, shrunk toward .500 early in a season so an October record is
-          not read as established. This control helps separate existing differences in team
-          strength from the association with missing players.
+          Each term is a gap between the teams, so equal values cancel. Team strength is each
+          side&rsquo;s win rate in <em>earlier</em> games only, pulled toward .500 early in a
+          season so an October record is not taken at face value. It keeps a better team&rsquo;s
+          edge from being credited to the other side&rsquo;s absences.
         </Prose>
         <Prose>
-          &ldquo;Best player&rdquo; means the rotation member with the highest available prior
-          Game Score average. The best-player-out estimate compares one side missing that
-          player with the other side not missing theirs; it is not a fixed penalty for every star.
+          &ldquo;Best player&rdquo; is the rotation member with the highest Game Score average.
+          The best-player-out estimate compares one side missing its best player with the
+          other side not missing theirs. It is not a fixed penalty for every star.
         </Prose>
         <ValueGrid
           values={[
@@ -144,50 +154,53 @@ value = max(0, player's GmSc − the team's own rotation median)`}
           ]}
         />
         <Note>
-          The absence measures are strongly correlated with one another, and entered together
-          their estimates become unstable, including a sign reversal. Each published effect comes from
-          its own specification rather than from a single model carrying all of them, and they
-          should be read as separate answers to separate questions, never summed.
+          The absence measures overlap heavily. Put in one model together, their estimates
+          swing and one even flips sign. So each figure comes from its own model. Read them as
+          separate answers, and never add them up.
         </Note>
         <Note>
-          The t-statistics use ordinary regression standard errors, without adjustments for
-          repeated teams or players. These observational comparisons do not establish that
-          an absence caused the estimated change in margin.
+          The t-values use plain regression standard errors, not adjusted for the same teams
+          and players appearing again and again. These are observed associations, not proof
+          that an absence caused the change in margin.
         </Note>
       </Section>
 
       <Section label="WHY THE SCHEDULE STILL COUNTS" title="Schedule results after accounting for absences" disclosure>
         <Prose>
-          Teams may rest players on the second night of a back-to-back. Adding measured
-          absences to the regression checks how much of the schedule association those
-          absences account for.
+          Teams sometimes rest players on the second night of a back-to-back. If that drove the
+          schedule effects, adding absences to the model would shrink them. It barely does:
         </Prose>
-        <Formula>
-          {Object.entries(AVAILABILITY_SCHEDULE_HOLDS_UP)
-            .map(
-              ([name, t]) =>
-                `${name.padEnd(18)} ${t.scheduleOnly.toFixed(3)} → ${t.absenceControlled.toFixed(3)}  (${t.shiftPct.toFixed(1)}%)`
-            )
-            .join("\n")}
-        </Formula>
+        <DataTable
+          rows={Object.entries(AVAILABILITY_SCHEDULE_HOLDS_UP).map(([name, t]) => ({
+            name: SCHEDULE_TERM_LABELS[name as keyof typeof AVAILABILITY_SCHEDULE_HOLDS_UP],
+            ...t,
+          }))}
+          rowKey={(r) => r.name}
+          columns={[
+            { label: "TERM", cell: (r) => r.name },
+            { label: "ALONE", unit: "COEF.", numeric: true, cell: (r) => r.scheduleOnly.toFixed(3) },
+            { label: "WITH ABSENCES", unit: "COEF.", numeric: true, cell: (r) => r.absenceControlled.toFixed(3) },
+            { label: "CHANGE", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.shiftPct.toFixed(1) },
+          ]}
+        />
         <Prose>
-          Each of these four schedule coefficients moves by under {Math.ceil(WORST_SHIFT)}%. Measured
-          absences account for little of these associations in this specification. That does
-          not rule out unmeasured absences, changes in playing time, or other confounders.
+          Each of the four moves by under {Math.ceil(WORST_SHIFT)}%. Measured absences explain
+          little of the schedule effect here. That does not rule out unmeasured absences,
+          changes in playing time, or other factors.
         </Prose>
       </Section>
 
       <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
-            "It is not a forecast. Who sat is known only because the game was played. Lineups are not settled until shortly before tip, so nothing here says who will be available tonight.",
-            "It does not know why a player was out. Injury, load management, suspension and a personal matter are one category here, and they are not the same thing.",
-            `It does not know who replaced him. Replacement level is the team's own rotation median, which is a reasonable stand-in and not the actual substitute.`,
-            "Game Score captures limited defensive information and may miss part of a defensive player's contribution.",
-            "Missing box-score counting-stat fields are filled with zero when computing Game Score, which can affect quality estimates from incomplete records.",
-            `Final margins have a standard deviation of ${AVAILABILITY_NOISE.marginStdDev.toFixed(1)} points. The model's error remains ${AVAILABILITY_NOISE.rmseWithAbsence.toFixed(1)} points after including team records, schedule, and absences, leaving much of the variation unexplained.`,
-            `The margin comparison includes source-supported games from ${AVAILABILITY_SAMPLE.firstSeason} through ${AVAILABILITY_SAMPLE.lastSeason}. Both teams need usable histories for a game to enter that comparison.`,
-            "Coverage varies by season, and some early annual samples are sparse or unavailable. Annual rates describe the included team-games and do not establish a league-wide trend.",
+            "It is not a forecast. Who sat is known only after the game. Lineups settle shortly before tip, so nothing here says who will play tonight.",
+            "It does not know why a player was out. Injury, load management, suspension and personal reasons are one category here.",
+            "It does not know who took the missing minutes. The team's rotation median is a stand-in, not the actual substitute.",
+            "Game Score sees little defense and can undervalue a defensive player.",
+            "Missing box-score fields are filled with zero for Game Score, which can skew estimates from incomplete records.",
+            `Final margins have a standard deviation of ${AVAILABILITY_NOISE.marginStdDev.toFixed(1)} points. With records, schedule and absences included, the model's error is still ${AVAILABILITY_NOISE.rmseWithAbsence.toFixed(1)} points. Most of what decides a game is not here.`,
+            `The margin comparison covers ${AVAILABILITY_SAMPLE.firstSeason} through ${AVAILABILITY_SAMPLE.lastSeason}, wherever sources support it. Both teams need usable histories for a game to count.`,
+            "Coverage varies by season, and some early seasons are thin or missing. Yearly rates describe the games included, not a league-wide trend.",
           ]}
         />
       </Section>

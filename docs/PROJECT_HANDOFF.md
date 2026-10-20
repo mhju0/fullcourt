@@ -180,3 +180,7 @@ them except one. Open: at 390×844 the first /games card starts 57px behind the 
 (`independent-audit.spec.ts` "mobile games keep season, month and date visible"). Making it
 pass means trimming or reordering the mobile board above the slate, which is an owner design
 call. A one-time cloud routine checks the opening-night slate at 2026-10-21 05:00 UTC.
+
+## Behind the Data clarity pass — 2026-10-21
+
+Branch `docs/behind-the-data-clarity`. Rewrote all ten method pages for plain, short copy and phone width: the rest-advantage page now repeats the combining equation and gives every term its own formula (altitude included), grouped as loads, multipliers and adjustments. Every formula line is at most 40 characters (`behind-the-data-formula-width.test.ts`), padded-text "tables" became real tables, and no method table overflows at 390px. Rule recorded in FRONTEND.md. No coefficient changed; `fatigue.ts` only names the existing per-window stress cap and exports it. Open: hand-typed figures in data-and-limits prose (88, 971, 179, 135, 44 games) and "twenty points" on rest-advantage predate this pass and are still unpinned.

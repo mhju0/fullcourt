@@ -7,16 +7,16 @@ import { sectionId } from "@/components/behind-the-data-parts";
 import "./reference.css";
 
 const LIMITS: Record<string, string> = {
-  "rest-advantage": "Historical rest groups also differ in home court and team strength. Their win rates do not isolate the effect of rest or predict an individual game.",
-  "schedule-edge": "Worth uses pooled historical rates relative to venue baselines. It estimates schedule conditions, not the wins a team actually gained.",
-  "playoff-predictions": "The tests support better probability estimates more clearly than better winner selection. Injuries and in-series adjustments are not included.",
-  "player-shooting": "A positive difference means higher shooting efficiency with more rest. Opponents, shot selection and reasons for missed games can also affect the split.",
-  "shot-value": "Shots in the same grid cell and season receive the same expected value, even when the shooters and defenders differ.",
-  availability: "Absences are identified after games are played. These estimates cannot tell you who will be available tonight, and separate absence effects must not be added together.",
-  officiating: "These are the NBA's assessments of selected close-game endings. They cannot measure whole-game accuracy or identify which official made an error.",
-  referees: "This is archived research on foul frequency in games each official worked. It cannot identify who made a call or whether the call was correct.",
-  "time-zones": "The tested home-base-to-venue time-zone terms did not improve predictions. That does not establish that the biological effect is zero or validate the model's retained directional multipliers.",
-  "data-and-limits": "Coverage differs by field and season. An unavailable input is not evidence that no overtime, travel or other event occurred.",
+  "rest-advantage": "Rested and tired teams also differ in home court and team strength. These win rates do not isolate rest, and they do not predict a single game.",
+  "schedule-edge": "Worth prices the schedule with historical rates. It is not the number of wins a team actually gained.",
+  "playoff-predictions": "The model gives better probabilities, but not clearly better picks. It does not see injuries or in-series changes.",
+  "player-shooting": "A positive split means better shooting with more rest. Opponents, shot choice and why games were missed can also move it.",
+  "shot-value": "Every shot from the same cell in the same season gets the same value, whoever shot it and however it was guarded.",
+  availability: "Absences are known only after a game. Nothing here says who plays tonight, and the separate absence effects must not be added together.",
+  officiating: "These are the NBA's own reviews of selected close-game endings. They cannot measure whole-game accuracy or say which official erred.",
+  referees: "Archived research on how often fouls were called in each official's games. It cannot say who made a call or whether it was right.",
+  "time-zones": "The time-zone terms did not improve predictions. That does not prove the biological effect is zero, and it does not confirm the model's direction multipliers.",
+  "data-and-limits": "Coverage differs by field and season. A missing input is not evidence that no overtime, travel or other event happened.",
 };
 
 export function BehindTheDataShell({ eyebrow, title, description, topic, children }: {
