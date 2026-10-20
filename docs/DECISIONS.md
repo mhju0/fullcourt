@@ -1980,3 +1980,9 @@ writes, guarded future forecasts and conditional rollback. Recompute dependent a
 their producers and compare all published populations and season Mileage. Production requires
 a fresh verified backup, exact frozen independent review and the owner's new approval of the
 manifest and before/after evidence; local preparation is not a live correction.
+
+The retained prediction tools must honor the same preservation boundary: historical
+current-rule differences are diagnostics, not a failed history-rebuild instruction. The
+legacy reset command becomes report-only and refuses `--apply` before loading environment
+or database access; verification separates actual integrity/future-call defects from
+preserved historical drift. No historical reset/backfill or 2026-27 grading is authorized.

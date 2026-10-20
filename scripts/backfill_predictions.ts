@@ -4,15 +4,16 @@
  *
  * Prediction rule: the more rested team is predicted to win, but only when that team is
  * also the home side. A rested visitor is not picked — that row (`RESTED_ON_ROAD` in
- * src/lib/rest-split-facts.ts) wins well under half its games, and folding home court into the score instead lands below simply backing the home
- * team every time (96.5% coverage at 59.7%, against 59.9%). `isCalledSide` holds the rule and
- * the evidence; see ADR 0006 and its 2026-08-06 addendum.
+ * src/lib/rest-split-facts.ts) is measured against its road baseline. Current generated
+ * facts and ADR 0006 hold the evidence; `isCalledSide` owns the selection rule.
  *
  * Games with |differential| < 0.5 are skipped as neutral, as before.
  *
- * Safe to run multiple times — games that already have a prediction entry
- * are skipped. It has no --force: after a rule or model change, DELETE the rows first
- * or the old picks survive.
+ * Existing entries are skipped. This legacy reconstruction tool is not a repair path
+ * for preserved production history: missing calls under today's recomputed scores are
+ * diagnostics, not permission to add or replace past picks. Never delete predictions
+ * to make this backfill run. Use a reviewed correction manifest for eligible future
+ * forecasts; historical reconstruction requires a separate explicit owner decision.
  *
  * Usage:
  *   pnpm exec tsx scripts/backfill_predictions.ts

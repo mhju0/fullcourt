@@ -6,6 +6,7 @@
   arena-to-arena Mileage, ratified coefficients and graded prediction history.
 - Include all five canonical shooting aliases; correct Data Status coverage, referee
   source dates, the L2M canonical link and two historical conference metadata cells.
+- Make prediction verification preservation-aware and the legacy reset command report-only.
 - Render methods-page ablation rates from generated facts and fix team-logo fallback
   text contrast while preserving official fills.
 - Recalculate dependent publications from the reviewed local correction; production

@@ -153,9 +153,12 @@ then agree in FGA and exact eFG numerator. The separate full-cache check covers 
 published season rows. Fifteen of the 615 reference playoff series are the existing
 2019-20 bubble-model exclusion; all 600 stored series match their accepted metadata.
 
-The legacy prediction verify/reset tools are unchanged under Section 7's report-only scope.
-Their current-rule mismatch/reset language is not authorization to rewrite preserved history;
-no reset, historical backfill or 2026-27 grading was run in this task.
+The prediction tools follow Section 7's preservation decision. Verification reports historical
+current-rule differences separately from structural integrity and eligible-future consistency.
+The legacy reset command is report-only; `--apply` is refused before environment/database
+loading. The historical backfill documentation also stops recommending deletion. No reset,
+historical backfill or 2026-27 grading was run in this task. This closes the handoff's explicit
+script-reconciliation requirement without changing model definitions or stored history.
 
 A built-browser error-state check additionally found the team-logo fallback text had
 insufficient contrast on Atlanta/Portland red. The text selector now compares actual WCAG
@@ -164,3 +167,13 @@ text choices fail. All current/historical/neutral primary and secondary fills ha
 coverage. This presentation repair is outside the frozen scoring/transition source closure;
 it does not change the manifest or any data calculation. Normal-image checks and the
 explicit failed-image check remain distinct evidence.
+
+Both preservation-aware CLIs were exercised on the dedicated SELECT-only local role in
+REPEATABLE READ / READ ONLY transactions. They report 28,077 stored predictions, 27,420
+graded and 657 unresolved; integrity and all 657 eligible future calls pass. Historical
+all-stored-row gap differences are 12,519: the independent audit's 12,378 still-called rows
+plus 141 withdrawn rows. The three retained neutral-site predictions are historical
+diagnostics too. `--apply` refuses before environment/database access. Eight tool contracts
+and the complete native Node suite (24 tests) pass; full unit tests remain 1,460 passing.
+The exact six-domain after hash is unchanged before/after the actual CLI runs. Shared
+node-postgres pool/TLS settings and latest-fatigue ordering remain in use.

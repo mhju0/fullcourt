@@ -194,7 +194,7 @@ PostgreSQL. Manifest `6cc5f11f…0f70b6` changes 52,611 fatigue sides, two confe
 eight existing future forecasts. Exact apply, idempotence, rollback and actual server-restart
 checks passed; production writes remain zero. All 15 producers and independent full-row
 replays pass; 86 local APIs match the numeric oracle and 1,460 unit tests/build pass. Next:
-finish browser acceptance and independent frozen-commit review, then present the exact diff,
+obtain narrow final review of the report-only prediction tools, then present the exact diff,
 source proof, before/after figures and rollback for new owner approval. Do not merge/deploy
 the new scorer against the old production dataset. The separately queued cleanup
 branch needs the new arena dependency closure before integration.
