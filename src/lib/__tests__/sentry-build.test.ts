@@ -10,6 +10,9 @@ const require = createRequire(import.meta.url);
 const sdkRequire = createRequire(require.resolve("@sentry/nextjs/config"));
 const { SentryCliAdapter } = require(join(dirname(sdkRequire.resolve("@sentry/bundler-plugins/core")), "cli.js"));
 const temporaryDirectories: string[] = [];
+const blockedCliCommands = [
+  "createRelease", "finalizeRelease", "setCommits", "newDeploy", "injectDebugIds", "getServerUrl",
+] as const;
 
 function artifacts() {
   const distDir = mkdtempSync(join(tmpdir(), "fullcourt-sentry-build-"));
@@ -26,12 +29,23 @@ function artifacts() {
 
 beforeEach(() => {
   vi.stubEnv("TURBOPACK", "1");
+  vi.stubEnv("VERCEL", "");
+  vi.stubEnv("VERCEL_ENV", "");
+  // Without a name the SDK drops setCommits:false and falls back to real release discovery.
+  vi.stubEnv("VERCEL_GIT_COMMIT_SHA", "0123456789abcdef0123456789abcdef01234567");
+  for (const command of [...blockedCliCommands, "uploadSourcemaps"] as const) {
+    vi.spyOn(SentryCliAdapter.prototype, command).mockRejectedValue(new Error(`Unexpected Sentry command: ${command}`));
+  }
 });
 
 afterEach(() => {
-  vi.unstubAllEnvs();
-  vi.restoreAllMocks();
-  for (const dir of temporaryDirectories.splice(0)) rmSync(dir, { recursive: true, force: true });
+  try {
+    for (const command of blockedCliCommands) expect(SentryCliAdapter.prototype[command]).not.toHaveBeenCalled();
+  } finally {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+    for (const dir of temporaryDirectories.splice(0)) rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 describe("shipping-build Sentry source maps", () => {
