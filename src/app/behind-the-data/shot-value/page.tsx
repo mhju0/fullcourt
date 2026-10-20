@@ -77,7 +77,7 @@ xeFG% = 100 × [(1 − r3) × P(make two) + r3 × 1.5 × P(make three)]`}
           The displayed surfaces use models refitted on all seasons in the training data,
           including seasons shown on the map. They are retrospective reference surfaces,
           not the held-out predictions used in validation. Period is fixed at the training
-          average and home/away at an even mix; neither varies by cell. New seasons require
+          average and the home/away input is fixed at 0.5; neither varies by cell. New seasons require
           a separate data and surface update.
         </Note>
       </Section>
