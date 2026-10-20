@@ -1,5 +1,13 @@
 # Release history
 
+## 1.0.11 — 2026-10-20
+
+- Read Season Report's other-seasons rested-home rate beside those seasons' home win rate,
+  and state Schedule Edge method tiles in points against the home baseline.
+- Rename workload columns to MILEAGE and TIME ZONES, show playoff sweeps as "swept 4–0",
+  label the zero-rest GAMES column as a season total, and count the referee foul-share
+  table's own chance cells. No published figure changes.
+
 ## 1.0.10 — 2026-10-20
 
 - Count the social card's backtest seasons from the measured sample, not the season list
