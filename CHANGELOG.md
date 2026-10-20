@@ -1,5 +1,15 @@
 # Release history
 
+## 1.0.10 — 2026-10-20
+
+- Count the social card's backtest seasons from the measured sample, not the season list
+  that adds the upcoming season on 1 October.
+- Correct stale and misleading copy: missed playoff picks, the non-model entry-rest column,
+  the Availability trend's first season, overtime coverage, methods history, Data Status
+  scope, the ALT legend and the board's ET check time.
+- Correct post-v1.0.9 repository documentation and refresh the Availability input hash;
+  no published figure changes.
+
 ## 1.0.9 — 2026-10-20
 
 - Reject stale or failed local research exports before dependent analyses; bind successful
