@@ -180,3 +180,36 @@ diagnostics too. `--apply` refuses before environment/database access. Eight too
 and the complete native Node suite (24 tests) pass; full unit tests remain 1,460 passing.
 The exact six-domain after hash is unchanged before/after the actual CLI runs. Shared
 node-postgres pool/TLS settings and latest-fatigue ordering remain in use.
+
+
+## Latest status: v1.0.8 production accepted — 2026-10-20
+
+[v1.0.8](https://github.com/mhju0/fullcourt/releases/tag/v1.0.8) publishes merge
+`6ddf73f46a36e664fb505cd160ad92d324e748eb` on rebuilt deployment
+`dpl_6doQr64bTQ9LzGcjes14ViUGSFzz` at `https://fullcourt.fyi`. The approved original
+manifest/source proof (`6cc5f11f…` / `140647c6…`) applied successfully; independent full
+production readback matches AFTER
+`83fc2c66f301f6ac115d4b2fdfe45883b5304d33a041569712a94fe3cbb18fa7`,
+all six tables / 186,953 rows / 3,282,412 fields. Graded and playoff prediction history
+is preserved; only eight approved future gaps change. Ratified coefficients and the deferred
+historical grading policy remain unchanged.
+
+Both rebuilt immutable and canonical API comparisons pass 86 requests / 50,581 leaves
+with zero mismatches. The staged 13-group homepage HTML comparison and analysis stamp,
+final canonical homepage at 390/1440 (axe/overflow zero), and real-deployment homepage
+regression (one test) pass. Earlier ten non-home and four fallback cases remain explicitly
+carried same-source evidence. V11's stale pre-apply homepage build was caught and replaced
+by rebuilding the same source after the database update; its failed receipts remain retained.
+All 12 Vercel cron definitions and GitHub daily are restored, with SSO unchanged and
+automatic custom-domain assignment true.
+
+The [ledger acceptance](AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
+pins exact reviewed bindings and distinguishes final verification from carried checks.
+Canonical comparison receipt SHA is
+`23bd8d24da307382e1ad5730e9117f056203ad0b5735f6a2101e73962632f682`;
+private `release/release-acceptance.json` SHA is
+`b7ee49dae6c8d6df02089338f6ce041300c83ae03e7cd9cbb218c20e6f8bf131`.
+These ignored receipts are not public links. Secret alert #1 remains open; revocation and
+prior-public-history purge are unverified. Section 7's report-only boundaries, deferred
+2026-27 grading and the existing device/opening-night/Cup/source limits remain unchanged.
+The earlier preparation-only entries are dated chronology, superseded by this acceptance.

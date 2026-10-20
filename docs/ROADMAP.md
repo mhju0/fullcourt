@@ -37,21 +37,22 @@ cohort changes. Exact review, preview and deployed acceptance live in the
 [v1.0.4 release](https://github.com/mhju0/fullcourt/releases/tag/v1.0.4) and its PR.
 Source-dependent holdouts remain visible limits; no production DB mutation is implied.
 
-## Post-PR-187 independent audit — candidate awaiting approval
+## Post-PR-187 independent audit — released in v1.0.8
 
-D-131 prepares the [arena and canonical-fixture correction](research/2026-10-20-arena-shooting/README.md)
-in `fix/historical-arena-shooting`: all-30 sourced venue eras, individually evidenced
-exceptions, complete Shooting identity joins, correct Data Status coverage and smaller
-metadata repairs. Local backup restore and exact apply/rollback/server-restart checks pass.
-Finish producer regeneration, independent after-export comparisons, integrated browser/check
-coverage and frozen-candidate review before requesting the owner's new production approval.
-Production is still v1.0.7; do not merge the new scorer before coordinated data cutover.
+D-131's [arena and canonical-fixture correction](research/2026-10-20-arena-shooting/README.md)
+is accepted in [v1.0.8](https://github.com/mhju0/fullcourt/releases/tag/v1.0.8), merge
+`6ddf73f4`. The approved production after-state matches all six tables and preserved graded
+and playoff prediction history. Rebuilt deployment `dpl_6doQr64bTQ9LzGcjes14ViUGSFzz`
+passes canonical API and actual homepage checks after V11's build-order correction; writers
+and original hosting settings are restored. The [audit ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md)
+retains the failed build, final evidence hashes and explicitly carried same-source checks.
 
-Section 7 stays report-only: workload-window naming, long road gaps, bubble semantics,
-unobserved flights home, seed proxies and preserved prediction history do not change.
-The owner has deferred 2026-27 grading; opening-night observation must respect that boundary.
-Repository/script cleanup remains queued separately and must include the new arena dependency
-closure rather than reusing a stale generated dataset.
+Section 7 stays report-only, and 2026-27 grading remains deferred. Opening-night execution,
+physical-device/human checks, future Cup assignments and unobserved travel remain open.
+Secret alert #1 remains open: current metadata is redacted; revocation/history purge is unknown.
+The v1.0.9 research-cleanup candidate is prepared locally, including arena and TypeScript
+configuration provenance, actual readonly-clone byte parity and preserved old receipts.
+Its final review/publication remains separate from the accepted v1.0.8 correction.
 
 ## Maintenance
 
@@ -199,9 +200,9 @@ The owner requested the same audit across every stored season. The [all-season r
 Keep source adjudication, confirmed historical venue corrections, early overtime gaps, the homecoming policy decision and dependent artifact regeneration as separate follow-ups. External source coverage varies by season and field; provider disagreements are not automatically database errors. Actual charter airports and intermediate home stops remain unobserved for most historical journeys. Any controlled production correction needs exact affected rows, backup/rollback, independent review and the applicable owner approval before persistent-data replacement.
 
 
-### Queued research maintenance (v1.0.9)
+### Prepared research maintenance (v1.0.9)
 
-Integrate content-bound export/prepare/consumer guards after the arena release. Include
-the shared arena registry and factory in the exporter source closure, preserve previous
-CSV/receipt evidence, and verify new intermediate bytes against the accepted AFTER state.
-This changes local research safety, without a model refit or publication regeneration.
+The local candidate integrates content-bound export/prepare/consumer guards after the arena
+release, including the shared registry/factory and `tsconfig.json`. Actual export/preparation
+match accepted AFTER intermediate bytes; prior CSV/receipt evidence remains archived.
+Final review/publication is pending. No model refit or publication regeneration is included.
