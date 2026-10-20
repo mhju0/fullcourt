@@ -25,7 +25,6 @@ const geist = localFont({
   style: "normal",
   variable: "--font-geist",
   display: "swap",
-  declarations: [{ prop: "font-family", value: "Geist" }],
 });
 
 // The data face. Replaces IBM Plex Mono with the direction's Geist Mono — same
@@ -37,7 +36,6 @@ const geistMono = localFont({
   style: "normal",
   variable: "--font-geist-mono",
   display: "swap",
-  declarations: [{ prop: "font-family", value: "Geist Mono" }],
 });
 
 // No route count and no "completed": both aged. This named three surfaces while the site

@@ -14,7 +14,7 @@ export default function ShootingPage() {
       <header className="page-intro"><PageHeader
         eyebrow="PLAYERS · eFG% BY REST"
         title="Player Shooting by Rest"
-        description="Compare a player’s shooting with and without rest, across seasons."
+        description="Compare shooting with and without rest."
       />
       <MethodLink surfaceHref="/shooting" /></header>
 
