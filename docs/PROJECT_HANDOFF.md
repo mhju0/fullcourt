@@ -124,7 +124,8 @@ homepage built before the data apply and later rebuilt).
 Carried forward: intermittent Google Fonts builds stay monitored; Section 7 is report-only and
 2026-27 grading stays deferred; actual airports, Cup assignments, physical devices and the
 first real slate remain unobserved. Raw backups and private receipts that lived in the
-per-task worktrees are now local-only under `docs/audit/worktree-archive-2026-10-20/`.
+per-task worktrees are now local-only in `../fullcourt-local-archive/worktree-archive-2026-10-20/`,
+outside the repo because `tsconfig.json` type-checks every `**/*.ts` under it.
 
 ## v1.0.8 canonical acceptance; v1.0.9 prepared — 2026-10-20
 
@@ -151,3 +152,10 @@ read-only database recount found no wrong published figure. It found stale statu
 method text, mislabelled copy and two provenance gaps; fixes ship as separate docs, copy
 and artifact-provenance PRs. All per-task worktrees were removed; their unique evidence is
 in the local archive named above, with branch SHAs in its README.
+
+Outcome: docs #191, copy #192 (OG card printed 42 seasons from `NBA_SEASONS` after the
+October rollover; now `BACKTEST_SEASON_COUNT`), provenance #193 (Availability input hash only;
+the time-zone snapshot reproduced byte for byte). Not changed on purpose: no projected mark on
+the board (owner, 2026-10-16) and Shooting's empty 2026-27 default (pinned). Open: secret
+alert #1, unverified agent-reported terminology drift (TRAVEL MILES, JET-LAGGED, Home/rest
+gap), and the kept local branches listed in the archive README.
