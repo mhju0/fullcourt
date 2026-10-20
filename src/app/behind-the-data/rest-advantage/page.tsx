@@ -690,14 +690,16 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
 
       <Section label="HOW THE MODEL IS SCORED" title="Evaluation protocol and model history" disclosure>
         <Prose>
-          Every constant above was set by reasoning about the physical effect and reviewed
+          The constants above were set by reasoning about the physical effect and reviewed
           before the backtest was run; none was fitted to maximise this win rate. Reusing
           evaluation results to choose constants can overstate performance. One constant has moved on
           measured evidence: the altitude multiplier was raised from 1.15 to 1.29 on 2026-08-02
           to match altitude&rsquo;s measured size against a back-to-back on final margin. That
           is a different target from the win rates on this page, and the change is recorded in
           ADR 0006. Using a different target does not make the shared historical games an
-          independent test set.
+          independent test set. One term has been removed: the smaller altitude charge on the
+          game after a visit at altitude was dropped on 2026-10-17 after it measured no effect,
+          also recorded in ADR 0006.
         </Prose>
         <Prose>
           Refreshed research fits keep their original completed regular-season cohort,

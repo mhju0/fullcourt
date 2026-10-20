@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import {
-  AVAILABILITY_BEST_OUT_BY_SEASON,
+  AVAILABILITY_TREND_SEASONS,
   AVAILABILITY_EFFECTS,
 } from "../src/lib/availability-facts";
 
@@ -36,13 +36,13 @@ test.describe("Availability Cost page", () => {
   test("draws one column per season, on a track that starts at zero", async ({ page }) => {
     await page.goto("/availability");
 
-    const trend = page.getByRole("img", { name: /Share of team-games played without/ });
+    const trend = page.getByRole("img", { name: /Best-player absence rate/ });
     await expect(trend).toBeVisible();
-    await expect(trend.locator("> div")).toHaveCount(AVAILABILITY_BEST_OUT_BY_SEASON.length);
+    await expect(trend.locator("> div")).toHaveCount(AVAILABILITY_TREND_SEASONS.length);
 
     // The tallest column is the most recent season and fills the track. A truncated axis would
     // turn a real threefold rise into a dramatic one, so the full-height column is load-bearing.
-    const last = AVAILABILITY_BEST_OUT_BY_SEASON.at(-1)!;
+    const last = AVAILABILITY_TREND_SEASONS.at(-1)!;
     await expect(trend.locator("> div").last()).toHaveAttribute(
       "title",
       new RegExp(`^${last.season} `)

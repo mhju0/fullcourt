@@ -9,7 +9,7 @@ import {
   MARK_CUTS,
 } from "@/lib/brand/court-mark-geometry";
 import { wordmarkLetters } from "@/lib/brand/wordmark-kern";
-import { NBA_SEASONS } from "@/lib/nba-season";
+import { BACKTEST_SEASON_COUNT } from "@/lib/rest-split-facts";
 
 export const alt = "FullCourt · NBA analytics for rest, travel, and shooting";
 export const size = { width: 1200, height: 630 };
@@ -103,7 +103,7 @@ export default async function OpengraphImage() {
             READ AGAINST THE BASELINE
           </div>
           <div style={{ display: "flex" }}>·</div>
-          <div style={{ display: "flex" }}>{`${NBA_SEASONS.length}-SEASON BACKTEST`}</div>
+          <div style={{ display: "flex" }}>{`${BACKTEST_SEASON_COUNT}-SEASON BACKTEST`}</div>
         </div>
       </div>
     ),

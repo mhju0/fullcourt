@@ -156,7 +156,7 @@ export default async function DataStatusPage() {
         <StatusCard
           title="Model Results"
           href="/analysis"
-          coverage={analysis ? `${analysis.games.toLocaleString()} final games with fatigue evidence` : "Unavailable"}
+          coverage={analysis ? `${analysis.games.toLocaleString()} final regular-season games with fatigue evidence, neutral sites included` : "Unavailable"}
           through={analysis?.latestEvidenceDate ?? "Unknown"}
           refresh="Not recorded."
         />

@@ -82,3 +82,12 @@ export const AVAILABILITY_NOISE = Object.freeze(facts.noise);
  * missing years, so the chart preserves calendar gaps and does not claim a league-wide trend.
  */
 export const AVAILABILITY_BEST_OUT_BY_SEASON: readonly BestOutSeason[] = Object.freeze(facts.seasonBestOutRate.map((row) => Object.freeze(row)));
+
+/**
+ * The seasons the chart draws: those inside the measured sample. The producer also emits
+ * stray team-games from before `sample.firstSeason` (three in 1996-97), which no game in the
+ * fit uses and which would print as a 0.0% opening column.
+ */
+export const AVAILABILITY_TREND_SEASONS: readonly BestOutSeason[] = Object.freeze(
+  AVAILABILITY_BEST_OUT_BY_SEASON.filter((row) => row.season >= AVAILABILITY_SAMPLE.firstSeason)
+);

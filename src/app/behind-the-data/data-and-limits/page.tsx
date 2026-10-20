@@ -40,7 +40,7 @@ const COVERAGE = [
     field: "Overtime periods",
     from: NBA_SEASONS[0],
     source: "ESPN; NBA box scores; reviewed team records",
-    note: "Period scores and team minutes confirm historical overtime. Reviewed supporting records resolve specific archive conflicts. Unverified zeroes remain unknown.",
+    note: "Period scores and team minutes confirm historical overtime. Retained NBA box scores and reviewed supporting records resolve the archive gaps and conflicts.",
   },
   {
     field: "Tip-off times",

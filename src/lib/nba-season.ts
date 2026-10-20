@@ -12,10 +12,10 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
  * 1985-86 … latest supported/current NBA season.
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
  *
- * This list means **"seasons with data"**. It is what `NBA_SEASONS.length` counts in the
- * "N-SEASON BACKTEST" claims (`src/app/page.tsx`, `src/app/opengraph-image.tsx`), so it must
- * never include a season that has not been played. To offer an upcoming season for browsing
- * before it starts, use {@link browsableSeasons} instead — see its comment for why the two
+ * This list means **"seasons with data"**, and from 1 October it includes the season about to
+ * start, before its first game. Never count it for a backtest claim: the "N-SEASON BACKTEST"
+ * card reads `BACKTEST_SEASON_COUNT` (rest-split-facts.ts). To offer an upcoming season for
+ * browsing before October, use {@link browsableSeasons} — see its comment for why the two
  * meanings are separate.
  */
 export const NBA_SEASONS: readonly string[] = (() => {

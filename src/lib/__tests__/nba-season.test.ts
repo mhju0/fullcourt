@@ -195,8 +195,7 @@ describe("browsableSeasons", () => {
   });
 
   it("leaves the backtest count untouched — the reason this list is separate", () => {
-    // NBA_SEASONS.length backs the "N-SEASON BACKTEST" copy; widening it there would
-    // advertise a season with no completed games.
+    // Widening NBA_SEASONS in August would list a season with no completed games.
     const before = NBA_SEASONS.length;
     browsableSeasons("2026-08-15");
 

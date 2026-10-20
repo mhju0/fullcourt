@@ -2,11 +2,12 @@
 
 import { RotateCw } from "lucide-react";
 import type { GameSlate } from "@/hooks/useGameSlate";
+import { formatEasternTipTime } from "@/lib/nba-season";
 import { SPACE, TYPE } from "@/lib/terminal-styles";
 
 type RefreshNotice = Pick<GameSlate, "checkedAt" | "refreshStatus" | "refreshMessage" | "retryRefresh">;
 
-/** When this view last arrived, in the viewer's own clock, beside an icon button that fetches it again. */
+/** When this view last arrived, in ET like the tip times beside it, next to an icon button that fetches it again. */
 export function GameSlateRefreshNotice({ slate }: { slate: RefreshNotice }) {
   if (slate.checkedAt === null) return null;
   const time = new Date(slate.checkedAt);
@@ -15,7 +16,7 @@ export function GameSlateRefreshNotice({ slate }: { slate: RefreshNotice }) {
     <div className="flex shrink-0 items-center" style={{ gap: SPACE.xs }}>
       <span className="whitespace-nowrap" style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}>
         {/* Below 360px the heading row cannot hold the word; the time alone stays. */}
-        <span className="max-[359px]:sr-only">Checked </span><time dateTime={time.toISOString()}>{time.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</time>
+        <span className="max-[359px]:sr-only">Checked </span><time dateTime={time.toISOString()}>{formatEasternTipTime(time)}</time>
       </span>
       <RefreshButton refreshing={refreshing} label={slate.refreshMessage ? "Try again" : "Refresh view"}
         onActivate={() => { if (!refreshing) slate.retryRefresh(); }} />
