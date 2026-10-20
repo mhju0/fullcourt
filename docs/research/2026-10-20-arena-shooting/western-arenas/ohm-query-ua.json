@@ -1,0 +1,10 @@
+{
+  "id": "ohm-west-historical-ua",
+  "url": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A45%5D%3Bnwr%5B%22name%22~%22Reunion%7CMcNichols%7CHemisfair%7CMetrodome%7CARCO%7CSalt+Palace%7CSports+Arena%22%2Ci%5D%2825%2C-126%2C50%2C-89%29%3Bout+tags+geom%3B",
+  "query": "[out:json][timeout:45];nwr[\"name\"~\"Reunion|McNichols|Hemisfair|Metrodome|ARCO|Salt Palace|Sports Arena\",i](25,-126,50,-89);out tags geom;",
+  "capturedAt": "2026-10-20T07:07:18.251838+00:00",
+  "status": 200,
+  "rawPath": "raw/ohm-west-historical-ua-a78c4e39d45c.json.gz",
+  "bodySha256": "a78c4e39d45cad2abe39d252fbe2549624712f21fcca467c56b00ae5a77f755f",
+  "retainedSha256": "7ea4050e123dbcc4fb67b52c8c37dec3dfb629189c8b2688bba75bc3dd100c04"
+}

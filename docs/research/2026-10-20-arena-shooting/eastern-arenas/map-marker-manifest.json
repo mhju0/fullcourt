@@ -1,0 +1,642 @@
+[
+  {
+    "key": "atl-omni",
+    "query": "Omni Coliseum Atlanta",
+    "url": "https://www.google.com/maps?q=Omni+Coliseum+Atlanta&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:08.200102+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOmni+Coliseum+Atlanta!3m1!1sen!5m1!1sen",
+    "bodySha256": "0c41ecd4c134ab647ab7aea952d9af625238d1d69a767debc18383a4561853d1",
+    "rawPath": "raw/marker-atl-omni-0c41ecd4c134ab647ab7aea952d9af625238d1d69a767debc18383a4561853d1.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "atl-georgia-dome",
+    "query": "Georgia Dome Atlanta",
+    "url": "https://www.google.com/maps?q=Georgia+Dome+Atlanta&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:08.704539+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sGeorgia+Dome+Atlanta!3m1!1sen!5m1!1sen",
+    "bodySha256": "b43c51a9e95fba56ffbcfb4174ef40d3a01f9f5078851efcdfc0bbe78e6fab51",
+    "rawPath": "raw/marker-atl-georgia-dome-b43c51a9e95fba56ffbcfb4174ef40d3a01f9f5078851efcdfc0bbe78e6fab51.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "atl-alexander",
+    "query": "McCamish Pavilion Atlanta",
+    "url": "https://www.google.com/maps?q=McCamish+Pavilion+Atlanta&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:09.201465+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMcCamish+Pavilion+Atlanta!3m1!1sen!5m1!1sen",
+    "bodySha256": "e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed",
+    "rawPath": "raw/marker-atl-alexander-e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88f504592c998f03:0x89be123047489825",
+        "nameAddress": "McCamish Pavilion, 965 Fowler St NW, Atlanta, GA 30318, United States",
+        "latitude": 33.7808132,
+        "longitude": -84.39277659999999,
+        "providerCid": "9925390627334821925"
+      }
+    ]
+  },
+  {
+    "key": "atl-statefarm",
+    "query": "State Farm Arena Atlanta",
+    "url": "https://www.google.com/maps?q=State+Farm+Arena+Atlanta&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:09.701492+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sState+Farm+Arena+Atlanta!3m1!1sen!5m1!1sen",
+    "bodySha256": "aa2010837a9d6042fef2a0b6cd16cff1388d98d81389b89c9a793d780804ab18",
+    "rawPath": "raw/marker-atl-statefarm-aa2010837a9d6042fef2a0b6cd16cff1388d98d81389b89c9a793d780804ab18.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "bos-garden",
+    "query": "Boston Garden historical arena",
+    "url": "https://www.google.com/maps?q=Boston+Garden+historical+arena&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:10.204027+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sBoston+Garden+historical+arena!3m1!1sen!5m1!1sen",
+    "bodySha256": "7dfc1eb2876bc15de745264d0b258c35359ccf83df5965db1c709b0644210504",
+    "rawPath": "raw/marker-bos-garden-7dfc1eb2876bc15de745264d0b258c35359ccf83df5965db1c709b0644210504.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "bos-td",
+    "query": "TD Garden Boston",
+    "url": "https://www.google.com/maps?q=TD+Garden+Boston&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:10.703387+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sTD+Garden+Boston!3m1!1sen!5m1!1sen",
+    "bodySha256": "b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139",
+    "rawPath": "raw/marker-bos-td-b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89e3708e162d05cb:0x32d335fe5ed797a8",
+        "nameAddress": "TD Garden, 100 Legends Way, Boston, MA 02114, United States",
+        "latitude": 42.366198,
+        "longitude": -71.062146,
+        "providerCid": "3662330288611497896"
+      }
+    ]
+  },
+  {
+    "key": "bkn-meadowlands",
+    "query": "Meadowlands Arena East Rutherford",
+    "url": "https://www.google.com/maps?q=Meadowlands+Arena+East+Rutherford&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:11.202115+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMeadowlands+Arena+East+Rutherford!3m1!1sen!5m1!1sen",
+    "bodySha256": "765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef",
+    "rawPath": "raw/marker-bkn-meadowlands-765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89c2f90077de306b:0xd98a494cde7ba94e",
+        "nameAddress": "Meadowlands Arena, Plaza M, East Rutherford, NJ 07073, United States",
+        "latitude": 40.8116838,
+        "longitude": -74.06760299999999,
+        "providerCid": "15675422047515421006"
+      }
+    ]
+  },
+  {
+    "key": "bkn-prudential",
+    "query": "Prudential Center Newark",
+    "url": "https://www.google.com/maps?q=Prudential+Center+Newark&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:11.705298+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sPrudential+Center+Newark!3m1!1sen!5m1!1sen",
+    "bodySha256": "395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1",
+    "rawPath": "raw/marker-bkn-prudential-395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89c253829a70f1d3:0x4d3efa6b5652a5ac",
+        "nameAddress": "Prudential Center, 25 Lafayette St, Newark, NJ 07102, United States",
+        "latitude": 40.733537,
+        "longitude": -74.1710659,
+        "providerCid": "5566161528393213356"
+      }
+    ]
+  },
+  {
+    "key": "bkn-barclays",
+    "query": "Barclays Center Brooklyn",
+    "url": "https://www.google.com/maps?q=Barclays+Center+Brooklyn&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:12.204434+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sBarclays+Center+Brooklyn!3m1!1sen!5m1!1sen",
+    "bodySha256": "b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab",
+    "rawPath": "raw/marker-bkn-barclays-b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89c25bae694479a3:0xb9949385da52e69e",
+        "nameAddress": "Barclays Center, 620 Atlantic Ave, Brooklyn, NY 11217, United States",
+        "latitude": 40.6826465,
+        "longitude": -73.97541559999999,
+        "providerCid": "13372475396672644766"
+      }
+    ]
+  },
+  {
+    "key": "cha-coliseum",
+    "query": "Charlotte Coliseum 100 Paul Buck Boulevard",
+    "url": "https://www.google.com/maps?q=Charlotte+Coliseum+100+Paul+Buck+Boulevard&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:12.705344+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sCharlotte+Coliseum+100+Paul+Buck+Boulevard!3m1!1sen!5m1!1sen",
+    "bodySha256": "4c62ede3b80f1be3984ea56d9edb81c98e5b092c5fbbc1721a7a83fae92d356e",
+    "rawPath": "raw/marker-cha-coliseum-4c62ede3b80f1be3984ea56d9edb81c98e5b092c5fbbc1721a7a83fae92d356e.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8854201a6e428adb:0xce72453842eda618",
+        "nameAddress": "Bojangles Coliseum, 2700 E Independence Blvd, Charlotte, NC 28205, United States",
+        "latitude": 35.2050925,
+        "longitude": -80.7951733,
+        "providerCid": "14876028627101525528"
+      }
+    ]
+  },
+  {
+    "key": "cha-spectrum",
+    "query": "Spectrum Center Charlotte",
+    "url": "https://www.google.com/maps?q=Spectrum+Center+Charlotte&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:13.205352+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSpectrum+Center+Charlotte!3m1!1sen!5m1!1sen",
+    "bodySha256": "1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64",
+    "rawPath": "raw/marker-cha-spectrum-1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8856a0243e9c7d45:0x76230b8d88293efa",
+        "nameAddress": "Spectrum Center, 333 E Trade St, Charlotte, NC 28202, United States",
+        "latitude": 35.2251952,
+        "longitude": -80.8393468,
+        "providerCid": "8512660423163068154"
+      }
+    ]
+  },
+  {
+    "key": "chi-stadium",
+    "query": "Chicago Stadium demolished",
+    "url": "https://www.google.com/maps?q=Chicago+Stadium+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:13.704882+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sChicago+Stadium+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "5ab7ff8d66bfdf1d8253263a92699079c1d4863946d39daa950fc8064943eb7a",
+    "rawPath": "raw/marker-chi-stadium-5ab7ff8d66bfdf1d8253263a92699079c1d4863946d39daa950fc8064943eb7a.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "chi-united",
+    "query": "United Center Chicago",
+    "url": "https://www.google.com/maps?q=United+Center+Chicago&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:14.202643+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sUnited+Center+Chicago!3m1!1sen!5m1!1sen",
+    "bodySha256": "784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05",
+    "rawPath": "raw/marker-chi-united-784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x880e2d3ecaa9b54f:0x9b93f0068cf00344",
+        "nameAddress": "United Center, 1901 W Madison St, Chicago, IL 60612, United States",
+        "latitude": 41.8806908,
+        "longitude": -87.6741759,
+        "providerCid": "11210567808380306244"
+      }
+    ]
+  },
+  {
+    "key": "cle-richfield",
+    "query": "Richfield Coliseum Ohio",
+    "url": "https://www.google.com/maps?q=Richfield+Coliseum+Ohio&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:14.705415+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sRichfield+Coliseum+Ohio!3m1!1sen!5m1!1sen",
+    "bodySha256": "8d552d8329dc0f7108c5104dde7433a224219ae8bca63af9d966aac9472ad0d7",
+    "rawPath": "raw/marker-cle-richfield-8d552d8329dc0f7108c5104dde7433a224219ae8bca63af9d966aac9472ad0d7.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8830df8d90e60c5f:0x4929f7433747bf6c",
+        "nameAddress": "Richfield Coliseum (Historical Landmark), 2923 W Streetsboro Rd, Richfield, OH 44286, United States",
+        "latitude": 41.2489,
+        "longitude": -81.59512,
+        "providerCid": "5272016706876194668"
+      }
+    ]
+  },
+  {
+    "key": "cle-rocket",
+    "query": "Rocket Arena Cleveland",
+    "url": "https://www.google.com/maps?q=Rocket+Arena+Cleveland&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:15.205244+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sRocket+Arena+Cleveland!3m1!1sen!5m1!1sen",
+    "bodySha256": "7261f0791d83ef1417b53e4c9b6addd4768e79d7cdbaf1115472f8e927cbec99",
+    "rawPath": "raw/marker-cle-rocket-7261f0791d83ef1417b53e4c9b6addd4768e79d7cdbaf1115472f8e927cbec99.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8830fa81ba7c99b5:0x53fafe5c51529920",
+        "nameAddress": "Rocket Arena, 1 Center Court, Cleveland, OH 44115, United States",
+        "latitude": 41.4965474,
+        "longitude": -81.68805739999999,
+        "providerCid": "6051428721780496672"
+      }
+    ]
+  },
+  {
+    "key": "det-silverdome",
+    "query": "Pontiac Silverdome demolished",
+    "url": "https://www.google.com/maps?q=Pontiac+Silverdome+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:15.705442+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sPontiac+Silverdome+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "d7ebceb8ded000dfacfebf3e5ed6b91f93bebaeadaee4c264699d91c2aa1450e",
+    "rawPath": "raw/marker-det-silverdome-d7ebceb8ded000dfacfebf3e5ed6b91f93bebaeadaee4c264699d91c2aa1450e.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "det-palace",
+    "query": "Palace of Auburn Hills",
+    "url": "https://www.google.com/maps?q=Palace+of+Auburn+Hills&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:16.201275+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sPalace+of+Auburn+Hills!3m1!1sen!5m1!1sen",
+    "bodySha256": "2c11775d9238643587aee5e3edefa4bd37ac3b03b8731e91779f04a1366bf122",
+    "rawPath": "raw/marker-det-palace-2c11775d9238643587aee5e3edefa4bd37ac3b03b8731e91779f04a1366bf122.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "det-lca",
+    "query": "Little Caesars Arena Detroit",
+    "url": "https://www.google.com/maps?q=Little+Caesars+Arena+Detroit&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:16.705434+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sLittle+Caesars+Arena+Detroit!3m1!1sen!5m1!1sen",
+    "bodySha256": "049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672",
+    "rawPath": "raw/marker-det-lca-049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8824d2cb21bf140b:0xcb0fd860979f4678",
+        "nameAddress": "Little Caesars Arena, 2645 Woodward Ave, Detroit, MI 48201, United States",
+        "latitude": 42.341796,
+        "longitude": -83.05466109999999,
+        "providerCid": "14632151623722288760"
+      }
+    ]
+  },
+  {
+    "key": "ind-market",
+    "query": "Market Square Arena Indianapolis demolished",
+    "url": "https://www.google.com/maps?q=Market+Square+Arena+Indianapolis+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:17.205486+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMarket+Square+Arena+Indianapolis+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "de26fc1851ae226b8955b529c16b28553d264ba1ccf81ef3d3e31837cfa4160a",
+    "rawPath": "raw/marker-ind-market-de26fc1851ae226b8955b529c16b28553d264ba1ccf81ef3d3e31837cfa4160a.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x886b51d27f5e09d9:0x5737b4799e019bbf",
+        "nameAddress": "Market Square Center, 151 N Delaware St, Indianapolis, IN 46204, United States",
+        "latitude": 39.7694226,
+        "longitude": -86.1539921,
+        "providerCid": "6284690239453764543"
+      }
+    ]
+  },
+  {
+    "key": "ind-gainbridge",
+    "query": "Gainbridge Fieldhouse Indianapolis",
+    "url": "https://www.google.com/maps?q=Gainbridge+Fieldhouse+Indianapolis&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:17.705138+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sGainbridge+Fieldhouse+Indianapolis!3m1!1sen!5m1!1sen",
+    "bodySha256": "00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c",
+    "rawPath": "raw/marker-ind-gainbridge-00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x886b50bd40850b3f:0xf4180158659c473d",
+        "nameAddress": "Gainbridge Fieldhouse, 125 S Pennsylvania St, Indianapolis, IN 46204, United States",
+        "latitude": 39.7640434,
+        "longitude": -86.1555367,
+        "providerCid": "17588809823868962621"
+      }
+    ]
+  },
+  {
+    "key": "mia-old",
+    "query": "Miami Arena demolished",
+    "url": "https://www.google.com/maps?q=Miami+Arena+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:18.205542+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMiami+Arena+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "5feda68ebe9ba25542a1932cd4cadbbac68927134a7e80290a2e87244f7ced11",
+    "rawPath": "raw/marker-mia-old-5feda68ebe9ba25542a1932cd4cadbbac68927134a7e80290a2e87244f7ced11.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88d9b6a009729195:0x13ad0552284f5b6c",
+        "nameAddress": "Kaseya Center, 601 Biscayne Blvd, Miami, FL 33132, United States",
+        "latitude": 25.7814014,
+        "longitude": -80.18696899999999,
+        "providerCid": "1417795308113320812"
+      }
+    ]
+  },
+  {
+    "key": "mia-kaseya",
+    "query": "Kaseya Center Miami",
+    "url": "https://www.google.com/maps?q=Kaseya+Center+Miami&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:18.703549+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sKaseya+Center+Miami!3m1!1sen!5m1!1sen",
+    "bodySha256": "d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215",
+    "rawPath": "raw/marker-mia-kaseya-d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88d9b6a009729195:0x13ad0552284f5b6c",
+        "nameAddress": "Kaseya Center, 601 Biscayne Blvd, Miami, FL 33132, United States",
+        "latitude": 25.7814014,
+        "longitude": -80.18696899999999,
+        "providerCid": "1417795308113320812"
+      }
+    ]
+  },
+  {
+    "key": "mil-mecca",
+    "query": "UW Milwaukee Panther Arena",
+    "url": "https://www.google.com/maps?q=UW+Milwaukee+Panther+Arena&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:19.205565+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sUW+Milwaukee+Panther+Arena!3m1!1sen!5m1!1sen",
+    "bodySha256": "71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c",
+    "rawPath": "raw/marker-mil-mecca-71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88051974f5c7ea57:0xb9dc31043adff",
+        "nameAddress": "UW-Milwaukee Panther Arena, 400 W Kilbourn Ave, Milwaukee, WI 53203, United States",
+        "latitude": 43.0422275,
+        "longitude": -87.9168359,
+        "providerCid": "3269685860871679"
+      }
+    ]
+  },
+  {
+    "key": "mil-bradley",
+    "query": "Bradley Center Milwaukee demolished",
+    "url": "https://www.google.com/maps?q=Bradley+Center+Milwaukee+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:19.705565+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sBradley+Center+Milwaukee+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "222c645dfe43839cf52c1fd6916b3a8fb254d4004ad2335bc163f48a0d2fc844",
+    "rawPath": "raw/marker-mil-bradley-222c645dfe43839cf52c1fd6916b3a8fb254d4004ad2335bc163f48a0d2fc844.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "mil-fiserv",
+    "query": "Fiserv Forum Milwaukee",
+    "url": "https://www.google.com/maps?q=Fiserv+Forum+Milwaukee&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:20.205574+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sFiserv+Forum+Milwaukee!3m1!1sen!5m1!1sen",
+    "bodySha256": "408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243",
+    "rawPath": "raw/marker-mil-fiserv-408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x880519748afe3d71:0x20af60eabab279bb",
+        "nameAddress": "Fiserv Forum, 1111 N Vel R. Phillips Ave, Milwaukee, WI 53203, United States",
+        "latitude": 43.0450802,
+        "longitude": -87.9173862,
+        "providerCid": "2355207691408931259"
+      }
+    ]
+  },
+  {
+    "key": "nyk-msg4",
+    "query": "Madison Square Garden New York",
+    "url": "https://www.google.com/maps?q=Madison+Square+Garden+New+York&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:20.704959+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMadison+Square+Garden+New+York!3m1!1sen!5m1!1sen",
+    "bodySha256": "53c732d35e547b3faef06b017c865ad5961aca9a02a65ed01ca1926dc775bdc4",
+    "rawPath": "raw/marker-nyk-msg4-53c732d35e547b3faef06b017c865ad5961aca9a02a65ed01ca1926dc775bdc4.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "orl-old",
+    "query": "Amway Arena demolished Orlando",
+    "url": "https://www.google.com/maps?q=Amway+Arena+demolished+Orlando&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:21.202729+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sAmway+Arena+demolished+Orlando!3m1!1sen!5m1!1sen",
+    "bodySha256": "a6d31bcd6b7eecfc99bbab1336ff37080a3377bb67b8d18577978368623af416",
+    "rawPath": "raw/marker-orl-old-a6d31bcd6b7eecfc99bbab1336ff37080a3377bb67b8d18577978368623af416.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88e77afa51fbca55:0xf7c90b9225939190",
+        "nameAddress": "Kia Center, 400 W Church St, Orlando, FL 32801, United States",
+        "latitude": 28.5392214,
+        "longitude": -81.3838535,
+        "providerCid": "17854814920010600848"
+      }
+    ]
+  },
+  {
+    "key": "orl-kia",
+    "query": "Kia Center Orlando",
+    "url": "https://www.google.com/maps?q=Kia+Center+Orlando&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:21.704803+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sKia+Center+Orlando!3m1!1sen!5m1!1sen",
+    "bodySha256": "684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43",
+    "rawPath": "raw/marker-orl-kia-684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88e77afa51fbca55:0xf7c90b9225939190",
+        "nameAddress": "Kia Center, 400 W Church St, Orlando, FL 32801, United States",
+        "latitude": 28.5392214,
+        "longitude": -81.3838535,
+        "providerCid": "17854814920010600848"
+      }
+    ]
+  },
+  {
+    "key": "phi-spectrum",
+    "query": "Spectrum Philadelphia demolished",
+    "url": "https://www.google.com/maps?q=Spectrum+Philadelphia+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:22.201729+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSpectrum+Philadelphia+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "9239a947f58619efbf4db3494cf39b72ce21758012699ebe8181a777f711f407",
+    "rawPath": "raw/marker-phi-spectrum-9239a947f58619efbf4db3494cf39b72ce21758012699ebe8181a777f711f407.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89c6c5d7dda5df99:0x1db4694154f62c49",
+        "nameAddress": "Philadelphia Spectrum Memorial, Philadelphia, PA 19148, United States",
+        "latitude": 39.9046705,
+        "longitude": -75.1712016,
+        "providerCid": "2140451452227038281"
+      }
+    ]
+  },
+  {
+    "key": "phi-xfinity",
+    "query": "Xfinity Mobile Arena Philadelphia",
+    "url": "https://www.google.com/maps?q=Xfinity+Mobile+Arena+Philadelphia&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:22.705659+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sXfinity+Mobile+Arena+Philadelphia!3m1!1sen!5m1!1sen",
+    "bodySha256": "75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b",
+    "rawPath": "raw/marker-phi-xfinity-75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89c6c5ec0fe3b147:0x529f31b23f45ba2d",
+        "nameAddress": "Xfinity Mobile Arena, 3601 S Broad St, Philadelphia, PA 19148, United States",
+        "latitude": 39.9012015,
+        "longitude": -75.17197949999999,
+        "providerCid": "5953531874042559021"
+      }
+    ]
+  },
+  {
+    "key": "tor-skydome",
+    "query": "Rogers Centre Toronto",
+    "url": "https://www.google.com/maps?q=Rogers+Centre+Toronto&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:23.205645+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sRogers+Centre+Toronto!3m1!1sen!5m1!1sen",
+    "bodySha256": "643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec",
+    "rawPath": "raw/marker-tor-skydome-643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x882b350049ba4395:0xefcebaf2e76df74d",
+        "nameAddress": "Rogers Centre, 1 Blue Jays Way, Toronto, ON M5V 1J4, Canada",
+        "latitude": 43.641804,
+        "longitude": -79.3891419,
+        "providerCid": "17279954372694767437"
+      }
+    ]
+  },
+  {
+    "key": "tor-mapleleaf",
+    "query": "Maple Leaf Gardens Toronto",
+    "url": "https://www.google.com/maps?q=Maple+Leaf+Gardens+Toronto&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:23.705690+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMaple+Leaf+Gardens+Toronto!3m1!1sen!5m1!1sen",
+    "bodySha256": "f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7",
+    "rawPath": "raw/marker-tor-mapleleaf-f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x882b34b4b5299a89:0xf2a9c85b8680bfe9",
+        "nameAddress": "Mattamy Athletic Centre, 50 Carlton St., Toronto, ON M5B 1J2, Canada",
+        "latitude": 43.6621838,
+        "longitude": -79.38033089999999,
+        "providerCid": "17485727323666825193"
+      }
+    ]
+  },
+  {
+    "key": "tor-scotia",
+    "query": "Scotiabank Arena Toronto",
+    "url": "https://www.google.com/maps?q=Scotiabank+Arena+Toronto&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:24.202604+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sScotiabank+Arena+Toronto!3m1!1sen!5m1!1sen",
+    "bodySha256": "6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471",
+    "rawPath": "raw/marker-tor-scotia-6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89d4cb2b5935bf09:0x5842d0e7d5669410",
+        "nameAddress": "Scotiabank Arena, 40 Bay St., Toronto, ON M5J 3A5, Canada",
+        "latitude": 43.6434661,
+        "longitude": -79.3790989,
+        "providerCid": "6359875317936854032"
+      }
+    ]
+  },
+  {
+    "key": "tor-amalie",
+    "query": "Amalie Arena Tampa",
+    "url": "https://www.google.com/maps?q=Amalie+Arena+Tampa&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:24.705922+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sAmalie+Arena+Tampa!3m1!1sen!5m1!1sen",
+    "bodySha256": "584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c",
+    "rawPath": "raw/marker-tor-amalie-584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x88c2c48d32bf5d49:0x2ba1ab03c399c073",
+        "nameAddress": "Benchmark International Arena, 401 Channelside Dr, Tampa, FL 33602, United States",
+        "latitude": 27.9427373,
+        "longitude": -82.4517771,
+        "providerCid": "3143982047536201843"
+      }
+    ]
+  },
+  {
+    "key": "was-capitalcentre",
+    "query": "Capital Centre Landover demolished",
+    "url": "https://www.google.com/maps?q=Capital+Centre+Landover+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:25.203529+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sCapital+Centre+Landover+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "3e40e0b67ff56c62abb70c87b32a02c1a09b2ee01cdf5dba843d052a19a4216f",
+    "rawPath": "raw/marker-was-capitalcentre-3e40e0b67ff56c62abb70c87b32a02c1a09b2ee01cdf5dba843d052a19a4216f.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "was-capitalone",
+    "query": "Capital One Arena Washington",
+    "url": "https://www.google.com/maps?q=Capital+One+Arena+Washington&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:52:25.705741+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sCapital+One+Arena+Washington!3m1!1sen!5m1!1sen",
+    "bodySha256": "f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031",
+    "rawPath": "raw/marker-was-capitalone-f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x89b7b78e4f5f6873:0x75cc04db1e11f711",
+        "nameAddress": "Capital One Arena, 601 F St NW, Washington, DC 20004, United States",
+        "latitude": 38.8981675,
+        "longitude": -77.02085679999999,
+        "providerCid": "8488164736835385105"
+      }
+    ]
+  }
+]

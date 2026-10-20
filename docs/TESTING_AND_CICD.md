@@ -29,6 +29,13 @@ Vitest covers domain logic, API contracts, caches, data pinning, and source/desi
 See `vitest.config.ts` and the tests themselves for the current inventory. Avoid copying test
 counts into this guide; dated release records may report counts observed at a specific commit.
 
+The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
+new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
+source-script packet and before/after numeric oracle are retained with the dated local audit.
+Calculation parity does not establish historical source accuracy; review the
+[venue evidence](research/2026-10-20-arena-shooting/README.md) separately. Apply/rollback tests
+must use the dedicated local clone and never a production URL.
+
 ## Browser verification
 
 ```sh

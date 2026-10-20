@@ -11,6 +11,14 @@ const teams = {
   DAL: [7, 32.7905, -96.8103], ORL: [8, 28.5392, -81.3839], NOP: [9, 29.9489, -90.0821], HOU: [10, 29.7508, -95.3621],
 } as const;
 type Abbr = keyof typeof teams;
+// Expected physical points from arena-history.json, independent of venue resolution.
+const arenaPoints = {
+  LAL: [34.0430175, -118.2672541], IND: [39.7640434, -86.1555367],
+  OKC: [35.4635103, -97.51508969999999], MIL: [43.0450802, -87.9173862],
+  NYK: [40.7505045, -73.9934387], SAS: [29.4270588, -98.43744319999999],
+  DAL: [32.7903908, -96.8102547], ORL: [28.5392214, -81.3838535],
+  NOP: [29.9490351, -90.08205679999999], HOU: [29.7509213, -95.3622173],
+} as const;
 const VEGAS = [36.1028, -115.1783] as const;
 function fixture(gameId: number, date: string, home: Abbr, away: Abbr, neutral = false): TravelGameRow {
   const h = teams[home], a = teams[away];
@@ -36,9 +44,9 @@ describe("published Mileage with non-standings context", () => {
     const allocated = publishedSeasonTravelLegs([next, cup, semi], new Set([1, 3]));
     expect(allocated.has(travelLegKey(2, teams[host][0]))).toBe(false);
     expect(allocated.get(travelLegKey(3, teams[host][0])))
-      .toBeCloseTo(miles(VEGAS, teams[nextHost].slice(1)), 7);
+      .toBeCloseTo(miles(VEGAS, arenaPoints[nextHost]), 7);
     expect(allocated.get(travelLegKey(1, teams[host][0])))
-      .toBeCloseTo(miles(teams[host].slice(1), VEGAS), 7);
+      .toBeCloseTo(miles(arenaPoints[host], VEGAS), 7);
   });
 
   it("folds both inbound and outbound legs into the next target without adding a report game", () => {
@@ -47,7 +55,7 @@ describe("published Mileage with non-standings context", () => {
     const next = fixture(3, "2023-12-12", "DAL", "LAL");
     const trailing = fixture(4, "2024-04-21", "IND", "LAL");
     const allocated = publishedSeasonTravelLegs([before, cup, next, trailing], new Set([1, 3]));
-    const expected = miles(teams.LAL.slice(1), VEGAS) + miles(VEGAS, teams.DAL.slice(1));
+    const expected = miles(arenaPoints.LAL, VEGAS) + miles(VEGAS, arenaPoints.DAL);
     expect(allocated.get(travelLegKey(3, teams.LAL[0]))).toBeCloseTo(expected, 7);
     expect(allocated.size).toBe(4);
     const rows: SeasonReportRow[] = [before, next].map(g => ({ gameId: g.gameId, date: g.date, status: "final", homeTeamId: g.homeTeamId, awayTeamId: g.awayTeamId, homeScore: 100, awayScore: 90, neutralSite: false,

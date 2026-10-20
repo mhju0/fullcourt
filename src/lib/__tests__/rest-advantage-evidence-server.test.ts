@@ -202,3 +202,18 @@ describe("searchHistoricalGameEvidence", () => {
     expect(response).toMatchObject({ page: 3, limit: 50 });
   });
 });
+
+describe("getHistoricalEvidenceCoverage", () => {
+  it("retains neutral sites and refreshes the cached coverage after corrections", async () => {
+    mockRows.mockReset();
+    mockStamp.mockReset();
+    mockStamp.mockResolvedValueOnce("v1").mockResolvedValueOnce("v1").mockResolvedValueOnce("v2");
+    mockRows.mockResolvedValueOnce([...ROWS, { ...ROWS[0], date: "2025-01-01", neutralSite: true }]).mockResolvedValueOnce(ROWS);
+    const { getHistoricalEvidenceCoverage } = await loadModule();
+    const first = await getHistoricalEvidenceCoverage();
+    expect(first).toEqual({ games: 2, latestEvidenceDate: "2025-01-01" });
+    expect(await getHistoricalEvidenceCoverage()).toBe(first);
+    expect(await getHistoricalEvidenceCoverage()).toEqual({ games: 1, latestEvidenceDate: "2024-12-25" });
+    expect(mockRows).toHaveBeenCalledTimes(2);
+  });
+});

@@ -1,0 +1,265 @@
+[
+  {
+    "arenaId": "mem-pyramid",
+    "status": "accepted mapped surviving arena-building footprint estimate",
+    "provider": "Original OpenStreetMap building geometry",
+    "url": "https://api.openstreetmap.org/api/0.6/way/118647101/full",
+    "rawPath": "raw/osm-pyramid-05ef795dc28f.xml.gz",
+    "bodySha256": "05ef795dc28f00bd175e775b84fd29d3b67813262b31cb7cf33593b4c10fac70",
+    "retainedSha256": "40456b74ad4710f36861cae057c05b4bad7725520ae1a2e20f5773340344504e",
+    "wayId": "118647101",
+    "wayVersion": "24",
+    "tags": {
+      "addr:city": "Memphis",
+      "addr:housenumber": "1",
+      "addr:postcode": "38105",
+      "addr:state": "TN",
+      "addr:street": "Bass Pro Drive",
+      "alt_name": "Great American Pyramid",
+      "building": "retail",
+      "building:colour": "#808080",
+      "building:facade:material": "metal",
+      "former_name": "Pyramid Arena",
+      "height": "91",
+      "name": "Memphis Pyramid",
+      "roof:colour": "silver",
+      "roof:height": "91",
+      "roof:material": "metal",
+      "roof:shape": "pyramidal",
+      "start_date": "1991",
+      "toilets:wheelchair": "yes",
+      "was:leisure": "stadium",
+      "was:sport": "basketball",
+      "wheelchair": "yes",
+      "wikidata": "Q2226897",
+      "wikipedia": "en:Memphis Pyramid"
+    },
+    "vertices": [
+      [
+        -90.0524095,
+        35.1567653
+      ],
+      [
+        -90.0528855,
+        35.1555703
+      ],
+      [
+        -90.0523165,
+        35.1554182
+      ],
+      [
+        -90.0520248,
+        35.1553408
+      ],
+      [
+        -90.0514197,
+        35.15518
+      ],
+      [
+        -90.0509437,
+        35.156375
+      ],
+      [
+        -90.0524095,
+        35.1567653
+      ]
+    ],
+    "latitude": 35.15597253,
+    "longitude": -90.05191467,
+    "method": "Area-weighted shoelace centroid of closed OSM building ring, translated to first vertex before arithmetic, planar lon/lat approximation over <250m footprint.",
+    "pointType": "Derived original-mapper building-footprint center; not surveyed basketball-court centroid",
+    "primaryBridges": [
+      {
+        "url": "https://about.basspro.com/newsroom/press-center/bass-pro-shops-at-the-pyramid/",
+        "rawRetention": "Direct403; original operator page text inspected with browsing.",
+        "claim": "Operator identifies current shop inside the transformed sports arena."
+      }
+    ]
+  },
+  {
+    "arenaId": "hou-summit",
+    "status": "accepted mapped surviving arena-building footprint estimate",
+    "provider": "Original OpenStreetMap building geometry",
+    "url": "https://api.openstreetmap.org/api/0.6/way/118780514/full",
+    "rawPath": "raw/osm-summit-ff3523ffcac7.xml.gz",
+    "bodySha256": "ff3523ffcac700d837d990c44d4952240737fed9b06fd531fb3c9f7f64ad9a77",
+    "retainedSha256": "bc2da542122d1e50f63afb0cc4ff3aeba09a90517cd79663775ad7936203e855",
+    "wayId": "118780514",
+    "wayVersion": "12",
+    "tags": {
+      "addr:city": "Houston",
+      "addr:housenumber": "3700",
+      "addr:postcode": "77027",
+      "addr:state": "TX",
+      "addr:street": "Southwest Freeway",
+      "amenity": "place_of_worship",
+      "building": "sports_centre",
+      "building:old_name": "The Summit;Compaq Center;Lakewood International Center",
+      "building:use": "religious",
+      "denomination": "nondenominational",
+      "height": "28",
+      "name": "Lakewood Church Central Campus",
+      "religion": "christian",
+      "toilets:wheelchair": "yes",
+      "wikidata": "Q2435324",
+      "wikipedia": "en:Lakewood Church Central Campus"
+    },
+    "vertices": [
+      [
+        -95.4356084,
+        29.7307214
+      ],
+      [
+        -95.4354638,
+        29.730726
+      ],
+      [
+        -95.4354682,
+        29.7308305
+      ],
+      [
+        -95.435473,
+        29.730943
+      ],
+      [
+        -95.4344126,
+        29.7309801
+      ],
+      [
+        -95.4344094,
+        29.7308794
+      ],
+      [
+        -95.4344068,
+        29.7308186
+      ],
+      [
+        -95.4339202,
+        29.7308342
+      ],
+      [
+        -95.4338631,
+        29.730836
+      ],
+      [
+        -95.4338276,
+        29.7299988
+      ],
+      [
+        -95.4339102,
+        29.7299961
+      ],
+      [
+        -95.4339797,
+        29.7299939
+      ],
+      [
+        -95.4339765,
+        29.7299178
+      ],
+      [
+        -95.4355722,
+        29.7298667
+      ],
+      [
+        -95.4356084,
+        29.7307214
+      ]
+    ],
+    "latitude": 29.73040349,
+    "longitude": -95.43474046,
+    "method": "Area-weighted shoelace centroid of closed OSM building ring, translated to first vertex before arithmetic, planar lon/lat approximation over <250m footprint.",
+    "pointType": "Derived original-mapper building-footprint center; not surveyed basketball-court centroid",
+    "primaryBridges": [
+      {
+        "url": "https://www.houstontx.gov/council/committees/bfacommittee/3.29.10/lakewoodlewisappraisal.pdf",
+        "rawRetention": "Direct timeout; original municipal PDF text inspected with browsing.",
+        "claim": "Municipal appraisal links Lakewood property to former Compaq Center."
+      }
+    ]
+  },
+  {
+    "arenaId": "sac-arco1",
+    "status": "accepted mapped surviving arena-building footprint estimate",
+    "provider": "Original OpenStreetMap building geometry",
+    "url": "https://api.openstreetmap.org/api/0.6/way/32560330/full",
+    "rawPath": "raw/osm-arco1-3e32d8a68fdb.xml.gz",
+    "bodySha256": "3e32d8a68fdb55296e00a1341a8405493a396156c05cb73167801d4876e68464",
+    "retainedSha256": "07a1d6d48a9b27db33db6c4c700cc5ac30a281223d1941e589c57bfda7d295fc",
+    "wayId": "32560330",
+    "wayVersion": "3",
+    "tags": {
+      "building": "yes",
+      "name": "Arco Arena I",
+      "wikidata": "Q4653610"
+    },
+    "vertices": [
+      [
+        -121.4996029,
+        38.6476904
+      ],
+      [
+        -121.4993298,
+        38.6476916
+      ],
+      [
+        -121.4993313,
+        38.6479141
+      ],
+      [
+        -121.4988069,
+        38.6479163
+      ],
+      [
+        -121.4988054,
+        38.6477098
+      ],
+      [
+        -121.4985029,
+        38.6477111
+      ],
+      [
+        -121.4984993,
+        38.6472037
+      ],
+      [
+        -121.4987808,
+        38.6472025
+      ],
+      [
+        -121.4987793,
+        38.64698
+      ],
+      [
+        -121.4993217,
+        38.6469776
+      ],
+      [
+        -121.4993233,
+        38.6472047
+      ],
+      [
+        -121.4995994,
+        38.6472035
+      ],
+      [
+        -121.4996029,
+        38.6476904
+      ]
+    ],
+    "latitude": 38.64744718,
+    "longitude": -121.49905058,
+    "method": "Area-weighted shoelace centroid of closed OSM building ring, translated to first vertex before arithmetic, planar lon/lat approximation over <250m footprint.",
+    "pointType": "Derived original-mapper building-footprint center; not surveyed basketball-court centroid",
+    "primaryBridges": [
+      {
+        "url": "https://thedcapage.blog/2017/04/28/dca-daughters-and-sons-discover-the-working-world/",
+        "claim": "State DCA author explicitly identifies its building as original Arco Arena."
+      },
+      {
+        "url": "https://solid.dca.ca.gov/about_us/directions.html",
+        "claim": "State DCA gives1625NorthMarketBlvd, distinct from ARCOII."
+      }
+    ]
+  }
+]

@@ -74,6 +74,20 @@ def participation(raw: dict) -> tuple[str, float | None]:
     return "unknown", minutes
 
 
+def fixture_aliases(fixtures: dict[str, tuple], context_path: Path = CONTEXT_PATH) -> dict[str, dict]:
+    rows = json.loads(context_path.read_text()).get("historyAliases", [])
+    aliases = {row["gameId"]: row for row in rows}
+    if len(aliases) != len(rows) or len({row["canonicalId"] for row in rows}) != len(rows):
+        raise ValueError("History aliases must be bijective")
+    for gid, alias in aliases.items():
+        expected = (date.fromisoformat(alias["date"]), alias["homeAbbr"], alias["awayAbbr"])
+        if fixtures.get(alias["canonicalId"]) != expected:
+            raise ValueError("History alias no longer matches the canonical date and teams")
+        if gid in fixtures:
+            raise ValueError("History alias requires one distinct canonical fixture")
+    return aliases
+
+
 def load_game_context(conn, context_path: Path = CONTEXT_PATH) -> dict[str, date]:
     with conn.cursor() as cursor:
         cursor.execute("""
@@ -83,10 +97,7 @@ def load_game_context(conn, context_path: Path = CONTEXT_PATH) -> dict[str, date
               AND g.game_type IN ('regular', 'playoffs', 'finals', 'play_in', 'cup_final')
         """)
         fixtures = {gid: (day, home, away) for gid, day, home, away in cursor.fetchall()}
-    for alias in json.loads(context_path.read_text()).get("historyAliases", []):
-        expected = (date.fromisoformat(alias["date"]), alias["homeAbbr"], alias["awayAbbr"])
-        if fixtures.get(alias["canonicalId"]) != expected:
-            raise ValueError("History alias no longer matches the canonical date and teams")
+    fixture_aliases(fixtures, context_path)
     return {gid: fixture[0] for gid, fixture in fixtures.items()}
 
 
@@ -95,8 +106,9 @@ def load_history(cache: Path, dates: dict[str, date], context_path: Path = CONTE
     counts = Counter()
     context = json.loads(context_path.read_text())
     dates = dict(dates)
-    aliases = {row["gameId"]: row for row in context.get("historyAliases", [])}
-    if len({row["canonicalId"] for row in aliases.values()}) != len(aliases):
+    alias_rows = context.get("historyAliases", [])
+    aliases = {row["gameId"]: row for row in alias_rows}
+    if len(aliases) != len(alias_rows) or len({row["canonicalId"] for row in aliases.values()}) != len(aliases):
         raise ValueError("History aliases must be bijective")
     for gid, alias in aliases.items():
         if gid in dates or dates.get(alias["canonicalId"]) != date.fromisoformat(alias["date"]):

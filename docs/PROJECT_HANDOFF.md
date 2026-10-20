@@ -1,17 +1,13 @@
 # Project handoff
-Reconciled 2026-10-18. Source/tests and Git take precedence. This is a current-state summary;
-update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
+Reconciled 2026-10-18. Source/tests and Git take precedence. Rationale: [Decisions](DECISIONS.md).
 ## Product and release
 FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage leads with
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-Production: https://fullcourt.fyi. Release history through 2026-10-19 is condensed here;
-Git, CHANGELOG.md and dated reviews hold exact delivery evidence. PRs #84/#85 established
-the current redesign; #174 shipped Next.js/ESLint 16.4.1 and Sharp 0.35.5. D-69/D-70
-established publication-aware defaults and venue-baseline history. Games navigation follows
-D-79; shared filters use 44px targets and 16px text. The hero follows D-67. Ordinary
-rested-home rates retain the 100-game gate; Officiating's archive limits remain documented.
+Production: https://fullcourt.fyi. Git, CHANGELOG.md and dated reviews retain releases. D-69/D-70 define publication-aware
+defaults and venue baselines; D-79 defines Games navigation. Ordinary rested-home rates keep
+the 100-game gate; Officiating archive limits remain documented.
 ## Architecture and safeguards
 - Next.js serves pages and API routes. Database reads use Drizzle/node-postgres against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
@@ -39,9 +35,8 @@ Future refreshes still require preview verification before merging.
 
 ## Remaining verification and future scope
 
-The redesign has automated desktop/mobile and accessibility coverage. Physical-device and human
-screen-reader testing are not claimed. Exercise the daily pipeline against actual completed games
-when the season resumes; an offseason skip is not evidence that the ingest path works.
+Automated desktop/mobile/accessibility coverage does not establish physical-device or human
+screen-reader behavior. Observe actual completed-slate ingest; offseason skips are insufficient.
 
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
@@ -55,11 +50,10 @@ report mail and canonical-domain redirects shipped. PR #104 corrected historical
 v1.0.3 later restored four workload fixtures and confirmed overtime. D-117 supersedes
 old launch gating: v1.0.0 is officially October 19; actual completed-slate checks remain open.
 
-Sentry IP storage is off; UptimeRobot checks home/health every five minutes. The owner's
-Mac retains eight weekly backups (`~/Backups/fullcourt/backup.sh`, Sundays 11:00,
-pg_dump 18); one restore matched counts. API rate limiting was configured at the edge.
-Credentials were rotated and Vercel DATABASE_URL made Sensitive. PR #171 shipped source
-maps; client symbolication verified October 18. Supabase Pro review remains November 5.
+Sentry IP storage is off; UptimeRobot checks home/health every five minutes. Eight weekly
+Mac backups use `~/Backups/fullcourt/backup.sh` (Sunday 11:00, pg_dump 18); one restore
+matched counts. Edge rate limiting and credential rotation shipped. PR #171 source maps
+have verified client symbolication. Supabase Pro review remains November 5.
 
 Unresolved/standing dispositions retained from these entries:
 
@@ -69,7 +63,7 @@ Unresolved/standing dispositions retained from these entries:
 - Reader-picked Schedule column and broader table-width redesign remain deferred.
 - Footer notice stays 12px by owner choice; off-Mac backup and phone push were declined.
 - ADR 0006 keeps original ablation evidence plus the October 18 offline-fidelity amendment;
-  no fatigue coefficients changed. Unconfirmed early overtime coverage remains a source limit.
+  no fatigue coefficients changed. Early overtime coverage was subsequently closed by v1.0.7.
 
 ## Condensed 2026-10-07 to 2026-10-19 record — 2026-10-20
 
@@ -106,32 +100,17 @@ Standing limits preserved from those entries:
 - The nine-item accessibility audit is historical; current defect acceptance/deferred scope is
   in ROADMAP.md. Schedule Edge net days-off subtraction remains equivalent to days-since arithmetic.
 
-## Opening-quarter travel audit — 2026-10-20
+## Condensed schedule and correction staging — 2026-10-20
 
-The [audit](research/2026-10-20-opening-quarter-travel-review.md) checks all assigned Oct–Dec games and researches 30 teams’ airport candidates. Density flags pass; homecoming road-load inconsistency, Austin venue omission and stale CHI–MIL tip remain unresolved. Airport/return-home assumptions are unverified; six away gaps cross unknown Cup fixtures. No source/model/database correction was applied. Next: review the road-load rule and physical-venue representation, reconcile times, then verify a controlled correction before rescoring.
-
-## Full assigned-season travel review — 2026-10-20
-
-The [full review](research/2026-10-20-full-season-travel-review.md) extends checks to all 1,200 assigned games / 2,400 sides. Density and API fields pass; 185 homecomings have positive road load, three Austin venues are omitted, and two stale tips are confirmed. D-120 records the owner's Mileage label choice. Deeper itinerary cases confirm some home interruptions but no validated geography rule. No app/model/DB correction occurred. Next: resolve the scorer contract, separate physical venues, correct tips and dependent scores, then re-audit Cup assignments plus championship workload context.
-
-## All-season schedule/travel audit — 2026-10-20
-
-The [all-season report](research/2026-10-20-historical-audit/README.md) covers 51,695 games / 103,390 scores across 42 stored seasons. Replay and independent density/rest/Mileage arithmetic pass; longstanding homecoming semantics affect 6,125 published scores under a one-change diagnostic (61.1889%→61.1417%). External checks identify 783 missing OT inputs (including the separately frozen bulk supplement), 109 postseason sublabel defects and a qualified 167-game venue register. Early source coverage, actual airports/home stops and combined correction impact remain incomplete. No app/model/DB/generated-data correction was applied. Next: settle homecoming/physical-venue contracts, adjudicate and prepare a reversible input correction, review predictions/artifacts together, then obtain applicable production-write approval. Audit completion is not repaired production.
-
-
-## Full-history correction staging — 2026-10-20
-
-D-121 / ADR 0011 implement verified corrections, actual venue endpoints, streak resets,
-Cup/play-in workload context and bounded bubble geography without changing coefficients.
-The isolated `fix/historical-recalculation` worktree has a restored local PostgreSQL shadow;
-production remains unchanged. The [recalculation report](research/2026-10-20-historical-recalculation.md)
-pins the exact manifest and comparisons. Apply/rollback and actual server-restart checks pass;
-cache/derived publication checks and full tests pass. D-122 adds eleven verified playoff
-feature fixes and 1,050 new-revision outputs while preserving older records.
-The owner explicitly approved the exact reviewed production update and conditional rollback.
-Next: finish the exact commit review, maintenance/cutover and canonical-domain verification. Existing opening-night/device/source-publication
-follow-ups remain open. Unverified scores, early overtime coverage and actual itineraries
-remain explicit source limits rather than inferred corrections.
+The [opening-quarter](research/2026-10-20-opening-quarter-travel-review.md),
+[full-season](research/2026-10-20-full-season-travel-review.md) and
+[all-season](research/2026-10-20-historical-audit/README.md) reports retain the original
+read-only findings. D-120 keeps the visible Mileage label. D-121 / ADR 0011 and D-122
+prepared the controlled physical-venue, workload, homecoming, tip and playoff-input
+corrections later accepted as v1.0.3 below. Those reports' repair-pending wording is
+historical. Actual airports/intermediate home returns, future Cup assignments and physical
+device/opening-night observation remain unresolved. The separate historical overtime
+coverage limit was closed by v1.0.7 and independently replayed in D-131.
 
 ## v1.0.3 production closeout — 2026-10-20
 
@@ -170,7 +149,6 @@ pool recovery cases. Independent Supabase transaction-endpoint/TLS probes pass. 
 complete exact-candidate review/full checks and preview/API parity, switch Vercel's URL/CA,
 then verify canonical production before declaring the patch released.
 
-
 ## Historical homepage and methods audit — 2026-10-20
 
 D-127 restores all eligible completed seasons on the homepage; both bars and their
@@ -191,9 +169,32 @@ responses and 14 field-specific supplemental adjudications. The separate candida
 playoff tables. Its exact manifest passed independent semantic review, 16 unmocked PostgreSQL
 checks and independent before/after captures after real server restarts. All 15 producers,
 full tests/build, 86-API numeric parity and 61 browser tests pass; no production application
-is claimed. The [record](research/2026-10-20-overtime-correction/README.md)
-separates candidate numbers from live acceptance. Next: frozen-commit review, immediate
-owner approval, then
-coordinated production activation and readback. After this audit, the owner requests repository
+is claimed. The [record](research/2026-10-20-overtime-correction/README.md) separates candidate numbers
+from live acceptance, which is recorded below. After this audit, the owner requests repository
 and local audit/script cleanup, preserving source evidence and rollback material while updating
 active tools. That cleanup is queued separately. Opening-night/device/Cup limits remain open.
+
+## Post-PR-187 independent correction candidate — 2026-10-20
+
+v1.0.7 / PR #187 (`65605ae`) was applied with owner approval and verified on the canonical
+site. D-131 first rechecked its full six-domain production state and all 103,398 fatigue
+sides with Claude's unchanged independent calculation: zero mismatches, including every
+following-game overtime effect. All 15 dependent producer stages were confirmed.
+
+The isolated `fix/historical-arena-shooting` worktree prepares v1.0.8; it is not deployed.
+The [source record](research/2026-10-20-arena-shooting/README.md) covers all 30 franchises,
+76 observed arena episodes, 182 additional exact fixture overrides, five canonical Shooting
+aliases, neutral-inclusive Data Status coverage, two conference cells and referee identity
+repairs. Points are sourced map estimates, not surveyed court centers; the November 1990
+Tacoma placement is explicitly primary-source triangulation. Section 7 remains report-only;
+coefficients, historical predictions and deferred 2026-27 grading are preserved.
+
+The fresh public backup restored with all eight public tables and 16 policies in disposable
+PostgreSQL. Manifest `6cc5f11f…0f70b6` changes 52,611 fatigue sides, two conference cells and
+eight existing future forecasts. Exact apply, idempotence, rollback and actual server-restart
+checks passed; production writes remain zero. All 15 producers and independent full-row
+replays pass; 86 local APIs match the numeric oracle and 1,460 unit tests/build pass. Next:
+finish browser acceptance and independent frozen-commit review, then present the exact diff,
+source proof, before/after figures and rollback for new owner approval. Do not merge/deploy
+the new scorer against the old production dataset. The separately queued cleanup
+branch needs the new arena dependency closure before integration.

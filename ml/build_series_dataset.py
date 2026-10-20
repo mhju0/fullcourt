@@ -297,7 +297,18 @@ def derive_rounds(
     return fails, warns
 
 
-def finalize_series(s: Series, team_conf: dict[int, str]) -> None:
+def conference_for_season(abbreviation: str, season: str, current: str | None) -> str | None:
+    """Override the stored conference for New Orleans before its 2004 realignment.
+
+    The Pelicans' official year-by-year guide lists New Orleans in the East for
+    2002-03 and 2003-04, before its 2004-05 Western Conference move.
+    """
+    if abbreviation == "NOP" and season in {"2002-03", "2003-04"}:
+        return "East"
+    return current
+
+
+def finalize_series(s: Series, team_conf: dict[int, str], team_abbr: dict[int, str]) -> None:
     """Set is_best_of_7, conference, and the resolved winner once ``round`` is known.
 
     is_best_of_7: best-of-5 IFF (round == 1 AND season start year <= 2001) — the first
@@ -310,8 +321,12 @@ def finalize_series(s: Series, team_conf: dict[int, str]) -> None:
     if s.round == 4:
         s.conference = None
     else:
-        c_home = team_conf.get(s.home_court_team_id)
-        c_opp = team_conf.get(s.opponent_team_id)
+        c_home = conference_for_season(
+            team_abbr[s.home_court_team_id], s.season, team_conf.get(s.home_court_team_id)
+        )
+        c_opp = conference_for_season(
+            team_abbr[s.opponent_team_id], s.season, team_conf.get(s.opponent_team_id)
+        )
         s.conference = c_home if (c_home is not None and c_home == c_opp) else None
 
     clinch = 4 if s.is_best_of_7 else 3
@@ -490,7 +505,7 @@ def main() -> None:
             series_list = by_season[season]
             round_fails, round_warns = derive_rounds(series_list, team_conf)
             for s in series_list:
-                finalize_series(s, team_conf)
+                finalize_series(s, team_conf, team_abbr)
             reports.append(
                 assess_season(
                     season, series_list, round_fails, round_warns, current_season

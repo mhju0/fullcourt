@@ -58,17 +58,25 @@ export function getTeamColors(abbreviation: string | null | undefined): TeamColo
   return NBA_TEAM_COLORS[abbreviation.toUpperCase()] ?? NEUTRAL_TEAM_COLORS;
 }
 
-/**
- * Readable text color for a chip filled with `hexBg`. On the light theme a few
- * teams have near-white primaries (SAS silver, etc.), where white chip text
- * vanishes — pick black or white by the fill's perceived luminance (W3C sRGB).
- */
-export function readableTextOn(hexBg: string): "#FFFFFF" | "#111318" {
-  const h = hexBg.replace("#", "");
-  const r = parseInt(h.slice(0, 2), 16) / 255;
-  const g = parseInt(h.slice(2, 4), 16) / 255;
-  const b = parseInt(h.slice(4, 6), 16) / 255;
-  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-  return L > 0.5 ? "#111318" : "#FFFFFF";
+function relativeLuminance(hex: string): number {
+  const digits = hex.replace("#", "");
+  const channels = [0, 2, 4].map((start) => parseInt(digits.slice(start, start + 2), 16) / 255);
+  const linear = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  );
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+const NEAR_BLACK_LUMINANCE = relativeLuminance("#111318");
+
+/** Use the higher-contrast theme text; fall back to pure black when neither meets 4.5:1. */
+export function readableTextOn(hexBg: string): "#FFFFFF" | "#111318" | "#000000" {
+  const background = relativeLuminance(hexBg);
+  const whiteContrast = 1.05 / (background + 0.05);
+  const nearBlackContrast =
+    (Math.max(background, NEAR_BLACK_LUMINANCE) + 0.05) /
+    (Math.min(background, NEAR_BLACK_LUMINANCE) + 0.05);
+
+  if (Math.max(whiteContrast, nearBlackContrast) < 4.5) return "#000000";
+  return nearBlackContrast > whiteContrast ? "#111318" : "#FFFFFF";
 }

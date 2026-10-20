@@ -1,0 +1,29 @@
+{
+  "url": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=4326&outSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD83_Custom_TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1983%5C%22%2CDATUM%5B%5C%22D_North_American_1983%5C%22%2CSPHEROID%5B%5C%22GRS_1980%5C%22%2C6378137%2C298.257222101%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.4375%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C0%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-81.3843%2C+%22y%22%3A+28.5487%7D%5D%7D&f=json",
+  "sourceWkt": "PROJCS[\"NAD83_Custom_TM\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.4375],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",0],UNIT[\"Meter\",1]]",
+  "ctm": [
+    8.466666666667678,
+    -7.626255162520261e-13,
+    2.21267851075968e-16,
+    8.466666666667503,
+    -6670.944819524932,
+    3152046.143120321
+  ],
+  "candidateUsedOnlyToLocateCrop": [
+    28.5487,
+    -81.3843
+  ],
+  "candidatePdfTopLeftPoint": [
+    1402.8372701577882,
+    1085.137688899517
+  ],
+  "rawResponse": {
+    "geometries": [
+      {
+        "x": 5206.410734479092,
+        "y": 3159251.380687639
+      }
+    ]
+  },
+  "bodySha256": "b924526d9f239cadb05823bc4a29a4633931513c0468de9a2522f63368b5cd99"
+}

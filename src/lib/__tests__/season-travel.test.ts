@@ -31,8 +31,15 @@ function fixture(gameId: number, date: string, home: Club, away: Club): TravelGa
   };
 }
 
+// Independent sourced arena points for these fixture dates, rather than the rounded DB inputs.
+const arenaPoints: Record<string, readonly [number, number]> = {
+  BOS: [42.366198, -71.062146],
+  NYK: [40.7505045, -73.9934387],
+  DEN: [39.7486519, -105.0075988],
+  LAL: [34.0430175, -118.2672541],
+};
 const miles = (a: Club, b: Club) =>
-  haversineDistance(Number(a.lat), Number(a.lon), Number(b.lat), Number(b.lon));
+  haversineDistance(...arenaPoints[a.abbr], ...arenaPoints[b.abbr]);
 
 // Boston: home, at New York, at Denver, home.
 const SEASON = [
@@ -69,10 +76,10 @@ describe("seasonTravelLegs", () => {
       gameDate: "2026-11-07",
       recentGames: SEASON.slice(0, 3).map((g) => rowToRecentGame(g, BOS.id)),
       isVisitingAltitude: false,
-      teamHomeLat: Number(BOS.lat),
-      teamHomeLon: Number(BOS.lon),
-      currentVenueLat: Number(BOS.lat),
-      currentVenueLon: Number(BOS.lon),
+      teamHomeLat: arenaPoints.BOS[0],
+      teamHomeLon: arenaPoints.BOS[1],
+      currentVenueLat: arenaPoints.BOS[0],
+      currentVenueLon: arenaPoints.BOS[1],
       currentGameIsHome: true,
       currentTipOffUtc: null,
     }).travelDistanceMiles;

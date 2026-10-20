@@ -1,0 +1,227 @@
+[
+  {
+    "key": "geonames-record-atl-omni",
+    "url": "https://www.geonames.org/6348383/omni-coliseum-historical.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "atl-omni",
+    "geonameId": 6348383,
+    "capturedAt": "2026-10-20T07:08:56.146746+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/6348383/omni-coliseum-historical.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:56 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "180414",
+      "ETag": "W/\"2c0be-HePsY//l/HFIx/5sMv50Rs7MXkA\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42",
+    "rawPath": "raw/geonames-record-atl-omni-cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42.html.gz",
+    "coordinateSnippets": [
+      "ulton, Omni Coliseum (historical). Coordinates 33.7575, -84.3967.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":33.7575,\"longitude\":-84.39667}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/6348383/omni-coliseum-historica"
+    ]
+  },
+  {
+    "key": "geonames-record-bos-garden",
+    "url": "https://www.geonames.org/4930980/boston-garden.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "bos-garden",
+    "geonameId": 4930980,
+    "capturedAt": "2026-10-20T07:08:56.501086+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4930980/boston-garden.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:57 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "185226",
+      "ETag": "W/\"2d38a-qG5IhbjngaYOk0iJqkdAmRt5pYo\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076",
+    "rawPath": "raw/geonames-record-bos-garden-9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076.html.gz",
+    "coordinateSnippets": [
+      "achusetts, Suffolk, Boston Garden. Coordinates 42.3659, -71.0628.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":42.36593,\"longitude\":-71.06283}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4930980/boston-garden.html\"><s"
+    ]
+  },
+  {
+    "key": "geonames-record-chi-stadium",
+    "url": "https://www.geonames.org/4887510/chicago-stadium-historical.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "chi-stadium",
+    "geonameId": 4887510,
+    "capturedAt": "2026-10-20T07:08:56.851771+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4887510/chicago-stadium-historical.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:57 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "181210",
+      "ETag": "W/\"2c3da-ONNGT0FVTflp2ZQE07tL2vV+/WU\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3",
+    "rawPath": "raw/geonames-record-chi-stadium-e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3.html.gz",
+    "coordinateSnippets": [
+      "ook, Chicago Stadium (historical). Coordinates 41.8817, -87.6728.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":41.8817,\"longitude\":-87.67283}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4887510/chicago-stadium-histori"
+    ]
+  },
+  {
+    "key": "geonames-record-atl-georgia-dome",
+    "url": "https://www.geonames.org/4196938/georgia-dome.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "atl-georgia-dome",
+    "geonameId": 4196938,
+    "capturedAt": "2026-10-20T07:08:58.045614+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4196938/georgia-dome.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:58 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "191082",
+      "ETag": "W/\"2ea6a-xNmTOqscvSQOaS46+2kYUTSPp7Y\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99",
+    "rawPath": "raw/geonames-record-atl-georgia-dome-e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99.html.gz",
+    "coordinateSnippets": [
+      "es, Georgia, Fulton, Georgia Dome. Coordinates 33.7576, -84.4008.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":33.75761,\"longitude\":-84.40076}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4196938/georgia-dome.html\"><st"
+    ]
+  },
+  {
+    "key": "geonames-record-mia-old",
+    "url": "https://www.geonames.org/4164142/miami-arena.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "mia-old",
+    "geonameId": 4164142,
+    "capturedAt": "2026-10-20T07:08:58.817324+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4164142/miami-arena.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:59 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "182957",
+      "ETag": "W/\"2caad-XuAl4UgD2nrXaAGNOvfinV3pSFI\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "62e272aa709fef1a5e045517bdd3fe12f6e406bb56a603a7aa58d380efa2746a",
+    "rawPath": "raw/geonames-record-mia-old-62e272aa709fef1a5e045517bdd3fe12f6e406bb56a603a7aa58d380efa2746a.html.gz",
+    "coordinateSnippets": [
+      "a, Miami-Dade County, Miami Arena. Coordinates 25.7812, -80.1948.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":25.78121,\"longitude\":-80.19477}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4164142/miami-arena.html\"><sty"
+    ]
+  },
+  {
+    "key": "geonames-record-orl-old",
+    "url": "https://www.geonames.org/7533656/amway-arena.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "orl-old",
+    "geonameId": 7533656,
+    "capturedAt": "2026-10-20T07:08:59.298671+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/7533656/amway-arena.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:08:59 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "201073",
+      "ETag": "W/\"31171-EdC52XQoi80/JSZ/1jRwcqi6fq0\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "a8cf2906c42ba9a96c17e7801dc6e5c28b45733c9731f1f22b01892c9be4ea16",
+    "rawPath": "raw/geonames-record-orl-old-a8cf2906c42ba9a96c17e7801dc6e5c28b45733c9731f1f22b01892c9be4ea16.html.gz",
+    "coordinateSnippets": [
+      "tes, Florida, Orange, Amway Arena. Coordinates 28.5489, -81.3867.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":28.54889,\"longitude\":-81.38667}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/7533656/amway-arena.html\"><sty"
+    ]
+  },
+  {
+    "key": "geonames-record-phi-spectrum",
+    "url": "https://www.geonames.org/4561993/wachovia-spectrum-historical.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "phi-spectrum",
+    "geonameId": 4561993,
+    "capturedAt": "2026-10-20T07:09:00.442590+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4561993/wachovia-spectrum-historical.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:09:01 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "181968",
+      "ETag": "W/\"2c6d0-wCt7cAN3PkCfJgZdnir8k8A67OE\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738",
+    "rawPath": "raw/geonames-record-phi-spectrum-316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738.html.gz",
+    "coordinateSnippets": [
+      "a, Wachovia Spectrum (historical). Coordinates 39.9043, -75.1710.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":39.90428,\"longitude\":-75.17101}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4561993/wachovia-spectrum-hist"
+    ]
+  },
+  {
+    "key": "geonames-record-was-capitalcentre",
+    "url": "https://www.geonames.org/4371978/u-s-airways-arena-historical.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "was-capitalcentre",
+    "geonameId": 4371978,
+    "capturedAt": "2026-10-20T07:09:01.253956+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/4371978/u-s-airways-arena-historical.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:09:02 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "183711",
+      "ETag": "W/\"2cd9f-xSkL23dvP+lFJvQyKwXXySp7r/o\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af",
+    "rawPath": "raw/geonames-record-was-capitalcentre-e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af.html.gz",
+    "coordinateSnippets": [
+      "s, U S Airways Arena (historical). Coordinates 38.9026, -76.8469.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":38.90261,\"longitude\":-76.84692}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/4371978/u-s-airways-arena-hist"
+    ]
+  },
+  {
+    "key": "geonames-record-cle-richfield",
+    "url": "https://www.geonames.org/5168029/richfield-coliseum-historical.html",
+    "category": "original-geonames-gazetteer-individual-record",
+    "arenaId": "cle-richfield",
+    "geonameId": 5168029,
+    "capturedAt": "2026-10-20T07:09:01.732401+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/5168029/richfield-coliseum-historical.html",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:09:02 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Powered-By": "Express",
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Length": "184345",
+      "ETag": "W/\"2d019-pUN8JIga5ICTvSZoKhO9qJ9jDyo\"",
+      "X-Frame-Options": "sameorigin",
+      "Connection": "close"
+    },
+    "bodySha256": "bb07eacbdedf4df0279a9d4c94662d2c7d9bcd5ec67baae9e22c0f204262991f",
+    "rawPath": "raw/geonames-record-cle-richfield-bb07eacbdedf4df0279a9d4c94662d2c7d9bcd5ec67baae9e22c0f204262991f.html.gz",
+    "coordinateSnippets": [
+      ", Richfield Coliseum (historical). Coordinates 41.2487, -81.5946.\",\"geo\":{\"@type\":\"GeoCoordinates\",\"latitude\":41.24867,\"longitude\":-81.59456}}</script><link _ngcontent-ng-c204522470=\"\" rel=\"canonical\" href=\"/5168029/richfield-coliseum-his"
+    ]
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "osm-pyramid",
+    "url": "https://api.openstreetmap.org/api/0.6/way/118647101/full",
+    "capturedAt": "2026-10-20T07:14:53.177815+00:00",
+    "status": 200,
+    "finalUrl": "https://api.openstreetmap.org/api/0.6/way/118647101/full",
+    "bodySha256": "05ef795dc28f00bd175e775b84fd29d3b67813262b31cb7cf33593b4c10fac70",
+    "rawPath": "raw/osm-pyramid-05ef795dc28f.xml.gz",
+    "retainedSha256": "40456b74ad4710f36861cae057c05b4bad7725520ae1a2e20f5773340344504e",
+    "bytes": 2500
+  },
+  {
+    "id": "osm-summit",
+    "url": "https://api.openstreetmap.org/api/0.6/way/118780514/full",
+    "capturedAt": "2026-10-20T07:14:53.178333+00:00",
+    "status": 200,
+    "finalUrl": "https://api.openstreetmap.org/api/0.6/way/118780514/full",
+    "bodySha256": "ff3523ffcac700d837d990c44d4952240737fed9b06fd531fb3c9f7f64ad9a77",
+    "rawPath": "raw/osm-summit-ff3523ffcac7.xml.gz",
+    "retainedSha256": "bc2da542122d1e50f63afb0cc4ff3aeba09a90517cd79663775ad7936203e855",
+    "bytes": 3888
+  },
+  {
+    "id": "osm-arco1",
+    "url": "https://api.openstreetmap.org/api/0.6/way/32560330/full",
+    "status": 200,
+    "capturedAt": "2026-10-20T07:15:41.262222+00:00",
+    "rawPath": "raw/osm-arco1-3e32d8a68fdb.xml.gz",
+    "bodySha256": "3e32d8a68fdb55296e00a1341a8405493a396156c05cb73167801d4876e68464",
+    "retainedSha256": "07a1d6d48a9b27db33db6c4c700cc5ac30a281223d1941e589c57bfda7d295fc",
+    "bytes": 2902
+  }
+]

@@ -1,0 +1,140 @@
+{
+  "arenaId": "orl-old",
+  "latitude": 28.549001355481256,
+  "longitude": -81.38657097682642,
+  "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+  "pointMeaning": "area centroid of manually traced original historical USGS building symbol; mapped site point, not surveyed court center",
+  "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Orlando%20West_347871_1995_24000_geo.pdf",
+  "sourcePath": "usgs-orlando-west-1995.pdf",
+  "sourceBodySha256": "e21d433fad8a8d5543d37d1575e34a305df8af32e01d0bd80ea123c7c4022473",
+  "bodySha256": "e21d433fad8a8d5543d37d1575e34a305df8af32e01d0bd80ea123c7c4022473",
+  "renderPath": "usgs-orlando-west-1995-roof-detail.png",
+  "renderClipPdfTopLeft": [
+    1358.8372701577882,
+    1065.8043555661836,
+    1394.8372701577882,
+    1097.8043555661836
+  ],
+  "renderScale": 10,
+  "tracedImageVertices": [
+    [
+      87,
+      90
+    ],
+    [
+      268,
+      90
+    ],
+    [
+      268,
+      218
+    ],
+    [
+      87,
+      218
+    ]
+  ],
+  "pdfVertices": [
+    [
+      1367.5372701577883,
+      861.3456444338165
+    ],
+    [
+      1385.6372701577882,
+      861.3456444338165
+    ],
+    [
+      1385.6372701577882,
+      848.5456444338165
+    ],
+    [
+      1367.5372701577883,
+      848.5456444338165
+    ],
+    [
+      1367.5372701577883,
+      861.3456444338165
+    ]
+  ],
+  "pdfCentroid": [
+    1376.5872701577882,
+    854.9456444338165
+  ],
+  "mapCTM": [
+    8.466666666667678,
+    -7.626255162520261e-13,
+    2.21267851075968e-16,
+    8.466666666667503,
+    -6670.944819524932,
+    3152046.143120321
+  ],
+  "sourceWkt": "PROJCS[\"NAD83_Custom_TM\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.4375],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",0],UNIT[\"Meter\",1]]",
+  "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD83_Custom_TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1983%5C%22%2CDATUM%5B%5C%22D_North_American_1983%5C%22%2CSPHEROID%5B%5C%22GRS_1980%5C%22%2C6378137%2C298.257222101%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.4375%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C0%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+4984.1607344790655%2C+%22y%22%3A+3159284.6829098603%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+5060.784067812408%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+5060.784067812408%2C+%22y%22%3A+3159230.4962431937%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159230.4962431937%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+6119.007769809307%2C+%22y%22%3A+3153855.0887202173%7D%2C+%7B%22x%22%3A+-6119.007769808063%2C+%22y%22%3A+3153855.088720218%7D%2C+%7B%22x%22%3A+-6111.782506191827%2C+%22y%22%3A+3167708.665922401%7D%2C+%7B%22x%22%3A+6111.782506193072%2C+%22y%22%3A+3167708.665922401%7D%5D%7D&f=json",
+  "projectionResponsePath": "orlando-roof-reprojection.json",
+  "projectionResponseSha256": "9465cfbf805f6a3754e70eb56359232e1bf72e60966b928bbc5c14f868d9d212",
+  "transformedVerticesWgs84": [
+    {
+      "x": -81.38735374359914,
+      "y": 28.549490571021433
+    },
+    {
+      "x": -81.38578773961606,
+      "y": 28.54948998362123
+    },
+    {
+      "x": -81.38578821729236,
+      "y": 28.54851213540236
+    },
+    {
+      "x": -81.38735420680985,
+      "y": 28.548512722778796
+    },
+    {
+      "x": -81.38735374359914,
+      "y": 28.549490571021433
+    }
+  ],
+  "neatlineControls": {
+    "pdfPoints": [
+      [
+        1510.62432157473,
+        213.6549921138794
+      ],
+      [
+        65.18941532088229,
+        213.654992113763
+      ],
+      [
+        66.04279291335092,
+        1849.904267962033
+      ],
+      [
+        1509.770943982261,
+        1849.904267962149
+      ]
+    ],
+    "transformedWgs84": [
+      {
+        "x": -81.37500310590374,
+        "y": 28.500005333286378
+      },
+      {
+        "x": -81.50000314226831,
+        "y": 28.50000533002049
+      },
+      {
+        "x": -81.50000314647902,
+        "y": 28.625005360113366
+      },
+      {
+        "x": -81.37500311010703,
+        "y": 28.625005363405695
+      }
+    ]
+  },
+  "derivation": "shoelace area centroid in PDF plane; GeoPDF CTM to map meters; NAD83 Transverse Mercator to WGS84 using original ArcGIS GeometryServer. Four neatline corner controls retained.",
+  "identityPrimarySources": [
+    "https://orlando.novusagenda.com/AgendaPublic/AttachmentViewer.ashx?AttachmentID=70311&ItemID=41659"
+  ],
+  "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. Miami original USGS map explicitly labels Miami Arena; Orlando footprint is on the former arena parcel west of I-4 at Amelia, corroborated by municipal former-site records. No court-center precision claim."
+}

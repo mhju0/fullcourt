@@ -367,7 +367,7 @@ export function FatigueDetailColumn({
         v={fatigue.roadTripConsecutiveAway === 0 ? "—" : `×${fatigue.roadTripConsecutiveAway}`}
       />
       <FatigueDetailRow
-        k={`MILES FLOWN, LAST ${TRAVEL_LOOKBACK_DAYS} DAYS`}
+        k={`MILEAGE, LAST ${TRAVEL_LOOKBACK_DAYS} DAYS`}
         v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
         highlight={travelHigh}
       />

@@ -109,14 +109,16 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | `home_score` (`homeScore`) | integer | yes | — | null until final |
 | `away_score` (`awayScore`) | integer | yes | — | null until final |
 | `status` | varchar | no | `'scheduled'` | `scheduled` / `final` / `postponed` / `cancelled`; legacy `live` remains readable. No in-game score is written. See [lifecycle](GAME_STATUS_LIFECYCLE.md). |
-| `game_type` (`gameType`) | varchar(16) | no | `'regular'` | `regular` / `playoffs` / `finals`. App filters to `regular`. |
-| `overtime_periods` (`overtimePeriods`) | integer | no | `0` | 0 = regulation, 1 = one OT, … Populated from ESPN by `fetch_game_context.ts` (2002-03+); **0 for earlier seasons means unknown, not "no OT"**. |
+| `game_type` (`gameType`) | varchar(16) | no | `'regular'` | `regular` / `playoffs` / `finals` / `play_in` / `cup_final`. Published regular-season findings use `publishableGames()`; workload context also retains the other played types. |
+| `overtime_periods` (`overtimePeriods`) | integer | no | `0` | 0 = regulation, 1 = one OT, … Historical overtime has been source-confirmed across the final-game archive, including pre-2002 seasons (ADR 0003’s final 2026-10-20 amendment and ADR 0015). The schema still defaults to `0`; new ingest must preserve the source-backed corrections. ESPN ingestion is handled by `fetch_game_context.ts` (2002-03+). |
 | `tip_off_utc` (`tipOffUtc`) | timestamptz | yes | — | Real tip instant (migration 0011). Null pre-2002; the b2b multiplier falls back to a flat 1.38. |
-| `neutral_site` (`neutralSite`) | boolean | no | `false` | Migration 0011. ESPN sets this only from 2013, so earlier international games are unmarked. |
-| `neutral_venue_city` (`neutralVenueCity`) | varchar | yes | — | e.g. `Paris`; coordinates live in `src/lib/neutral-venues.ts`. |
+| `neutral_site` (`neutralSite`) | boolean | no | `false` | Migration 0011. ESPN supplies this from 2013; source-backed historical corrections also mark earlier neutral fixtures. Home-designated relocated games are not automatically neutral. See `src/data/fixture-venue-corrections.json`. |
+| `neutral_venue_city` (`neutralVenueCity`) | varchar | yes | — | e.g. `Paris`; `physical-venue.ts` resolves exact fixture corrections before the `neutral-venues.ts` city fallback. |
 
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
+
+The [October 20 correction record](research/2026-10-20-arena-shooting/README.md) binds the fresh read-only six-domain snapshot and backup. The dated counts below are retained historical observations, not the current inventory.
 
 **Verified counts (2026-10-15, read-only `SELECT`):** 51,695 rows — the 2026-07-30 snapshot below
 plus the 1,200 `scheduled` 2026-27 regular games (`espn-` ids), across **42** seasons.
@@ -163,7 +165,7 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `freshness_bonus` (`freshnessBonus`) | decimal | no | — | ≤ 0; extended-rest discount |
 | `games_in_last_7_days` (`gamesInLast7Days`) | integer | no | — | prior games in 7 calendar days |
 | `games_in_last_30_days` (`gamesInLast30Days`) | integer | no | `0` | added in `0002` |
-| `travel_distance_miles` (`travelDistanceMiles`) | decimal | no | — | summed flight legs in the 7-day travel window |
+| `travel_distance_miles` (`travelDistanceMiles`) | decimal | no | — | summed estimated straight-line arena-to-arena legs in the 7-day travel window; not recorded flights |
 | `is_back_to_back` (`isBackToBack`) | boolean | no | — | days since last game = 1 |
 | `days_since_last_game` (`daysSinceLastGame`) | integer | yes | — | null = opener / no prior game |
 | `is_overtime_penalty` (`isOvertimePenalty`) | boolean | no | `false` | prior game went to OT |

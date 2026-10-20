@@ -9,9 +9,9 @@
  * cost nothing at the time — the nightly score path matches on (date, away, home) and is blind
  * to the key — with one exception:
  *
- *   `scripts/analyze_player_shooting.py` filters `external_id LIKE '002%%'` **and** joins hoopR
- *   box scores on that id. A season keyed `espn-` is invisible to it, so Shooting by Rest would
- *   carry no 2026-27 data at all.
+ *   Shooting joins cached NBA IDs to canonical fixtures and reviewed exceptional-ID
+ *   aliases. An ESPN-keyed season still needs an ID mapping or re-key; otherwise its
+ *   missing canonical shooting fixtures fail the producer's coverage guard.
  *
  * hoopR's `nba_stats_*` box scores carry the canonical id and are reachable. Measured
  * 2026-08-18: its 2025-26 regular-season ids match this database's `external_id` set exactly,

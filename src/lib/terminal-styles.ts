@@ -318,7 +318,7 @@ export const TERM_NUMERIC_TABLE_MAX_WIDTH = WIDTH.numeric;
  * numbers states what it counts, so no figure on this site is a bare quantity the reader
  * has to infer a scale for. Sits inside the `th`, below the label, deliberately quiet.
  *
- * Columns whose label already names the unit (`MILES FLOWN`, `WIN%`, `GAMES`) do not take
+ * Columns whose label already names the unit (`MILEAGE`, `WIN%`, `GAMES`) do not take
  * one — repeating it reads as noise rather than as a clarification.
  */
 export const termThUnitStyle: CSSProperties = {

@@ -72,6 +72,16 @@ Preserve resolved prediction history; regenerate eligible future predictions and
 publications together. The documented maintenance gate prevents mixed old/new results during
 the production cutover.
 
+D-131 adds the separately guarded [arena correction transition](../scripts/arena-correction/README.md).
+It authenticates an immutable v1.0.7 replay before accepting the new dated arena registry,
+then derives affected seasons from a complete replay and updates changed sides only.
+`src/data/arena-history.json` separates physical building eras from modeled-base overrides;
+`fixture-venue-corrections.json` resolves exact exceptions before those defaults. Mixed Atlanta
+home dates require explicit fixtures. The [source table](research/2026-10-20-arena-shooting/arena-eras.csv)
+retains observed game bounds, coordinate methods and citations. Production is not changed by
+preparation, local rehearsal or analytics regeneration; a new exact-manifest owner approval
+is required. The transition preserves historical prediction rows and playoff revisions.
+
 ## Fatigue and predictions
 
 `src/lib/fatigue.ts` combines ratified workload, travel, recovery, density, altitude, road-trip,

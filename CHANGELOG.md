@@ -1,5 +1,16 @@
 # Release history
 
+## 1.0.8 — Unreleased
+
+- Resolve historical arena moves and individually sourced alternate homes while preserving
+  arena-to-arena Mileage, ratified coefficients and graded prediction history.
+- Include all five canonical shooting aliases; correct Data Status coverage, referee
+  source dates, the L2M canonical link and two historical conference metadata cells.
+- Render methods-page ablation rates from generated facts and fix team-logo fallback
+  text contrast while preserving official fills.
+- Recalculate dependent publications from the reviewed local correction; production
+  application remains subject to the owner’s explicit manifest approval.
+
 ## 1.0.7 — 2026-10-20
 
 - Confirm the remaining historical overtime source gap with retained NBA box scores

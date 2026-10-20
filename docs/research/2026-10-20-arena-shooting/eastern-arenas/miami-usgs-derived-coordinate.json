@@ -1,0 +1,272 @@
+{
+  "arenaId": "mia-old",
+  "latitude": 25.781168086529952,
+  "longitude": -80.19473297469061,
+  "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+  "pointMeaning": "area centroid of manually traced original historical USGS building symbol; mapped site point, not surveyed court center",
+  "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Miami_347456_1994_24000_geo.pdf",
+  "sourcePath": "usgs-miami-1994.pdf",
+  "sourceBodySha256": "13c85d979587da7372cb9c779b35c957112e95d4c68f82ad3863ff3b1cb2b9d1",
+  "bodySha256": "13c85d979587da7372cb9c779b35c957112e95d4c68f82ad3863ff3b1cb2b9d1",
+  "renderPath": "usgs-miami-1994-roof-detail.png",
+  "renderClipPdfTopLeft": [
+    754.1470047426511,
+    1280.266957030601,
+    790.1470047426511,
+    1312.266957030601
+  ],
+  "renderScale": 10,
+  "tracedImageVertices": [
+    [
+      99,
+      113
+    ],
+    [
+      127,
+      113
+    ],
+    [
+      130,
+      125
+    ],
+    [
+      143,
+      110
+    ],
+    [
+      218,
+      107
+    ],
+    [
+      236,
+      115
+    ],
+    [
+      251,
+      132
+    ],
+    [
+      260,
+      155
+    ],
+    [
+      260,
+      178
+    ],
+    [
+      252,
+      197
+    ],
+    [
+      234,
+      209
+    ],
+    [
+      201,
+      216
+    ],
+    [
+      148,
+      216
+    ],
+    [
+      123,
+      209
+    ],
+    [
+      103,
+      194
+    ]
+  ],
+  "pdfVertices": [
+    [
+      764.0470047426511,
+      639.9130429693992
+    ],
+    [
+      766.8470047426512,
+      639.9130429693992
+    ],
+    [
+      767.1470047426511,
+      638.7130429693991
+    ],
+    [
+      768.4470047426511,
+      640.2130429693991
+    ],
+    [
+      775.9470047426511,
+      640.5130429693991
+    ],
+    [
+      777.7470047426511,
+      639.7130429693991
+    ],
+    [
+      779.2470047426511,
+      638.0130429693991
+    ],
+    [
+      780.1470047426511,
+      635.7130429693991
+    ],
+    [
+      780.1470047426511,
+      633.4130429693992
+    ],
+    [
+      779.3470047426512,
+      631.5130429693991
+    ],
+    [
+      777.5470047426511,
+      630.313042969399
+    ],
+    [
+      774.2470047426511,
+      629.6130429693992
+    ],
+    [
+      768.9470047426511,
+      629.6130429693992
+    ],
+    [
+      766.4470047426511,
+      630.313042969399
+    ],
+    [
+      764.4470047426511,
+      631.813042969399
+    ],
+    [
+      764.0470047426511,
+      639.9130429693992
+    ]
+  ],
+  "pdfCentroid": [
+    771.9752406542171,
+    635.0584310163715
+  ],
+  "mapCTM": [
+    8.466666666667678,
+    0.0,
+    1.170200065806646e-16,
+    8.466666666667678,
+    -7261.273408926992,
+    -1924.389359824
+  ],
+  "sourceWkt": "PROJCS[\"NAD83_Custom_TM\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-80.1875],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",25.75],UNIT[\"Meter\",1]]",
+  "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD83_Custom_TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1983%5C%22%2CDATUM%5B%5C%22D_North_American_1983%5C%22%2CSPHEROID%5B%5C%22GRS_1980%5C%22%2C6378137%2C298.257222101%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-80.1875%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C25.75%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-725.2163713871723%2C+%22y%22%3A+3452.438689448587%7D%2C+%7B%22x%22%3A+-792.3421021051063%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+-768.6354354384366%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+-766.0954354384367%2C+%22y%22%3A+3483.381070650891%7D%2C+%7B%22x%22%3A+-755.0887687717686%2C+%22y%22%3A+3496.081070650893%7D%2C+%7B%22x%22%3A+-691.5887687717614%2C+%22y%22%3A+3498.6210706508928%7D%2C+%7B%22x%22%3A+-676.3487687717588%2C+%22y%22%3A+3491.847737317559%7D%2C+%7B%22x%22%3A+-663.6487687717572%2C+%22y%22%3A+3477.454403984224%7D%2C+%7B%22x%22%3A+-656.0287687717564%2C+%22y%22%3A+3457.981070650888%7D%2C+%7B%22x%22%3A+-656.0287687717564%2C+%22y%22%3A+3438.5077373175527%7D%2C+%7B%22x%22%3A+-662.8021021050909%2C+%22y%22%3A+3422.421070650884%7D%2C+%7B%22x%22%3A+-678.0421021050934%2C+%22y%22%3A+3412.261070650882%7D%2C+%7B%22x%22%3A+-705.9821021050957%2C+%22y%22%3A+3406.334403984216%7D%2C+%7B%22x%22%3A+-750.855435438435%2C+%22y%22%3A+3406.334403984216%7D%2C+%7B%22x%22%3A+-772.0221021051048%2C+%22y%22%3A+3412.261070650882%7D%2C+%7B%22x%22%3A+-788.95543543844%2C+%22y%22%3A+3424.961070650884%7D%2C+%7B%22x%22%3A+-792.3421021051063%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+6270.542829487563%2C+%22y%22%3A+1.4858251414898405%7D%2C+%7B%22x%22%3A+-6270.542829488835%2C+%22y%22%3A+1.4858251414898405%7D%2C+%7B%22x%22%3A+-6263.96526710873%2C+%22y%22%3A+13849.631941290347%7D%2C+%7B%22x%22%3A+6263.965267107457%2C+%22y%22%3A+13849.631941290347%7D%5D%7D&f=json",
+  "projectionResponsePath": "miami-roof-reprojection.json",
+  "projectionResponseSha256": "1b453b94fdcc323a4ad67262b65e34560b27775a00f5a106bdbb0749a8283ef3",
+  "transformedVerticesWgs84": [
+    {
+      "x": -80.19540223247388,
+      "y": 25.781539063320114
+    },
+    {
+      "x": -80.19516587992209,
+      "y": 25.7815390759654
+    },
+    {
+      "x": -80.19514055055896,
+      "y": 25.781447367823024
+    },
+    {
+      "x": -80.19503082276874,
+      "y": 25.781562010387315
+    },
+    {
+      "x": -80.19439773677979,
+      "y": 25.781584969147808
+    },
+    {
+      "x": -80.19424579233655,
+      "y": 25.78152383662279
+    },
+    {
+      "x": -80.19411916770306,
+      "y": 25.78139392068205
+    },
+    {
+      "x": -80.19404318768838,
+      "y": 25.78121814762088
+    },
+    {
+      "x": -80.19404317804462,
+      "y": 25.781042371118986
+    },
+    {
+      "x": -80.19411069901535,
+      "y": 25.78089716138771
+    },
+    {
+      "x": -80.19426263392391,
+      "y": 25.780805444922024
+    },
+    {
+      "x": -80.1945411874173,
+      "y": 25.78075193450913
+    },
+    {
+      "x": -80.19498856608116,
+      "y": 25.780751912170455
+    },
+    {
+      "x": -80.19519959720633,
+      "y": 25.780805398354563
+    },
+    {
+      "x": -80.19536842698218,
+      "y": 25.78092002617546
+    },
+    {
+      "x": -80.19540223247388,
+      "y": 25.781539063320114
+    }
+  ],
+  "neatlineControls": {
+    "pdfPoints": [
+      [
+        1598.246012410977,
+        227.4655730273929
+      ],
+      [
+        117.0154227682722,
+        227.4655730273929
+      ],
+      [
+        117.7923002147412,
+        1863.073382021157
+      ],
+      [
+        1597.469134964508,
+        1863.073382021157
+      ]
+    ],
+    "transformedWgs84": [
+      {
+        "x": -80.1250026599857,
+        "y": 25.750004681761972
+      },
+      {
+        "x": -80.25000269653368,
+        "y": 25.750004679105587
+      },
+      {
+        "x": -80.25000269979287,
+        "y": 25.875004710802408
+      },
+      {
+        "x": -80.12500266324219,
+        "y": 25.875004713484174
+      }
+    ]
+  },
+  "derivation": "shoelace area centroid in PDF plane; GeoPDF CTM to map meters; NAD83 Transverse Mercator to WGS84 using original ArcGIS GeometryServer. Four neatline corner controls retained.",
+  "identityPrimarySources": [
+    "https://www.barkerpacific.com/commercial-projects/miami-arena"
+  ],
+  "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. Miami original USGS map explicitly labels Miami Arena; Orlando footprint is on the former arena parcel west of I-4 at Amelia, corroborated by municipal former-site records. No court-center precision claim."
+}

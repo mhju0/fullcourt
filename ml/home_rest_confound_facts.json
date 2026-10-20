@@ -1,19 +1,19 @@
 {
   "population": 47094,
   "bothTravelledIn": {
-    "games": 23075,
+    "games": 23007,
     "homeWinPct": 59.7
   },
   "homeFlewFarther": {
-    "games": 12490,
-    "homeWinPct": 60
+    "games": 12480,
+    "homeWinPct": 60.1
   },
   "homeTravelledInOnBackToBack": {
-    "games": 5945,
-    "homeWinPct": 58
+    "games": 5946,
+    "homeWinPct": 58.1
   },
   "meanRestEdge": {
-    "allGames": 1.283,
-    "bothTravelledIn": 0.656
+    "allGames": 1.282,
+    "bothTravelledIn": 0.654
   }
 }

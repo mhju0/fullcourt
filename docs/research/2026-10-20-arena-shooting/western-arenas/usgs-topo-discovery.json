@@ -1,0 +1,327 @@
+[
+  {
+    "id": "tnm-den-mcnichols",
+    "url": "https://tnmaccess.nationalmap.gov/api/v1/products?datasets=Historical+Topographic+Maps&bbox=-105.027%2C39.739%2C-105.017%2C39.747&max=100",
+    "capturedAt": "2026-10-20T07:17:54.987986+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-den-mcnichols-2aa351bbe7a1.json.gz",
+    "bodySha256": "2aa351bbe7a1b469594c693a2726e2b6ffd661d2c7b16378894c58306fa097ee",
+    "items": [
+      {
+        "title": "USGS 1:100000-scale Quadrangle for Denver West, CO 1983",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:21:20.692-07:00"
+      },
+      {
+        "title": "USGS 1:100000-scale Quadrangle for Denver West, CO 1983",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_232784_1983_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:21:20.358-07:00"
+      },
+      {
+        "title": "USGS 1:125000-scale Quadrangle for West Denver, CO 1899",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/125000/CO_West%20Denver_402392_1899_125000_geo.pdf",
+        "dateCreated": "2018-02-18T20:59:09.161-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1948",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450342_1948_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:27.003-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1957",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450341_1957_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.901-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450337_1965_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.348-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450340_1965_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.740-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_233018_1965_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.233-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450339_1965_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.621-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Fort Logan, CO 1965",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/24000/CO_Fort%20Logan_450338_1965_24000_geo.pdf",
+        "dateCreated": "2018-02-18T19:38:18.504-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_232795_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:18.373-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403104_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:19.106-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403105_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:19.240-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_707305_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:20.764-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_232797_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:18.622-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403106_1953_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:19.716-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1957",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403110_1957_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:20.555-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1958",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403109_1958_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:20.240-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Denver, CO 1960",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/250000/CO_Denver_403107_1960_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:20:20.148-07:00"
+      },
+      {
+        "title": "USGS 1:31680-scale Quadrangle for Fort Logan, CO 1941",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/31680/CO_Fort%20Logan_402542_1941_31680_geo.pdf",
+        "dateCreated": "2018-02-18T21:18:55.965-07:00"
+      }
+    ]
+  },
+  {
+    "id": "tnm-sas-hemisfair",
+    "url": "https://tnmaccess.nationalmap.gov/api/v1/products?datasets=Historical+Topographic+Maps&bbox=-98.487%2C29.416%2C-98.479%2C29.424&max=100",
+    "capturedAt": "2026-10-20T07:17:54.988545+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-sas-hemisfair-7af50ad92d2c.json.gz",
+    "bodySha256": "7af50ad92d2c1c0d3db4e3e0a4cdba30360a3d59cb9acfb9b613e51bb63f9cde",
+    "items": [
+      {
+        "title": "USGS 1:100000-scale Quadrangle for San Antonio, TX 1985",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/100000/TX_San%20Antonio_117665_1985_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:53:07.344-07:00"
+      },
+      {
+        "title": "USGS 1:100000-scale Quadrangle for San Antonio, TX 1985",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/100000/TX_San%20Antonio_117667_1985_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:53:07.605-07:00"
+      },
+      {
+        "title": "USGS 1:100000-scale Quadrangle for San Antonio, TX 1985",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/100000/TX_San%20Antonio_117666_1985_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:53:07.461-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1953",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_116611_1953_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:29:07.112-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1967",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_116613_1967_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:29:07.356-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1967",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_116612_1967_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:29:07.226-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1967",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_116614_1967_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:29:07.555-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for San Antonio East, TX 1992",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/24000/TX_San%20Antonio%20East_117659_1992_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:29:07.733-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for San Antonio, TX 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/250000/TX_San%20Antonio_116624_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T21:06:45.223-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for San Antonio, TX 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/250000/TX_San%20Antonio_707575_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T21:06:45.495-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for San Antonio, TX 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/250000/TX_San%20Antonio_116626_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T21:06:45.386-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for San Antonio, TX 1957",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/TX/250000/TX_San%20Antonio_116623_1957_250000_geo.pdf",
+        "dateCreated": "2018-02-18T21:06:45.074-07:00"
+      }
+    ]
+  },
+  {
+    "id": "tnm-uta-saltpalace",
+    "url": "https://tnmaccess.nationalmap.gov/api/v1/products?datasets=Historical+Topographic+Maps&bbox=-111.902%2C40.762%2C-111.89%2C40.772&max=100",
+    "capturedAt": "2026-10-20T07:17:55.773592+00:00",
+    "status": 200,
+    "rawPath": "raw/tnm-uta-saltpalace-e32b9b2f0e35.json.gz",
+    "bodySha256": "e32b9b2f0e356aafa61e0fedbbfba50d735d28edf130af64059d9171b43ba083",
+    "items": [
+      {
+        "title": "USGS 1:100000-scale Quadrangle for Salt Lake City, UT 1980",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/100000/UT_Salt%20Lake%20City_251671_1980_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:38:37.486-07:00"
+      },
+      {
+        "title": "USGS 1:100000-scale Quadrangle for Salt Lake City, UT 1980",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/100000/UT_Salt%20Lake%20City_251672_1980_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:38:37.671-07:00"
+      },
+      {
+        "title": "USGS 1:100000-scale Quadrangle for Salt Lake City, UT 1980",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/100000/UT_Salt%20Lake%20City_251670_1980_100000_geo.pdf",
+        "dateCreated": "2018-02-18T18:38:37.357-07:00"
+      },
+      {
+        "title": "USGS 1:125000-scale Quadrangle for Ft. Douglas, UT 1925",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/125000/UT_Ft%20Douglas_249449_1925_125000_geo.pdf",
+        "dateCreated": "2018-02-18T20:29:49.400-07:00"
+      },
+      {
+        "title": "USGS 1:125000-scale Quadrangle for Ft. Douglas, UT 1928",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/125000/UT_Ft%20Douglas_249450_1928_125000_geo.pdf",
+        "dateCreated": "2018-02-18T20:29:49.665-07:00"
+      },
+      {
+        "title": "USGS 1:125000-scale Quadrangle for Ft. Douglas, UT 1928",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/125000/UT_Ft%20Douglas_249451_1928_125000_geo.pdf",
+        "dateCreated": "2018-02-18T20:29:49.833-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1951",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251647_1951_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:56.476-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251651_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:56.901-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251648_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:56.611-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251653_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:57.143-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251652_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:57.033-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251649_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:56.725-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1963",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251650_1963_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:56.810-07:00"
+      },
+      {
+        "title": "USGS 1:24000-scale Quadrangle for Salt Lake City North, UT 1998",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/24000/UT_Salt%20Lake%20City%20North_251654_1998_24000_geo.pdf",
+        "dateCreated": "2018-02-18T21:46:57.282-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251668_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:06.240-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251665_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:04.481-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251666_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:05.182-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1954",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251669_1954_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:06.451-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1958",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251663_1958_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:00.568-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake City, UT 1960",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake%20City_251664_1960_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:02.101-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251675_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:07.569-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251677_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:09.231-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251678_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:11.033-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251676_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:08.223-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251674_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:06.907-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251681_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:11.897-07:00"
+      },
+      {
+        "title": "USGS 1:250000-scale Quadrangle for Salt Lake, UT 1885",
+        "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/UT/250000/UT_Salt%20Lake_251683_1885_250000_geo.pdf",
+        "dateCreated": "2018-02-18T18:07:12.346-07:00"
+      }
+    ]
+  }
+]

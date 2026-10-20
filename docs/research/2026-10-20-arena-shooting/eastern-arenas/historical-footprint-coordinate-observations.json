@@ -1,0 +1,26 @@
+[
+  {
+    "arenaId": "det-silverdome",
+    "url": "https://www.openhistoricalmap.org/api/0.6/way/199784496/full",
+    "wayId": 199784496,
+    "error": "HTTPError:HTTP Error 403: Forbidden"
+  },
+  {
+    "arenaId": "det-palace",
+    "url": "https://www.openhistoricalmap.org/api/0.6/way/199784912/full",
+    "wayId": 199784912,
+    "error": "HTTPError:HTTP Error 403: Forbidden"
+  },
+  {
+    "arenaId": "mil-bradley",
+    "url": "https://www.openhistoricalmap.org/api/0.6/way/200259653/full",
+    "wayId": 200259653,
+    "error": "HTTPError:HTTP Error 403: Forbidden"
+  },
+  {
+    "arenaId": "cha-coliseum",
+    "url": "https://www.openhistoricalmap.org/api/0.6/way/200699921/full",
+    "wayId": 200699921,
+    "error": "HTTPError:HTTP Error 403: Forbidden"
+  }
+]
