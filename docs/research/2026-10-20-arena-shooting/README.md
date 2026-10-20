@@ -6,6 +6,9 @@ requires a reviewed manifest, fresh backup and conditional rollback, followed by
 approval before production application. This record supersedes neither the retained audit
 nor v1.0.7 acceptance. Source/test evidence takes precedence over audit prose.
 
+The [audit ledger](AUDIT_LEDGER.md) indexes findings, rejected source interpretations,
+implementation and verification corrections, retained diagnostics and targeted rerun triggers.
+
 ## Section 8 — PR #187 follow-through confirmed first
 
 A new repeatable-read, read-only production capture at 2026-10-20 06:38:01 UTC matches the

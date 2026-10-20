@@ -198,3 +198,18 @@ obtain narrow final review of the report-only prediction tools, then present the
 source proof, before/after figures and rollback for new owner approval. Do not merge/deploy
 the new scorer against the old production dataset. The separately queued cleanup
 branch needs the new arena dependency closure before integration.
+
+
+## Approved arena candidate and recurrence record — 2026-10-20
+
+Independent core and narrow prediction-tool reviews accepted final candidate
+`647906687fb4218ca939a250545902ad3747c0f4`. The owner approved its exact arena manifest
+`6cc5f11f24199936c118dc112ec47147eba275e8a7d522d5fbad87a71d0f70b6` for production
+application and requested a durable record to prevent repeated audit mistakes. The
+[audit ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md) records adopted fixes,
+rejected evidence, implementation/harness corrections, preserved Section 7 diagnostics
+and rerun triggers, separating committed regression coverage from ignored operational
+receipts. This entry supersedes the prior pending-review/approval next step; it does not
+claim production execution or deployment. Next: root completes fresh preflight, approved
+application/readback, matching release and canonical verification, then records observed
+production evidence. Preserve the exact source/manifest bindings and historical predictions.
