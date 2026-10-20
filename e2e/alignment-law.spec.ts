@@ -78,7 +78,7 @@ test.describe("The outer rail is one vertical line", () => {
  * an interior one rather than pinning a literal, so the rule survives a change to the value.
  */
 test.describe("A table's cells sit on one inset, edges included", () => {
-  for (const route of ["/season", "/analysis", "/shooting", "/behind-the-data/rest-advantage"]) {
+  for (const route of ["/season", "/analysis", "/shooting?year=2025", "/behind-the-data/rest-advantage"]) {
     test(`no edge cell pads differently from its neighbours on ${route}`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(route, { waitUntil: "networkidle" });
@@ -125,7 +125,7 @@ test.describe("A table's cells sit on one inset, edges included", () => {
  */
 test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/shooting", { waitUntil: "networkidle" });
+  await page.goto("/shooting?year=2025", { waitUntil: "networkidle" });
 
   // The section is IntersectionObserver-gated: it fetches its payload only once scrolled
   // near, so the table does not exist until the divider has been brought into view.
@@ -146,7 +146,7 @@ test("a few-column numeric table sizes to its content, not to the cap", async ({
 
 test("expanding a /shooting player does not shift its row sideways", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/shooting", { waitUntil: "networkidle" });
+  await page.goto("/shooting?year=2025", { waitUntil: "networkidle" });
 
   const firstRow = page.locator("table.fc-table tbody tr").first();
   await expect(firstRow).toBeVisible();

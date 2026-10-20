@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("mobile player identity has room and does not overlap its team", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/shooting");
+  await page.goto("/shooting?year=2025");
   const row = page.getByTestId("player-row").first();
   await expect(row).toBeVisible({ timeout: 45000 });
   const name = await row.locator("td").nth(1).boundingBox();

@@ -34,7 +34,7 @@ export function BoardGuide({ className }: { className?: string }) {
           The home team&apos;s fatigue score is at least {MEDIUM_REST_EDGE_THRESHOLD} but less than {LARGE_REST_EDGE_THRESHOLD} points lower.
         </GuideRow>
         <GuideRow term={<RestEdgeBadge size="large" />}>
-          The home team&apos;s fatigue score is {LARGE_REST_EDGE_THRESHOLD}+ points lower.
+          The home team&apos;s fatigue score is {LARGE_REST_EDGE_THRESHOLD}+&nbsp;points lower.
         </GuideRow>
       </dl>
       <p>Compare historical outcomes with the home-court baseline in <Link href="/analysis" className="fc-text-link inline-flex min-h-11 items-center underline">Model Results</Link>.</p>

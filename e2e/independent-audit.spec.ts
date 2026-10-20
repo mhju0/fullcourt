@@ -55,7 +55,7 @@ test("mobile games keep season, month and date visible", async ({ page }) => {
 
 test("mobile shooting exposes a player before optional definitions", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/shooting");
+  await page.goto("/shooting?year=2025");
   const first = page.getByTestId("player-row").first();
   await expect(first).toBeInViewport({ ratio: 1 });
   const row = await first.boundingBox();

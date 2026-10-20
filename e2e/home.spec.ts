@@ -100,7 +100,8 @@ test.describe("Rest-focused front door", () => {
         test(`full-bleed home fits the available width with ${gutter} scrollbar gutter at ${width}px`, async ({ page }) => {
           await page.setViewportSize({ width, height: 900 });
           await page.goto("/");
-          await page.addStyleTag({ content: `html { scrollbar-gutter: ${gutter}; }` });
+          // A styled scrollbar is a classic one, so overlay-scrollbar hosts (macOS) measure it too.
+          await page.addStyleTag({ content: `html { scrollbar-gutter: ${gutter}; } html::-webkit-scrollbar { width: 15px; }` });
           const geometry = await page.getByTestId("home-findings").evaluate((home) => {
             const rect = home.getBoundingClientRect();
             const documentRoot = document.documentElement;
