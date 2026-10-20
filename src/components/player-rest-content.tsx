@@ -377,11 +377,6 @@ export function PlayerRestContent() {
 
   return (
     <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
-      {!rawYear && defaultSeason && defaultSeason < currentSeason ? (
-        <p role="status" className="text-body text-[var(--term-text-muted)]">
-          Showing {defaultSeason}, the latest published results. {currentSeason} results are not available yet.
-        </p>
-      ) : null}
       {error ? (
         <p role="status">
           Refresh unavailable. Showing the last loaded player export.
@@ -483,7 +478,10 @@ export function PlayerRestContent() {
             Reset advanced filters
           </button>
           </details>
-        <div className="flex">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          {!rawYear && defaultSeason && defaultSeason < currentSeason ? (
+            <p role="status" className="text-[12px] text-[var(--term-text-muted)]">{currentSeason} awaiting results</p>
+          ) : null}
           <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
             {activeYear === "career"
@@ -493,7 +491,7 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p className={styles.readingKey}><KeepTogether>eFG% gives extra credit for threes. Gap = 2–29 days off minus no rest, in percentage points (pp). Attempts appear below each rate.</KeepTogether></p>
+      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
         <DataTable

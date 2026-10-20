@@ -5,8 +5,8 @@ test("mobile player identity has room and does not overlap its team", async ({ p
   await page.goto("/shooting?year=2025");
   const row = page.getByTestId("player-row").first();
   await expect(row).toBeVisible({ timeout: 45000 });
-  const name = await row.locator("td").nth(1).boundingBox();
-  const split = await row.locator("td").nth(7).boundingBox();
+  const name = await row.locator("td").nth(0).boundingBox();
+  const split = await row.locator("td").nth(1).boundingBox();
   expect(name!.width).toBeGreaterThanOrEqual(120);
   expect(name!.x + name!.width).toBeLessThanOrEqual(split!.x + 1);
   await expect(row.getByRole("button").locator("small")).toBeVisible();
@@ -42,6 +42,7 @@ test("method sections expose headings and mobile descriptors stay inside their c
 test("shot locations can be inspected by keyboard and pointer", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/shot-quality");
+  await page.getByRole("group", { name: "Shot value model", exact: true }).getByRole("button", { name: "Location model", exact: true }).click();
   const slider = page.getByRole("slider", { name: "Inspect location on Location model court", exact: true });
   await expect(slider).toBeVisible({ timeout: 45000 });
   const before = await slider.getAttribute("aria-valuetext");

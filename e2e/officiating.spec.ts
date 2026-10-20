@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import data from "../src/data/officiating.json";
+import { defaultNbaSeason } from "../src/lib/nba-season";
 
 const season = data.seasons[data.seasons.length - 1];
 const errorGame = season.games.find((g) => g.missed + g.wrong > 0)!;
@@ -122,7 +123,10 @@ for (const historical of [data.seasons[0], data.seasons[2], data.seasons[4]]) {
     await page.setViewportSize({ width: 390, height: 844 });
     const game = historical.games.find(g => g.missed + g.wrong > 0)!;
     await page.goto(`/officiating?season=${historical.season}&game=${game.id}`);
-    await expect(page.getByLabel("SEASON", { exact: true }).locator("option")).toHaveCount(data.seasons.length);
+    const seasonSelect = page.getByLabel("SEASON", { exact: true });
+    const selectableSeasons = new Set([...data.seasons.map(season => season.season), defaultNbaSeason()]);
+    await expect(seasonSelect.locator("option")).toHaveCount(selectableSeasons.size);
+    await expect(seasonSelect).toHaveValue(historical.season);
     await expect(page.locator("blockquote").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Source: NBA L2M report ↗" }).first()).toHaveAttribute("href", game.source);
     await page.evaluate(() => window.scrollTo(0, 0));

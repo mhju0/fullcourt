@@ -75,7 +75,9 @@ describe("current player publication holds", () => {
     state.data["/data/player-rest.json"] = { ...playerPayload, seasons: [[0, 2024, 0, 25, 70, 1000, 50, 200, 48, 300, 52]] };
     const html = renderPlayer();
     expect(html).toContain('value="2024" selected=""');
-    expect(html).toContain("Showing 2024-25");
+    expect(html).toContain("player in 2024-25");
+    expect(html).toContain("2026-27");
+    expect(html).toContain("awaiting results");
   });
 
   it("opens current only when its publication and readiness both exist", () => {

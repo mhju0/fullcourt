@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { PageSearchButton } from "@/components/page-search-button";
 import { BottomNav } from "@/components/bottom-nav";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
@@ -18,23 +18,26 @@ import { REPORT_ERROR_HREF } from "@/lib/contact";
 //
 // Outfit is still bundled under src/app/fonts for the OG card: that wordmark is a
 // fixed brand asset, and a logotype does not have to share the UI's display face.
-const geist = Geist({
+// Pinned full fonts keep extended player-name glyphs and remove build-time font downloads.
+const geist = localFont({
+  src: "./fonts/Geist-Variable.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-geist",
-  subsets: ["latin"],
   display: "swap",
-  // 700 is loaded for /about, whose display statements set font-bold — without it the
-  // browser synthesizes a faux bold from the 600 face.
-  weight: ["400", "500", "600", "700"],
+  declarations: [{ prop: "font-family", value: "Geist" }],
 });
 
 // The data face. Replaces IBM Plex Mono with the direction's Geist Mono — same
 // tabular discipline, one voice with the UI face. Weights mirror what Plex loaded
 // so existing font-semibold/font-bold mono text keeps a real face behind it.
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "./fonts/GeistMono-Variable.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
   display: "swap",
-  weight: ["400", "600", "700"],
+  declarations: [{ prop: "font-family", value: "Geist Mono" }],
 });
 
 // No route count and no "completed": both aged. This named three surfaces while the site

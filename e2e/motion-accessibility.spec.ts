@@ -92,6 +92,7 @@ for (const width of [390, 1440]) {
           };
         });
         await page.locator(".recharts-wrapper").first().locator(".recharts-bar-rectangle path").first().click();
+        await page.getByRole("button", { name: "Browse selected games", exact: true }).click();
         await expect(page.getByLabel("Rest gap filter")).toHaveValue("small");
         await expect(page.getByLabel("Rested team filter")).toHaveValue("home");
         await expect(page.locator("[data-scroll-behavior]")).toHaveAttribute("data-scroll-behavior", reduced ? "instant" : "smooth");

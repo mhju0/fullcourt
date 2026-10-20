@@ -103,7 +103,8 @@ test("Shot Value restores season, map mode and comparison and copies their conte
   await expect(page.getByRole("button", { name: "MODEL DIFFERENCE" })).toHaveAttribute("aria-pressed", "true");
 
   await page.getByRole("button", { name: "EXPECTED eFG%" }).click();
-  await page.getByRole("button", { name: "Compare models" }).click();
+  await expect(page.getByRole("group", { name: "Shot value model", exact: true })).toBeVisible();
+  await page.goto("/shot-quality?season=2024-25&compare=1");
   await expect(page).toHaveURL(/compare=1/);
   await page.getByRole("button", { name: "Copy this view" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Copied" })).toBeVisible();
@@ -115,7 +116,7 @@ test("Shot Value restores season, map mode and comparison and copies their conte
   expect(copied).toContain("compare=1");
 
   await page.goBack();
-  await expect(page.getByRole("button", { name: "Compare models" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Shot value model", exact: true })).toBeVisible();
   await page.goBack();
   await expect(page.getByRole("button", { name: "MODEL DIFFERENCE" })).toHaveAttribute("aria-pressed", "true");
 });

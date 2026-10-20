@@ -10,6 +10,9 @@ test.describe("Games page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "Games" })
     ).toBeVisible();
+    await expect(page.getByText("Compare the schedule behind each matchup.", { exact: true })).toBeVisible();
+    await expect(page.getByText(/Rest gap is a model-score difference/)).toBeHidden();
+    await page.getByText("About rest advantage and game status", { exact: true }).click();
     await expect(page.getByText(/Rest gap is a model-score difference/)).toBeVisible();
 
     // The site's headline figure moved to `/` with the front door. It must not come back here:

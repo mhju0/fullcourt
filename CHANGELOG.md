@@ -11,6 +11,8 @@
   shot models on one court while retaining the selected location.
 - Clarify all Behind the Data method pages, preserve per-input playoff signs, explain
   projected-fatigue and Worth boundaries accurately, and fit formulas/tables on narrow phones.
+- Bundle licensed UI fonts locally to remove intermittent build-time font downloads while
+  preserving extended player-name glyphs.
 - Preserve published figures, fatigue coefficients, database schema and historical predictions.
 
 ## 1.0.12 — 2026-10-20

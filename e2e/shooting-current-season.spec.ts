@@ -27,7 +27,7 @@ for (const width of [1280, 390]) {
     const main = page.locator("main");
     await expect(main.locator("#pr-season")).toHaveValue("2025");
     await expect(main.getByTestId("player-row")).toHaveCount(1);
-    await expect(main).toContainText("Showing 2025-26, the latest published results.");
+    await expect(main).toContainText("2026-27 awaiting results");
     await main.locator("#pr-season").selectOption("2026");
     await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
     await expect(main.getByTestId("season-data-guide")).toHaveCount(1);
