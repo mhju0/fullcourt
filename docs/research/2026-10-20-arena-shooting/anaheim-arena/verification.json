@@ -1,0 +1,13 @@
+{
+  "roofWayId": 368791749,
+  "roofWayVersion": 3,
+  "closedPolygonVertices": 38,
+  "polygonValid": true,
+  "centroidReproduced": true,
+  "originalOsmBodyHashVerified": true,
+  "officiallyLinkedGuideBodyHashVerified": true,
+  "rejectedCampusCandidateDistanceMeters": 207.88403486613936,
+  "latitude": 33.80228943029974,
+  "longitude": -117.91983669078155,
+  "coordinateRecordSha256": "f5b8eb70b02c4673d1c79c2619bb0e09d479d3c5cedf3fb18bf3bbf3f58b230e"
+}

@@ -1,0 +1,626 @@
+[
+  {
+    "key": "dal-reunion",
+    "query": "Reunion Arena 777 Sports St, Dallas, TX",
+    "url": "https://www.google.com/maps?q=Reunion+Arena+777+Sports+St%2C+Dallas%2C+TX&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:12.682916+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sReunion+Arena+777+Sports+St,+Dallas,+TX!3m1!1sen!5m1!1sen",
+    "bodySha256": "d4b2a1bae81755a96dfd2068fde89b5b56be8f678cee4ab056c8df11b34800d9",
+    "rawPath": "raw/marker-dal-reunion-d4b2a1bae81755a96dfd2068fde89b5b56be8f678cee4ab056c8df11b34800d9.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "dal-aac",
+    "query": "American Airlines Center 2500 Victory Ave, Dallas, TX 75219",
+    "url": "https://www.google.com/maps?q=American+Airlines+Center+2500+Victory+Ave%2C+Dallas%2C+TX+75219&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:13.188068+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sAmerican+Airlines+Center+2500+Victory+Ave,+Dallas,+TX+75219!3m1!1sen!5m1!1sen",
+    "bodySha256": "7447208638a17517821a757c003a713a70dfbe9ef42e67ca144b786b25e1ed09",
+    "rawPath": "raw/marker-dal-aac-7447208638a17517821a757c003a713a70dfbe9ef42e67ca144b786b25e1ed09.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x864e992f5ccee5af:0x21611d4f28860fa3",
+        "nameAddress": "American Airlines Ctr, 2500 Victory Ave, Dallas, TX 75219, United States",
+        "latitude": 32.7903908,
+        "longitude": -96.8102547,
+        "providerCid": "2405235901812051875"
+      }
+    ]
+  },
+  {
+    "key": "den-mcnichols",
+    "query": "McNichols Sports Arena 1635 Bryant St, Denver, CO",
+    "url": "https://www.google.com/maps?q=McNichols+Sports+Arena+1635+Bryant+St%2C+Denver%2C+CO&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:13.685243+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMcNichols+Sports+Arena+1635+Bryant+St,+Denver,+CO!3m1!1sen!5m1!1sen",
+    "bodySha256": "18283bcf40680b939525eff7a696bffeea91e1b337a572ed4343d5cf6f8919b8",
+    "rawPath": "raw/marker-den-mcnichols-18283bcf40680b939525eff7a696bffeea91e1b337a572ed4343d5cf6f8919b8.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x876c796f9ff459cf:0x311f3fa5e58a2965",
+        "nameAddress": "Former McNichols Sports Arena, 1635 Bryant St, Denver, CO 80219, United States",
+        "latitude": 39.742026,
+        "longitude": -105.0211549,
+        "providerCid": "3539617813889689957"
+      }
+    ]
+  },
+  {
+    "key": "den-ball",
+    "query": "Ball Arena 1000 Chopper Cir, Denver, CO 80204",
+    "url": "https://www.google.com/maps?q=Ball+Arena+1000+Chopper+Cir%2C+Denver%2C+CO+80204&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:14.187953+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sBall+Arena+1000+Chopper+Cir,+Denver,+CO+80204!3m1!1sen!5m1!1sen",
+    "bodySha256": "d4ab5b8e72dbb07e228629760d3dfb94498c1c1c8b2b96879f108ec0e6875a0c",
+    "rawPath": "raw/marker-den-ball-d4ab5b8e72dbb07e228629760d3dfb94498c1c1c8b2b96879f108ec0e6875a0c.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x876c78b866687b77:0x7bec273737d47786",
+        "nameAddress": "Ball Arena, 1000 Chopper Cir, Denver, CO 80204, United States",
+        "latitude": 39.7486519,
+        "longitude": -105.0075988,
+        "providerCid": "8929555279282206598"
+      }
+    ]
+  },
+  {
+    "key": "gsw-oakland",
+    "query": "Oakland Arena 7000 Coliseum Way, Oakland, CA 94621",
+    "url": "https://www.google.com/maps?q=Oakland+Arena+7000+Coliseum+Way%2C+Oakland%2C+CA+94621&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:14.683241+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOakland+Arena+7000+Coliseum+Way,+Oakland,+CA+94621!3m1!1sen!5m1!1sen",
+    "bodySha256": "7345984c756edcb2e42a6f6e5d6633da86e64e14538ad7bdee2b41e87b9513d7",
+    "rawPath": "raw/marker-gsw-oakland-7345984c756edcb2e42a6f6e5d6633da86e64e14538ad7bdee2b41e87b9513d7.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "gsw-sanjose",
+    "query": "SAP Center 525 W Santa Clara St, San Jose, CA 95113",
+    "url": "https://www.google.com/maps?q=SAP+Center+525+W+Santa+Clara+St%2C+San+Jose%2C+CA+95113&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:15.187953+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSAP+Center+525+W+Santa+Clara+St,+San+Jose,+CA+95113!3m1!1sen!5m1!1sen",
+    "bodySha256": "b8a2eab87c41d5540e560510d7ce543ddec648bcee192a789fbce3482ebffcef",
+    "rawPath": "raw/marker-gsw-sanjose-b8a2eab87c41d5540e560510d7ce543ddec648bcee192a789fbce3482ebffcef.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x808fcca099939eab:0x2dfa6f2f5ba99024",
+        "nameAddress": "SAP Center, 525 W Santa Clara St, San Jose, CA 95113, United States",
+        "latitude": 37.3327655,
+        "longitude": -121.9011143,
+        "providerCid": "3313082725076406308"
+      }
+    ]
+  },
+  {
+    "key": "gsw-chase",
+    "query": "Chase Center 1 Warriors Way, San Francisco, CA 94158",
+    "url": "https://www.google.com/maps?q=Chase+Center+1+Warriors+Way%2C+San+Francisco%2C+CA+94158&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:15.685438+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sChase+Center+1+Warriors+Way,+San+Francisco,+CA+94158!3m1!1sen!5m1!1sen",
+    "bodySha256": "ed3357dd2d85c224761bad380b7af502053fbebdffe86d99f7bdb8b279635f6a",
+    "rawPath": "raw/marker-gsw-chase-ed3357dd2d85c224761bad380b7af502053fbebdffe86d99f7bdb8b279635f6a.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x808f7fc67f4400e9:0x7d6793e3d8a141e3",
+        "nameAddress": "Chase Center, 1 Warriors Wy, San Francisco, CA 94158, United States",
+        "latitude": 37.7680183,
+        "longitude": -122.3878772,
+        "providerCid": "9036353784143495651"
+      }
+    ]
+  },
+  {
+    "key": "hou-summit",
+    "query": "The Summit 3700 Southwest Fwy, Houston, TX 77027",
+    "url": "https://www.google.com/maps?q=The+Summit+3700+Southwest+Fwy%2C+Houston%2C+TX+77027&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:16.187977+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sThe+Summit+3700+Southwest+Fwy,+Houston,+TX+77027!3m1!1sen!5m1!1sen",
+    "bodySha256": "3103f5614e7675a45350a60e9027993ce9ee7aa615f5afd2ee149bb49d95a959",
+    "rawPath": "raw/marker-hou-summit-3103f5614e7675a45350a60e9027993ce9ee7aa615f5afd2ee149bb49d95a959.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x103bf4c1810a4b55:0x6cc32074d7709904",
+        "nameAddress": "Lakewood Church, 3700 Southwest Fwy, Houston, TX 77027, United States",
+        "latitude": 29.7302684,
+        "longitude": -95.4347069,
+        "providerCid": "7837143462757570820"
+      }
+    ]
+  },
+  {
+    "key": "hou-toyota",
+    "query": "Toyota Center 1510 Polk St, Houston, TX 77002",
+    "url": "https://www.google.com/maps?q=Toyota+Center+1510+Polk+St%2C+Houston%2C+TX+77002&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:16.687586+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sToyota+Center+1510+Polk+St,+Houston,+TX+77002!3m1!1sen!5m1!1sen",
+    "bodySha256": "4d43990d8c6ead68f22ffb04eb6e2bd56ada1fe70a24bb3ca31a5444fdc3dc03",
+    "rawPath": "raw/marker-hou-toyota-4d43990d8c6ead68f22ffb04eb6e2bd56ada1fe70a24bb3ca31a5444fdc3dc03.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8640bee56015ad33:0x4b3b6ccb1295ba8b",
+        "nameAddress": "Toyota Center, 1510 Polk St, Houston, TX 77002, United States",
+        "latitude": 29.7509213,
+        "longitude": -95.3622173,
+        "providerCid": "5421046195916487307"
+      }
+    ]
+  },
+  {
+    "key": "lac-sports",
+    "query": "Los Angeles Memorial Sports Arena 3939 S Figueroa St, Los Angeles, CA",
+    "url": "https://www.google.com/maps?q=Los+Angeles+Memorial+Sports+Arena+3939+S+Figueroa+St%2C+Los+Angeles%2C+CA&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:17.187226+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sLos+Angeles+Memorial+Sports+Arena+3939+S+Figueroa+St,+Los+Angeles,+CA!3m1!1sen!5m1!1sen",
+    "bodySha256": "903398049bc07d9d76b1c42a021b057f0831746e46844e4c90f7db5aaf731eba",
+    "rawPath": "raw/marker-lac-sports-903398049bc07d9d76b1c42a021b057f0831746e46844e4c90f7db5aaf731eba.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x80c2c807d74e67fb:0x54cf0a70d5943d36",
+        "nameAddress": "LA Memorial Coliseum, 3911 S Figueroa St, Los Angeles, CA 90037, United States",
+        "latitude": 34.0136647,
+        "longitude": -118.2878355,
+        "providerCid": "6111114699100929334"
+      }
+    ]
+  },
+  {
+    "key": "la-staples",
+    "query": "Crypto.com Arena 1111 S Figueroa St, Los Angeles, CA 90015",
+    "url": "https://www.google.com/maps?q=Crypto.com+Arena+1111+S+Figueroa+St%2C+Los+Angeles%2C+CA+90015&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:17.688011+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sCrypto.com+Arena+1111+S+Figueroa+St,+Los+Angeles,+CA+90015!3m1!1sen!5m1!1sen",
+    "bodySha256": "1bcd7d8510255133fd92b14c6cccf3d3c18b3024243f5d7783baf69d82727296",
+    "rawPath": "raw/marker-la-staples-1bcd7d8510255133fd92b14c6cccf3d3c18b3024243f5d7783baf69d82727296.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x80c2c7b85dea2a93:0x1ff47c3ceb7bb2d5",
+        "nameAddress": "Crypto.com Arena, 1111 S Figueroa St, Los Angeles, CA 90015, United States",
+        "latitude": 34.0430175,
+        "longitude": -118.2672541,
+        "providerCid": "2302601910583800533"
+      }
+    ]
+  },
+  {
+    "key": "lac-intuit",
+    "query": "Intuit Dome 3930 W Century Blvd, Inglewood, CA 90303",
+    "url": "https://www.google.com/maps?q=Intuit+Dome+3930+W+Century+Blvd%2C+Inglewood%2C+CA+90303&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:18.186781+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sIntuit+Dome+3930+W+Century+Blvd,+Inglewood,+CA+90303!3m1!1sen!5m1!1sen",
+    "bodySha256": "a49c8b2889bf84e48a07e404c51002aac045593b8216ecbfb4853bb914edf3af",
+    "rawPath": "raw/marker-lac-intuit-a49c8b2889bf84e48a07e404c51002aac045593b8216ecbfb4853bb914edf3af.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x80c2b7de231784db:0x87dab048e73a2257",
+        "nameAddress": "Intuit Dome, 3930 W Century Blvd, Inglewood, CA 90303, United States",
+        "latitude": 33.9437983,
+        "longitude": -118.3421771,
+        "providerCid": "9789330567206675031"
+      }
+    ]
+  },
+  {
+    "key": "lal-forum",
+    "query": "Kia Forum 3900 W Manchester Blvd, Inglewood, CA 90305",
+    "url": "https://www.google.com/maps?q=Kia+Forum+3900+W+Manchester+Blvd%2C+Inglewood%2C+CA+90305&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:18.690182+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sKia+Forum+3900+W+Manchester+Blvd,+Inglewood,+CA+90305!3m1!1sen!5m1!1sen",
+    "bodySha256": "0250c76e2672c822e78ea34c81f675982a40106e999a33b7f98ae8898f3ee6c4",
+    "rawPath": "raw/marker-lal-forum-0250c76e2672c822e78ea34c81f675982a40106e999a33b7f98ae8898f3ee6c4.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x80c2b6545d4575cb:0xb1eeeaa0c8fa6906",
+        "nameAddress": "Kia Forum, 3900 W Manchester Blvd, Inglewood, CA 90305, United States",
+        "latitude": 33.9580853,
+        "longitude": -118.3420621,
+        "providerCid": "12821443165457901830"
+      }
+    ]
+  },
+  {
+    "key": "mem-vancouver",
+    "query": "Rogers Arena 800 Griffiths Way, Vancouver, BC V6B 6G1, Canada",
+    "url": "https://www.google.com/maps?q=Rogers+Arena+800+Griffiths+Way%2C+Vancouver%2C+BC+V6B+6G1%2C+Canada&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:19.187170+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sRogers+Arena+800+Griffiths+Way,+Vancouver,+BC+V6B+6G1,+Canada!3m1!1sen!5m1!1sen",
+    "bodySha256": "7f35666f912b48c226a6d88cfaec40f44f2534e40b836ebc98511fbec681372c",
+    "rawPath": "raw/marker-mem-vancouver-7f35666f912b48c226a6d88cfaec40f44f2534e40b836ebc98511fbec681372c.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x5486717c9d5bb52b:0x9e0470e4c990b209",
+        "nameAddress": "Rogers Arena, 800 Griffiths Wy, Vancouver, BC V6B 6G1, Canada",
+        "latitude": 49.2778358,
+        "longitude": -123.1088227,
+        "providerCid": "11386349885836014089"
+      }
+    ]
+  },
+  {
+    "key": "mem-pyramid",
+    "query": "Memphis Pyramid 1 Bass Pro Dr, Memphis, TN 38105",
+    "url": "https://www.google.com/maps?q=Memphis+Pyramid+1+Bass+Pro+Dr%2C+Memphis%2C+TN+38105&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:19.687958+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMemphis+Pyramid+1+Bass+Pro+Dr,+Memphis,+TN+38105!3m1!1sen!5m1!1sen",
+    "bodySha256": "6249a98832394eda039fef2eb9a5f60f3f9c481ae2264838ab867283e996aa4d",
+    "rawPath": "raw/marker-mem-pyramid-6249a98832394eda039fef2eb9a5f60f3f9c481ae2264838ab867283e996aa4d.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "mem-fedex",
+    "query": "FedExForum 191 Beale St, Memphis, TN 38103",
+    "url": "https://www.google.com/maps?q=FedExForum+191+Beale+St%2C+Memphis%2C+TN+38103&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:20.187939+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sFedExForum+191+Beale+St,+Memphis,+TN+38103!3m1!1sen!5m1!1sen",
+    "bodySha256": "48635b2603adce4a02cc39ac15661f2006948a388279e5549fc13685e0fc9163",
+    "rawPath": "raw/marker-mem-fedex-48635b2603adce4a02cc39ac15661f2006948a388279e5549fc13685e0fc9163.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x87d57e97345bb629:0xd52fcb315b8b7c4e",
+        "nameAddress": "FedExForum, 191 Beale St, Memphis, TN 38103, United States",
+        "latitude": 35.1381418,
+        "longitude": -90.0505864,
+        "providerCid": "15361720266833755214"
+      }
+    ]
+  },
+  {
+    "key": "min-metrodome",
+    "query": "Metrodome 900 S 5th St, Minneapolis, MN",
+    "url": "https://www.google.com/maps?q=Metrodome+900+S+5th+St%2C+Minneapolis%2C+MN&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:20.682987+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMetrodome+900+S+5th+St,+Minneapolis,+MN!3m1!1sen!5m1!1sen",
+    "bodySha256": "9863eb939cefb30fb1438198f88a2d5ae458e9a24869595d126e72b9bae724e3",
+    "rawPath": "raw/marker-min-metrodome-9863eb939cefb30fb1438198f88a2d5ae458e9a24869595d126e72b9bae724e3.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "min-target",
+    "query": "Target Center 600 N 1st Ave, Minneapolis, MN 55403",
+    "url": "https://www.google.com/maps?q=Target+Center+600+N+1st+Ave%2C+Minneapolis%2C+MN+55403&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:21.184800+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sTarget+Center+600+N+1st+Ave,+Minneapolis,+MN+55403!3m1!1sen!5m1!1sen",
+    "bodySha256": "2c12183828cdb73ee6beea126829908508d6ddc42faee4cb160fbaac7d82d157",
+    "rawPath": "raw/marker-min-target-2c12183828cdb73ee6beea126829908508d6ddc42faee4cb160fbaac7d82d157.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x52b33291bbf6587b:0xd85d3dd117998fec",
+        "nameAddress": "Target Center, 600 N 1st Ave, Minneapolis, MN 55403, United States",
+        "latitude": 44.9794633,
+        "longitude": -93.2760947,
+        "providerCid": "15590685453279924204"
+      }
+    ]
+  },
+  {
+    "key": "nop-neworleans",
+    "query": "Smoothie King Center 1501 Dave Dixon Dr, New Orleans, LA 70113",
+    "url": "https://www.google.com/maps?q=Smoothie+King+Center+1501+Dave+Dixon+Dr%2C+New+Orleans%2C+LA+70113&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:21.684779+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSmoothie+King+Center+1501+Dave+Dixon+Dr,+New+Orleans,+LA+70113!3m1!1sen!5m1!1sen",
+    "bodySha256": "bbe6acabf8b4cf233870add1569d25bf7aaf9977f890c51b8e42c95a50583d8a",
+    "rawPath": "raw/marker-nop-neworleans-bbe6acabf8b4cf233870add1569d25bf7aaf9977f890c51b8e42c95a50583d8a.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "okc-ford",
+    "query": "Paycom Center 100 W Reno Ave, Oklahoma City, OK 73102",
+    "url": "https://www.google.com/maps?q=Paycom+Center+100+W+Reno+Ave%2C+Oklahoma+City%2C+OK+73102&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:22.183910+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sPaycom+Center+100+W+Reno+Ave,+Oklahoma+City,+OK+73102!3m1!1sen!5m1!1sen",
+    "bodySha256": "6f4171d6adaa08e97556b6030f4f5f6b05ea87d6e135b16d57a80c7f5ebdacfe",
+    "rawPath": "raw/marker-okc-ford-6f4171d6adaa08e97556b6030f4f5f6b05ea87d6e135b16d57a80c7f5ebdacfe.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x87b217281cbe6d99:0xa5375eb4651d9445",
+        "nameAddress": "Paycom Center, 100 W Reno Ave, Oklahoma City, OK 73102, United States",
+        "latitude": 35.4635103,
+        "longitude": -97.51508969999999,
+        "providerCid": "11905088268860757061"
+      }
+    ]
+  },
+  {
+    "key": "sea-coliseum",
+    "query": "Climate Pledge Arena 334 1st Ave N, Seattle, WA 98109",
+    "url": "https://www.google.com/maps?q=Climate+Pledge+Arena+334+1st+Ave+N%2C+Seattle%2C+WA+98109&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:22.688007+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sClimate+Pledge+Arena+334+1st+Ave+N,+Seattle,+WA+98109!3m1!1sen!5m1!1sen",
+    "bodySha256": "4d412b03b9949a14833b69f2de8ff853dc86dd16c31a034413e564b640765201",
+    "rawPath": "raw/marker-sea-coliseum-4d412b03b9949a14833b69f2de8ff853dc86dd16c31a034413e564b640765201.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x5490154471be8ed3:0xde04af6753ca2e27",
+        "nameAddress": "Climate Pledge Arena, 334 1st Ave N, Seattle, WA 98109, United States",
+        "latitude": 47.622094,
+        "longitude": -122.3539841,
+        "providerCid": "15998104634649095719"
+      }
+    ]
+  },
+  {
+    "key": "sea-tacoma",
+    "query": "Tacoma Dome 2727 E D St, Tacoma, WA 98421",
+    "url": "https://www.google.com/maps?q=Tacoma+Dome+2727+E+D+St%2C+Tacoma%2C+WA+98421&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:23.187944+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sTacoma+Dome+2727+E+D+St,+Tacoma,+WA+98421!3m1!1sen!5m1!1sen",
+    "bodySha256": "3bdbbab2c312388b3525346d823ebe7e85bcec7616a39140141296b45697bf49",
+    "rawPath": "raw/marker-sea-tacoma-3bdbbab2c312388b3525346d823ebe7e85bcec7616a39140141296b45697bf49.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x5490fff455555555:0xe0a5f8011a64972d",
+        "nameAddress": "Tacoma Dome, 2727 E D St, Tacoma, WA 98421, United States",
+        "latitude": 47.2365504,
+        "longitude": -122.4268089,
+        "providerCid": "16187617119274571565"
+      }
+    ]
+  },
+  {
+    "key": "phx-veterans",
+    "query": "Arizona Veterans Memorial Coliseum 1826 W McDowell Rd, Phoenix, AZ 85007",
+    "url": "https://www.google.com/maps?q=Arizona+Veterans+Memorial+Coliseum+1826+W+McDowell+Rd%2C+Phoenix%2C+AZ+85007&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:23.687949+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sArizona+Veterans+Memorial+Coliseum+1826+W+McDowell+Rd,+Phoenix,+AZ+85007!3m1!1sen!5m1!1sen",
+    "bodySha256": "a3cbd2941c914465d1f6d4e9067e007d4b43cb16d694abade2b422911dff66e1",
+    "rawPath": "raw/marker-phx-veterans-a3cbd2941c914465d1f6d4e9067e007d4b43cb16d694abade2b422911dff66e1.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x872b13b4ac28c3b1:0xc3778457dd499b41",
+        "nameAddress": "Arizona Veterans Memorial Coliseum, 1826 W McDowell Rd, Phoenix, AZ 85007, United States",
+        "latitude": 33.4696261,
+        "longitude": -112.0966732,
+        "providerCid": "14084871872534125377"
+      }
+    ]
+  },
+  {
+    "key": "phx-americawest",
+    "query": "Mortgage Matchup Center 201 E Jefferson St, Phoenix, AZ 85004",
+    "url": "https://www.google.com/maps?q=Mortgage+Matchup+Center+201+E+Jefferson+St%2C+Phoenix%2C+AZ+85004&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:24.184690+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sMortgage+Matchup+Center+201+E+Jefferson+St,+Phoenix,+AZ+85004!3m1!1sen!5m1!1sen",
+    "bodySha256": "c6cceb970f0a99d880acfe95e3070eec441e255310cbb71fe6da40b201ecd9f3",
+    "rawPath": "raw/marker-phx-americawest-c6cceb970f0a99d880acfe95e3070eec441e255310cbb71fe6da40b201ecd9f3.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x872b156ccf48c66f:0x7a220f94e2bf245b",
+        "nameAddress": "Mortgage Matchup Center, 201 E Jefferson St, Phoenix, AZ 85004, United States",
+        "latitude": 33.445737,
+        "longitude": -112.0712003,
+        "providerCid": "8800613753969124443"
+      }
+    ]
+  },
+  {
+    "key": "por-memorial",
+    "query": "Veterans Memorial Coliseum 300 N Ramsay Way, Portland, OR 97227",
+    "url": "https://www.google.com/maps?q=Veterans+Memorial+Coliseum+300+N+Ramsay+Way%2C+Portland%2C+OR+97227&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:24.688171+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sVeterans+Memorial+Coliseum+300+N+Ramsay+Way,+Portland,+OR+97227!3m1!1sen!5m1!1sen",
+    "bodySha256": "11077bc3b00d3c4b2aeaeecc220c8b5160b921489aec86f93b3f6d33bbecb36a",
+    "rawPath": "raw/marker-por-memorial-11077bc3b00d3c4b2aeaeecc220c8b5160b921489aec86f93b3f6d33bbecb36a.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x5495a7530c25e16f:0x3e7a8de21c9d8b3d",
+        "nameAddress": "Veterans Memorial Coliseum, 300 N Ramsay Wy, Portland, OR 97227, United States",
+        "latitude": 45.532141,
+        "longitude": -122.6693299,
+        "providerCid": "4502066779792444221"
+      }
+    ]
+  },
+  {
+    "key": "por-rose",
+    "query": "Moda Center 1 N Center Court St, Portland, OR 97227",
+    "url": "https://www.google.com/maps?q=Moda+Center+1+N+Center+Court+St%2C+Portland%2C+OR+97227&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:25.188376+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sModa+Center+1+N+Center+Court+St,+Portland,+OR+97227!3m1!1sen!5m1!1sen",
+    "bodySha256": "fbf71f255bd0d512bbf2f84544a653de19fd4b8f51054c9241c4d1029e52daea",
+    "rawPath": "raw/marker-por-rose-fbf71f255bd0d512bbf2f84544a653de19fd4b8f51054c9241c4d1029e52daea.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "sac-arco1",
+    "query": "Original ARCO Arena 1625 N Market Blvd, Sacramento, CA",
+    "url": "https://www.google.com/maps?q=Original+ARCO+Arena+1625+N+Market+Blvd%2C+Sacramento%2C+CA&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:25.689787+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOriginal+ARCO+Arena+1625+N+Market+Blvd,+Sacramento,+CA!3m1!1sen!5m1!1sen",
+    "bodySha256": "2993a34758d5287f8b68b291d10cb87adb066e9e364cc51ae1267067cc6eb0e7",
+    "rawPath": "raw/marker-sac-arco1-2993a34758d5287f8b68b291d10cb87adb066e9e364cc51ae1267067cc6eb0e7.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x809ad7001c9d68f5:0xc377e8c5e8941863",
+        "nameAddress": "ARCO Arena, 1 Sports Pkwy, Sacramento, CA 95834, United States",
+        "latitude": 38.6490987,
+        "longitude": -121.5181319,
+        "providerCid": "14084982296332736611"
+      }
+    ]
+  },
+  {
+    "key": "sac-arco2",
+    "query": "ARCO Arena 1 Sports Pkwy, Sacramento, CA",
+    "url": "https://www.google.com/maps?q=ARCO+Arena+1+Sports+Pkwy%2C+Sacramento%2C+CA&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:26.184294+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sARCO+Arena+1+Sports+Pkwy,+Sacramento,+CA!3m1!1sen!5m1!1sen",
+    "bodySha256": "992f1d59b10ebceb66e209e1d29d1c6252d2c0adf47561fee22ae22a1c8e1c7b",
+    "rawPath": "raw/marker-sac-arco2-992f1d59b10ebceb66e209e1d29d1c6252d2c0adf47561fee22ae22a1c8e1c7b.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x809ad7001c9d68f5:0xc377e8c5e8941863",
+        "nameAddress": "ARCO Arena, 1 Sports Pkwy, Sacramento, CA 95834, United States",
+        "latitude": 38.6490987,
+        "longitude": -121.5181319,
+        "providerCid": "14084982296332736611"
+      }
+    ]
+  },
+  {
+    "key": "sac-golden1",
+    "query": "Golden 1 Center 500 David J Stern Walk, Sacramento, CA 95814",
+    "url": "https://www.google.com/maps?q=Golden+1+Center+500+David+J+Stern+Walk%2C+Sacramento%2C+CA+95814&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:26.684864+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sGolden+1+Center+500+David+J+Stern+Walk,+Sacramento,+CA+95814!3m1!1sen!5m1!1sen",
+    "bodySha256": "3c90948a3823b9910b22efd73f9cd9df7aef2686f892c003607e12a33ed58aca",
+    "rawPath": "raw/marker-sac-golden1-3c90948a3823b9910b22efd73f9cd9df7aef2686f892c003607e12a33ed58aca.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "sas-hemisfair",
+    "query": "HemisFair Arena 600 Hemisfair Plaza Way, San Antonio, TX",
+    "url": "https://www.google.com/maps?q=HemisFair+Arena+600+Hemisfair+Plaza+Way%2C+San+Antonio%2C+TX&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:27.185884+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sHemisFair+Arena+600+Hemisfair+Plaza+Way,+San+Antonio,+TX!3m1!1sen!5m1!1sen",
+    "bodySha256": "84afc2fa51760fe192238a9afceeda370c7b66348c3382597f87a5a31b91dd64",
+    "rawPath": "raw/marker-sas-hemisfair-84afc2fa51760fe192238a9afceeda370c7b66348c3382597f87a5a31b91dd64.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x865cf601f6f9c5a9:0x5081a39697058cba",
+        "nameAddress": "HemisFair Arena, San Antonio, TX 78205, United States",
+        "latitude": 29.4202048,
+        "longitude": -98.4833496,
+        "providerCid": "5801097662204054714"
+      }
+    ]
+  },
+  {
+    "key": "sas-alamodome",
+    "query": "Alamodome 100 Montana St, San Antonio, TX 78203",
+    "url": "https://www.google.com/maps?q=Alamodome+100+Montana+St%2C+San+Antonio%2C+TX+78203&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:27.687923+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sAlamodome+100+Montana+St,+San+Antonio,+TX+78203!3m1!1sen!5m1!1sen",
+    "bodySha256": "d415f9abd40590bda65f45023778e24c1fc8f0685b3303aa3081fbfe19e1ddeb",
+    "rawPath": "raw/marker-sas-alamodome-d415f9abd40590bda65f45023778e24c1fc8f0685b3303aa3081fbfe19e1ddeb.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x865c58abaa9dd097:0xfa0cb52bd2a4c708",
+        "nameAddress": "Alamodome, 100 Montana St Ste 310 Lot A, San Antonio, TX 78203, United States",
+        "latitude": 29.4169834,
+        "longitude": -98.4788143,
+        "providerCid": "18017975409024747272"
+      }
+    ]
+  },
+  {
+    "key": "sas-frost",
+    "query": "Frost Bank Center 1 Frost Bank Center Dr, San Antonio, TX 78219",
+    "url": "https://www.google.com/maps?q=Frost+Bank+Center+1+Frost+Bank+Center+Dr%2C+San+Antonio%2C+TX+78219&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:28.182987+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sFrost+Bank+Center+1+Frost+Bank+Center+Dr,+San+Antonio,+TX+78219!3m1!1sen!5m1!1sen",
+    "bodySha256": "a37c807907337072c51a423ef8d185de0c2a69ba42ee41e7a32e48a7525f3184",
+    "rawPath": "raw/marker-sas-frost-a37c807907337072c51a423ef8d185de0c2a69ba42ee41e7a32e48a7525f3184.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x865cf681b490e335:0xaad3c1cc2b98e0a4",
+        "nameAddress": "Frost Bank Center, 1 Frost Bank Center Dr, San Antonio, TX 78219, United States",
+        "latitude": 29.4270588,
+        "longitude": -98.43744319999999,
+        "providerCid": "12309395289182625956"
+      }
+    ]
+  },
+  {
+    "key": "uta-saltpalace",
+    "query": "Original Salt Palace Arena 100 S West Temple, Salt Lake City, UT",
+    "url": "https://www.google.com/maps?q=Original+Salt+Palace+Arena+100+S+West+Temple%2C+Salt+Lake+City%2C+UT&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:28.683768+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOriginal+Salt+Palace+Arena+100+S+West+Temple,+Salt+Lake+City,+UT!3m1!1sen!5m1!1sen",
+    "bodySha256": "224d801d12358a8839b70df4983527edc1766537a57ce4e072b64ba375fe545e",
+    "rawPath": "raw/marker-uta-saltpalace-224d801d12358a8839b70df4983527edc1766537a57ce4e072b64ba375fe545e.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8752f50674b2cb45:0x8825a80f25bb4f38",
+        "nameAddress": "Salt Palace Convention Center, 100 S W Temple St, Salt Lake City, UT 84101, United States",
+        "latitude": 40.7678827,
+        "longitude": -111.8961461,
+        "providerCid": "9810432146307501880"
+      }
+    ]
+  },
+  {
+    "key": "uta-delta",
+    "query": "Delta Center 301 S Temple, Salt Lake City, UT 84101",
+    "url": "https://www.google.com/maps?q=Delta+Center+301+S+Temple%2C+Salt+Lake+City%2C+UT+84101&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:56:29.186994+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sDelta+Center+301+S+Temple,+Salt+Lake+City,+UT+84101!3m1!1sen!5m1!1sen",
+    "bodySha256": "71b9c5d0aa4dc7f94cb43f2092cbdf5e8f039f089f0cffda1e52af470292165b",
+    "rawPath": "raw/marker-uta-delta-71b9c5d0aa4dc7f94cb43f2092cbdf5e8f039f089f0cffda1e52af470292165b.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8752f50103ebf04d:0xf0e545531f11b120",
+        "nameAddress": "Delta Center, 301 S Temple, Salt Lake City, UT 84101, United States",
+        "latitude": 40.7682681,
+        "longitude": -111.9010874,
+        "providerCid": "17358356562075300128"
+      }
+    ]
+  }
+]

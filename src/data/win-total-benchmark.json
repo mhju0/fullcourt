@@ -178,34 +178,34 @@
     "n": 881
   },
   "correlation": {
-    "r": 0.0049,
+    "r": 0.0077,
     "n": 884
   },
   "buckets": [
     {
       "label": "+10 or better",
       "overs": 55,
-      "n": 111
+      "n": 110
     },
     {
       "label": "+5 to +9",
       "overs": 65,
-      "n": 143
+      "n": 141
     },
     {
       "label": "−4 to +4",
-      "overs": 186,
-      "n": 373
+      "overs": 185,
+      "n": 374
     },
     {
       "label": "−9 to −5",
-      "overs": 73,
-      "n": 162
+      "overs": 75,
+      "n": 163
     },
     {
       "label": "−10 or worse",
-      "overs": 43,
-      "n": 92
+      "overs": 42,
+      "n": 93
     }
   ]
 }

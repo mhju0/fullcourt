@@ -1,0 +1,39 @@
+{
+  "arenaId": "ind-market",
+  "latitude": 39.768375,
+  "longitude": -86.15171935000001,
+  "status": "proposed-inferred-historic-site-point-requires-owner-review",
+  "pointMeaning": "venue-scale historical site anchor, NOT a measured court center or polygon centroid",
+  "method": "midpoint of named original OSM East Market Street intersections with North Alabama Street and North New Jersey Street; municipal historic map identifies arena on this two-block site; inferred travel-location proxy",
+  "osmNodeIds": [
+    180485815,
+    180485817
+  ],
+  "osmIntersectionCoordinates": [
+    {
+      "lat": 39.7683982,
+      "lon": -86.1526312
+    },
+    {
+      "lat": 39.7683518,
+      "lon": -86.1508075
+    }
+  ],
+  "osmWayIds": [
+    425527627,
+    17499090,
+    692299917,
+    305485084
+  ],
+  "sourceUrl": "https://api.openstreetmap.org/api/0.6/map?bbox=-86.1535,39.7675,-86.1505,39.7693",
+  "sourcePath": "osm-market-square-streets.xml",
+  "bodySha256": "e863af99bfb999421978e21f6877e93fa11593c0d2d871c5e337cba177bef86a",
+  "historicMap": {
+    "url": "https://gis.indy.gov/portal/sharing/rest/content/items/3d723f5fa3974a68856d5848b395380c/data",
+    "rawPath": "raw/source-market-square-city-map-b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081.html.gz",
+    "bodySha256": "b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081",
+    "pdfPage": 7,
+    "mapTitle": "Airspace District Zoning Map: Downtown Heliport, Map No. 5, part of Marion County Airport Zoning Ordinance 94-AO-2; retained in 1998 ordinance amendment"
+  },
+  "uncertainty": "Street midpoint gives a reproducible point at the correct historical arena site. Exact old arena footprint center and court position are not established by this derivation. Use only with explicit acceptance of a venue-scale point."
+}

@@ -1,0 +1,151 @@
+{
+  "arenaId": "cle-richfield",
+  "latitude": 41.24854740747868,
+  "longitude": -81.59458846012393,
+  "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+  "pointMeaning": "area centroid of manually traced original 1994 USGS map building symbol; mapped site point, not surveyed court center",
+  "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/OH/24000/OH_Peninsula_228030_1994_24000_geo.pdf",
+  "sourcePath": "usgs-peninsula-1994.pdf",
+  "sourceBodySha256": "4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6",
+  "bodySha256": "4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6",
+  "renderPath": "usgs-richfield-building-detail.png",
+  "renderClipPdfTopLeft": [
+    425,
+    85,
+    490,
+    130
+  ],
+  "renderScale": 8,
+  "tracedImageVertices": [
+    [
+      282,
+      119
+    ],
+    [
+      315,
+      119
+    ],
+    [
+      315,
+      91
+    ],
+    [
+      354,
+      91
+    ],
+    [
+      354,
+      119
+    ],
+    [
+      389,
+      119
+    ],
+    [
+      387,
+      252
+    ],
+    [
+      280,
+      252
+    ]
+  ],
+  "pdfVertices": [
+    [
+      460.25,
+      1839.105
+    ],
+    [
+      464.375,
+      1839.105
+    ],
+    [
+      464.375,
+      1842.605
+    ],
+    [
+      469.25,
+      1842.605
+    ],
+    [
+      469.25,
+      1839.105
+    ],
+    [
+      473.625,
+      1839.105
+    ],
+    [
+      473.375,
+      1822.48
+    ],
+    [
+      460.0,
+      1822.48
+    ],
+    [
+      460.25,
+      1839.105
+    ]
+  ],
+  "pdfCentroid": [
+    466.8125,
+    1831.509608268616
+  ],
+  "mapCTM": [
+    8.46666666666768,
+    0.0,
+    4.64467579042991e-17,
+    8.466666666667678,
+    -6655.233530777389,
+    -1791.772250272596
+  ],
+  "sourceWkt": "PROJCS[\"NAD27_Custom_Lambert\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.5625],PARAMETER[\"Standard_Parallel_1\",41.125],PARAMETER[\"Standard_Parallel_2\",41.25],PARAMETER[\"Latitude_Of_Origin\",41.125],UNIT[\"Meter\",1]]",
+  "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD27_Custom_Lambert%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1927%5C%22%2CDATUM%5B%5C%22D_North_American_1927%5C%22%2CSPHEROID%5B%5C%22Clarke_1866%5C%22%2C6378206.4%2C294.9786982%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Lambert_Conformal_Conic%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.5625%5D%2CPARAMETER%5B%5C%22Standard_Parallel_1%5C%22%2C41.125%5D%2CPARAMETER%5B%5C%22Standard_Parallel_2%5C%22%2C41.25%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C41.125%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-2702.887697443583%2C+%22y%22%3A+13715.00909973687%7D%2C+%7B%22x%22%3A+-2758.45019744359%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2723.5251974435855%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2723.5251974435855%2C+%22y%22%3A+13808.9500830626%7D%2C+%7B%22x%22%3A+-2682.250197443581%2C+%22y%22%3A+13808.9500830626%7D%2C+%7B%22x%22%3A+-2682.250197443581%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2645.20853077691%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2647.3251974435766%2C+%22y%22%3A+13638.558416395914%7D%2C+%7B%22x%22%3A+-2760.5668641102566%2C+%22y%22%3A+13638.558416395914%7D%2C+%7B%22x%22%3A+-2758.45019744359%2C+%22y%22%3A+13779.316749729263%7D%5D%7D&f=json",
+  "projectionResponsePath": "richfield-roof-reprojection.json",
+  "projectionResponseSha256": "44d7a9fffe27a71c4ee870cb188989584f506f397f73e4ed48ff8b09465786d1",
+  "transformedVerticesWgs84": [
+    {
+      "x": -81.59525166296717,
+      "y": 41.24912626540851
+    },
+    {
+      "x": -81.59483496945171,
+      "y": 41.24912638704631
+    },
+    {
+      "x": -81.59483510009788,
+      "y": 41.24939321691839
+    },
+    {
+      "x": -81.59434264212089,
+      "y": 41.24939335873239
+    },
+    {
+      "x": -81.59434251347693,
+      "y": 41.24912652885844
+    },
+    {
+      "x": -81.59390056580554,
+      "y": 41.24912665433482
+    },
+    {
+      "x": -81.5939252169612,
+      "y": 41.2478592051124
+    },
+    {
+      "x": -81.59527628802985,
+      "y": 41.24785881591421
+    },
+    {
+      "x": -81.59525166296717,
+      "y": 41.24912626540851
+    }
+  ],
+  "derivation": "shoelace polygon area centroid in PDF coordinate plane; GeoPDF CTM to map meters; NAD27 Lambert Conformal Conic 2SP to WGS84 via original ArcGIS GeometryServer. Four retained neatline corner controls in richfield-geopdf-reprojection-metadata.json reproduce quad limits plus datum shift.",
+  "identityPrimarySources": [
+    "https://home.nps.gov/cuva/learn/historyculture/former-coliseum-property.htm",
+    "https://www.nps.gov/cuva/learn/kidsyouth/grasslands.htm"
+  ],
+  "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. NPS historical aerial corroborates physical building and surrounding parking/road layout. GeoNames point lies close to traced roof; southern candidate was not adopted."
+}

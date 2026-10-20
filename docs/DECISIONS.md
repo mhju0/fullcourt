@@ -1947,3 +1947,60 @@ used to generate the displayed series probabilities.
 Production acceptance requires the exact frozen candidate review, local rollback/restart
 verification, immediate owner approval of the production update, and matching public data
 and deployment checks. Local preparation alone does not establish a repaired live site.
+
+## D-131 — Source actual historical arenas before recomputing their findings (2026-10-20)
+
+The owner requests independent verification of the post-PR-187 audit before a new production
+update. The unchanged independent Python replay first confirmed every released fatigue side
+and the earlier overtime follow-through. A new sourced register covers all 30 franchises,
+including within-metro moves and a single physical point for the shared Lakers/Clippers arena.
+Actual first/last observed game dates remain separate from effective offseason base bounds.
+Mapped venue points, building centroids and manually selected historical map points retain
+source methods and uncertainty; none is advertised as a surveyed court center.
+
+Keep ADR 0011's arena-distance estimate, one-mile tolerance, existing coefficients, workload
+windows and designated-home rule. A temporary arena does not establish an operating-base
+relocation. Atlanta's two mixed-arena seasons retain their released modeled base explicitly;
+all 73 home fixtures need separate physical overrides, and missing overrides fail rather than
+placing a game in the demolished Omni. San Jose/Tacoma and the evidenced Tampa/Katrina bases
+retain the same distinction. The 1992 Las Vegas Lakers game remains home-designated, matching
+the Anaheim rule. One November 1990 Tacoma building placement is explicitly triangulated
+from primary reports; its exact-fixture inference is a separate approval disclosure.
+
+Fix shooting by validating source-to-canonical fixture aliases, not by accepting a broader ID
+filter alone. Preserve the native L2M report ID and append its validated canonical link.
+Neutral-inclusive evidence coverage and venue-baseline coverage are separate populations.
+The two New Orleans conference cells are metadata corrections, not model or prediction edits.
+Section 7's definitions, hypothetical home returns, seed proxy and preserved prediction
+history remain report-only; 2026-27 grading remains deferred.
+
+The separate [arena transition](../scripts/arena-correction/README.md) authenticates the released
+old-source replay, exact new-source replay, full-domain compare-and-swap, changed-side-only
+writes, guarded future forecasts and conditional rollback. Recompute dependent artifacts with
+their producers and compare all published populations and season Mileage. Production requires
+a fresh verified backup, exact frozen independent review and the owner's new approval of the
+manifest and before/after evidence; local preparation is not a live correction.
+
+The retained prediction tools must honor the same preservation boundary: historical
+current-rule differences are diagnostics, not a failed history-rebuild instruction. The
+legacy reset command becomes report-only and refuses `--apply` before loading environment
+or database access; verification separates actual integrity/future-call defects from
+preserved historical drift. No historical reset/backfill or 2026-27 grading is authorized.
+
+
+## D-132 — redact extracted public-page credentials before publication (2026-10-20)
+
+GitHub secret alert #1 identified a Google Maps embed key copied from the public Smoothie
+King Center directions page into D-131's extracted research metadata. It did not match
+FullCourt's environment credentials. Public provenance does not establish account ownership,
+restrictions or permission to republish it. Redact that query value in the public derivative;
+retain the exact original HTML and metadata privately for the approved source proof.
+Keep the alert open: no revocation or earlier-public-history removal is established.
+The metadata URL contract runs in normal CI before future publication.
+
+The original reviewed implementation and approved six-domain manifest remain the private
+execution source of truth. The sanitized public release must be independently byte-compared
+against that implementation for runtime, scorer, lockfile and generated outputs. A bridge
+receipt binds both candidates and the original/redacted metadata hashes; do not rewrite the
+approved proof or describe redacted metadata as the original bytes. See the dated
+[audit ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v10-public-source-metadata-embed-key-exposure-2026-10-20).

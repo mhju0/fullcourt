@@ -1,0 +1,7 @@
+{
+  "id": "ohm-west-historical",
+  "url": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A50%5D%3Bnwr%5B%22name%22~%22Reunion+Arena%7CMcNichols%7CHemisFair%7CHemisfair%7CMetrodome%7CARCO+Arena%7CArco+Arena%7CSalt+Palace%7CLos+Angeles.%2ASports+Arena%7CSummit%7CMemphis+Pyramid%22%2Ci%5D%2825%2C-126%2C50%2C-89%29%3Bout+tags+geom%3B",
+  "query": "[out:json][timeout:50];nwr[\"name\"~\"Reunion Arena|McNichols|HemisFair|Hemisfair|Metrodome|ARCO Arena|Arco Arena|Salt Palace|Los Angeles.*Sports Arena|Summit|Memphis Pyramid\",i](25,-126,50,-89);out tags geom;",
+  "capturedAt": "2026-10-20T07:06:14.796013+00:00",
+  "error": "HTTP Error 403: Forbidden"
+}

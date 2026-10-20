@@ -1,0 +1,784 @@
+[
+  {
+    "id": "apple-dal-reunion",
+    "arenaId": "dal-reunion",
+    "requestedName": "Reunion Arena",
+    "requestedAddress": "777 Sports St, Dallas, TX",
+    "url": "https://maps.apple.com/place?name=Reunion+Arena&address=777+Sports+St%2C+Dallas%2C+TX",
+    "capturedAt": "2026-10-20T06:55:06.654628+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Reunion+Arena&address=777+Sports+St%2C+Dallas%2C+TX",
+    "bodySha256": "695050149871bf62d761c23ba64a5cad686fda7d9f7a6ef535ded4754e8bfe28",
+    "rawPath": "raw/apple-dal-reunion-695050149871.html.gz",
+    "retainedSha256": "2542864f1ce2cb4d519adbb69aa946f69b4211aeb9c05d9618ff76b5db30d0d6",
+    "bytes": 8362,
+    "coordinates": [
+      "32.7722846",
+      "-96.809128"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(32.7722846%2C%20-96.809128)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">777 Sports St</div><div class=\"mw-dir-label\" dir=\"ltr\">Dallas, TX  75207</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-dal-aac",
+    "arenaId": "dal-aac",
+    "requestedName": "American Airlines Center",
+    "requestedAddress": "2500 Victory Ave, Dallas, TX 75219",
+    "url": "https://maps.apple.com/place?name=American+Airlines+Center&address=2500+Victory+Ave%2C+Dallas%2C+TX+75219",
+    "capturedAt": "2026-10-20T06:55:06.655274+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=American+Airlines+Center&address=2500+Victory+Ave%2C+Dallas%2C+TX+75219",
+    "bodySha256": "e47b3b13f497490b46df0d2e6de653a6c99ed6e589e2cf1c6694c0d7eb65236b",
+    "rawPath": "raw/apple-dal-aac-e47b3b13f497.html.gz",
+    "retainedSha256": "32952c100541341b1cab35bb2eff98f071ed6f6d53857f683674da5295c1c86e",
+    "bytes": 10076,
+    "coordinates": [
+      "32.7905253",
+      "-96.8107154"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(32.7905253%2C%20-96.8107154)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">2500 Victory Ave</div><div class=\"mw-dir-label\" dir=\"ltr\">Dallas, TX  75219</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-den-mcnichols",
+    "arenaId": "den-mcnichols",
+    "requestedName": "McNichols Sports Arena",
+    "requestedAddress": "1635 Bryant St, Denver, CO",
+    "url": "https://maps.apple.com/place?name=McNichols+Sports+Arena&address=1635+Bryant+St%2C+Denver%2C+CO",
+    "capturedAt": "2026-10-20T06:55:06.981142+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=McNichols+Sports+Arena&address=1635+Bryant+St%2C+Denver%2C+CO",
+    "bodySha256": "f8f163c6ef6a1ed400c7a74a3db5747f897345fe2c080cf0a70105fcc6f73725",
+    "rawPath": "raw/apple-den-mcnichols-f8f163c6ef6a.html.gz",
+    "retainedSha256": "f62e9268de217f50c49290c0faf4e708afe0128f19b65a202c697eb69f41d5a3",
+    "bytes": 8434,
+    "coordinates": [
+      "39.7422337",
+      "-105.0220329"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(39.7422337%2C%20-105.0220329)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1635 Bryant St</div><div class=\"mw-dir-label\" dir=\"ltr\">Denver, CO  80204</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-den-ball",
+    "arenaId": "den-ball",
+    "requestedName": "Ball Arena",
+    "requestedAddress": "1000 Chopper Cir, Denver, CO 80204",
+    "url": "https://maps.apple.com/place?name=Ball+Arena&address=1000+Chopper+Cir%2C+Denver%2C+CO+80204",
+    "capturedAt": "2026-10-20T06:55:06.981280+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Ball+Arena&address=1000+Chopper+Cir%2C+Denver%2C+CO+80204",
+    "bodySha256": "94f8b3870a184f3b47d981207c12a19123278ffd78963b9a4c49fff9222816a9",
+    "rawPath": "raw/apple-den-ball-94f8b3870a18.html.gz",
+    "retainedSha256": "cc3f196c9ab0960cf82a104eac895f2a8d270954956b8ddb31abb9486cd3879f",
+    "bytes": 9373,
+    "coordinates": [
+      "39.7487209",
+      "-105.007682"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(39.7487209%2C%20-105.007682)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1000 Chopper Cir</div><div class=\"mw-dir-label\" dir=\"ltr\">Denver, CO  80204</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-gsw-oakland",
+    "arenaId": "gsw-oakland",
+    "requestedName": "Oakland Arena",
+    "requestedAddress": "7000 Coliseum Way, Oakland, CA 94621",
+    "url": "https://maps.apple.com/place?name=Oakland+Arena&address=7000+Coliseum+Way%2C+Oakland%2C+CA+94621",
+    "capturedAt": "2026-10-20T06:55:07.277565+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Oakland+Arena&address=7000+Coliseum+Way%2C+Oakland%2C+CA+94621",
+    "bodySha256": "8ca8f02185c7c7ce2d19d59da6494a9acee2d527064740c2b1e5cd3f50124785",
+    "rawPath": "raw/apple-gsw-oakland-8ca8f02185c7.html.gz",
+    "retainedSha256": "25cfedb23f2e94c25d68ff30650c1b764e8e53914e78f282b03317aede1141e8",
+    "bytes": 9473,
+    "coordinates": [
+      "37.7513403",
+      "-122.2014679"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(37.7513403%2C%20-122.2014679)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">7000 Coliseum Way</div><div class=\"mw-dir-label\" dir=\"ltr\">Oakland, CA  94621</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-gsw-sanjose",
+    "arenaId": "gsw-sanjose",
+    "requestedName": "SAP Center",
+    "requestedAddress": "525 W Santa Clara St, San Jose, CA 95113",
+    "url": "https://maps.apple.com/place?name=SAP+Center&address=525+W+Santa+Clara+St%2C+San+Jose%2C+CA+95113",
+    "capturedAt": "2026-10-20T06:55:07.289476+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=SAP+Center&address=525+W+Santa+Clara+St%2C+San+Jose%2C+CA+95113",
+    "bodySha256": "55b15bf8458c4851aae69a67a99dd722669c53684b0043c78bf77fae58b6fb58",
+    "rawPath": "raw/apple-gsw-sanjose-55b15bf8458c.html.gz",
+    "retainedSha256": "9c13afbff6b6f1fbd21c849f5c4b7119256ab733335e770af01b0368be65fb48",
+    "bytes": 9850,
+    "coordinates": [
+      "37.3326699",
+      "-121.9013506"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(37.3326699%2C%20-121.9013506)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">525 W Santa Clara St</div><div class=\"mw-dir-label\" dir=\"ltr\">San Jose, CA  95113</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-gsw-chase",
+    "arenaId": "gsw-chase",
+    "requestedName": "Chase Center",
+    "requestedAddress": "1 Warriors Way, San Francisco, CA 94158",
+    "url": "https://maps.apple.com/place?name=Chase+Center&address=1+Warriors+Way%2C+San+Francisco%2C+CA+94158",
+    "capturedAt": "2026-10-20T06:55:07.458824+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Chase+Center&address=1+Warriors+Way%2C+San+Francisco%2C+CA+94158",
+    "bodySha256": "bb2fd1d1589e0a40b6395a977fe0473199cc086c36e4b8f67ab6cf47f3d32cb5",
+    "rawPath": "raw/apple-gsw-chase-bb2fd1d1589e.html.gz",
+    "retainedSha256": "63865243a095197ce8f745872637cbd1847ba14427d3a3e567016a1cd48c8164",
+    "bytes": 9960,
+    "coordinates": [
+      "37.7678637",
+      "-122.3866853"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(37.7678637%2C%20-122.3866853)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1 Warriors Way</div><div class=\"mw-dir-label\" dir=\"ltr\">San Francisco, CA  94158</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-hou-summit",
+    "arenaId": "hou-summit",
+    "requestedName": "The Summit",
+    "requestedAddress": "3700 Southwest Fwy, Houston, TX 77027",
+    "url": "https://maps.apple.com/place?name=The+Summit&address=3700+Southwest+Fwy%2C+Houston%2C+TX+77027",
+    "capturedAt": "2026-10-20T06:55:07.510039+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=The+Summit&address=3700+Southwest+Fwy%2C+Houston%2C+TX+77027",
+    "bodySha256": "237e3461118c3d35049e5b2e009e179aeec0736a71e6816788ac7ec5a8b2daec",
+    "rawPath": "raw/apple-hou-summit-237e3461118c.html.gz",
+    "retainedSha256": "644c89715cbff8125fea0802a93ad0e12257f1977b25ad8d95b2fa4d143cb203",
+    "bytes": 8790,
+    "coordinates": [
+      "29.7303667",
+      "-95.4348762"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.7303667%2C%20-95.4348762)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">3700 Southwest Fwy</div><div class=\"mw-dir-label\" dir=\"ltr\">Houston, TX  77027</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-hou-toyota",
+    "arenaId": "hou-toyota",
+    "requestedName": "Toyota Center",
+    "requestedAddress": "1510 Polk St, Houston, TX 77002",
+    "url": "https://maps.apple.com/place?name=Toyota+Center&address=1510+Polk+St%2C+Houston%2C+TX+77002",
+    "capturedAt": "2026-10-20T06:55:07.637537+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Toyota+Center&address=1510+Polk+St%2C+Houston%2C+TX+77002",
+    "bodySha256": "bdef078b26014558adb8ea10039d80a24e6e8a65b233adc9e3207ed930d6acbf",
+    "rawPath": "raw/apple-hou-toyota-bdef078b2601.html.gz",
+    "retainedSha256": "28bc81c8b91641e405de30aaa1fd12313040f65077419ae89463ef7219052850",
+    "bytes": 9087,
+    "coordinates": [
+      "29.7507533",
+      "-95.3621738"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.7507533%2C%20-95.3621738)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1510 Polk St</div><div class=\"mw-dir-label\" dir=\"ltr\">Houston, TX  77002</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-lac-sports",
+    "arenaId": "lac-sports",
+    "requestedName": "Los Angeles Memorial Sports Arena",
+    "requestedAddress": "3939 S Figueroa St, Los Angeles, CA",
+    "url": "https://maps.apple.com/place?name=Los+Angeles+Memorial+Sports+Arena&address=3939+S+Figueroa+St%2C+Los+Angeles%2C+CA",
+    "capturedAt": "2026-10-20T06:55:07.742386+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Los+Angeles+Memorial+Sports+Arena&address=3939+S+Figueroa+St%2C+Los+Angeles%2C+CA",
+    "bodySha256": "9b9d3be2185cec2a79854831541b22155f0d228987e3a73941badcc42b21563f",
+    "rawPath": "raw/apple-lac-sports-9b9d3be2185c.html.gz",
+    "retainedSha256": "4e173390b323f33cf7067ba661641ae90c8c50481fa73423d5c3ddcb253df888",
+    "bytes": 9429,
+    "coordinates": [
+      "34.0127547",
+      "-118.2845968"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(34.0127547%2C%20-118.2845968)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">3939 S Figueroa St</div><div class=\"mw-dir-label\" dir=\"ltr\">Los Angeles, CA  90037</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-la-staples",
+    "arenaId": "la-staples",
+    "requestedName": "Crypto.com Arena",
+    "requestedAddress": "1111 S Figueroa St, Los Angeles, CA 90015",
+    "url": "https://maps.apple.com/place?name=Crypto.com+Arena&address=1111+S+Figueroa+St%2C+Los+Angeles%2C+CA+90015",
+    "capturedAt": "2026-10-20T06:55:07.844358+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Crypto.com+Arena&address=1111+S+Figueroa+St%2C+Los+Angeles%2C+CA+90015",
+    "bodySha256": "9dfd0e2a23c59984c8b3448ef35e5ea9ad32469708c986e247d96f6bdbc549c5",
+    "rawPath": "raw/apple-la-staples-9dfd0e2a23c5.html.gz",
+    "retainedSha256": "9036f37dc806c9c010fb5357cbee5a6f9776e6be89b3baf23708303e24a37225",
+    "bytes": 10325,
+    "coordinates": [
+      "34.0430936",
+      "-118.2670617"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(34.0430936%2C%20-118.2670617)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1111 S Figueroa St</div><div class=\"mw-dir-label\" dir=\"ltr\">Los Angeles, CA  90015</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-lac-intuit",
+    "arenaId": "lac-intuit",
+    "requestedName": "Intuit Dome",
+    "requestedAddress": "3930 W Century Blvd, Inglewood, CA 90303",
+    "url": "https://maps.apple.com/place?name=Intuit+Dome&address=3930+W+Century+Blvd%2C+Inglewood%2C+CA+90303",
+    "capturedAt": "2026-10-20T06:55:07.975485+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Intuit+Dome&address=3930+W+Century+Blvd%2C+Inglewood%2C+CA+90303",
+    "bodySha256": "40d7a396b1824caa84b424517a70e5f02ead3f53c6b99c87f3084296710087b9",
+    "rawPath": "raw/apple-lac-intuit-40d7a396b182.html.gz",
+    "retainedSha256": "c436c56f6a2474e46a5b1b38db8641ccb760668c5c15ed9d40f65f85d6d2186d",
+    "bytes": 8661,
+    "coordinates": [
+      "33.9437657",
+      "-118.3422171"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(33.9437657%2C%20-118.3422171)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">3930 W Century Blvd</div><div class=\"mw-dir-label\" dir=\"ltr\">Inglewood, CA  90303</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-lal-forum",
+    "arenaId": "lal-forum",
+    "requestedName": "Kia Forum",
+    "requestedAddress": "3900 W Manchester Blvd, Inglewood, CA 90305",
+    "url": "https://maps.apple.com/place?name=Kia+Forum&address=3900+W+Manchester+Blvd%2C+Inglewood%2C+CA+90305",
+    "capturedAt": "2026-10-20T06:55:08.071427+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Kia+Forum&address=3900+W+Manchester+Blvd%2C+Inglewood%2C+CA+90305",
+    "bodySha256": "860f7e37af7ad1636e7b6c7351cfdb9feb9274c09c2aaa88f046918ea76d67e3",
+    "rawPath": "raw/apple-lal-forum-860f7e37af7a.html.gz",
+    "retainedSha256": "d79e923096a0f5713d27f83092715353cad0c49a21c3ffdf3bccb8284bf5cc84",
+    "bytes": 8651,
+    "coordinates": [
+      "33.9582129",
+      "-118.3419557"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(33.9582129%2C%20-118.3419557)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">3900 W Manchester Blvd</div><div class=\"mw-dir-label\" dir=\"ltr\">Inglewood, CA  90305</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-mem-vancouver",
+    "arenaId": "mem-vancouver",
+    "requestedName": "Rogers Arena",
+    "requestedAddress": "800 Griffiths Way, Vancouver, BC V6B 6G1, Canada",
+    "url": "https://maps.apple.com/place?name=Rogers+Arena&address=800+Griffiths+Way%2C+Vancouver%2C+BC+V6B+6G1%2C+Canada",
+    "capturedAt": "2026-10-20T06:55:08.174534+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Rogers+Arena&address=800+Griffiths+Way%2C+Vancouver%2C+BC+V6B+6G1%2C+Canada",
+    "bodySha256": "ebddff432a484643fd71594c4f839cb365f2bc101616ae6844e9df9007f284bb",
+    "rawPath": "raw/apple-mem-vancouver-ebddff432a48.html.gz",
+    "retainedSha256": "7189b10398c38dee092c5d35040aedc9b429c89f784d2b18149412d9660f8b50",
+    "bytes": 9418,
+    "coordinates": [
+      "49.2776043",
+      "-123.1096325"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(49.2776043%2C%20-123.1096325)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">800 Griffiths Way</div><div class=\"mw-dir-label\" dir=\"ltr\">Vancouver BC V6B 6G1</div><div class=\"mw-dir-label\" dir=\"ltr\">Canada</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-mem-pyramid",
+    "arenaId": "mem-pyramid",
+    "requestedName": "Memphis Pyramid",
+    "requestedAddress": "1 Bass Pro Dr, Memphis, TN 38105",
+    "url": "https://maps.apple.com/place?name=Memphis+Pyramid&address=1+Bass+Pro+Dr%2C+Memphis%2C+TN+38105",
+    "capturedAt": "2026-10-20T06:55:08.288461+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Memphis+Pyramid&address=1+Bass+Pro+Dr%2C+Memphis%2C+TN+38105",
+    "bodySha256": "115632bf75ff96bccd30fc00bc049245f7e33f0ce3c503800256ea68f50da86e",
+    "rawPath": "raw/apple-mem-pyramid-115632bf75ff.html.gz",
+    "retainedSha256": "49f05a61e2f87907091ef366cfcfaa4a3f54fefe9ff6d66adb66442e44ed7287",
+    "bytes": 9159,
+    "coordinates": [
+      "35.1560067",
+      "-90.0518437"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(35.1560067%2C%20-90.0518437)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1 Bass Pro Dr</div><div class=\"mw-dir-label\" dir=\"ltr\">Memphis, TN  38105</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-mem-fedex",
+    "arenaId": "mem-fedex",
+    "requestedName": "FedExForum",
+    "requestedAddress": "191 Beale St, Memphis, TN 38103",
+    "url": "https://maps.apple.com/place?name=FedExForum&address=191+Beale+St%2C+Memphis%2C+TN+38103",
+    "capturedAt": "2026-10-20T06:55:08.375905+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=FedExForum&address=191+Beale+St%2C+Memphis%2C+TN+38103",
+    "bodySha256": "2316bbc0d07b84461de348eddcf624c83ae51c8b41da69631c94aa4b6043a423",
+    "rawPath": "raw/apple-mem-fedex-2316bbc0d07b.html.gz",
+    "retainedSha256": "27d88722882000bd41168eef220e72aea0e5c5cc95f8a70f168388f1d62f2e4d",
+    "bytes": 9375,
+    "coordinates": [
+      "35.1382175",
+      "-90.0505285"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(35.1382175%2C%20-90.0505285)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">191 Beale St</div><div class=\"mw-dir-label\" dir=\"ltr\">Memphis, TN  38103</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-min-metrodome",
+    "arenaId": "min-metrodome",
+    "requestedName": "Metrodome",
+    "requestedAddress": "900 S 5th St, Minneapolis, MN",
+    "url": "https://maps.apple.com/place?name=Metrodome&address=900+S+5th+St%2C+Minneapolis%2C+MN",
+    "capturedAt": "2026-10-20T06:55:08.488102+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Metrodome&address=900+S+5th+St%2C+Minneapolis%2C+MN",
+    "bodySha256": "a31abb5b73cf38b6c28f3c52c4da5044776225d5c2efff2c492187bde3ed4b22",
+    "rawPath": "raw/apple-min-metrodome-a31abb5b73cf.html.gz",
+    "retainedSha256": "254aef416c73b508dc7fcb27e17e637c7c6237ad778d53a06ed0142b082c0631",
+    "bytes": 9026,
+    "coordinates": [
+      "44.9727031",
+      "-93.2566543"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(44.9727031%2C%20-93.2566543)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">900 S Fifth St</div><div class=\"mw-dir-label\" dir=\"ltr\">Minneapolis, MN  55415</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-min-target",
+    "arenaId": "min-target",
+    "requestedName": "Target Center",
+    "requestedAddress": "600 N 1st Ave, Minneapolis, MN 55403",
+    "url": "https://maps.apple.com/place?name=Target+Center&address=600+N+1st+Ave%2C+Minneapolis%2C+MN+55403",
+    "capturedAt": "2026-10-20T06:55:08.572203+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Target+Center&address=600+N+1st+Ave%2C+Minneapolis%2C+MN+55403",
+    "bodySha256": "17d3cfb06eccb8d814ceb91598fdb8b48033e5a48ffc1cf1956c1c101501457e",
+    "rawPath": "raw/apple-min-target-17d3cfb06ecc.html.gz",
+    "retainedSha256": "3f5741afe77626e4270c37cafc474003977589196a552a688f397665dac1003b",
+    "bytes": 10561,
+    "coordinates": [
+      "44.9795494",
+      "-93.2760589"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(44.9795494%2C%20-93.2760589)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">600 N First Ave</div><div class=\"mw-dir-label\" dir=\"ltr\">Minneapolis, MN  55403</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-nop-neworleans",
+    "arenaId": "nop-neworleans",
+    "requestedName": "Smoothie King Center",
+    "requestedAddress": "1501 Dave Dixon Dr, New Orleans, LA 70113",
+    "url": "https://maps.apple.com/place?name=Smoothie+King+Center&address=1501+Dave+Dixon+Dr%2C+New+Orleans%2C+LA+70113",
+    "capturedAt": "2026-10-20T06:55:08.718481+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Smoothie+King+Center&address=1501+Dave+Dixon+Dr%2C+New+Orleans%2C+LA+70113",
+    "bodySha256": "a31a856f8766831ffb84ee8065ce306a761cc5c2bd362138816d2585ee01b8b3",
+    "rawPath": "raw/apple-nop-neworleans-a31a856f8766.html.gz",
+    "retainedSha256": "f63e7e4ed026f0fb7b0bd36f6f32c1b36bb0417c25c788678812d63378a210b9",
+    "bytes": 10028,
+    "coordinates": [
+      "29.9491393",
+      "-90.0820173"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.9491393%2C%20-90.0820173)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1501 Dave Dixon Dr</div><div class=\"mw-dir-label\" dir=\"ltr\">New Orleans, LA  70113</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-okc-ford",
+    "arenaId": "okc-ford",
+    "requestedName": "Paycom Center",
+    "requestedAddress": "100 W Reno Ave, Oklahoma City, OK 73102",
+    "url": "https://maps.apple.com/place?name=Paycom+Center&address=100+W+Reno+Ave%2C+Oklahoma+City%2C+OK+73102",
+    "capturedAt": "2026-10-20T06:55:08.768884+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Paycom+Center&address=100+W+Reno+Ave%2C+Oklahoma+City%2C+OK+73102",
+    "bodySha256": "90f4e396d64880b100e72b239ae4b4b24e131c549a70af057648d185f5f9fb33",
+    "rawPath": "raw/apple-okc-ford-90f4e396d648.html.gz",
+    "retainedSha256": "3038cc866d704b2558ec5b6068a0a6850f26b9550eac2ca0d820089fd2541e40",
+    "bytes": 9935,
+    "coordinates": [
+      "35.4634035",
+      "-97.5149785"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(35.4634035%2C%20-97.5149785)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">100 W Reno Ave</div><div class=\"mw-dir-label\" dir=\"ltr\">Oklahoma City, OK  73102</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sea-coliseum",
+    "arenaId": "sea-coliseum",
+    "requestedName": "Climate Pledge Arena",
+    "requestedAddress": "334 1st Ave N, Seattle, WA 98109",
+    "url": "https://maps.apple.com/place?name=Climate+Pledge+Arena&address=334+1st+Ave+N%2C+Seattle%2C+WA+98109",
+    "capturedAt": "2026-10-20T06:55:08.917566+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Climate+Pledge+Arena&address=334+1st+Ave+N%2C+Seattle%2C+WA+98109",
+    "bodySha256": "94f826ad46cfe068873b4f629eb9e93110d8d91532f1024994272a53a8ce5181",
+    "rawPath": "raw/apple-sea-coliseum-94f826ad46cf.html.gz",
+    "retainedSha256": "1df789386652222ebc8b2846d2f0fbcc617b5d953d4a306edd5d14af9647022f",
+    "bytes": 9726,
+    "coordinates": [
+      "47.6220798",
+      "-122.3539896"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(47.6220798%2C%20-122.3539896)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">334 First Ave N</div><div class=\"mw-dir-label\" dir=\"ltr\">Seattle, WA  98109</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sea-tacoma",
+    "arenaId": "sea-tacoma",
+    "requestedName": "Tacoma Dome",
+    "requestedAddress": "2727 E D St, Tacoma, WA 98421",
+    "url": "https://maps.apple.com/place?name=Tacoma+Dome&address=2727+E+D+St%2C+Tacoma%2C+WA+98421",
+    "capturedAt": "2026-10-20T06:55:09.000913+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Tacoma+Dome&address=2727+E+D+St%2C+Tacoma%2C+WA+98421",
+    "bodySha256": "367d830efed5e2a30293235ff1f0cd40f091920daa5483b0b4ae0b694569063d",
+    "rawPath": "raw/apple-sea-tacoma-367d830efed5.html.gz",
+    "retainedSha256": "09d4d17b67bcd8b80b49015bc6bc3bc45f3ba06e686eff86a226b59730c66b4a",
+    "bytes": 9319,
+    "coordinates": [
+      "47.2367205",
+      "-122.4269112"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(47.2367205%2C%20-122.4269112)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">2727 E D St</div><div class=\"mw-dir-label\" dir=\"ltr\">Tacoma, WA  98421</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-phx-veterans",
+    "arenaId": "phx-veterans",
+    "requestedName": "Arizona Veterans Memorial Coliseum",
+    "requestedAddress": "1826 W McDowell Rd, Phoenix, AZ 85007",
+    "url": "https://maps.apple.com/place?name=Arizona+Veterans+Memorial+Coliseum&address=1826+W+McDowell+Rd%2C+Phoenix%2C+AZ+85007",
+    "capturedAt": "2026-10-20T06:55:09.123210+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Arizona+Veterans+Memorial+Coliseum&address=1826+W+McDowell+Rd%2C+Phoenix%2C+AZ+85007",
+    "bodySha256": "a19803197ececfaaaf3ec138f21cdd758815027e720a81aecd65da6bf7ecb150",
+    "rawPath": "raw/apple-phx-veterans-a19803197ece.html.gz",
+    "retainedSha256": "2b820224a1e61654d744eac39d8a9111ff254ff4821428f4b77de8a384f3f601",
+    "bytes": 9485,
+    "coordinates": [
+      "33.4669137",
+      "-112.0983791"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(33.4669137%2C%20-112.0983791)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1826 W McDowell Rd</div><div class=\"mw-dir-label\" dir=\"ltr\">Phoenix, AZ  85007</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-phx-americawest",
+    "arenaId": "phx-americawest",
+    "requestedName": "Mortgage Matchup Center",
+    "requestedAddress": "201 E Jefferson St, Phoenix, AZ 85004",
+    "url": "https://maps.apple.com/place?name=Mortgage+Matchup+Center&address=201+E+Jefferson+St%2C+Phoenix%2C+AZ+85004",
+    "capturedAt": "2026-10-20T06:55:09.262081+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Mortgage+Matchup+Center&address=201+E+Jefferson+St%2C+Phoenix%2C+AZ+85004",
+    "bodySha256": "ce78114dd8fb6a456bcf76258e3b1a9aef6dfec56eb9a60d02e32565dcd3fb25",
+    "rawPath": "raw/apple-phx-americawest-ce78114dd8fb.html.gz",
+    "retainedSha256": "fcde687e99e2f33fc5d448a25c3e9dd62e65b358038c24c8145f0b92bfafcd25",
+    "bytes": 9967,
+    "coordinates": [
+      "33.4460366",
+      "-112.0712213"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(33.4460366%2C%20-112.0712213)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">201 E Jefferson St</div><div class=\"mw-dir-label\" dir=\"ltr\">Phoenix, AZ  85004</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-por-memorial",
+    "arenaId": "por-memorial",
+    "requestedName": "Veterans Memorial Coliseum",
+    "requestedAddress": "300 N Ramsay Way, Portland, OR 97227",
+    "url": "https://maps.apple.com/place?name=Veterans+Memorial+Coliseum&address=300+N+Ramsay+Way%2C+Portland%2C+OR+97227",
+    "capturedAt": "2026-10-20T06:55:09.346592+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Veterans+Memorial+Coliseum&address=300+N+Ramsay+Way%2C+Portland%2C+OR+97227",
+    "bodySha256": "51570b79b4c22189bf22d7185b56a90b12510bf5ffda136baaa972acf720fb68",
+    "rawPath": "raw/apple-por-memorial-51570b79b4c2.html.gz",
+    "retainedSha256": "e8b2cab109689621457105c6d4cfc1e18f732dab56335d808d9b01b2e0521333",
+    "bytes": 8871,
+    "coordinates": [
+      "45.5321562",
+      "-122.6693983"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(45.5321562%2C%20-122.6693983)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">300 N Ramsay Way</div><div class=\"mw-dir-label\" dir=\"ltr\">Portland, OR  97227</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-por-rose",
+    "arenaId": "por-rose",
+    "requestedName": "Moda Center",
+    "requestedAddress": "1 N Center Court St, Portland, OR 97227",
+    "url": "https://maps.apple.com/place?name=Moda+Center&address=1+N+Center+Court+St%2C+Portland%2C+OR+97227",
+    "capturedAt": "2026-10-20T06:55:09.456913+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Moda+Center&address=1+N+Center+Court+St%2C+Portland%2C+OR+97227",
+    "bodySha256": "c706e50997f9718fd7d5030e5f8c8e65f3eec8816a63ab8154f839941b6630be",
+    "rawPath": "raw/apple-por-rose-c706e50997f9.html.gz",
+    "retainedSha256": "0f6db72f5244dd53ec2c9e7d5c4708e15be08698f25f6ae909391e81688d9bf3",
+    "bytes": 10031,
+    "coordinates": [
+      "45.5319075",
+      "-122.6668157"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(45.5319075%2C%20-122.6668157)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1 N Center Court St</div><div class=\"mw-dir-label\" dir=\"ltr\">Portland, OR  97227</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sac-arco1",
+    "arenaId": "sac-arco1",
+    "requestedName": "Original ARCO Arena",
+    "requestedAddress": "1625 N Market Blvd, Sacramento, CA",
+    "url": "https://maps.apple.com/place?name=Original+ARCO+Arena&address=1625+N+Market+Blvd%2C+Sacramento%2C+CA",
+    "capturedAt": "2026-10-20T06:55:09.536033+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Original+ARCO+Arena&address=1625+N+Market+Blvd%2C+Sacramento%2C+CA",
+    "bodySha256": "b02470fb6ef8f18ecdcc5dd8591fc656c413c3166b19d95d565b90caec7b7fec",
+    "rawPath": "raw/apple-sac-arco1-b02470fb6ef8.html.gz",
+    "retainedSha256": "5c12192bb17deb3aaa86c00a3349bbf0c490c787111182f2aac10ac46be3f66e",
+    "bytes": 9293,
+    "coordinates": [
+      "38.6473769",
+      "-121.4989874"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(38.6473769%2C%20-121.4989874)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1625 N Market Blvd</div><div class=\"mw-dir-label\" dir=\"ltr\">Sacramento, CA  95834</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sac-arco2",
+    "arenaId": "sac-arco2",
+    "requestedName": "ARCO Arena",
+    "requestedAddress": "1 Sports Pkwy, Sacramento, CA",
+    "url": "https://maps.apple.com/place?name=ARCO+Arena&address=1+Sports+Pkwy%2C+Sacramento%2C+CA",
+    "capturedAt": "2026-10-20T06:55:09.662095+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=ARCO+Arena&address=1+Sports+Pkwy%2C+Sacramento%2C+CA",
+    "bodySha256": "ddb2ae94cb467b6babe141810f97c21db1f8acc21fc1f7f545b83ca383a22ffd",
+    "rawPath": "raw/apple-sac-arco2-ddb2ae94cb46.html.gz",
+    "retainedSha256": "a88701ca5a53b9bf4e76e99b49f4e6edf4f420903de2b86e0141bf12ff50dde6",
+    "bytes": 8652,
+    "coordinates": [
+      "38.6490506",
+      "-121.5181465"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(38.6490506%2C%20-121.5181465)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1 Sports Pkwy</div><div class=\"mw-dir-label\" dir=\"ltr\">Sacramento, CA  95834</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sac-golden1",
+    "arenaId": "sac-golden1",
+    "requestedName": "Golden 1 Center",
+    "requestedAddress": "500 David J Stern Walk, Sacramento, CA 95814",
+    "url": "https://maps.apple.com/place?name=Golden+1+Center&address=500+David+J+Stern+Walk%2C+Sacramento%2C+CA+95814",
+    "capturedAt": "2026-10-20T06:55:09.742607+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Golden+1+Center&address=500+David+J+Stern+Walk%2C+Sacramento%2C+CA+95814",
+    "bodySha256": "0ea627e4ab00ac2a4d9fd80dec81f9487f967d10eaee97308e91eb85f48822f4",
+    "rawPath": "raw/apple-sac-golden1-0ea627e4ab00.html.gz",
+    "retainedSha256": "48095a2fce5b6cefb2ab9002ca8a483884196469fae803cf3f7c715be5238472",
+    "bytes": 9912,
+    "coordinates": [
+      "38.5803608",
+      "-121.5002098"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(38.5803608%2C%20-121.5002098)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">500 David J Stern Walk</div><div class=\"mw-dir-label\" dir=\"ltr\">Sacramento, CA  95814</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sas-hemisfair",
+    "arenaId": "sas-hemisfair",
+    "requestedName": "HemisFair Arena",
+    "requestedAddress": "600 Hemisfair Plaza Way, San Antonio, TX",
+    "url": "https://maps.apple.com/place?name=HemisFair+Arena&address=600+Hemisfair+Plaza+Way%2C+San+Antonio%2C+TX",
+    "capturedAt": "2026-10-20T06:55:09.918498+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=HemisFair+Arena&address=600+Hemisfair+Plaza+Way%2C+San+Antonio%2C+TX",
+    "bodySha256": "e09cc69c715a05551907d12b4ceac576d9fca1377f6413dca62f104fc76b2dfe",
+    "rawPath": "raw/apple-sas-hemisfair-e09cc69c715a.html.gz",
+    "retainedSha256": "dfdf1b7d2ba38f0e8abeeba77939137a7bd2bf335ea756384ae26cc665aa55c4",
+    "bytes": 8721,
+    "coordinates": [
+      "29.419281",
+      "-98.4869998"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.419281%2C%20-98.4869998)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">600 E Nueva St</div><div class=\"mw-dir-label\" dir=\"ltr\">San Antonio, TX  78205</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sas-alamodome",
+    "arenaId": "sas-alamodome",
+    "requestedName": "Alamodome",
+    "requestedAddress": "100 Montana St, San Antonio, TX 78203",
+    "url": "https://maps.apple.com/place?name=Alamodome&address=100+Montana+St%2C+San+Antonio%2C+TX+78203",
+    "capturedAt": "2026-10-20T06:55:09.985083+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Alamodome&address=100+Montana+St%2C+San+Antonio%2C+TX+78203",
+    "bodySha256": "81a748f2ce1ef140447da304900a6fd91b3b0dc40c8f15ff428f121ef4e338c4",
+    "rawPath": "raw/apple-sas-alamodome-81a748f2ce1e.html.gz",
+    "retainedSha256": "330389214f5597f23c939ea06538c88c6cc87584f62b06ff9b6fe74c97f147cb",
+    "bytes": 9443,
+    "coordinates": [
+      "29.4156025",
+      "-98.4788209"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.4156025%2C%20-98.4788209)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">100 Montana St</div><div class=\"mw-dir-label\" dir=\"ltr\">San Antonio, TX  78203</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-sas-frost",
+    "arenaId": "sas-frost",
+    "requestedName": "Frost Bank Center",
+    "requestedAddress": "1 Frost Bank Center Dr, San Antonio, TX 78219",
+    "url": "https://maps.apple.com/place?name=Frost+Bank+Center&address=1+Frost+Bank+Center+Dr%2C+San+Antonio%2C+TX+78219",
+    "capturedAt": "2026-10-20T06:55:10.116841+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Frost+Bank+Center&address=1+Frost+Bank+Center+Dr%2C+San+Antonio%2C+TX+78219",
+    "bodySha256": "89c0912370a1d5abadb40ffaf849ccbff387d23f58d46a874938189cfe5c1af8",
+    "rawPath": "raw/apple-sas-frost-89c0912370a1.html.gz",
+    "retainedSha256": "4b76265d4403483871b37ba9da9067018f96f097d6622119d2c0c2b72e14229c",
+    "bytes": 10570,
+    "coordinates": [
+      "29.4269754",
+      "-98.4375351"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(29.4269754%2C%20-98.4375351)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">1 Frost Bank Center Dr</div><div class=\"mw-dir-label\" dir=\"ltr\">San Antonio, TX  78219</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-uta-saltpalace",
+    "arenaId": "uta-saltpalace",
+    "requestedName": "Original Salt Palace Arena",
+    "requestedAddress": "100 S West Temple, Salt Lake City, UT",
+    "url": "https://maps.apple.com/place?name=Original+Salt+Palace+Arena&address=100+S+West+Temple%2C+Salt+Lake+City%2C+UT",
+    "capturedAt": "2026-10-20T06:55:10.194115+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Original+Salt+Palace+Arena&address=100+S+West+Temple%2C+Salt+Lake+City%2C+UT",
+    "bodySha256": "2e16693c87b0372a5eccd3aa07bed577ea19ff2c3bbf739c979c42e70635dd6d",
+    "rawPath": "raw/apple-uta-saltpalace-2e16693c87b0.html.gz",
+    "retainedSha256": "6f1e89e17cd6916b1f481a17085d0207800a5243fb351ed0bf3ff4402efd2ca3",
+    "bytes": 9009,
+    "coordinates": [
+      "40.7659511",
+      "-111.8946851"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(40.7659511%2C%20-111.8946851)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">100 South West Temple Street</div><div class=\"mw-dir-label\" dir=\"ltr\">Salt Lake City, UT  84101</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  },
+  {
+    "id": "apple-uta-delta",
+    "arenaId": "uta-delta",
+    "requestedName": "Delta Center",
+    "requestedAddress": "301 S Temple, Salt Lake City, UT 84101",
+    "url": "https://maps.apple.com/place?name=Delta+Center&address=301+S+Temple%2C+Salt+Lake+City%2C+UT+84101",
+    "capturedAt": "2026-10-20T06:55:10.328763+00:00",
+    "status": "unverified-address-candidate",
+    "httpStatus": 200,
+    "finalUrl": "https://maps.apple.com/place?name=Delta+Center&address=301+S+Temple%2C+Salt+Lake+City%2C+UT+84101",
+    "bodySha256": "f5b845d0850b738138aec4c882a6ec1c31b95f88546f59a1118d9eada659c4fd",
+    "rawPath": "raw/apple-uta-delta-f5b845d0850b.html.gz",
+    "retainedSha256": "48099fdfbe71709c02f82b9a5edcec5237d14c6c61d041ec897c0b1cfe59f310",
+    "bytes": 10106,
+    "coordinates": [
+      "40.7686635",
+      "-111.9009985"
+    ],
+    "returnedAddressHtml": [
+      "class=\"sc-address\" href=\"https://maps.apple.com/?daddr=(40.7686635%2C%20-111.9009985)&amp;dirflg=d\" data-directions-link=\"true\"><header class=\"none\"><h3 class=\"sc-platter-cell-title with-sc-icon\">Address</h3></header><div class=\"sc-platter-cell-content with-sc-icon\"><div class=\"mw-dir-label\" dir=\"ltr\">301 W South Temple</div><div class=\"mw-dir-label\" dir=\"ltr\">Salt Lake City, UT  84101</div><div class=\"mw-dir-label\" dir=\"ltr\">United States</div></div><div class=\"sc-icon\"><div class=\"sc-symbol arrow-triangle-turn-up-right-circle-fill\" aria-label=\"Directions\" role=\"img\"></div></div></a>"
+    ],
+    "interpretation": "Address-geocoding marker. Requested name may be echoed; not an independently resolved named POI. Historical exact building/court point and official address corroboration remain required."
+  }
+]

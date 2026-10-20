@@ -1,0 +1,10 @@
+{
+  "snapshotPath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/team-oracle/snapshot.json.gz",
+  "snapshotGzipSha256": "1d3db1c01aadab361a3ce31fd3d84302824e73b2642170f8d1d5438e2e6d60f6",
+  "officialGameCount": 297,
+  "fixtureFieldComparisons": 2079,
+  "fixtureMismatches": [],
+  "rawBodiesChecked": 416,
+  "rawHashMismatches": [],
+  "scope": "Fixture identity/date/status/scores and retained-body integrity. This does not certify historical provider arena labels or all arena boundary assignments."
+}

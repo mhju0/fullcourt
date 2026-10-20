@@ -1,0 +1,3008 @@
+{
+  "schemaVersion": 1,
+  "kind": "eastern-arena-research-registry",
+  "scope": "15 current Eastern franchises, regular-season and postseason 1985-86 onward; physical sites and actual fixture anchors. Not an approved effective-date implementation manifest.",
+  "generatedAt": "2026-10-20T07:29:53.125110+00:00",
+  "sourceSnapshot": {
+    "path": "../../../../../../fullcourt/docs/audit/release-numbers-20261020/team-oracle/snapshot.json.gz",
+    "gzipSha256": "1d3db1c01aadab361a3ce31fd3d84302824e73b2642170f8d1d5438e2e6d60f6"
+  },
+  "sites": {
+    "atl-omni": {
+      "arenaId": "atl-omni",
+      "geonameId": 6348383,
+      "providerName": "Omni Coliseum (historical)",
+      "latitude": 33.7575,
+      "longitude": -84.39667,
+      "sourceUrl": "https://www.geonames.org/6348383/omni-coliseum-historical.html",
+      "rawPath": "raw/geonames-record-atl-omni-cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42.html.gz",
+      "bodySha256": "cd55acf79d6471411b8ef6ce9301104135413bd799d7541f16f79dfe501f0f42",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://www.nba.com/game/chi-vs-atl-0049600053"
+      ]
+    },
+    "atl-alexander": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88f504592c998f03:0x89be123047489825",
+      "nameAddress": "McCamish Pavilion, 965 Fowler St NW, Atlanta, GA 30318, United States",
+      "latitude": 33.7808132,
+      "longitude": -84.39277659999999,
+      "sourceUrl": "https://www.google.com/maps?q=McCamish+Pavilion+Atlanta&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-alexander-e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed.html.gz",
+      "bodySha256": "e27730c3bd6f61edc7e6113cc486312154f79eacc379dab71828c8fa22fc18ed",
+      "primaryIdentitySources": [
+        "https://repository.gatech.edu/bitstreams/6a55bc7f-ff78-4c13-80ae-e0cc949f2e9e/download",
+        "https://ramblinwreck.com/facilities/mccamish-pavilion"
+      ]
+    },
+    "atl-georgia-dome": {
+      "arenaId": "atl-georgia-dome",
+      "geonameId": 4196938,
+      "providerName": "Georgia Dome",
+      "latitude": 33.75761,
+      "longitude": -84.40076,
+      "sourceUrl": "https://www.geonames.org/4196938/georgia-dome.html",
+      "rawPath": "raw/geonames-record-atl-georgia-dome-e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99.html.gz",
+      "bodySha256": "e769f8d8ff4f5634fdcd42fa2a49138e2dcaa3974b97ab0ee0225cdb42bafc99",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://repository.gatech.edu/bitstreams/6a55bc7f-ff78-4c13-80ae-e0cc949f2e9e/download"
+      ]
+    },
+    "atl-statefarm": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88f5037f9142496d:0xb060d5dcce275ffb",
+      "nameAddress": "State Farm Arena, 1 State Farm Dr, Atlanta, GA 30303, United States",
+      "latitude": 33.7574062,
+      "longitude": -84.396233,
+      "sourceUrl": "https://www.google.com/maps?cid=12709393292767748091&output=embed&hl=en",
+      "rawPath": "raw/marker-atl-statefarm-cid-268e4984b7753459fdd9bf2b806d0bf05660edbcd5843ef09eb82789796aefeb.html.gz",
+      "bodySha256": "268e4984b7753459fdd9bf2b806d0bf05660edbcd5843ef09eb82789796aefeb",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "bos-garden": {
+      "arenaId": "bos-garden",
+      "geonameId": 4930980,
+      "providerName": "Boston Garden",
+      "latitude": 42.36593,
+      "longitude": -71.06283,
+      "sourceUrl": "https://www.geonames.org/4930980/boston-garden.html",
+      "rawPath": "raw/geonames-record-bos-garden-9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076.html.gz",
+      "bodySha256": "9e5ff27de34e53598efc480011756bd125adeac8938b8258633fcf9d7c5eb076",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://www.nba.com/game/orl-vs-bos-0049400029/box-score"
+      ]
+    },
+    "bos-td": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89e3708e162d05cb:0x32d335fe5ed797a8",
+      "nameAddress": "TD Garden, 100 Legends Way, Boston, MA 02114, United States",
+      "latitude": 42.366198,
+      "longitude": -71.062146,
+      "sourceUrl": "https://www.google.com/maps?q=TD+Garden+Boston&output=embed&hl=en",
+      "rawPath": "raw/marker-bos-td-b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139.html.gz",
+      "bodySha256": "b9810bc5295760858553c27db6254152fb327175dabf4f0d44134dc4696d5139",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "bkn-meadowlands": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89c2f90077de306b:0xd98a494cde7ba94e",
+      "nameAddress": "Meadowlands Arena, Plaza M, East Rutherford, NJ 07073, United States",
+      "latitude": 40.8116838,
+      "longitude": -74.06760299999999,
+      "sourceUrl": "https://www.google.com/maps?q=Meadowlands+Arena+East+Rutherford&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-meadowlands-765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef.html.gz",
+      "bodySha256": "765eaa001c906f1ffbf8b9e736eb084240c8b7a09cbdcc1ddc5d9ae75026e0ef",
+      "primaryIdentitySources": [
+        "https://www.njsea.com/who-we-are/"
+      ]
+    },
+    "bkn-prudential": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89c253829a70f1d3:0x4d3efa6b5652a5ac",
+      "nameAddress": "Prudential Center, 25 Lafayette St, Newark, NJ 07102, United States",
+      "latitude": 40.733537,
+      "longitude": -74.1710659,
+      "sourceUrl": "https://www.google.com/maps?q=Prudential+Center+Newark&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-prudential-395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1.html.gz",
+      "bodySha256": "395c4be27d2fae97e9b5afac27b5886da1499f18eb8d37e3c8b2deabe8553df1",
+      "primaryIdentitySources": [
+        "https://www.nba.com/nets/news/history/2020/04/20/this-week-in-nets-history-april-20"
+      ]
+    },
+    "bkn-barclays": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89c25bae694479a3:0xb9949385da52e69e",
+      "nameAddress": "Barclays Center, 620 Atlantic Ave, Brooklyn, NY 11217, United States",
+      "latitude": 40.6826465,
+      "longitude": -73.97541559999999,
+      "sourceUrl": "https://www.google.com/maps?q=Barclays+Center+Brooklyn&output=embed&hl=en",
+      "rawPath": "raw/marker-bkn-barclays-b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab.html.gz",
+      "bodySha256": "b980d496e37eaec8ddac1c191fd3fe03fd74a054f9ef7b0b7d10df7014bc53ab",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "cha-coliseum": {
+      "arenaId": "cha-coliseum",
+      "mappingProvider": "OpenHistoricalMap",
+      "wayId": 200699921,
+      "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "sourcePath": "ohm-historic-arenas.json",
+      "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "latitude": 35.18627805502331,
+      "longitude": -80.91275468421792,
+      "vertexCount": 19,
+      "vertices": [
+        [
+          -80.9138153,
+          35.1862894
+        ],
+        [
+          -80.9137559,
+          35.1865647
+        ],
+        [
+          -80.9135925,
+          35.1868102
+        ],
+        [
+          -80.9133289,
+          35.1870075
+        ],
+        [
+          -80.9130002,
+          35.187122
+        ],
+        [
+          -80.9126436,
+          35.1871408
+        ],
+        [
+          -80.9122995,
+          35.1870619
+        ],
+        [
+          -80.9120071,
+          35.186894
+        ],
+        [
+          -80.9117994,
+          35.1866563
+        ],
+        [
+          -80.9117,
+          35.1863757
+        ],
+        [
+          -80.9117203,
+          35.1860841
+        ],
+        [
+          -80.9118579,
+          35.1858146
+        ],
+        [
+          -80.912085,
+          35.1856056
+        ],
+        [
+          -80.9123816,
+          35.1854665
+        ],
+        [
+          -80.912717,
+          35.1854118
+        ],
+        [
+          -80.9130563,
+          35.1854471
+        ],
+        [
+          -80.9133642,
+          35.1855688
+        ],
+        [
+          -80.9136087,
+          35.1857642
+        ],
+        [
+          -80.9137645,
+          35.186013
+        ],
+        [
+          -80.9138153,
+          35.1862894
+        ]
+      ],
+      "tags": {
+        "building": "stadium",
+        "end_date": "2007-06-03",
+        "name": "Charlotte Coliseum",
+        "start_date": "1988-08-11"
+      },
+      "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+      "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+      "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json",
+      "status": "original-historical-building-polygon-centroid-derived",
+      "bodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "rawPath": "ohm-historic-arenas.json",
+      "primaryIdentitySources": [
+        "https://www.nba.com/hornets/news/ranking-the-top-10-best-home-openers-in-hornets-history"
+      ]
+    },
+    "cha-spectrum": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x8856a0243e9c7d45:0x76230b8d88293efa",
+      "nameAddress": "Spectrum Center, 333 E Trade St, Charlotte, NC 28202, United States",
+      "latitude": 35.2251952,
+      "longitude": -80.8393468,
+      "sourceUrl": "https://www.google.com/maps?q=Spectrum+Center+Charlotte&output=embed&hl=en",
+      "rawPath": "raw/marker-cha-spectrum-1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64.html.gz",
+      "bodySha256": "1d771b2f92afe55d20cfe987e4d567e284cfd62bd40303f118d2901ab8c16a64",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "chi-stadium": {
+      "arenaId": "chi-stadium",
+      "geonameId": 4887510,
+      "providerName": "Chicago Stadium (historical)",
+      "latitude": 41.8817,
+      "longitude": -87.67283,
+      "sourceUrl": "https://www.geonames.org/4887510/chicago-stadium-historical.html",
+      "rawPath": "raw/geonames-record-chi-stadium-e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3.html.gz",
+      "bodySha256": "e577f3d5b5322436d4c4621f550b9e6a721adb82d369b81dc14457529bec78f3",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://www.nba.com/bulls/history/pippen10_940520.html"
+      ]
+    },
+    "chi-united": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x880e2d3ecaa9b54f:0x9b93f0068cf00344",
+      "nameAddress": "United Center, 1901 W Madison St, Chicago, IL 60612, United States",
+      "latitude": 41.8806908,
+      "longitude": -87.6741759,
+      "sourceUrl": "https://www.google.com/maps?q=United+Center+Chicago&output=embed&hl=en",
+      "rawPath": "raw/marker-chi-united-784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05.html.gz",
+      "bodySha256": "784a85d4e619cd4ce4bbf758906cf80b27892ce0b52cf44e251a757352581a05",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "cle-richfield": {
+      "arenaId": "cle-richfield",
+      "latitude": 41.24854740747868,
+      "longitude": -81.59458846012393,
+      "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "pointMeaning": "area centroid of manually traced original 1994 USGS map building symbol; mapped site point, not surveyed court center",
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/OH/24000/OH_Peninsula_228030_1994_24000_geo.pdf",
+      "sourcePath": "usgs-peninsula-1994.pdf",
+      "sourceBodySha256": "4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6",
+      "bodySha256": "4a95be02456a28240918e364e1dfec63ab70ec39a6be062eaeeffdc3b9e5bea6",
+      "renderPath": "usgs-richfield-building-detail.png",
+      "renderClipPdfTopLeft": [
+        425,
+        85,
+        490,
+        130
+      ],
+      "renderScale": 8,
+      "tracedImageVertices": [
+        [
+          282,
+          119
+        ],
+        [
+          315,
+          119
+        ],
+        [
+          315,
+          91
+        ],
+        [
+          354,
+          91
+        ],
+        [
+          354,
+          119
+        ],
+        [
+          389,
+          119
+        ],
+        [
+          387,
+          252
+        ],
+        [
+          280,
+          252
+        ]
+      ],
+      "pdfVertices": [
+        [
+          460.25,
+          1839.105
+        ],
+        [
+          464.375,
+          1839.105
+        ],
+        [
+          464.375,
+          1842.605
+        ],
+        [
+          469.25,
+          1842.605
+        ],
+        [
+          469.25,
+          1839.105
+        ],
+        [
+          473.625,
+          1839.105
+        ],
+        [
+          473.375,
+          1822.48
+        ],
+        [
+          460.0,
+          1822.48
+        ],
+        [
+          460.25,
+          1839.105
+        ]
+      ],
+      "pdfCentroid": [
+        466.8125,
+        1831.509608268616
+      ],
+      "mapCTM": [
+        8.46666666666768,
+        0.0,
+        4.64467579042991e-17,
+        8.466666666667678,
+        -6655.233530777389,
+        -1791.772250272596
+      ],
+      "sourceWkt": "PROJCS[\"NAD27_Custom_Lambert\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.5625],PARAMETER[\"Standard_Parallel_1\",41.125],PARAMETER[\"Standard_Parallel_2\",41.25],PARAMETER[\"Latitude_Of_Origin\",41.125],UNIT[\"Meter\",1]]",
+      "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD27_Custom_Lambert%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1927%5C%22%2CDATUM%5B%5C%22D_North_American_1927%5C%22%2CSPHEROID%5B%5C%22Clarke_1866%5C%22%2C6378206.4%2C294.9786982%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Lambert_Conformal_Conic%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.5625%5D%2CPARAMETER%5B%5C%22Standard_Parallel_1%5C%22%2C41.125%5D%2CPARAMETER%5B%5C%22Standard_Parallel_2%5C%22%2C41.25%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C41.125%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-2702.887697443583%2C+%22y%22%3A+13715.00909973687%7D%2C+%7B%22x%22%3A+-2758.45019744359%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2723.5251974435855%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2723.5251974435855%2C+%22y%22%3A+13808.9500830626%7D%2C+%7B%22x%22%3A+-2682.250197443581%2C+%22y%22%3A+13808.9500830626%7D%2C+%7B%22x%22%3A+-2682.250197443581%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2645.20853077691%2C+%22y%22%3A+13779.316749729263%7D%2C+%7B%22x%22%3A+-2647.3251974435766%2C+%22y%22%3A+13638.558416395914%7D%2C+%7B%22x%22%3A+-2760.5668641102566%2C+%22y%22%3A+13638.558416395914%7D%2C+%7B%22x%22%3A+-2758.45019744359%2C+%22y%22%3A+13779.316749729263%7D%5D%7D&f=json",
+      "projectionResponsePath": "richfield-roof-reprojection.json",
+      "projectionResponseSha256": "44d7a9fffe27a71c4ee870cb188989584f506f397f73e4ed48ff8b09465786d1",
+      "transformedVerticesWgs84": [
+        {
+          "x": -81.59525166296717,
+          "y": 41.24912626540851
+        },
+        {
+          "x": -81.59483496945171,
+          "y": 41.24912638704631
+        },
+        {
+          "x": -81.59483510009788,
+          "y": 41.24939321691839
+        },
+        {
+          "x": -81.59434264212089,
+          "y": 41.24939335873239
+        },
+        {
+          "x": -81.59434251347693,
+          "y": 41.24912652885844
+        },
+        {
+          "x": -81.59390056580554,
+          "y": 41.24912665433482
+        },
+        {
+          "x": -81.5939252169612,
+          "y": 41.2478592051124
+        },
+        {
+          "x": -81.59527628802985,
+          "y": 41.24785881591421
+        },
+        {
+          "x": -81.59525166296717,
+          "y": 41.24912626540851
+        }
+      ],
+      "derivation": "shoelace polygon area centroid in PDF coordinate plane; GeoPDF CTM to map meters; NAD27 Lambert Conformal Conic 2SP to WGS84 via original ArcGIS GeometryServer. Four retained neatline corner controls in richfield-geopdf-reprojection-metadata.json reproduce quad limits plus datum shift.",
+      "identityPrimarySources": [
+        "https://home.nps.gov/cuva/learn/historyculture/former-coliseum-property.htm",
+        "https://www.nps.gov/cuva/learn/kidsyouth/grasslands.htm"
+      ],
+      "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. NPS historical aerial corroborates physical building and surrounding parking/road layout. GeoNames point lies close to traced roof; southern candidate was not adopted.",
+      "primaryIdentitySources": [
+        "https://www.nba.com/cavaliers/photogallery/remembering-coliseum"
+      ]
+    },
+    "cle-rocket": {
+      "status": "official-arena-jsonld-geo-observed",
+      "pointMeaning": "arena operator declared GeoCoordinates; not surveyed court center",
+      "latitude": 41.49647969999999,
+      "longitude": -81.6882129,
+      "sourceUrl": "https://www.rocketarena.com/plan-your-visit/directions-parking",
+      "rawPath": "raw/arena-site-cle-8d17e7ba64a2b8a2638afe455e49153f5657ee8de822aa35e9b26ed0dfc2037c.html.gz",
+      "bodySha256": "8d17e7ba64a2b8a2638afe455e49153f5657ee8de822aa35e9b26ed0dfc2037c",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "det-silverdome": {
+      "arenaId": "det-silverdome",
+      "mappingProvider": "OpenHistoricalMap",
+      "wayId": 199784496,
+      "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "sourcePath": "ohm-historic-arenas.json",
+      "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "latitude": 42.64576854229844,
+      "longitude": -83.25467107170667,
+      "vertexCount": 48,
+      "vertices": [
+        [
+          -83.2548647,
+          42.6468222
+        ],
+        [
+          -83.2548617,
+          42.6468439
+        ],
+        [
+          -83.2548674,
+          42.6468647
+        ],
+        [
+          -83.2548845,
+          42.6468791
+        ],
+        [
+          -83.2549051,
+          42.6468899
+        ],
+        [
+          -83.2549335,
+          42.6468934
+        ],
+        [
+          -83.2549665,
+          42.6468891
+        ],
+        [
+          -83.2549909,
+          42.6468717
+        ],
+        [
+          -83.2550058,
+          42.6468521
+        ],
+        [
+          -83.2550082,
+          42.6468338
+        ],
+        [
+          -83.2552448,
+          42.6468521
+        ],
+        [
+          -83.2561614,
+          42.6461245
+        ],
+        [
+          -83.2561235,
+          42.6459339
+        ],
+        [
+          -83.2561498,
+          42.6459301
+        ],
+        [
+          -83.2561752,
+          42.6459202
+        ],
+        [
+          -83.2561892,
+          42.6459041
+        ],
+        [
+          -83.2561974,
+          42.6458865
+        ],
+        [
+          -83.256194,
+          42.6458655
+        ],
+        [
+          -83.256179,
+          42.6458434
+        ],
+        [
+          -83.2561494,
+          42.6458311
+        ],
+        [
+          -83.2561206,
+          42.6458268
+        ],
+        [
+          -83.256097,
+          42.6458293
+        ],
+        [
+          -83.256049,
+          42.6456223
+        ],
+        [
+          -83.2547597,
+          42.6447311
+        ],
+        [
+          -83.2544703,
+          42.6447091
+        ],
+        [
+          -83.2544731,
+          42.6446891
+        ],
+        [
+          -83.2544672,
+          42.6446684
+        ],
+        [
+          -83.2544501,
+          42.6446541
+        ],
+        [
+          -83.2544293,
+          42.6446434
+        ],
+        [
+          -83.2544009,
+          42.64464
+        ],
+        [
+          -83.2543679,
+          42.6446445
+        ],
+        [
+          -83.2543437,
+          42.644662
+        ],
+        [
+          -83.254331,
+          42.6446791
+        ],
+        [
+          -83.2543279,
+          42.6447007
+        ],
+        [
+          -83.2540981,
+          42.6446833
+        ],
+        [
+          -83.2531779,
+          42.6454222
+        ],
+        [
+          -83.2532119,
+          42.6455849
+        ],
+        [
+          -83.253185,
+          42.645588
+        ],
+        [
+          -83.2531593,
+          42.6455976
+        ],
+        [
+          -83.253145,
+          42.6456136
+        ],
+        [
+          -83.2531364,
+          42.6456311
+        ],
+        [
+          -83.2531394,
+          42.6456522
+        ],
+        [
+          -83.2531539,
+          42.6456744
+        ],
+        [
+          -83.2531833,
+          42.645687
+        ],
+        [
+          -83.2532146,
+          42.6456927
+        ],
+        [
+          -83.2532433,
+          42.6456897
+        ],
+        [
+          -83.2532882,
+          42.6459119
+        ],
+        [
+          -83.25457,
+          42.6467998
+        ],
+        [
+          -83.2548647,
+          42.6468222
+        ]
+      ],
+      "tags": {
+        "building": "stadium",
+        "end_date": "2009-11-22",
+        "name": "Pontiac Silverdome",
+        "start_date": "1976-08-28"
+      },
+      "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+      "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+      "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json",
+      "status": "original-historical-building-polygon-centroid-derived",
+      "bodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "rawPath": "ohm-historic-arenas.json",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/history-this-date-in-nba-june"
+      ]
+    },
+    "det-palace": {
+      "arenaId": "det-palace",
+      "mappingProvider": "OpenHistoricalMap",
+      "wayId": 199784912,
+      "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "sourcePath": "ohm-historic-arenas.json",
+      "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "latitude": 42.69707075527974,
+      "longitude": -83.24576942572217,
+      "vertexCount": 75,
+      "vertices": [
+        [
+          -83.2466756,
+          42.6977782
+        ],
+        [
+          -83.2466683,
+          42.6971884
+        ],
+        [
+          -83.2465617,
+          42.6972498
+        ],
+        [
+          -83.2465429,
+          42.6972466
+        ],
+        [
+          -83.2465631,
+          42.697182
+        ],
+        [
+          -83.2465833,
+          42.6971078
+        ],
+        [
+          -83.2465775,
+          42.6970051
+        ],
+        [
+          -83.2465689,
+          42.6969447
+        ],
+        [
+          -83.2465472,
+          42.696879
+        ],
+        [
+          -83.2465213,
+          42.6968197
+        ],
+        [
+          -83.2465074,
+          42.6967964
+        ],
+        [
+          -83.2465367,
+          42.6967885
+        ],
+        [
+          -83.2465378,
+          42.696802
+        ],
+        [
+          -83.2466247,
+          42.6968004
+        ],
+        [
+          -83.2466219,
+          42.6966534
+        ],
+        [
+          -83.2466525,
+          42.696643
+        ],
+        [
+          -83.2465957,
+          42.6965516
+        ],
+        [
+          -83.2466042,
+          42.6965108
+        ],
+        [
+          -83.2466418,
+          42.6964816
+        ],
+        [
+          -83.2465637,
+          42.6964257
+        ],
+        [
+          -83.2465637,
+          42.6963567
+        ],
+        [
+          -83.2464691,
+          42.6963593
+        ],
+        [
+          -83.2463895,
+          42.6963045
+        ],
+        [
+          -83.2463263,
+          42.6963536
+        ],
+        [
+          -83.2461699,
+          42.6963019
+        ],
+        [
+          -83.246155,
+          42.6963249
+        ],
+        [
+          -83.2459482,
+          42.6963264
+        ],
+        [
+          -83.2459496,
+          42.6963912
+        ],
+        [
+          -83.2459688,
+          42.6963907
+        ],
+        [
+          -83.2459595,
+          42.6964111
+        ],
+        [
+          -83.2459005,
+          42.696397
+        ],
+        [
+          -83.2458259,
+          42.6963844
+        ],
+        [
+          -83.2457392,
+          42.6963755
+        ],
+        [
+          -83.2456205,
+          42.696374
+        ],
+        [
+          -83.2455139,
+          42.6963802
+        ],
+        [
+          -83.245408,
+          42.6963964
+        ],
+        [
+          -83.2452943,
+          42.6964267
+        ],
+        [
+          -83.2451535,
+          42.6964811
+        ],
+        [
+          -83.2450853,
+          42.6965145
+        ],
+        [
+          -83.2449957,
+          42.6965693
+        ],
+        [
+          -83.2449318,
+          42.69662
+        ],
+        [
+          -83.2448657,
+          42.6966895
+        ],
+        [
+          -83.2448088,
+          42.6967637
+        ],
+        [
+          -83.2447669,
+          42.6968378
+        ],
+        [
+          -83.2447406,
+          42.6969026
+        ],
+        [
+          -83.2447242,
+          42.6969606
+        ],
+        [
+          -83.2447193,
+          42.6969888
+        ],
+        [
+          -83.2447382,
+          42.6970007
+        ],
+        [
+          -83.2447295,
+          42.6970835
+        ],
+        [
+          -83.2447366,
+          42.6971774
+        ],
+        [
+          -83.2447576,
+          42.6972615
+        ],
+        [
+          -83.2447925,
+          42.6973367
+        ],
+        [
+          -83.2448422,
+          42.6974072
+        ],
+        [
+          -83.2448927,
+          42.6974626
+        ],
+        [
+          -83.244941,
+          42.6975096
+        ],
+        [
+          -83.2449488,
+          42.6975033
+        ],
+        [
+          -83.2450789,
+          42.6975958
+        ],
+        [
+          -83.2450753,
+          42.6976021
+        ],
+        [
+          -83.2451621,
+          42.697647
+        ],
+        [
+          -83.2452466,
+          42.6976804
+        ],
+        [
+          -83.2453369,
+          42.6977071
+        ],
+        [
+          -83.2454279,
+          42.6977248
+        ],
+        [
+          -83.2455459,
+          42.6977457
+        ],
+        [
+          -83.2456262,
+          42.6977499
+        ],
+        [
+          -83.2456255,
+          42.6977676
+        ],
+        [
+          -83.2456169,
+          42.6977687
+        ],
+        [
+          -83.2456169,
+          42.6977729
+        ],
+        [
+          -83.2459271,
+          42.697763
+        ],
+        [
+          -83.2459083,
+          42.6977879
+        ],
+        [
+          -83.246332,
+          42.6977776
+        ],
+        [
+          -83.2463619,
+          42.6977923
+        ],
+        [
+          -83.2464109,
+          42.6978027
+        ],
+        [
+          -83.2464671,
+          42.6978017
+        ],
+        [
+          -83.2465104,
+          42.6977907
+        ],
+        [
+          -83.246541,
+          42.6977776
+        ],
+        [
+          -83.2466756,
+          42.6977782
+        ]
+      ],
+      "tags": {
+        "building": "stadium",
+        "end_date": "2020-07-11",
+        "name": "The Palace of Auburn Hills",
+        "start_date": "1988-08-13",
+        "wikidata": "Q1327633",
+        "wikipedia": "en:The Palace of Auburn Hills"
+      },
+      "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+      "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+      "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json",
+      "status": "original-historical-building-polygon-centroid-derived",
+      "bodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "rawPath": "ohm-historic-arenas.json",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "det-lca": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x8824d2cb21bf140b:0xcb0fd860979f4678",
+      "nameAddress": "Little Caesars Arena, 2645 Woodward Ave, Detroit, MI 48201, United States",
+      "latitude": 42.341796,
+      "longitude": -83.05466109999999,
+      "sourceUrl": "https://www.google.com/maps?q=Little+Caesars+Arena+Detroit&output=embed&hl=en",
+      "rawPath": "raw/marker-det-lca-049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672.html.gz",
+      "bodySha256": "049d78ae12ad8a049dd41ed9cb475766bdfc0c70655472bc5a4ca49a85bd7672",
+      "primaryIdentitySources": [
+        "https://www.313presents.com/venues-events/little-caesars-arena"
+      ]
+    },
+    "ind-market": {
+      "arenaId": "ind-market",
+      "latitude": 39.768375,
+      "longitude": -86.15171935000001,
+      "status": "root-accepted-inferred-historic-site-point",
+      "pointMeaning": "venue-scale historical site anchor, NOT a measured court center or polygon centroid",
+      "method": "midpoint of named original OSM East Market Street intersections with North Alabama Street and North New Jersey Street; municipal historic map identifies arena on this two-block site; inferred travel-location proxy",
+      "osmNodeIds": [
+        180485815,
+        180485817
+      ],
+      "osmIntersectionCoordinates": [
+        {
+          "lat": 39.7683982,
+          "lon": -86.1526312
+        },
+        {
+          "lat": 39.7683518,
+          "lon": -86.1508075
+        }
+      ],
+      "osmWayIds": [
+        425527627,
+        17499090,
+        692299917,
+        305485084
+      ],
+      "sourceUrl": "https://api.openstreetmap.org/api/0.6/map?bbox=-86.1535,39.7675,-86.1505,39.7693",
+      "sourcePath": "osm-market-square-streets.xml",
+      "bodySha256": "e863af99bfb999421978e21f6877e93fa11593c0d2d871c5e337cba177bef86a",
+      "historicMap": {
+        "url": "https://gis.indy.gov/portal/sharing/rest/content/items/3d723f5fa3974a68856d5848b395380c/data",
+        "rawPath": "raw/source-market-square-city-map-b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081.html.gz",
+        "bodySha256": "b80bcc1030dfb630e75a0e1605f89bc62f69424510df783e9a9b581d1ae02081",
+        "pdfPage": 7,
+        "mapTitle": "Airspace District Zoning Map: Downtown Heliport, Map No. 5, part of Marion County Airport Zoning Ordinance 94-AO-2; retained in 1998 ordinance amendment"
+      },
+      "uncertainty": "Street midpoint gives a reproducible point at the correct historical arena site. Exact old arena footprint center and court position are not established by this derivation. Use only with explicit acceptance of a venue-scale point.",
+      "primaryIdentitySources": [
+        "https://www.nba.com/pacers/news/nine-pacers-moments-shaped-1990s"
+      ]
+    },
+    "ind-gainbridge": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x886b50bd40850b3f:0xf4180158659c473d",
+      "nameAddress": "Gainbridge Fieldhouse, 125 S Pennsylvania St, Indianapolis, IN 46204, United States",
+      "latitude": 39.7640434,
+      "longitude": -86.1555367,
+      "sourceUrl": "https://www.google.com/maps?q=Gainbridge+Fieldhouse+Indianapolis&output=embed&hl=en",
+      "rawPath": "raw/marker-ind-gainbridge-00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c.html.gz",
+      "bodySha256": "00cbcf14cb803d7b29b644ca6cd86ee3610e3293a08dc7e381e0403e3fddde9c",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "mia-old": {
+      "arenaId": "mia-old",
+      "latitude": 25.781168086529952,
+      "longitude": -80.19473297469061,
+      "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "pointMeaning": "area centroid of manually traced original historical USGS building symbol; mapped site point, not surveyed court center",
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Miami_347456_1994_24000_geo.pdf",
+      "sourcePath": "usgs-miami-1994.pdf",
+      "sourceBodySha256": "13c85d979587da7372cb9c779b35c957112e95d4c68f82ad3863ff3b1cb2b9d1",
+      "bodySha256": "13c85d979587da7372cb9c779b35c957112e95d4c68f82ad3863ff3b1cb2b9d1",
+      "renderPath": "usgs-miami-1994-roof-detail.png",
+      "renderClipPdfTopLeft": [
+        754.1470047426511,
+        1280.266957030601,
+        790.1470047426511,
+        1312.266957030601
+      ],
+      "renderScale": 10,
+      "tracedImageVertices": [
+        [
+          99,
+          113
+        ],
+        [
+          127,
+          113
+        ],
+        [
+          130,
+          125
+        ],
+        [
+          143,
+          110
+        ],
+        [
+          218,
+          107
+        ],
+        [
+          236,
+          115
+        ],
+        [
+          251,
+          132
+        ],
+        [
+          260,
+          155
+        ],
+        [
+          260,
+          178
+        ],
+        [
+          252,
+          197
+        ],
+        [
+          234,
+          209
+        ],
+        [
+          201,
+          216
+        ],
+        [
+          148,
+          216
+        ],
+        [
+          123,
+          209
+        ],
+        [
+          103,
+          194
+        ]
+      ],
+      "pdfVertices": [
+        [
+          764.0470047426511,
+          639.9130429693992
+        ],
+        [
+          766.8470047426512,
+          639.9130429693992
+        ],
+        [
+          767.1470047426511,
+          638.7130429693991
+        ],
+        [
+          768.4470047426511,
+          640.2130429693991
+        ],
+        [
+          775.9470047426511,
+          640.5130429693991
+        ],
+        [
+          777.7470047426511,
+          639.7130429693991
+        ],
+        [
+          779.2470047426511,
+          638.0130429693991
+        ],
+        [
+          780.1470047426511,
+          635.7130429693991
+        ],
+        [
+          780.1470047426511,
+          633.4130429693992
+        ],
+        [
+          779.3470047426512,
+          631.5130429693991
+        ],
+        [
+          777.5470047426511,
+          630.313042969399
+        ],
+        [
+          774.2470047426511,
+          629.6130429693992
+        ],
+        [
+          768.9470047426511,
+          629.6130429693992
+        ],
+        [
+          766.4470047426511,
+          630.313042969399
+        ],
+        [
+          764.4470047426511,
+          631.813042969399
+        ],
+        [
+          764.0470047426511,
+          639.9130429693992
+        ]
+      ],
+      "pdfCentroid": [
+        771.9752406542171,
+        635.0584310163715
+      ],
+      "mapCTM": [
+        8.466666666667678,
+        0.0,
+        1.170200065806646e-16,
+        8.466666666667678,
+        -7261.273408926992,
+        -1924.389359824
+      ],
+      "sourceWkt": "PROJCS[\"NAD83_Custom_TM\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-80.1875],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",25.75],UNIT[\"Meter\",1]]",
+      "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD83_Custom_TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1983%5C%22%2CDATUM%5B%5C%22D_North_American_1983%5C%22%2CSPHEROID%5B%5C%22GRS_1980%5C%22%2C6378137%2C298.257222101%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-80.1875%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C25.75%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-725.2163713871723%2C+%22y%22%3A+3452.438689448587%7D%2C+%7B%22x%22%3A+-792.3421021051063%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+-768.6354354384366%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+-766.0954354384367%2C+%22y%22%3A+3483.381070650891%7D%2C+%7B%22x%22%3A+-755.0887687717686%2C+%22y%22%3A+3496.081070650893%7D%2C+%7B%22x%22%3A+-691.5887687717614%2C+%22y%22%3A+3498.6210706508928%7D%2C+%7B%22x%22%3A+-676.3487687717588%2C+%22y%22%3A+3491.847737317559%7D%2C+%7B%22x%22%3A+-663.6487687717572%2C+%22y%22%3A+3477.454403984224%7D%2C+%7B%22x%22%3A+-656.0287687717564%2C+%22y%22%3A+3457.981070650888%7D%2C+%7B%22x%22%3A+-656.0287687717564%2C+%22y%22%3A+3438.5077373175527%7D%2C+%7B%22x%22%3A+-662.8021021050909%2C+%22y%22%3A+3422.421070650884%7D%2C+%7B%22x%22%3A+-678.0421021050934%2C+%22y%22%3A+3412.261070650882%7D%2C+%7B%22x%22%3A+-705.9821021050957%2C+%22y%22%3A+3406.334403984216%7D%2C+%7B%22x%22%3A+-750.855435438435%2C+%22y%22%3A+3406.334403984216%7D%2C+%7B%22x%22%3A+-772.0221021051048%2C+%22y%22%3A+3412.261070650882%7D%2C+%7B%22x%22%3A+-788.95543543844%2C+%22y%22%3A+3424.961070650884%7D%2C+%7B%22x%22%3A+-792.3421021051063%2C+%22y%22%3A+3493.541070650893%7D%2C+%7B%22x%22%3A+6270.542829487563%2C+%22y%22%3A+1.4858251414898405%7D%2C+%7B%22x%22%3A+-6270.542829488835%2C+%22y%22%3A+1.4858251414898405%7D%2C+%7B%22x%22%3A+-6263.96526710873%2C+%22y%22%3A+13849.631941290347%7D%2C+%7B%22x%22%3A+6263.965267107457%2C+%22y%22%3A+13849.631941290347%7D%5D%7D&f=json",
+      "projectionResponsePath": "miami-roof-reprojection.json",
+      "projectionResponseSha256": "1b453b94fdcc323a4ad67262b65e34560b27775a00f5a106bdbb0749a8283ef3",
+      "transformedVerticesWgs84": [
+        {
+          "x": -80.19540223247388,
+          "y": 25.781539063320114
+        },
+        {
+          "x": -80.19516587992209,
+          "y": 25.7815390759654
+        },
+        {
+          "x": -80.19514055055896,
+          "y": 25.781447367823024
+        },
+        {
+          "x": -80.19503082276874,
+          "y": 25.781562010387315
+        },
+        {
+          "x": -80.19439773677979,
+          "y": 25.781584969147808
+        },
+        {
+          "x": -80.19424579233655,
+          "y": 25.78152383662279
+        },
+        {
+          "x": -80.19411916770306,
+          "y": 25.78139392068205
+        },
+        {
+          "x": -80.19404318768838,
+          "y": 25.78121814762088
+        },
+        {
+          "x": -80.19404317804462,
+          "y": 25.781042371118986
+        },
+        {
+          "x": -80.19411069901535,
+          "y": 25.78089716138771
+        },
+        {
+          "x": -80.19426263392391,
+          "y": 25.780805444922024
+        },
+        {
+          "x": -80.1945411874173,
+          "y": 25.78075193450913
+        },
+        {
+          "x": -80.19498856608116,
+          "y": 25.780751912170455
+        },
+        {
+          "x": -80.19519959720633,
+          "y": 25.780805398354563
+        },
+        {
+          "x": -80.19536842698218,
+          "y": 25.78092002617546
+        },
+        {
+          "x": -80.19540223247388,
+          "y": 25.781539063320114
+        }
+      ],
+      "neatlineControls": {
+        "pdfPoints": [
+          [
+            1598.246012410977,
+            227.4655730273929
+          ],
+          [
+            117.0154227682722,
+            227.4655730273929
+          ],
+          [
+            117.7923002147412,
+            1863.073382021157
+          ],
+          [
+            1597.469134964508,
+            1863.073382021157
+          ]
+        ],
+        "transformedWgs84": [
+          {
+            "x": -80.1250026599857,
+            "y": 25.750004681761972
+          },
+          {
+            "x": -80.25000269653368,
+            "y": 25.750004679105587
+          },
+          {
+            "x": -80.25000269979287,
+            "y": 25.875004710802408
+          },
+          {
+            "x": -80.12500266324219,
+            "y": 25.875004713484174
+          }
+        ]
+      },
+      "derivation": "shoelace area centroid in PDF plane; GeoPDF CTM to map meters; NAD83 Transverse Mercator to WGS84 using original ArcGIS GeometryServer. Four neatline corner controls retained.",
+      "identityPrimarySources": [
+        "https://www.barkerpacific.com/commercial-projects/miami-arena"
+      ],
+      "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. Miami original USGS map explicitly labels Miami Arena; Orlando footprint is on the former arena parcel west of I-4 at Amelia, corroborated by municipal former-site records. No court-center precision claim.",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov"
+      ]
+    },
+    "mia-kaseya": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88d9b6a009729195:0x13ad0552284f5b6c",
+      "nameAddress": "Kaseya Center, 601 Biscayne Blvd, Miami, FL 33132, United States",
+      "latitude": 25.7814014,
+      "longitude": -80.18696899999999,
+      "sourceUrl": "https://www.google.com/maps?q=Kaseya+Center+Miami&output=embed&hl=en",
+      "rawPath": "raw/marker-mia-kaseya-d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215.html.gz",
+      "bodySha256": "d92cf5e08ea2e69fed764fbe057485b63576fd050463253ba4c37acda6194215",
+      "primaryIdentitySources": [
+        "https://www.miamidade.gov/resources-oig/pdf/Reports2012/IG11.34FinalBasketball.pdf"
+      ]
+    },
+    "mil-mecca": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88051974f5c7ea57:0xb9dc31043adff",
+      "nameAddress": "UW-Milwaukee Panther Arena, 400 W Kilbourn Ave, Milwaukee, WI 53203, United States",
+      "latitude": 43.0422275,
+      "longitude": -87.9168359,
+      "sourceUrl": "https://www.google.com/maps?q=UW+Milwaukee+Panther+Arena&output=embed&hl=en",
+      "rawPath": "raw/marker-mil-mecca-71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c.html.gz",
+      "bodySha256": "71e9c0360f40e8e98cc5a2dd7bfb8caacc85d67b9f57be6bb174ce7f0a3f7d2c",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/milwaukee-bucks-return-mecca-face-boston-celtics?sf125889622=1"
+      ]
+    },
+    "mil-bradley": {
+      "arenaId": "mil-bradley",
+      "mappingProvider": "OpenHistoricalMap",
+      "wayId": 200259653,
+      "sourceUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "sourcePath": "ohm-historic-arenas.json",
+      "sourceBodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "latitude": 43.04368346909724,
+      "longitude": -87.91714947438052,
+      "vertexCount": 16,
+      "vertices": [
+        [
+          -87.9177412,
+          43.0442878
+        ],
+        [
+          -87.9165395,
+          43.0442763
+        ],
+        [
+          -87.916543,
+          43.0440857
+        ],
+        [
+          -87.91648,
+          43.0440337
+        ],
+        [
+          -87.9162258,
+          43.0440286
+        ],
+        [
+          -87.9162523,
+          43.0433144
+        ],
+        [
+          -87.9164948,
+          43.0433192
+        ],
+        [
+          -87.9165578,
+          43.0432721
+        ],
+        [
+          -87.9165597,
+          43.0430824
+        ],
+        [
+          -87.9177655,
+          43.0430891
+        ],
+        [
+          -87.9177634,
+          43.0432809
+        ],
+        [
+          -87.9178211,
+          43.0433299
+        ],
+        [
+          -87.9180599,
+          43.0433309
+        ],
+        [
+          -87.9180546,
+          43.0440455
+        ],
+        [
+          -87.9177983,
+          43.0440444
+        ],
+        [
+          -87.9177447,
+          43.0440954
+        ],
+        [
+          -87.9177412,
+          43.0442878
+        ]
+      ],
+      "tags": {
+        "addr:city": "Milwaukee",
+        "addr:housenumber": "1001",
+        "addr:state": "WI",
+        "addr:street": "North Vel R. Phillips Avenue",
+        "building": "stadium",
+        "end_date": "2019-01",
+        "leisure": "stadium",
+        "name": "Bradley Center",
+        "sport": "basketball",
+        "start_date": "1986-10-20",
+        "wikidata": "Q737976",
+        "wikimedia_commons": "Category:BMO Harris Bradley Center",
+        "wikipedia": "en:Bradley Center"
+      },
+      "method": "area-weighted planar centroid in local equirectangular coordinates; translated first-vertex origin; inverse transformed to WGS84",
+      "pointMeaning": "derived historic building footprint centroid; not a surveyed playing-court center",
+      "directFullApiStatus": "403 retained in historical-footprint-coordinate-observations.json",
+      "status": "original-historical-building-polygon-centroid-derived",
+      "bodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6",
+      "rawPath": "ohm-historic-arenas.json",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/milwaukee-bucks-new-arena-fiserv-forum"
+      ]
+    },
+    "mil-fiserv": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x880519748afe3d71:0x20af60eabab279bb",
+      "nameAddress": "Fiserv Forum, 1111 N Vel R. Phillips Ave, Milwaukee, WI 53203, United States",
+      "latitude": 43.0450802,
+      "longitude": -87.9173862,
+      "sourceUrl": "https://www.google.com/maps?q=Fiserv+Forum+Milwaukee&output=embed&hl=en",
+      "rawPath": "raw/marker-mil-fiserv-408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243.html.gz",
+      "bodySha256": "408bb95df88eb009e09f6e72ca358e34ec4c3f0a2fc3d708332c4d7c9cf37243",
+      "primaryIdentitySources": [
+        "https://www.fiservforum.com/plan-your-visit/directions-parking"
+      ]
+    },
+    "nyk-msg4": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89c25a21fb011c85:0x33df10e49762f8e4",
+      "nameAddress": "Madison Square Garden, New York, NY 10001, United States",
+      "latitude": 40.7505045,
+      "longitude": -73.9934387,
+      "sourceUrl": "https://www.google.com/maps?q=Madison+Square+Garden+4+Pennsylvania+Plaza+New+York+NY+10001&output=embed&hl=en",
+      "rawPath": "raw/marker-nyk-msg4-exact-bf0821274c9b3e7cf5cd38aa996b88eb4b05cea446d8275406c2298cf71f77d1.html.gz",
+      "bodySha256": "bf0821274c9b3e7cf5cd38aa996b88eb4b05cea446d8275406c2298cf71f77d1",
+      "primaryIdentitySources": [
+        "https://www.msg.com/madison-square-garden/directions"
+      ]
+    },
+    "orl-old": {
+      "arenaId": "orl-old",
+      "latitude": 28.549001355481256,
+      "longitude": -81.38657097682642,
+      "status": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "pointMeaning": "area centroid of manually traced original historical USGS building symbol; mapped site point, not surveyed court center",
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Orlando%20West_347871_1995_24000_geo.pdf",
+      "sourcePath": "usgs-orlando-west-1995.pdf",
+      "sourceBodySha256": "e21d433fad8a8d5543d37d1575e34a305df8af32e01d0bd80ea123c7c4022473",
+      "bodySha256": "e21d433fad8a8d5543d37d1575e34a305df8af32e01d0bd80ea123c7c4022473",
+      "renderPath": "usgs-orlando-west-1995-roof-detail.png",
+      "renderClipPdfTopLeft": [
+        1358.8372701577882,
+        1065.8043555661836,
+        1394.8372701577882,
+        1097.8043555661836
+      ],
+      "renderScale": 10,
+      "tracedImageVertices": [
+        [
+          87,
+          90
+        ],
+        [
+          268,
+          90
+        ],
+        [
+          268,
+          218
+        ],
+        [
+          87,
+          218
+        ]
+      ],
+      "pdfVertices": [
+        [
+          1367.5372701577883,
+          861.3456444338165
+        ],
+        [
+          1385.6372701577882,
+          861.3456444338165
+        ],
+        [
+          1385.6372701577882,
+          848.5456444338165
+        ],
+        [
+          1367.5372701577883,
+          848.5456444338165
+        ],
+        [
+          1367.5372701577883,
+          861.3456444338165
+        ]
+      ],
+      "pdfCentroid": [
+        1376.5872701577882,
+        854.9456444338165
+      ],
+      "mapCTM": [
+        8.466666666667678,
+        -7.626255162520261e-13,
+        2.21267851075968e-16,
+        8.466666666667503,
+        -6670.944819524932,
+        3152046.143120321
+      ],
+      "sourceWkt": "PROJCS[\"NAD83_Custom_TM\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-81.4375],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",0],UNIT[\"Meter\",1]]",
+      "projectionRequestUrl": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22NAD83_Custom_TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1983%5C%22%2CDATUM%5B%5C%22D_North_American_1983%5C%22%2CSPHEROID%5B%5C%22GRS_1980%5C%22%2C6378137%2C298.257222101%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-81.4375%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C0%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+4984.1607344790655%2C+%22y%22%3A+3159284.6829098603%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+5060.784067812408%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+5060.784067812408%2C+%22y%22%3A+3159230.4962431937%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159230.4962431937%7D%2C+%7B%22x%22%3A+4907.537401145723%2C+%22y%22%3A+3159338.869576527%7D%2C+%7B%22x%22%3A+6119.007769809307%2C+%22y%22%3A+3153855.0887202173%7D%2C+%7B%22x%22%3A+-6119.007769808063%2C+%22y%22%3A+3153855.088720218%7D%2C+%7B%22x%22%3A+-6111.782506191827%2C+%22y%22%3A+3167708.665922401%7D%2C+%7B%22x%22%3A+6111.782506193072%2C+%22y%22%3A+3167708.665922401%7D%5D%7D&f=json",
+      "projectionResponsePath": "orlando-roof-reprojection.json",
+      "projectionResponseSha256": "9465cfbf805f6a3754e70eb56359232e1bf72e60966b928bbc5c14f868d9d212",
+      "transformedVerticesWgs84": [
+        {
+          "x": -81.38735374359914,
+          "y": 28.549490571021433
+        },
+        {
+          "x": -81.38578773961606,
+          "y": 28.54948998362123
+        },
+        {
+          "x": -81.38578821729236,
+          "y": 28.54851213540236
+        },
+        {
+          "x": -81.38735420680985,
+          "y": 28.548512722778796
+        },
+        {
+          "x": -81.38735374359914,
+          "y": 28.549490571021433
+        }
+      ],
+      "neatlineControls": {
+        "pdfPoints": [
+          [
+            1510.62432157473,
+            213.6549921138794
+          ],
+          [
+            65.18941532088229,
+            213.654992113763
+          ],
+          [
+            66.04279291335092,
+            1849.904267962033
+          ],
+          [
+            1509.770943982261,
+            1849.904267962149
+          ]
+        ],
+        "transformedWgs84": [
+          {
+            "x": -81.37500310590374,
+            "y": 28.500005333286378
+          },
+          {
+            "x": -81.50000314226831,
+            "y": 28.50000533002049
+          },
+          {
+            "x": -81.50000314647902,
+            "y": 28.625005360113366
+          },
+          {
+            "x": -81.37500311010703,
+            "y": 28.625005363405695
+          }
+        ]
+      },
+      "derivation": "shoelace area centroid in PDF plane; GeoPDF CTM to map meters; NAD83 Transverse Mercator to WGS84 using original ArcGIS GeometryServer. Four neatline corner controls retained.",
+      "identityPrimarySources": [
+        "https://orlando.novusagenda.com/AgendaPublic/AttachmentViewer.ashx?AttachmentID=70311&ItemID=41659"
+      ],
+      "uncertainty": "Manually traced printed building symbol at 1:24000; practical accuracy tens of meters. Miami original USGS map explicitly labels Miami Arena; Orlando footprint is on the former arena parcel west of I-4 at Amelia, corroborated by municipal former-site records. No court-center precision claim.",
+      "primaryIdentitySources": [
+        "https://www.nba.com/game/bos-vs-orl-0040900305"
+      ]
+    },
+    "orl-kia": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88e77afa51fbca55:0xf7c90b9225939190",
+      "nameAddress": "Kia Center, 400 W Church St, Orlando, FL 32801, United States",
+      "latitude": 28.5392214,
+      "longitude": -81.3838535,
+      "sourceUrl": "https://www.google.com/maps?q=Kia+Center+Orlando&output=embed&hl=en",
+      "rawPath": "raw/marker-orl-kia-684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43.html.gz",
+      "bodySha256": "684d37d186f31533915b7ce00e2b08b10edcc1eb05473a6cbb174e81828bda43",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf"
+      ]
+    },
+    "phi-spectrum": {
+      "arenaId": "phi-spectrum",
+      "geonameId": 4561993,
+      "providerName": "Wachovia Spectrum (historical)",
+      "latitude": 39.90428,
+      "longitude": -75.17101,
+      "sourceUrl": "https://www.geonames.org/4561993/wachovia-spectrum-historical.html",
+      "rawPath": "raw/geonames-record-phi-spectrum-316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738.html.gz",
+      "bodySha256": "316d9774284774f5146a1c00bbcdb03a2674f3a90721aac79a516023e20da738",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://www.nba.com/sixers/history/76ers-team-history"
+      ]
+    },
+    "phi-xfinity": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89c6c5ec0fe3b147:0x529f31b23f45ba2d",
+      "nameAddress": "Xfinity Mobile Arena, 3601 S Broad St, Philadelphia, PA 19148, United States",
+      "latitude": 39.9012015,
+      "longitude": -75.17197949999999,
+      "sourceUrl": "https://www.google.com/maps?q=Xfinity+Mobile+Arena+Philadelphia&output=embed&hl=en",
+      "rawPath": "raw/marker-phi-xfinity-75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b.html.gz",
+      "bodySha256": "75bff08397ebc4f8fc949b87bfdea2e432686a56777d2b2bfbbd38adf351872b",
+      "primaryIdentitySources": [
+        "https://www.nba.com/sixers/history/76ers-team-history"
+      ]
+    },
+    "tor-skydome": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x882b350049ba4395:0xefcebaf2e76df74d",
+      "nameAddress": "Rogers Centre, 1 Blue Jays Way, Toronto, ON M5V 1J4, Canada",
+      "latitude": 43.641804,
+      "longitude": -79.3891419,
+      "sourceUrl": "https://www.google.com/maps?q=Rogers+Centre+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-skydome-643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec.html.gz",
+      "bodySha256": "643e23264004194bd53bd9488d8408be252bfe08ae5e45336b8a70f5c520bfec",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov"
+      ]
+    },
+    "tor-scotia": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89d4cb2b5935bf09:0x5842d0e7d5669410",
+      "nameAddress": "Scotiabank Arena, 40 Bay St., Toronto, ON M5J 3A5, Canada",
+      "latitude": 43.6434661,
+      "longitude": -79.3790989,
+      "sourceUrl": "https://www.google.com/maps?q=Scotiabank+Arena+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-scotia-6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471.html.gz",
+      "bodySha256": "6e27ae9b12a6fa59f668a351bf7cc93d537b182908147724d857417411d86471",
+      "primaryIdentitySources": [
+        "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+        "https://www.scotiabankarena.com/venue-information/contact-us"
+      ]
+    },
+    "tor-amalie": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x88c2c48d32bf5d49:0x2ba1ab03c399c073",
+      "nameAddress": "Benchmark International Arena, 401 Channelside Dr, Tampa, FL 33602, United States",
+      "latitude": 27.9427373,
+      "longitude": -82.4517771,
+      "sourceUrl": "https://www.google.com/maps?q=Amalie+Arena+Tampa&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-amalie-584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c.html.gz",
+      "bodySha256": "584555bb44a2753e19740f543d405555d8320b2c22d76cd407add2ed82afc45c",
+      "primaryIdentitySources": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nhl.com/lightning/news/vinik-sports-group-benchmark-international-announce-multi-year-naming-rights-partnership"
+      ]
+    },
+    "was-capitalcentre": {
+      "arenaId": "was-capitalcentre",
+      "geonameId": 4371978,
+      "providerName": "U S Airways Arena (historical)",
+      "latitude": 38.90261,
+      "longitude": -76.84692,
+      "sourceUrl": "https://www.geonames.org/4371978/u-s-airways-arena-historical.html",
+      "rawPath": "raw/geonames-record-was-capitalcentre-e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af.html.gz",
+      "bodySha256": "e0ba1b24f1a31f9151e40d03270d3326d4d53299dacca9d2210efd6d899123af",
+      "method": "original GeoNames individual-record JSON-LD GeoCoordinates; exact observed provider point, not surveyed court center",
+      "status": "original-gazetteer-historical-site-point-observed",
+      "pointMeaning": "native GeoNames historical venue point; location precision is not a claim of court-center or survey accuracy",
+      "primaryIdentitySources": [
+        "https://www.nba.com/wizards/news/monroe_071115.html"
+      ]
+    },
+    "was-capitalone": {
+      "status": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "pointMeaning": "mapping-provider named place marker; not surveyed court or guaranteed footprint centroid",
+      "providerPlaceId": "0x89b7b78e4f5f6873:0x75cc04db1e11f711",
+      "nameAddress": "Capital One Arena, 601 F St NW, Washington, DC 20004, United States",
+      "latitude": 38.8981675,
+      "longitude": -77.02085679999999,
+      "sourceUrl": "https://www.google.com/maps?q=Capital+One+Arena+Washington&output=embed&hl=en",
+      "rawPath": "raw/marker-was-capitalone-f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031.html.gz",
+      "bodySha256": "f43df0f1957b36c93e39b0712438bf764ed736bdf8791c20a88b5c9caa8fc031",
+      "primaryIdentitySources": [
+        "https://www.nba.com/wizards/news/monroe_071115.html"
+      ]
+    },
+    "tor-mapleleaf": {
+      "providerPlaceId": "0x882b34b4b5299a89:0xf2a9c85b8680bfe9",
+      "nameAddress": "Mattamy Athletic Centre, 50 Carlton St., Toronto, ON M5B 1J2, Canada",
+      "latitude": 43.6621838,
+      "longitude": -79.38033089999999,
+      "status": "original-named-place-point-observed",
+      "pointMeaning": "mapping-provider named place marker; same historic Maple Leaf Gardens site, not old court center",
+      "sourceUrl": "https://www.google.com/maps?q=Maple+Leaf+Gardens+Toronto&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-mapleleaf-f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7.html.gz",
+      "bodySha256": "f619898551a4d9155f83a998d8bdee8f98080503d27ff4d34d966837f75539e7",
+      "primaryIdentitySources": [
+        "https://www.torontomu.ca/recreation/facilities/Mac/",
+        "https://tmubold.ca/sports/2021/8/5/map-and-directions-mattamy-athletic-centre.aspx"
+      ]
+    },
+    "tor-copps": {
+      "providerPlaceId": "0x882c9b9cec5ea9ef:0x6555d4dc4602de4b",
+      "nameAddress": "TD Coliseum, 101 York Blvd, Hamilton, ON L8R 3L4, Canada",
+      "latitude": 43.2591378,
+      "longitude": -79.8722087,
+      "providerCid": "7301976413383614027",
+      "status": "original-named-place-point-observed",
+      "pointMeaning": "mapping-provider named place marker at same renovated Copps Coliseum site; not historic court center",
+      "sourceUrl": "https://www.google.com/maps?q=TD+Coliseum+101+York+Boulevard+Hamilton&output=embed&hl=en",
+      "rawPath": "raw/marker-tor-copps-e0ead108346929760c54aee517fb5cd08ed763d5a09c8c2f4ef6b7adc7207e59.html.gz",
+      "bodySha256": "e0ead108346929760c54aee517fb5cd08ed763d5a09c8c2f4ef6b7adc7207e59",
+      "primaryIdentitySources": [
+        "https://www.tdcoliseum.com/assets/doc/Hamilton-Arena-Groundbreaking-FINAL-5.16.24-a92b862d66.pdf"
+      ]
+    },
+    "bos-hartford": {
+      "providerPlaceId": "0x89e6549e9033c1df:0x2222bb5c74fa750c",
+      "nameAddress": "PeoplesBank Arena, 1 Civic Center Plaza, Hartford, CT 06103, United States",
+      "latitude": 41.768524,
+      "longitude": -72.6769635,
+      "providerCid": "2459734352271668492",
+      "status": "original-named-place-point-observed",
+      "pointMeaning": "original mapping-provider named venue/address marker at same historic arena site; not surveyed or historic court center",
+      "sourceUrl": "https://www.google.com/maps?q=PeoplesBank+Arena+1+Civic+Center+Plaza+Hartford&output=embed&hl=en",
+      "rawPath": "raw/marker-bos-hartford-9872509e2cf252e6620c931c2226a4c80f4bad9c169687da225ff9a28f9ef182.html.gz",
+      "bodySha256": "9872509e2cf252e6620c931c2226a4c80f4bad9c169687da225ff9a28f9ef182",
+      "primaryIdentitySources": [
+        "https://www.peoplesbankarena.com/plan-your-visit/directions-parking"
+      ]
+    },
+    "was-baltimore": {
+      "providerPlaceId": "0x89c804a0052f0a61:0x2b84214aa60fc226",
+      "nameAddress": "CFG Bank Arena, Cfg bank arena, 201 W Baltimore St, Baltimore, MD 21201, United States",
+      "latitude": 39.2885729,
+      "longitude": -76.6187071,
+      "providerCid": "3135667845054054950",
+      "status": "original-named-place-point-observed",
+      "pointMeaning": "original mapping-provider named venue/address marker at same historic arena site; not surveyed or historic court center",
+      "sourceUrl": "https://www.google.com/maps?q=CFG+Bank+Arena+201+West+Baltimore+Street+Baltimore&output=embed&hl=en",
+      "rawPath": "raw/marker-was-baltimore-08553a6bdad75be9d869e29b970ac371f463cde0abc37651b8593fe59ddee08e.html.gz",
+      "bodySha256": "08553a6bdad75be9d869e29b970ac371f463cde0abc37651b8593fe59ddee08e",
+      "primaryIdentitySources": [
+        "https://cfgbankarena.com/arena-history/"
+      ]
+    }
+  },
+  "episodes": [
+    {
+      "franchise": "ATL",
+      "arenaId": "atl-omni",
+      "arenaNames": "Omni",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-25",
+      "lastActualGameObserved": "1997-05-11",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500005",
+      "lastGameId": "0049600053",
+      "firstGameUrl": "https://www.nba.com/game/0028500005/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049600053/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Omni",
+      "lastProviderArenaName": "Omni",
+      "identityPrimaryUrl": "https://www.nba.com/game/chi-vs-atl-0049600053",
+      "latitude": 33.7575,
+      "longitude": -84.39667,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/6348383/omni-coliseum-historical.html",
+      "notes": "Provider venue correct at both anchors; last in-scope NBA game.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "ATL",
+      "arenaId": "atl-alexander",
+      "arenaNames": "Alexander Memorial Coliseum / Georgia Tech / McCamish Pavilion",
+      "episodeKind": "mixed-fixture",
+      "firstActualGameInScope": "1997-11-01",
+      "lastActualGameObserved": "1999-05-20",
+      "currentOpenEnd": "false",
+      "firstGameId": "0029700016",
+      "lastGameId": "0049800047",
+      "firstGameUrl": "https://www.nba.com/game/0029700016/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049800047/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Alexander Coliseum",
+      "lastProviderArenaName": "Georgia Tech",
+      "identityPrimaryUrl": "https://repository.gatech.edu/bitstreams/6a55bc7f-ff78-4c13-80ae-e0cc949f2e9e/download",
+      "latitude": 33.7808132,
+      "longitude": -84.39277659999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=McCamish+Pavilion+Atlanta&output=embed&hl=en",
+      "notes": "29 captured fixtures; do not use entire interval as every home-game venue.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "ATL",
+      "arenaId": "atl-georgia-dome",
+      "arenaNames": "Georgia Dome",
+      "episodeKind": "mixed-fixture",
+      "firstActualGameInScope": "1997-11-04",
+      "lastActualGameObserved": "1999-05-05",
+      "currentOpenEnd": "false",
+      "firstGameId": "0029700033",
+      "lastGameId": "0029800717",
+      "firstGameUrl": "https://www.nba.com/game/0029700033/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0029800717/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Georgia Dome",
+      "lastProviderArenaName": "Georgia Dome",
+      "identityPrimaryUrl": "https://repository.gatech.edu/bitstreams/6a55bc7f-ff78-4c13-80ae-e0cc949f2e9e/download",
+      "latitude": 33.75761,
+      "longitude": -84.40076,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/4196938/georgia-dome.html",
+      "notes": "44 captured fixtures; interleaved with Alexander.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "ATL",
+      "arenaId": "atl-statefarm",
+      "arenaNames": "Philips Arena / State Farm Arena",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1999-11-04",
+      "lastActualGameObserved": "2026-04-30",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029900021",
+      "lastGameId": "0042500126",
+      "firstGameUrl": "https://www.nba.com/game/0029900021/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500126/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Philips Arena",
+      "lastProviderArenaName": "State Farm Arena",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 33.7574062,
+      "longitude": -84.396233,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?cid=12709393292767748091&output=embed&hl=en",
+      "notes": "First NBA game independently stated by NBA guide.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "BOS",
+      "arenaId": "bos-garden",
+      "arenaNames": "Boston Garden",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-30",
+      "lastActualGameObserved": "1995-05-05",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500033",
+      "lastGameId": "0049400029",
+      "firstGameUrl": "https://www.nba.com/game/0028500033/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049400029/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Boston Garden",
+      "lastProviderArenaName": "Boston Garden",
+      "identityPrimaryUrl": "https://www.nba.com/game/orl-vs-bos-0049400029/box-score",
+      "latitude": 42.36593,
+      "longitude": -71.06283,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/4930980/boston-garden.html",
+      "notes": "Hartford fixtures require separate inventory; first is scope anchor.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "BOS",
+      "arenaId": "bos-td",
+      "arenaNames": "FleetCenter / TD Banknorth Garden / TD Garden",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1995-11-03",
+      "lastActualGameObserved": "2026-05-02",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029500013",
+      "lastGameId": "0042500117",
+      "firstGameUrl": "https://www.nba.com/game/0029500013/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500117/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Boston Garden",
+      "lastProviderArenaName": "TD Garden",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 42.366198,
+      "longitude": -71.062146,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=TD+Garden+Boston&output=embed&hl=en",
+      "notes": "1995 first-game official NBA object incorrectly says Boston Garden; NBA-authored guide independently says Nov 3 1995 in current arena.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "BKN",
+      "arenaId": "bkn-meadowlands",
+      "arenaNames": "Brendan Byrne Arena / Continental Airlines Arena / IZOD Center / Meadowlands Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-25",
+      "lastActualGameObserved": "2010-04-12",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500004",
+      "lastGameId": "0020901205",
+      "firstGameUrl": "https://www.nba.com/game/0028500004/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0020901205/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "IZOD Center",
+      "lastProviderArenaName": "IZOD Center",
+      "identityPrimaryUrl": "https://www.njsea.com/who-we-are/",
+      "latitude": 40.8116838,
+      "longitude": -74.06760299999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Meadowlands+Arena+East+Rutherford&output=embed&hl=en",
+      "notes": "NJN precursor; name changes do not mean new physical arena.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "BKN",
+      "arenaId": "bkn-prudential",
+      "arenaNames": "Prudential Center",
+      "episodeKind": "default",
+      "firstActualGameInScope": "2010-10-27",
+      "lastActualGameObserved": "2012-04-23",
+      "currentOpenEnd": "false",
+      "firstGameId": "0021000005",
+      "lastGameId": "0021100962",
+      "firstGameUrl": "https://www.nba.com/game/0021000005/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0021100962/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Prudential Center",
+      "lastProviderArenaName": "Prudential Center",
+      "identityPrimaryUrl": "https://www.nba.com/nets/news/history/2020/04/20/this-week-in-nets-history-april-20",
+      "latitude": 40.733537,
+      "longitude": -74.1710659,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Prudential+Center+Newark&output=embed&hl=en",
+      "notes": "Official Nets history explicitly identifies final Newark game.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "BKN",
+      "arenaId": "bkn-barclays",
+      "arenaNames": "Barclays Center",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2012-11-03",
+      "lastActualGameObserved": "2026-04-09",
+      "currentOpenEnd": "true",
+      "firstGameId": "0021200029",
+      "lastGameId": "0022501167",
+      "firstGameUrl": "https://www.nba.com/game/0021200029/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501167/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Barclays Center",
+      "lastProviderArenaName": "Barclays Center",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 40.6826465,
+      "longitude": -73.97541559999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Barclays+Center+Brooklyn&output=embed&hl=en",
+      "notes": "First NBA game stated by guide; neutral international/bubble fixtures separate.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "CHA",
+      "arenaId": "cha-coliseum",
+      "arenaNames": "Charlotte Coliseum (Tyvola Road; second building)",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1988-11-04",
+      "lastActualGameObserved": "2002-05-12",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028800008",
+      "lastGameId": "0040100204",
+      "firstGameUrl": "https://www.nba.com/game/0028800008/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0040100204/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Spectrum Center",
+      "lastProviderArenaName": "Spectrum Center",
+      "identityPrimaryUrl": "https://www.nba.com/hornets/news/ranking-the-top-10-best-home-openers-in-hornets-history",
+      "latitude": 35.18627805502331,
+      "longitude": -80.91275468421792,
+      "coordinateStatus": "original-historical-building-polygon-centroid-derived",
+      "coordinateUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "notes": "NBA game objects retroactively say Spectrum Center. Do not use Bojangles Coliseum coordinates.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "CHA",
+      "arenaId": "cha-coliseum",
+      "arenaNames": "Charlotte Coliseum (Bobcats episode)",
+      "episodeKind": "default",
+      "firstActualGameInScope": "2004-11-04",
+      "lastActualGameObserved": "2005-04-20",
+      "currentOpenEnd": "false",
+      "firstGameId": "0020400017",
+      "lastGameId": "0020401220",
+      "firstGameUrl": "https://www.nba.com/game/0020400017/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0020401220/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Spectrum Center",
+      "lastProviderArenaName": "Spectrum Center",
+      "identityPrimaryUrl": "https://www.nba.com/hornets/news/ranking-the-top-10-best-home-openers-in-hornets-history",
+      "latitude": 35.18627805502331,
+      "longitude": -80.91275468421792,
+      "coordinateStatus": "original-historical-building-polygon-centroid-derived",
+      "coordinateUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "notes": "Same Tyvola building; 2002-04 no Charlotte franchise games. Provider Spectrum labels conflict with physical era.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "CHA",
+      "arenaId": "cha-spectrum",
+      "arenaNames": "Charlotte Bobcats Arena / Time Warner Cable Arena / Spectrum Center",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2005-11-05",
+      "lastActualGameObserved": "2026-04-14",
+      "currentOpenEnd": "true",
+      "firstGameId": "0020500033",
+      "lastGameId": "0052500111",
+      "firstGameUrl": "https://www.nba.com/game/0020500033/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0052500111/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Spectrum Center",
+      "lastProviderArenaName": "Spectrum Center",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 35.2251952,
+      "longitude": -80.8393468,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Spectrum+Center+Charlotte&output=embed&hl=en",
+      "notes": "NBA guide first-game date matches fixture; same building throughout rename history.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "CHI",
+      "arenaId": "chi-stadium",
+      "arenaNames": "Chicago Stadium",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-25",
+      "lastActualGameObserved": "1994-05-20",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500007",
+      "lastGameId": "0049300055",
+      "firstGameUrl": "https://www.nba.com/game/0028500007/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049300055/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "United Center",
+      "lastProviderArenaName": "United Center",
+      "identityPrimaryUrl": "https://www.nba.com/bulls/history/pippen10_940520.html",
+      "latitude": 41.8817,
+      "longitude": -87.67283,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/4887510/chicago-stadium-historical.html",
+      "notes": "Official Bulls article identifies final Stadium game; NBA object incorrectly says United Center.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "CHI",
+      "arenaId": "chi-united",
+      "arenaNames": "United Center",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1994-11-04",
+      "lastActualGameObserved": "2026-04-10",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029400009",
+      "lastGameId": "0022501177",
+      "firstGameUrl": "https://www.nba.com/game/0029400009/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501177/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "United Center",
+      "lastProviderArenaName": "United Center",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 41.8806908,
+      "longitude": -87.6741759,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=United+Center+Chicago&output=embed&hl=en",
+      "notes": "First game stated in NBA guide.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "CLE",
+      "arenaId": "cle-richfield",
+      "arenaNames": "Richfield Coliseum",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-26",
+      "lastActualGameObserved": "1994-05-03",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500016",
+      "lastGameId": "0049300022",
+      "firstGameUrl": "https://www.nba.com/game/0028500016/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049300022/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Quicken Loans Arena",
+      "lastProviderArenaName": "Quicken Loans Arena",
+      "identityPrimaryUrl": "https://www.nba.com/cavaliers/photogallery/remembering-coliseum",
+      "latitude": 41.24854740747868,
+      "longitude": -81.59458846012393,
+      "coordinateStatus": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "coordinateUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/OH/24000/OH_Peninsula_228030_1994_24000_geo.pdf",
+      "notes": "Official Cavs retrospective gives final NBA game; NBA objects incorrectly say Quicken Loans Arena.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "CLE",
+      "arenaId": "cle-rocket",
+      "arenaNames": "Gund Arena / Quicken Loans Arena / Rocket Mortgage FieldHouse / Rocket Arena",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1994-11-08",
+      "lastActualGameObserved": "2026-05-25",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029400028",
+      "lastGameId": "0042500304",
+      "firstGameUrl": "https://www.nba.com/game/0029400028/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500304/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Quicken Loans Arena",
+      "lastProviderArenaName": "Rocket Arena",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 41.49647969999999,
+      "longitude": -81.6882129,
+      "coordinateStatus": "official-arena-jsonld-geo-observed",
+      "coordinateUrl": "https://www.rocketarena.com/plan-your-visit/directions-parking",
+      "notes": "First game stated in NBA guide; official arena JSON-LD supplies alternative direct coordinate.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "DET",
+      "arenaId": "det-silverdome",
+      "arenaNames": "Pontiac Silverdome",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-25",
+      "lastActualGameObserved": "1988-06-16",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500010",
+      "lastGameId": "0048700078",
+      "firstGameUrl": "https://www.nba.com/game/0028500010/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0048700078/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Palace of Auburn Hills",
+      "lastProviderArenaName": "Palace of Auburn Hills",
+      "identityPrimaryUrl": "https://www.nba.com/news/history-this-date-in-nba-june",
+      "latitude": 42.64576854229844,
+      "longitude": -83.25467107170667,
+      "coordinateStatus": "original-historical-building-polygon-centroid-derived",
+      "coordinateUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "notes": "NBA objects incorrectly say Palace. Joe Louis March 1985 episode predates scope.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "DET",
+      "arenaId": "det-palace",
+      "arenaNames": "Palace of Auburn Hills",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1988-11-05",
+      "lastActualGameObserved": "2017-04-10",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028800015",
+      "lastGameId": "0021601208",
+      "firstGameUrl": "https://www.nba.com/game/0028800015/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0021601208/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Palace of Auburn Hills",
+      "lastProviderArenaName": "Palace of Auburn Hills",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 42.69707075527974,
+      "longitude": -83.24576942572217,
+      "coordinateStatus": "original-historical-building-polygon-centroid-derived",
+      "coordinateUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "notes": "First game stated by NBA guide; last game NBA retrospective/video corroboration. Historic named-place pin needs former footprint review.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "DET",
+      "arenaId": "det-lca",
+      "arenaNames": "Little Caesars Arena",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2017-10-18",
+      "lastActualGameObserved": "2026-05-17",
+      "currentOpenEnd": "true",
+      "firstGameId": "0021700003",
+      "lastGameId": "0042500207",
+      "firstGameUrl": "https://www.nba.com/game/0021700003/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500207/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Little Caesars Arena",
+      "lastProviderArenaName": "Little Caesars Arena",
+      "identityPrimaryUrl": "https://www.313presents.com/venues-events/little-caesars-arena",
+      "latitude": 42.341796,
+      "longitude": -83.05466109999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Little+Caesars+Arena+Detroit&output=embed&hl=en",
+      "notes": "Actual first regular NBA fixture captured; opening/concert date not used.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "IND",
+      "arenaId": "ind-market",
+      "arenaNames": "Market Square Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-26",
+      "lastActualGameObserved": "1999-06-09",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500020",
+      "lastGameId": "0049800073",
+      "firstGameUrl": "https://www.nba.com/game/0028500020/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0049800073/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Market Square Arena",
+      "lastProviderArenaName": "Market Square Arena",
+      "identityPrimaryUrl": "https://www.nba.com/pacers/news/nine-pacers-moments-shaped-1990s",
+      "latitude": 39.768375,
+      "longitude": -86.15171935000001,
+      "coordinateStatus": "proposed-inferred-historic-site-point-requires-owner-review",
+      "coordinateUrl": "https://api.openstreetmap.org/api/0.6/map?bbox=-86.1535,39.7675,-86.1505,39.7693",
+      "notes": "Official Pacers history confirms move at 1999-2000 start. Last means final regular/postseason game; preseason later in 1999 is outside snapshot scope.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "IND",
+      "arenaId": "ind-gainbridge",
+      "arenaNames": "Conseco Fieldhouse / Bankers Life Fieldhouse / Gainbridge Fieldhouse",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1999-11-06",
+      "lastActualGameObserved": "2026-04-12",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029900039",
+      "lastGameId": "0022501188",
+      "firstGameUrl": "https://www.nba.com/game/0029900039/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501188/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Bankers Life Fieldhouse",
+      "lastProviderArenaName": "Gainbridge Fieldhouse",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 39.7640434,
+      "longitude": -86.1555367,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Gainbridge+Fieldhouse+Indianapolis&output=embed&hl=en",
+      "notes": "First game stated by NBA guide.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "MIA",
+      "arenaId": "mia-old",
+      "arenaNames": "Miami Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1988-11-05",
+      "lastActualGameObserved": "1999-12-28",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028800014",
+      "lastGameId": "0029900398",
+      "firstGameUrl": "https://www.nba.com/game/0028800014/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0029900398/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Miami Arena",
+      "lastProviderArenaName": "Miami Arena",
+      "identityPrimaryUrl": "https://www.nba.com/news/history-this-date-in-nba-nov",
+      "latitude": 25.781168086529952,
+      "longitude": -80.19473297469061,
+      "coordinateStatus": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "coordinateUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Miami_347456_1994_24000_geo.pdf",
+      "notes": "Complete transition window captured; midseason January move.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "MIA",
+      "arenaId": "mia-kaseya",
+      "arenaNames": "AmericanAirlines Arena / FTX Arena / Miami-Dade Arena / Kaseya Center",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2000-01-02",
+      "lastActualGameObserved": "2026-04-12",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029900423",
+      "lastGameId": "0022501189",
+      "firstGameUrl": "https://www.nba.com/game/0029900423/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501189/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "AmericanAirlines Arena",
+      "lastProviderArenaName": "Kaseya Center",
+      "identityPrimaryUrl": "https://www.miamidade.gov/resources-oig/pdf/Reports2012/IG11.34FinalBasketball.pdf",
+      "latitude": 25.7814014,
+      "longitude": -80.18696899999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Kaseya+Center+Miami&output=embed&hl=en",
+      "notes": "County audit explicitly identifies first Heat game; NBA guide corroborates.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "MIL",
+      "arenaId": "mil-mecca",
+      "arenaNames": "Milwaukee Arena / MECCA / UW-Milwaukee Panther Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-26",
+      "lastActualGameObserved": "1988-05-06",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500013",
+      "lastGameId": "0048700029",
+      "firstGameUrl": "https://www.nba.com/game/0028500013/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0048700029/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "BMO Harris Bradley Center",
+      "lastProviderArenaName": "BMO Harris Bradley Center",
+      "identityPrimaryUrl": "https://www.nba.com/news/milwaukee-bucks-return-mecca-face-boston-celtics?sf125889622=1",
+      "latitude": 43.0422275,
+      "longitude": -87.9168359,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=UW+Milwaukee+Panther+Arena&output=embed&hl=en",
+      "notes": "NBA retrospective confirms 1968-69 through 1987-88 tenancy; game objects incorrectly say Bradley Center.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "MIL",
+      "arenaId": "mil-bradley",
+      "arenaNames": "Bradley Center / BMO Harris Bradley Center",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1988-11-05",
+      "lastActualGameObserved": "2018-04-26",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028800018",
+      "lastGameId": "0041700116",
+      "firstGameUrl": "https://www.nba.com/game/0028800018/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0041700116/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "BMO Harris Bradley Center",
+      "lastProviderArenaName": "BMO Harris Bradley Center",
+      "identityPrimaryUrl": "https://www.nba.com/news/milwaukee-bucks-new-arena-fiserv-forum",
+      "latitude": 43.04368346909724,
+      "longitude": -87.91714947438052,
+      "coordinateStatus": "original-historical-building-polygon-centroid-derived",
+      "coordinateUrl": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+      "notes": "Official retrospective confirms 1988 move; first-game date also NBA guide.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "MIL",
+      "arenaId": "mil-fiserv",
+      "arenaNames": "Fiserv Forum",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2018-10-19",
+      "lastActualGameObserved": "2026-04-10",
+      "currentOpenEnd": "true",
+      "firstGameId": "0021800023",
+      "lastGameId": "0022501179",
+      "firstGameUrl": "https://www.nba.com/game/0021800023/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501179/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Fiserv Forum",
+      "lastProviderArenaName": "Fiserv Forum",
+      "identityPrimaryUrl": "https://www.fiservforum.com/plan-your-visit/directions-parking",
+      "latitude": 43.0450802,
+      "longitude": -87.9173862,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Fiserv+Forum+Milwaukee&output=embed&hl=en",
+      "notes": "Actual first regular NBA fixture captured.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "NYK",
+      "arenaId": "nyk-msg4",
+      "arenaNames": "Madison Square Garden IV",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1985-10-26",
+      "lastActualGameObserved": "2026-06-10",
+      "currentOpenEnd": "true",
+      "firstGameId": "0028500012",
+      "lastGameId": "0042500404",
+      "firstGameUrl": "https://www.nba.com/game/0028500012/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500404/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Madison Square Garden",
+      "lastProviderArenaName": "Madison Square Garden",
+      "identityPrimaryUrl": "https://www.msg.com/madison-square-garden/directions",
+      "latitude": 40.7505045,
+      "longitude": -73.9934387,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Madison+Square+Garden+4+Pennsylvania+Plaza+New+York+NY+10001&output=embed&hl=en",
+      "notes": "Only Garden IV is in 1985-86 onward scope; international fixtures separate.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "ORL",
+      "arenaId": "orl-old",
+      "arenaNames": "Orlando Arena / TD Waterhouse Centre / Amway Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1989-11-04",
+      "lastActualGameObserved": "2010-05-26",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028900022",
+      "lastGameId": "0040900305",
+      "firstGameUrl": "https://www.nba.com/game/0028900022/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0040900305/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Amway Arena",
+      "lastProviderArenaName": "Amway Arena",
+      "identityPrimaryUrl": "https://www.nba.com/game/bos-vs-orl-0040900305",
+      "latitude": 28.549001355481256,
+      "longitude": -81.38657097682642,
+      "coordinateStatus": "primary-usgs-historical-roof-map-symbol-centroid-derived",
+      "coordinateUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/FL/24000/FL_Orlando%20West_347871_1995_24000_geo.pdf",
+      "notes": "Old building distinct from Amway Center; false current Google match rejected.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "ORL",
+      "arenaId": "orl-kia",
+      "arenaNames": "Amway Center / Kia Center",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2010-10-28",
+      "lastActualGameObserved": "2026-05-01",
+      "currentOpenEnd": "true",
+      "firstGameId": "0021000017",
+      "lastGameId": "0042500106",
+      "firstGameUrl": "https://www.nba.com/game/0021000017/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500106/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Amway Center",
+      "lastProviderArenaName": "Kia Center",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 28.5392214,
+      "longitude": -81.3838535,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Kia+Center+Orlando&output=embed&hl=en",
+      "notes": "First game stated by NBA guide.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "PHI",
+      "arenaId": "phi-spectrum",
+      "arenaNames": "Spectrum / CoreStates Spectrum",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-30",
+      "lastActualGameObserved": "1996-04-19",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500032",
+      "lastGameId": "0029501166",
+      "firstGameUrl": "https://www.nba.com/game/0028500032/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0029501166/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Core States Spectrum Arena",
+      "lastProviderArenaName": "Core States Spectrum Arena",
+      "identityPrimaryUrl": "https://www.nba.com/sixers/history/76ers-team-history",
+      "latitude": 39.90428,
+      "longitude": -75.17101,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/4561993/wachovia-spectrum-historical.html",
+      "notes": "NBA objects use arenaId 12/name Core States Spectrum Arena across both physical buildings; independent team history essential.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "PHI",
+      "arenaId": "phi-xfinity",
+      "arenaNames": "CoreStates Center / First Union Center / Wachovia Center / Wells Fargo Center / Xfinity Mobile Arena",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1996-11-01",
+      "lastActualGameObserved": "2026-05-10",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029600003",
+      "lastGameId": "0042500214",
+      "firstGameUrl": "https://www.nba.com/game/0029600003/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500214/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Core States Spectrum Arena",
+      "lastProviderArenaName": "Xfinity Mobile Arena",
+      "identityPrimaryUrl": "https://www.nba.com/sixers/history/76ers-team-history",
+      "latitude": 39.9012015,
+      "longitude": -75.17197949999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Xfinity+Mobile+Arena+Philadelphia&output=embed&hl=en",
+      "notes": "Official Sixers history explicitly states first game Nov 1 1996.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "TOR",
+      "arenaId": "tor-skydome",
+      "arenaNames": "SkyDome / Rogers Centre",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1995-11-03",
+      "lastActualGameObserved": "1999-02-19",
+      "currentOpenEnd": "false",
+      "firstGameId": "0029500012",
+      "lastGameId": "0029800109",
+      "firstGameUrl": "https://www.nba.com/game/0029500012/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0029800109/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "SkyDome",
+      "lastProviderArenaName": "SkyDome",
+      "identityPrimaryUrl": "https://www.nba.com/news/history-this-date-in-nba-nov",
+      "latitude": 43.641804,
+      "longitude": -79.3891419,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Rogers+Centre+Toronto&output=embed&hl=en",
+      "notes": "Maple Leaf Gardens/Copps exceptions separate; complete pre-ACC page inventory retained.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "TOR",
+      "arenaId": "tor-scotia",
+      "arenaNames": "Air Canada Centre / Scotiabank Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1999-02-21",
+      "lastActualGameObserved": "2020-02-28",
+      "currentOpenEnd": "false",
+      "firstGameId": "0029800126",
+      "lastGameId": "0021900879",
+      "firstGameUrl": "https://www.nba.com/game/0029800126/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0021900879/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Air Canada Centre",
+      "lastProviderArenaName": "Scotiabank Arena",
+      "identityPrimaryUrl": "https://nyc3.digitaloceanspaces.com/sportsarchive-documents/prod/698bb7aee7a16/2013-nba-guide.pdf",
+      "latitude": 43.6434661,
+      "longitude": -79.3790989,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Scotiabank+Arena+Toronto&output=embed&hl=en",
+      "notes": "Pause for bubble/Tampa; current arena not continuously used in 2020-21.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "TOR",
+      "arenaId": "tor-amalie",
+      "arenaNames": "Amalie Arena / Benchmark International Arena (same Tampa building)",
+      "episodeKind": "temporary-base",
+      "firstActualGameInScope": "2020-12-23",
+      "lastActualGameObserved": "2021-05-16",
+      "currentOpenEnd": "false",
+      "firstGameId": "0022000014",
+      "lastGameId": "0022001079",
+      "firstGameUrl": "https://www.nba.com/game/0022000014/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022001079/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Amalie Arena",
+      "lastProviderArenaName": "Amalie Arena",
+      "identityPrimaryUrl": "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+      "latitude": 27.9427373,
+      "longitude": -82.4517771,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Amalie+Arena+Tampa&output=embed&hl=en",
+      "notes": "Entire 2020-21 home slate Tampa; this is operating base episode, not generic neutral-site override.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "TOR",
+      "arenaId": "tor-scotia",
+      "arenaNames": "Scotiabank Arena (Toronto return)",
+      "episodeKind": "current",
+      "firstActualGameInScope": "2021-10-20",
+      "lastActualGameObserved": "2026-05-01",
+      "currentOpenEnd": "true",
+      "firstGameId": "0022100006",
+      "lastGameId": "0042500136",
+      "firstGameUrl": "https://www.nba.com/game/0022100006/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0042500136/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Scotiabank Arena",
+      "lastProviderArenaName": "Scotiabank Arena",
+      "identityPrimaryUrl": "https://www.scotiabankarena.com/venue-information/contact-us",
+      "latitude": 43.6434661,
+      "longitude": -79.3790989,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Scotiabank+Arena+Toronto&output=embed&hl=en",
+      "notes": "First regular/postseason return anchor captured; effective base before this home game needs separate policy.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    },
+    {
+      "franchise": "WAS",
+      "arenaId": "was-capitalcentre",
+      "arenaNames": "Capital Centre / USAir Arena",
+      "episodeKind": "default",
+      "firstActualGameInScope": "1985-10-31",
+      "lastActualGameObserved": "1997-11-29",
+      "currentOpenEnd": "false",
+      "firstGameId": "0028500038",
+      "lastGameId": "0029700206",
+      "firstGameUrl": "https://www.nba.com/game/0028500038/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0029700206/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "US Air Arena",
+      "lastProviderArenaName": "US Air Arena",
+      "identityPrimaryUrl": "https://www.nba.com/wizards/news/monroe_071115.html",
+      "latitude": 38.90261,
+      "longitude": -76.84692,
+      "coordinateStatus": "original-gazetteer-historical-site-point-observed",
+      "coordinateUrl": "https://www.geonames.org/4371978/u-s-airways-arena-historical.html",
+      "notes": "NBA provider city Washington DC is not physical Landover; Baltimore games separate.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last regular/postseason fixture assigned to this episode; preseason excluded"
+    },
+    {
+      "franchise": "WAS",
+      "arenaId": "was-capitalone",
+      "arenaNames": "MCI Center / Verizon Center / Capital One Arena",
+      "episodeKind": "current",
+      "firstActualGameInScope": "1997-12-02",
+      "lastActualGameObserved": "2026-04-10",
+      "currentOpenEnd": "true",
+      "firstGameId": "0029700221",
+      "lastGameId": "0022501172",
+      "firstGameUrl": "https://www.nba.com/game/0029700221/box-score",
+      "lastGameUrl": "https://www.nba.com/game/0022501172/box-score",
+      "firstAnchorStatus": "official-game-date-observed",
+      "lastAnchorStatus": "official-game-date-observed",
+      "firstProviderArenaName": "Capital One Arena",
+      "lastProviderArenaName": "Capital One Arena",
+      "identityPrimaryUrl": "https://www.nba.com/wizards/news/monroe_071115.html",
+      "latitude": 38.8981675,
+      "longitude": -77.02085679999999,
+      "coordinateStatus": "named-place-map-pin-observed-official-identity-corroboration-required",
+      "coordinateUrl": "https://www.google.com/maps?q=Capital+One+Arena+Washington&output=embed&hl=en",
+      "notes": "Official Wizards article explicitly states first NBA game; do not use July season-boundary cutoff.",
+      "effectiveFrom": null,
+      "effectiveBefore": null,
+      "effectiveBoundsStatus": "not-established-by-first-home-game-anchor; root-policy-required",
+      "lastActualGameMeaning": "last observed through frozen snapshot; episode remains open"
+    }
+  ],
+  "secondaryFixtureObservations": [
+    {
+      "date": "1995-12-26",
+      "gameId": "0029500377",
+      "home": "TOR",
+      "away": "MIL",
+      "providerArenaName": "Copps Coliseum",
+      "providerArenaId": 104,
+      "sourceUrl": "https://www.nba.com/game/0029500377/box-score",
+      "rawPath": "raw/game-0029500377-742d052cbbc40a65b704232a3c1f812a89b8ad27a7f459e443b89cf323fec5d9.html.gz",
+      "bodySha256": "742d052cbbc40a65b704232a3c1f812a89b8ad27a7f459e443b89cf323fec5d9",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-copps",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1996-02-15",
+      "gameId": "0029500701",
+      "home": "TOR",
+      "away": "CLE",
+      "providerArenaName": "Copps Coliseum",
+      "providerArenaId": 104,
+      "sourceUrl": "https://www.nba.com/game/0029500701/box-score",
+      "rawPath": "raw/game-0029500701-46d79bfc1fa44d5fc5b6ddccca0deeed961005d1c7eeeb3abc3531949f86936c.html.gz",
+      "bodySha256": "46d79bfc1fa44d5fc5b6ddccca0deeed961005d1c7eeeb3abc3531949f86936c",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-copps",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1996-12-26",
+      "gameId": "0029600385",
+      "home": "TOR",
+      "away": "NJN",
+      "providerArenaName": "tbd",
+      "providerArenaId": 0,
+      "sourceUrl": "https://www.nba.com/game/0029600385/box-score",
+      "rawPath": "raw/game-0029600385-91d4ecb4212f2cd2922c8c9490e84832be2d64ec06aec315c1071c0562c819c6.html.gz",
+      "bodySha256": "91d4ecb4212f2cd2922c8c9490e84832be2d64ec06aec315c1071c0562c819c6",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-copps",
+      "status": "primary-photographer-caption-adjudicated",
+      "supplementPath": "../alternate-fixtures/adjudications.json",
+      "supplementSourceId": "hamilton-afp-photo",
+      "supplementDecodedSha256": "f541fc4eec8f68c828c076873d148104ea786da439f22ab8cb764431f069062b"
+    },
+    {
+      "date": "1997-02-14",
+      "gameId": "0029600710",
+      "home": "TOR",
+      "away": "MIL",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029600710/box-score",
+      "rawPath": "raw/game-0029600710-5425c25025cd8bc46917febe4b46182eb167ec2c5ec455d389defcc57a6854ae.html.gz",
+      "bodySha256": "5425c25025cd8bc46917febe4b46182eb167ec2c5ec455d389defcc57a6854ae",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1997-02-16",
+      "gameId": "0029600724",
+      "home": "TOR",
+      "away": "DET",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029600724/box-score",
+      "rawPath": "raw/game-0029600724-0c2197c498e0fee7498d70435fde5d23225a0fea3f3d218dcbb1c35f0daa7a66.html.gz",
+      "bodySha256": "0c2197c498e0fee7498d70435fde5d23225a0fea3f3d218dcbb1c35f0daa7a66",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1997-03-18",
+      "gameId": "0029600946",
+      "home": "TOR",
+      "away": "PHI",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029600946/box-score",
+      "rawPath": "raw/game-0029600946-57862b8e171278e378694879444bfb4f675ba867af1d5bb8e6ed09052297070b.html.gz",
+      "bodySha256": "57862b8e171278e378694879444bfb4f675ba867af1d5bb8e6ed09052297070b",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1998-03-31",
+      "gameId": "0029701040",
+      "home": "TOR",
+      "away": "LAL",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029701040/box-score",
+      "rawPath": "raw/game-0029701040-23c6774ff3ddb75fee626f1a9a02019898d7c30162fddd96a5daa6abd404d9c8.html.gz",
+      "bodySha256": "23c6774ff3ddb75fee626f1a9a02019898d7c30162fddd96a5daa6abd404d9c8",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1998-04-19",
+      "gameId": "0029701184",
+      "home": "TOR",
+      "away": "PHI",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029701184/box-score",
+      "rawPath": "raw/game-0029701184-18c72fcfc08b316d73399f9fd62f5484069959fc349a35fee2f86eb4632bb9d5.html.gz",
+      "bodySha256": "18c72fcfc08b316d73399f9fd62f5484069959fc349a35fee2f86eb4632bb9d5",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "date": "1999-02-09",
+      "gameId": "0029800038",
+      "home": "TOR",
+      "away": "MIL",
+      "providerArenaName": "Maple Leaf Garden",
+      "providerArenaId": 73,
+      "sourceUrl": "https://www.nba.com/game/0029800038/box-score",
+      "rawPath": "raw/game-0029800038-fb5f1d386fe6a92a1f0f359de45c68c1a17652deffed91c4c1ae6b2c5de91577.html.gz",
+      "bodySha256": "fb5f1d386fe6a92a1f0f359de45c68c1a17652deffed91c4c1ae6b2c5de91577",
+      "adjudication": "source-observation-only; not approved override",
+      "arenaId": "tor-mapleleaf",
+      "status": "official-game-venue-observed"
+    },
+    {
+      "gameId": "0021700067",
+      "date": "2017-10-26",
+      "arenaId": "mil-mecca",
+      "status": "primary-source-special-fixture-candidate",
+      "sourceUrl": "https://www.nba.com/game/0021700067/box-score",
+      "rawPath": "raw/game-0021700067-82a23f20d1b49f49d4d5f02add967f911f1bb43cd4608400d30efd5331bb07ca.html.gz",
+      "bodySha256": "82a23f20d1b49f49d4d5f02add967f911f1bb43cd4608400d30efd5331bb07ca",
+      "notes": "Official Bucks return-to-MECCA article corroborates this exceptional fixture."
+    },
+    {
+      "gameId": "0020800969",
+      "date": "2009-03-13",
+      "arenaId": "phi-spectrum",
+      "status": "primary-source-special-fixture-candidate",
+      "sourceUrl": "https://www.nba.com/game/0020800969/box-score",
+      "rawPath": "raw/game-0020800969-f63935be508e48e766adaf492ff62b21d157003b09f35a1e1594bdae7bb0a917.html.gz",
+      "bodySha256": "f63935be508e48e766adaf492ff62b21d157003b09f35a1e1594bdae7bb0a917",
+      "notes": "Spectrum farewell fixture; arena object alone is ambiguous across two Philadelphia buildings."
+    }
+  ],
+  "knownGaps": [
+    "Effective base bounds before first home fixture require explicit root policy.",
+    "BOS Hartford and WAS Baltimore secondary fixtures not exhaustively sourced here.",
+    "NBA historical venue labels are retroactively overwritten for many early fixtures and cannot alone certify physical identity.",
+    "GeoNames points for Omni, Boston Garden, Chicago Stadium, Spectrum, and Capital Centre are original venue points but not independently roof-footprint-certified here.",
+    "Standing arena named-place marker is an original provider location, not a surveyed center.",
+    "Preseason games, international/bubble neutral venue registry, and exhaustive special-fixture adjudication remain outside this research delivery."
+  ]
+}

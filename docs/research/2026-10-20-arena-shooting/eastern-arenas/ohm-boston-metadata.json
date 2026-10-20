@@ -1,0 +1,6 @@
+{
+  "url": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Bnwr%5B%22name%22%3D%22Boston+Garden%22%5D%3Bout+geom%3B",
+  "query": "[out:json][timeout:25];nwr[\"name\"=\"Boston Garden\"];out geom;",
+  "httpStatus": 200,
+  "bodySha256": "ce315885a116716e6c9ce6899cc0334b88c57b0ca81355c76b5a1fa72454d755"
+}

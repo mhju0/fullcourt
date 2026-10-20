@@ -38,13 +38,13 @@ from pathlib import Path
 
 import psycopg2
 
-from player_appearance_history import (annotate_outcomes, correct_team_identity, load_game_context,
-                                       load_history, prove_history_windows, team_identity_overrides)
+from fetch_shooting_data import FIRST_SEASON_YEAR
+from player_appearance_history import (annotate_outcomes, correct_team_identity, fixture_aliases,
+                                       load_game_context, load_history, prove_history_windows, team_identity_overrides)
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "ml" / "data" / "shooting"
 REPORT = ROOT / "docs" / "audit"
-REGULAR_PREFIX = "002"
 
 # A player-season contributes to a contrast only if it clears this in BOTH arms.
 # Below roughly this, a single hot night moves the number more than any real effect.
@@ -113,10 +113,38 @@ def parse_birth(s: str) -> date | None:
 
 # ── loading ──────────────────────────────────────────────────────────────────
 
-def load_player_games() -> list[dict]:
+def validate_shooting_alias(rows: list[dict], alias: dict, fixture: dict) -> None:
+    if {row["side"] for row in rows} != {"home", "away"}:
+        raise ValueError("Shooting alias requires both cached team sides")
+    for side in ("home", "away"):
+        team = [row for row in rows if row["side"] == side]
+        if {int(row["team_id"]) for row in team} != {alias[side + "TeamId"]} or {row["team_tricode"] for row in team} != {alias[side + "Abbr"]}:
+            raise ValueError("Shooting alias team/side mismatch")
+        if {row["person_id"] for row in team} != set(alias[side + "PlayerIds"]) or not 5 <= len(team) <= 25:
+            raise ValueError("Shooting alias roster mismatch")
+        points = 0
+        for row in team:
+            stats = {key: int(row[key] or 0) for key in ("field_goals_made", "field_goals_attempted", "three_pointers_made", "three_pointers_attempted", "free_throws_made", "free_throws_attempted", "points")}
+            for made, attempted in (("field_goals_made", "field_goals_attempted"), ("three_pointers_made", "three_pointers_attempted"), ("free_throws_made", "free_throws_attempted")):
+                if not 0 <= stats[made] <= stats[attempted]:
+                    raise ValueError("Shooting alias impossible shooting line")
+            if stats["three_pointers_made"] > stats["field_goals_made"] or stats["three_pointers_attempted"] > stats["field_goals_attempted"] or stats["points"] != 2 * stats["field_goals_made"] + stats["three_pointers_made"] + stats["free_throws_made"]:
+                raise ValueError("Shooting alias inconsistent scoring line")
+            points += stats["points"]
+        if points != fixture[side + "Score"]:
+            raise ValueError("Shooting alias incomplete team scoring total")
+
+
+def load_player_games(fixtures: dict[str, dict], aliases: dict[str, dict]) -> list[dict]:
+    expected_years = {row["season"][:4] for row in fixtures.values() if int(row["season"][:4]) >= FIRST_SEASON_YEAR}
+    missing_caches = sorted(year for year in expected_years if not (CACHE / f"player_boxscores_{year}.csv").is_file())
+    if missing_caches:
+        raise ValueError(f"Missing Shooting player boxscore season caches: {missing_caches}")
     rows = []
     overrides = team_identity_overrides()
     matched = defaultdict(int)
+    alias_rows = defaultdict(list)
+    seen, covered = set(), set()
     for path in sorted(CACHE.glob("player_boxscores_*.csv")):
         with path.open(newline="", encoding="utf-8") as fh:
             for r in csv.DictReader(fh):
@@ -125,16 +153,30 @@ def load_player_games() -> list[dict]:
                     r = correct_team_identity(r, overrides[key])
                     matched[key] += 1
                 gid = r["game_id"]
-                if not gid.startswith(REGULAR_PREFIX):
+                canonical = aliases[gid]["canonicalId"] if gid in aliases else gid
+                if canonical not in fixtures:
                     continue
+                if r["season"] != fixtures[canonical]["season"][:4]:
+                    raise ValueError(f"Shooting cache season disagrees with canonical fixture: {canonical}")
+                identity = (r["person_id"], canonical)
+                if identity in seen:
+                    raise ValueError(f"Duplicate Shooting player/canonical fixture: {identity}")
+                seen.add(identity)
+                covered.add(canonical)
+                if gid in aliases:
+                    alias_rows[gid].append(r)
                 try:
                     fga = int(r["field_goals_attempted"] or 0)
-                except ValueError:
-                    continue
+                except ValueError as error:
+                    raise ValueError(f"Invalid Shooting FGA for {identity}") from error
+                if fga < 0:
+                    raise ValueError(f"Negative Shooting FGA for {identity}")
                 if fga <= 0:                       # did not shoot: no eFG% to speak of
                     continue
                 rows.append({
                     "gid": gid,
+                    "canonicalGid": canonical,
+                    "date": fixtures[canonical]["date"],
                     "pid": r["person_id"],
                     "name": f"{r['first_name']} {r['family_name']}".strip(),
                     "team": r["team_tricode"],
@@ -151,6 +193,11 @@ def load_player_games() -> list[dict]:
                 })
     if any(matched[key] != 1 for key in overrides):
         raise ValueError("Each player team identity override must match exactly one cache row")
+    for gid, alias in aliases.items():
+        validate_shooting_alias(alias_rows[gid], alias, fixtures[alias["canonicalId"]])
+    missing = [gid for gid, fixture in fixtures.items() if fixture["season"][:4] in expected_years and gid not in covered]
+    if missing:
+        raise ValueError(f"Missing canonical regular Shooting fixtures in covered cache seasons: {missing[:5]} ({len(missing)} games)")
     return rows
 
 
@@ -194,26 +241,29 @@ def is_rested(r: dict) -> bool:
     return r["rest"] is not None and RESTED_MIN_DAYS_SINCE <= r["rest"] <= RESTED_MAX_DAYS_SINCE
 
 
-def load_game_dates(conn) -> dict[str, date]:
+def load_outcome_fixtures(conn) -> dict[str, dict]:
     clauses = " ".join(
-        f"AND NOT (season = '{s}' AND date BETWEEN '{a}' AND '{b}')"
+        f"AND NOT (g.season = '{s}' AND g.date BETWEEN '{a}' AND '{b}')"
         for s, a, b in ABNORMAL_STRETCHES
     )
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT external_id, date FROM games
-            WHERE game_type='regular' AND status='final' AND external_id LIKE '002%%'
+            SELECT g.external_id, g.date, h.abbreviation, a.abbreviation,
+                   g.home_score, g.away_score, g.season FROM games g
+            JOIN teams h ON h.id = g.home_team_id JOIN teams a ON a.id = g.away_team_id
+            WHERE g.game_type='regular' AND g.status='final'
             {clauses}
         """)
-        return {ext: d for ext, d in cur.fetchall()}
+        return {ext: dict(date=day, homeAbbr=home, awayAbbr=away, homeScore=hs, awayScore=aws, season=season)
+                for ext, day, home, away, hs, aws, season in cur.fetchall()}
 
 
 # ── deriving the player's own situation ──────────────────────────────────────
 
 def load_annotated_player_games(conn, birth: dict[str, date]) -> tuple[list[dict], dict]:
-    target_dates = load_game_dates(conn)
-    outcomes = [dict(row, date=target_dates[row["gid"]]) for row in load_player_games()
-                if row["gid"] in target_dates]
+    fixtures = load_outcome_fixtures(conn)
+    aliases = fixture_aliases({gid: (row["date"], row["homeAbbr"], row["awayAbbr"]) for gid, row in fixtures.items()})
+    outcomes = load_player_games(fixtures, aliases)
     by_player = defaultdict(list)
     for row in outcomes:
         by_player[row["pid"]].append(row)

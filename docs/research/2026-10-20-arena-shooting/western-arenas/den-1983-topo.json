@@ -1,0 +1,43 @@
+{
+  "id": "tnm-den-1983-pdf",
+  "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_geo.pdf",
+  "sourceMetadata": {
+    "title": "USGS 1:100000-scale Quadrangle for Denver West, CO 1983",
+    "moreInfo": "USGS Historical Quadrangle in GeoPDF.",
+    "sourceId": "5a8a2690e4b00f54eb3c25df",
+    "sourceName": "ScienceBase",
+    "sourceOriginId": null,
+    "sourceOriginName": "gda",
+    "metaUrl": "https://www.sciencebase.gov/catalog/item/5a8a2690e4b00f54eb3c25df",
+    "vendorMetaUrl": "https://thor-f5.er.usgs.gov/ngtoc/metadata/waf/maps/historicaltopo/pdf/CO/100000/CO_Denver_West_403028_1983_100000_geo.xml",
+    "publicationDate": "1983-01-01",
+    "lastUpdated": "2025-09-18T03:32:16.246-06:00",
+    "dateCreated": "2018-02-18T18:21:20.692-07:00",
+    "sizeInBytes": 22270957,
+    "extent": "30 x 60 minute",
+    "format": "GeoPDF, GeoTIFF",
+    "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_geo.pdf",
+    "downloadURLRaster": null,
+    "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_tn.jpg",
+    "downloadLazURL": null,
+    "urls": {
+      "GeoPDF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_geo.pdf",
+      "GeoTIFF": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/GeoTIFF/CO/CO_Denver%20West_403028_1983_100000_geo.tif"
+    },
+    "datasets": [],
+    "boundingBox": {
+      "minX": -106.0,
+      "maxX": -105.0,
+      "minY": 39.5,
+      "maxY": 40.0
+    },
+    "bestFitIndex": 0.0,
+    "body": "USGS Historical Quadrangle in GeoPDF.",
+    "processingUrl": "processingUrl",
+    "modificationInfo": "2025-09-18"
+  },
+  "capturedAt": "2026-10-20T07:22:04.973199+00:00",
+  "rawPath": "raw/tnm-den-1983-a850c76e6941.pdf",
+  "bodySha256": "a850c76e694157f793dc1656b2962817544b5cb1b350bf0be922151ae81bd3ec",
+  "bytes": 22292725
+}

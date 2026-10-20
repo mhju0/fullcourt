@@ -1,0 +1,815 @@
+{
+  "url": "https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer/5/query?where=gaz_name+LIKE+%27%25Coliseum%25%27+OR+gaz_name+LIKE+%27%25Arena%25%27+OR+gaz_name+LIKE+%27%25Boston+Garden%25%27&outFields=%2A&outSR=4326&f=json",
+  "data": {
+    "displayFieldName": "gaz_name",
+    "fieldAliases": {
+      "OBJECTID": "OBJECTID",
+      "gaz_id": "gaz_id",
+      "gaz_name": "gaz_name",
+      "gaz_featureclass": "gaz_featureclass",
+      "fcode": "fcode",
+      "state_alpha": "state_alpha",
+      "county_name": "county_name",
+      "objectid_1": "objectid_1",
+      "isunknowncoords": "isunknowncoords"
+    },
+    "geometryType": "esriGeometryMultipoint",
+    "spatialReference": {
+      "wkid": 4326,
+      "latestWkid": 4326
+    },
+    "fields": [
+      {
+        "name": "OBJECTID",
+        "type": "esriFieldTypeOID",
+        "alias": "OBJECTID"
+      },
+      {
+        "name": "gaz_id",
+        "type": "esriFieldTypeInteger",
+        "alias": "gaz_id"
+      },
+      {
+        "name": "gaz_name",
+        "type": "esriFieldTypeString",
+        "alias": "gaz_name",
+        "length": 120
+      },
+      {
+        "name": "gaz_featureclass",
+        "type": "esriFieldTypeString",
+        "alias": "gaz_featureclass",
+        "length": 50
+      },
+      {
+        "name": "fcode",
+        "type": "esriFieldTypeInteger",
+        "alias": "fcode"
+      },
+      {
+        "name": "state_alpha",
+        "type": "esriFieldTypeString",
+        "alias": "state_alpha",
+        "length": 1073741822
+      },
+      {
+        "name": "county_name",
+        "type": "esriFieldTypeString",
+        "alias": "county_name",
+        "length": 100
+      },
+      {
+        "name": "objectid_1",
+        "type": "esriFieldTypeInteger",
+        "alias": "objectid_1"
+      },
+      {
+        "name": "isunknowncoords",
+        "type": "esriFieldTypeInteger",
+        "alias": "isunknowncoords"
+      }
+    ],
+    "features": [
+      {
+        "attributes": {
+          "OBJECTID": 19992,
+          "gaz_id": 900127,
+          "gaz_name": "Arena Canyon",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "NM",
+          "county_name": "San Juan",
+          "objectid_1": 273574,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -107.7201572271706,
+              36.91130148966214
+            ],
+            [
+              -107.66708877206088,
+              36.92177214676945
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 21969,
+          "gaz_id": 1611764,
+          "gaz_name": "Punta Arenas",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "PR",
+          "county_name": "Cabo Rojo",
+          "objectid_1": 511775,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -67.18573430675376,
+              18.136626899160756
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 35125,
+          "gaz_id": 1448293,
+          "gaz_name": "Coliseum",
+          "gaz_featureclass": "Pillar",
+          "fcode": 15038,
+          "state_alpha": "UT",
+          "county_name": "Garfield",
+          "objectid_1": 1338141,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -112.13659400833586,
+              37.638044354491306
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 38479,
+          "gaz_id": 247824,
+          "gaz_name": "Punta Arena",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "CA",
+          "county_name": "Santa Barbara",
+          "objectid_1": 1225259,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -119.81791883929412,
+              33.960010557258215
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 46852,
+          "gaz_id": 1611954,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Vega Baja",
+          "objectid_1": 1507887,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.39536518115841,
+              18.380420621626545
+            ],
+            [
+              -66.4032372787916,
+              18.376736992493154
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 54112,
+          "gaz_id": 1611953,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "San Lorenzo",
+          "objectid_1": 1506241,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.98703339508857,
+              18.10943541380183
+            ],
+            [
+              -65.970863758602,
+              18.102747298738066
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 77873,
+          "gaz_id": 1613221,
+          "gaz_name": "Quebrada Arena",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Aguas Buenas",
+          "objectid_1": 1501913,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.04863310014593,
+              18.294411228583343
+            ],
+            [
+              -66.0663728812564,
+              18.30319858968432
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 77874,
+          "gaz_id": 1613221,
+          "gaz_name": "Quebrada Arena",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "San Juan",
+          "objectid_1": 1501913,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.04863310014593,
+              18.294411228583343
+            ],
+            [
+              -66.0663728812564,
+              18.30319858968432
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 77875,
+          "gaz_id": 1613221,
+          "gaz_name": "Quebrada Arena",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Caguas",
+          "objectid_1": 1501913,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.04863310014593,
+              18.294411228583343
+            ],
+            [
+              -66.0663728812564,
+              18.30319858968432
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 83448,
+          "gaz_id": 1560931,
+          "gaz_name": "Arena Prairie",
+          "gaz_featureclass": "Flat",
+          "fcode": 15028,
+          "state_alpha": "WI",
+          "county_name": "Iowa",
+          "objectid_1": 503818,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -89.96318587189523,
+              43.17555573263328
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 100874,
+          "gaz_id": 371286,
+          "gaz_name": "Arena Valley",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "ID",
+          "county_name": "Canyon",
+          "objectid_1": 1880823,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -117.02587964395508,
+              43.68994921271892
+            ],
+            [
+              -116.95281330991027,
+              43.710503652364444
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 114983,
+          "gaz_id": 1613193,
+          "gaz_name": "Punta Arenas",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "PR",
+          "county_name": "Mayag\u00fcez",
+          "objectid_1": 1311575,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -67.94546314037785,
+              18.082736372311775
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 117428,
+          "gaz_id": 2710000,
+          "gaz_name": "Point Arena Arch",
+          "gaz_featureclass": "Arch",
+          "fcode": 15002,
+          "state_alpha": "CA",
+          "county_name": "Mendocino",
+          "objectid_1": 1268346,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -123.73084684943842,
+              38.93917163614519
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 127035,
+          "gaz_id": 1613222,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Sabana Grande",
+          "objectid_1": 1509889,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.90512656971327,
+              18.022034569234165
+            ],
+            [
+              -66.91460582256002,
+              18.0343703554587
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 127036,
+          "gaz_id": 1613222,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Gu\u00e1nica",
+          "objectid_1": 1509889,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.90512656971327,
+              18.022034569234165
+            ],
+            [
+              -66.91460582256002,
+              18.0343703554587
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 145014,
+          "gaz_id": 1612955,
+          "gaz_name": "Punta Arenas",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "PR",
+          "county_name": "Vieques",
+          "objectid_1": 2197583,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.57710260781305,
+              18.11913221986982
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 146348,
+          "gaz_id": 255523,
+          "gaz_name": "La Arena",
+          "gaz_featureclass": "Flat",
+          "fcode": 15028,
+          "state_alpha": "CA",
+          "county_name": "Kern",
+          "objectid_1": 68359,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -119.90097971240903,
+              35.77496483583798
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 148891,
+          "gaz_id": 253765,
+          "gaz_name": "Point Arena",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "CA",
+          "county_name": "Mendocino",
+          "objectid_1": 1383231,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -123.74142215293296,
+              38.955747336102945
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 168964,
+          "gaz_id": 1611958,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Maunabo",
+          "objectid_1": 1507990,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.89634608392626,
+              17.99073781953219
+            ],
+            [
+              -65.89704496064091,
+              18.0325755324045
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 170233,
+          "gaz_id": 1991890,
+          "gaz_name": "Playa Punta Arenas",
+          "gaz_featureclass": "Beach",
+          "fcode": 15012,
+          "state_alpha": "PR",
+          "county_name": "Mayag\u00fcez",
+          "objectid_1": 625476,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -67.1835120058949,
+              18.138015699587598
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 179039,
+          "gaz_id": 270263,
+          "gaz_name": "Ca\u00f1ada Arena",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "CA",
+          "county_name": "Santa Barbara",
+          "objectid_1": 2285313,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -120.22824568838853,
+              34.76276607199365
+            ],
+            [
+              -120.21145718094314,
+              34.78465812460212
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 188415,
+          "gaz_id": 1611956,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Utuado",
+          "objectid_1": 1506242,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.7220051212164,
+              18.259084817757657
+            ],
+            [
+              -66.7000740749764,
+              18.24485229389909
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 192035,
+          "gaz_id": 218357,
+          "gaz_name": "Arena Rock",
+          "gaz_featureclass": "Island",
+          "fcode": 15032,
+          "state_alpha": "CA",
+          "county_name": "Mendocino",
+          "objectid_1": 737775,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -123.74892285648498,
+              38.975747037015545
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 199434,
+          "gaz_id": 1611763,
+          "gaz_name": "Punta Arenas",
+          "gaz_featureclass": "Cape",
+          "fcode": 15018,
+          "state_alpha": "PR",
+          "county_name": "Salinas",
+          "objectid_1": 1308863,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.28905542609513,
+              17.94274805597451
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 199467,
+          "gaz_id": 1611955,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Las Piedras",
+          "objectid_1": 1507888,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.88334757674941,
+              18.23158526148207
+            ],
+            [
+              -65.85598973062294,
+              18.191736466139773
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 199468,
+          "gaz_id": 1611955,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Juncos",
+          "objectid_1": 1507888,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.88334757674941,
+              18.23158526148207
+            ],
+            [
+              -65.85598973062294,
+              18.191736466139773
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 218786,
+          "gaz_id": 1611959,
+          "gaz_name": "Quebrada Arenas Chiquita",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "San Lorenzo",
+          "objectid_1": 1507889,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -65.98177453434616,
+              18.12441229779093
+            ],
+            [
+              -65.96680692545641,
+              18.1147518678641
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 220339,
+          "gaz_id": 907673,
+          "gaz_name": "La Loma de Arena",
+          "gaz_featureclass": "Summit",
+          "fcode": 15048,
+          "state_alpha": "NM",
+          "county_name": "Rio Arriba",
+          "objectid_1": 1819355,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -106.33144050651039,
+              36.18942814992494
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 229682,
+          "gaz_id": 1611957,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Toa Alta",
+          "objectid_1": 1506243,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.27200345086176,
+              18.38403043268007
+            ],
+            [
+              -66.28003037762574,
+              18.349990915924014
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 229683,
+          "gaz_id": 1611957,
+          "gaz_name": "Quebrada Arenas",
+          "gaz_featureclass": "Valley",
+          "fcode": 15050,
+          "state_alpha": "PR",
+          "county_name": "Dorado",
+          "objectid_1": 1506243,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.27200345086176,
+              18.38403043268007
+            ],
+            [
+              -66.28003037762574,
+              18.349990915924014
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 236521,
+          "gaz_id": 1991940,
+          "gaz_name": "Puntas Arenas Beach",
+          "gaz_featureclass": "Beach",
+          "fcode": 15012,
+          "state_alpha": "PR",
+          "county_name": "Mayag\u00fcez",
+          "objectid_1": 626642,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -67.18323430609784,
+              18.16051470684006
+            ]
+          ]
+        }
+      },
+      {
+        "attributes": {
+          "OBJECTID": 239938,
+          "gaz_id": 1609809,
+          "gaz_name": "Cayo Arenas",
+          "gaz_featureclass": "Island",
+          "fcode": 15032,
+          "state_alpha": "PR",
+          "county_name": "Ponce",
+          "objectid_1": 1383096,
+          "isunknowncoords": 2
+        },
+        "geometry": {
+          "points": [
+            [
+              -66.67406094484649,
+              17.959692754801406
+            ]
+          ]
+        }
+      }
+    ]
+  }
+}

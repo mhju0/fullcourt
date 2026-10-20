@@ -1,0 +1,644 @@
+{
+  "manifestSha256": "69582d522ef03055cf093ec7cd83438d1eedd6bbbd076ad50ab75c1461ef0bd0",
+  "checked": 78,
+  "passed": 78,
+  "note": "Identity/date/final/scores verified; arena labels are not assumed historically correct. First/last extremality remains conditioned on the separately researched era and fixture exception inventory.",
+  "aliases": {
+    "PHL": "PHI",
+    "GOS": "GSW",
+    "SAN": "SAS",
+    "UTH": "UTA",
+    "SEA": "OKC",
+    "VAN": "MEM",
+    "NOH": "NOP",
+    "NOK": "NOP",
+    "NJN": "BKN",
+    "CHH": "CHA"
+  },
+  "checks": [
+    {
+      "externalId": "0028500017",
+      "date": "1985-10-26",
+      "arenaName": "Reunion Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500017-bf3d2a68bbc2.html.gz",
+      "bodySha256": "bf3d2a68bbc21fc48a1770573f617351769442533bdc3491b86dc55ddc781dca"
+    },
+    {
+      "externalId": "0040000058",
+      "date": "2001-05-12",
+      "arenaName": "Reunion Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0040000058-6c79787c95ee.html.gz",
+      "bodySha256": "6c79787c95ee4904a7514c3910eae6af750ff7f62f64af8ccc16ebb1c0dbed26"
+    },
+    {
+      "externalId": "0020100006",
+      "date": "2001-10-30",
+      "arenaName": "Reunion Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020100006-af77cb504d92.html.gz",
+      "bodySha256": "af77cb504d9246d2b7d86454cb9c11d14b174153391600f1a0ed6972582f223c"
+    },
+    {
+      "externalId": "0022501193",
+      "date": "2026-04-12",
+      "arenaName": "American Airlines Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501193-10d4c07b848a.html.gz",
+      "bodySha256": "10d4c07b848ac470a50ceba6fb95373f07a9bfc16d76d29396fa37d6615f2ab2"
+    },
+    {
+      "externalId": "0028500018",
+      "date": "1985-10-26",
+      "arenaName": "McNichols Sports Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500018-7e2e1d96abca.html.gz",
+      "bodySha256": "7e2e1d96abca62cf760f68df62028349c453232c4050173e1966b648f0be56ca"
+    },
+    {
+      "externalId": "0029800720",
+      "date": "1999-05-05",
+      "arenaName": "McNichols Sports Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029800720-1e65ed28de10.html.gz",
+      "bodySha256": "1e65ed28de10d3c3ac29b943fd7119a07f84eba2c10a49f8ac2e8061cb6b6d63"
+    },
+    {
+      "externalId": "0029900010",
+      "date": "1999-11-02",
+      "arenaName": "Pepsi Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029900010-980e72b12d05.html.gz",
+      "bodySha256": "980e72b12d056936c5899c96944b9399beaa4e748d147cd9ed916560c70d286b"
+    },
+    {
+      "externalId": "0042500165",
+      "date": "2026-04-27",
+      "arenaName": "Ball Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500165-a38b55d2f7b5.html.gz",
+      "bodySha256": "a38b55d2f7b511395e4efb9c43e40a9afa0768f49e3f09e141aedd484bd74f3b"
+    },
+    {
+      "externalId": "0028500008",
+      "date": "1985-10-25",
+      "arenaName": "San Jose Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500008-6b628032bd5e.html.gz",
+      "bodySha256": "6b628032bd5e0388bfbc7df92f9aa16deba512b92990919f6c0523a1eaa3f06b"
+    },
+    {
+      "externalId": "0029501163",
+      "date": "1996-04-19",
+      "arenaName": "San Jose Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029501163-f0e6eceadb4e.html.gz",
+      "bodySha256": "f0e6eceadb4ec1927dcd68b12a5deb02a7178c40519362252e50c64033e4543e"
+    },
+    {
+      "externalId": "0029600013",
+      "date": "1996-11-01",
+      "arenaName": "ORACLE Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029600013-5c8cab1f2614.html.gz",
+      "bodySha256": "5c8cab1f2614bbfdc5e8928f8a75fcc57333dc071eb0079e716c23fe145a8d51"
+    },
+    {
+      "externalId": "0029601180",
+      "date": "1997-04-19",
+      "arenaName": "ORACLE Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029601180-7b6e115a3c4f.html.gz",
+      "bodySha256": "7b6e115a3c4fb05ddf3056647febf7369664d22f41e75dc7d9f3f5d0135200a8"
+    },
+    {
+      "externalId": "0029700074",
+      "date": "1997-11-08",
+      "arenaName": "ORACLE Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029700074-bd4847fcb7ad.html.gz",
+      "bodySha256": "bd4847fcb7ad03a20adfc0a0f895fc1f1f5f676a1bbbacaba7b82ce977e7be56"
+    },
+    {
+      "externalId": "0041800406",
+      "date": "2019-06-13",
+      "arenaName": "ORACLE Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0041800406-fa38074f8ddd.html.gz",
+      "bodySha256": "fa38074f8ddd44ae0a8cac82b0455f52d92fde8686f7f660fdc829bebfe3f8c4"
+    },
+    {
+      "externalId": "0021900016",
+      "date": "2019-10-24",
+      "arenaName": "Chase Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0021900016-d36c2daf562b.html.gz",
+      "bodySha256": "d36c2daf562bd4f3d4cccd074263504bd11e1231a6fff3383ed8be46476c1b67"
+    },
+    {
+      "externalId": "0022501170",
+      "date": "2026-04-09",
+      "arenaName": "Chase Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501170-abbc92355c92.html.gz",
+      "bodySha256": "abbc92355c920936d26b57ec66015d6f94c8690fc0aecc2be7550cdda6dc3f10"
+    },
+    {
+      "externalId": "0028500022",
+      "date": "1985-10-29",
+      "arenaName": "Compaq Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500022-6dec0e90d634.html.gz",
+      "bodySha256": "6dec0e90d634a94a81f1eeab71c97ae964d1b99bac2870822887b0e9fb8ea124"
+    },
+    {
+      "externalId": "0020201174",
+      "date": "2003-04-15",
+      "arenaName": "Compaq Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020201174-87f3e5cf6d73.html.gz",
+      "bodySha256": "87f3e5cf6d73b8903eb12311fca4f7962d1bb38af296db26a3f690003f123e0e"
+    },
+    {
+      "externalId": "0020300017",
+      "date": "2003-10-30",
+      "arenaName": "Toyota Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020300017-e8be72edb5c7.html.gz",
+      "bodySha256": "e8be72edb5c7f7ba02eaaba01c5f8dbe18e37403be686f8b4ccc06a1fc533e75"
+    },
+    {
+      "externalId": "0042500176",
+      "date": "2026-05-01",
+      "arenaName": "Toyota Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500176-ab7ca0908b7d.html.gz",
+      "bodySha256": "ab7ca0908b7d0dba5e64c83d67cd87922420af2cd7443f934a3a35e242a1b845"
+    },
+    {
+      "externalId": "0028500015",
+      "date": "1985-10-26",
+      "arenaName": "L.A. Memorial Sports Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500015-48ec8cf7909f.html.gz",
+      "bodySha256": "48ec8cf7909f42d4cfb01236575f974d649c63c13d4945d6f1e798b226cbe3fa"
+    },
+    {
+      "externalId": "0029800722",
+      "date": "1999-05-05",
+      "arenaName": "Sports Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029800722-1ad0ca5aa729.html.gz",
+      "bodySha256": "1ad0ca5aa7299b83aa5c30012c8b465499cec64e4bbc46de5299866d4aafdd39"
+    },
+    {
+      "externalId": "0029900012",
+      "date": "1999-11-02",
+      "arenaName": "STAPLES Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029900012-885ce2a12485.html.gz",
+      "bodySha256": "885ce2a1248550eb9fe73c4a047ac94b054479abd710651f27fbcaf1a3b874c5"
+    },
+    {
+      "externalId": "0042300175",
+      "date": "2024-05-01",
+      "arenaName": "Crypto.com Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042300175-eaf363b6477f.html.gz",
+      "bodySha256": "eaf363b6477fe31042b3cd704b0246e08176e3812e68585788082016160ed0f1"
+    },
+    {
+      "externalId": "0022400071",
+      "date": "2024-10-23",
+      "arenaName": "Intuit Dome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022400071-97a20ae68009.html.gz",
+      "bodySha256": "97a20ae68009b3c3acc31528fde3cd12082e9e7484e449f7b1e476bdd6eb60ed"
+    },
+    {
+      "externalId": "0052500131",
+      "date": "2026-04-15",
+      "arenaName": "Intuit Dome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0052500131-606683756835.html.gz",
+      "bodySha256": "6066837568352e69364acbec680e4e12518f51cba7cb69b74cff09660acf7eb0"
+    },
+    {
+      "externalId": "0028500061",
+      "date": "1985-11-05",
+      "arenaName": "Great Western Forum",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500061-36b0099fc7cc.html.gz",
+      "bodySha256": "36b0099fc7cc77d050933f56ea127078ab773f313c15c8a9953ed81b938c1f97"
+    },
+    {
+      "externalId": "0049800054",
+      "date": "1999-05-23",
+      "arenaName": "Great Western Forum",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049800054-95fb4d106f34.html.gz",
+      "bodySha256": "95fb4d106f34d6e38ab16ffb6bf48548ef1367843d3724bbe417ba84c3096517"
+    },
+    {
+      "externalId": "0029900018",
+      "date": "1999-11-03",
+      "arenaName": "STAPLES Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029900018-5e254bd986e0.html.gz",
+      "bodySha256": "5e254bd986e00f6184111ac181da1e700a5f5e7e26deaaceaed4f1d44ed4a66d"
+    },
+    {
+      "externalId": "0042500224",
+      "date": "2026-05-11",
+      "arenaName": "Crypto.com Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500224-f983ef9488b7.html.gz",
+      "bodySha256": "f983ef9488b7c975091a3811e85f4f10739572a33b94a496c36249fa9e6938a6"
+    },
+    {
+      "externalId": "0029500026",
+      "date": "1995-11-05",
+      "arenaName": "GM Place",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029500026-dd834409565f.html.gz",
+      "bodySha256": "dd834409565fc318008ccd7dc283c908a0a304ddd0b73afba149e88160496b7e"
+    },
+    {
+      "externalId": "0020001153",
+      "date": "2001-04-14",
+      "arenaName": "GM Place",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020001153-b68143e9fd2e.html.gz",
+      "bodySha256": "b68143e9fd2ef905140792d15b4bf0f6dd90efdb44b73ee69d28608c73ceda05"
+    },
+    {
+      "externalId": "0020100020",
+      "date": "2001-11-01",
+      "arenaName": "Pyramid",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020100020-9dce05118e3a.html.gz",
+      "bodySha256": "9dce05118e3a79e52577b44cfc4005806d559e8b0dba6f1e8ebb49f59f224970"
+    },
+    {
+      "externalId": "0040300164",
+      "date": "2004-04-25",
+      "arenaName": "Pyramid",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0040300164-615b6d17c4d2.html.gz",
+      "bodySha256": "615b6d17c4d25dbb1f6c9f1cbccef68e31b8786a3bca68fbdf25f7f06f8315bc"
+    },
+    {
+      "externalId": "0020400009",
+      "date": "2004-11-03",
+      "arenaName": "FedExForum",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020400009-b2ee1a39839a.html.gz",
+      "bodySha256": "b2ee1a39839adf489dfef45c904310f55c9e9a4f472aa20aba09f824de588660"
+    },
+    {
+      "externalId": "0022501145",
+      "date": "2026-04-06",
+      "arenaName": "FedExForum",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501145-2887ac2c2b53.html.gz",
+      "bodySha256": "2887ac2c2b53dd9c78875de5c26ba02792fba182d86b6ebbcec0cad9ca4b96ee"
+    },
+    {
+      "externalId": "0028900035",
+      "date": "1989-11-08",
+      "arenaName": "Metro Dome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028900035-6b21d8368ef3.html.gz",
+      "bodySha256": "6b21d8368ef35c44692f847571b00268be03dfd1aa8a794553ee238f03d4b4c6"
+    },
+    {
+      "externalId": "0028901061",
+      "date": "1990-04-17",
+      "arenaName": "Metro Dome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028901061-640f52b1fac3.html.gz",
+      "bodySha256": "640f52b1fac32b016eb0fb25c3bcbc5440c38b99fe0d6e9b805c2746183d9982"
+    },
+    {
+      "externalId": "0029000007",
+      "date": "1990-11-02",
+      "arenaName": "Target Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029000007-1d9d01a87cb4.html.gz",
+      "bodySha256": "1d9d01a87cb48e6dc495216164056f2c7cd52a3c27c91f9329786584fdaffa90"
+    },
+    {
+      "externalId": "0042500236",
+      "date": "2026-05-15",
+      "arenaName": "Target Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500236-df0e07fea7bf.html.gz",
+      "bodySha256": "df0e07fea7bf46a4954d1645219265c9b746d359fe6c4aec29a1d33fd2ec852a"
+    },
+    {
+      "externalId": "0020200013",
+      "date": "2002-10-30",
+      "arenaName": "Smoothie King Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020200013-a0ff32e8b9bf.html.gz",
+      "bodySha256": "a0ff32e8b9bff7b0f99b50e401acf251e161488d3218c001ce247d405a9a7e7d"
+    },
+    {
+      "externalId": "0020401225",
+      "date": "2005-04-20",
+      "arenaName": "Smoothie King Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020401225-295643462c84.html.gz",
+      "bodySha256": "295643462c845db9b603ba63860cc576db212ab135aa21112c48a343f5cf9e01"
+    },
+    {
+      "externalId": "0020500025",
+      "date": "2005-11-01",
+      "arenaName": "Chesapeake Energy Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020500025-991d0e4c4917.html.gz",
+      "bodySha256": "991d0e4c491764cbf92000cb0269af36acb3c0a54dbb71e811fffbd590ef1f65"
+    },
+    {
+      "externalId": "0020601180",
+      "date": "2007-04-13",
+      "arenaName": "Chesapeake Energy Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020601180-9967153fa78d.html.gz",
+      "bodySha256": "9967153fa78d5dad7496ca8144bf738b9a4e1f5498d8b65137ce36a09700c279"
+    },
+    {
+      "externalId": "0020700010",
+      "date": "2007-10-31",
+      "arenaName": "Smoothie King Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020700010-c69a637f92ed.html.gz",
+      "bodySha256": "c69a637f92eda96057f8e3295ea9e3b9a84ef74e683b2f94a425cc192daf5317"
+    },
+    {
+      "externalId": "0022501153",
+      "date": "2026-04-07",
+      "arenaName": "Smoothie King Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501153-16e4798f965a.html.gz",
+      "bodySha256": "16e4798f965a5deb6f38e9df76c45c7ae850731afe3fff9a722d528222d8c8db"
+    },
+    {
+      "externalId": "0028500048",
+      "date": "1985-11-02",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500048-6f97430fd3ab.html.gz",
+      "bodySha256": "6f97430fd3ab6f3b3c2e94d8615d3c576759f89d21a2a32cdf4c41922a47d282"
+    },
+    {
+      "externalId": "0049300030",
+      "date": "1994-05-07",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049300030-7a8bd8ba7f83.html.gz",
+      "bodySha256": "7a8bd8ba7f83f0a200af56ab1689f9065db17cb626f3ebdef714945862bb859f"
+    },
+    {
+      "externalId": "0029400013",
+      "date": "1994-11-05",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029400013-2ec27a9bec50.html.gz",
+      "bodySha256": "2ec27a9bec500ded975a320e3fe6ddd87926ea4450accf43e3965ce41f3978bc"
+    },
+    {
+      "externalId": "0049400011",
+      "date": "1995-04-29",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049400011-c4a8ce73a502.html.gz",
+      "bodySha256": "c4a8ce73a50223f100a29e1bbec5960ca1f4a0d7b146f625afadce39ddc1039d"
+    },
+    {
+      "externalId": "0029500016",
+      "date": "1995-11-04",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029500016-2a678135c195.html.gz",
+      "bodySha256": "2a678135c19530b206ed2c198728d2338a1cbe585a314d42c80839f8bb23acf8"
+    },
+    {
+      "externalId": "0020701202",
+      "date": "2008-04-13",
+      "arenaName": "KeyArena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020701202-5eab35cf0422.html.gz",
+      "bodySha256": "5eab35cf04227b24c7b9071c5dd1ff74847ed82e82eb146528a55946aa977547"
+    },
+    {
+      "externalId": "0020800010",
+      "date": "2008-10-29",
+      "arenaName": "Chesapeake Energy Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020800010-4c40afa6fed7.html.gz",
+      "bodySha256": "4c40afa6fed712c65ca99473209e15c49083caf4c1b022602bbc0dfbc2d6f6e6"
+    },
+    {
+      "externalId": "0042500317",
+      "date": "2026-05-30",
+      "arenaName": "Paycom Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500317-2cdf8cc430f8.html.gz",
+      "bodySha256": "2cdf8cc430f8639288b0fe8db61742c66a82c6fa51f491677166da65c2a81921"
+    },
+    {
+      "externalId": "0028500026",
+      "date": "1985-10-29",
+      "arenaName": "US Airways Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500026-7a9ec2cf58e5.html.gz",
+      "bodySha256": "7a9ec2cf58e51f02a532c4a632319f811dd3de30c7094f12d34e84368fd57245"
+    },
+    {
+      "externalId": "0049100046",
+      "date": "1992-05-11",
+      "arenaName": "US Airways Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049100046-af19c7617f6c.html.gz",
+      "bodySha256": "af19c7617f6c8a40acd718c0dde401f3b55103e5e088b44143ae4b9e9ba97458"
+    },
+    {
+      "externalId": "0029200020",
+      "date": "1992-11-07",
+      "arenaName": "US Airways Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029200020-698cc22079c0.html.gz",
+      "bodySha256": "698cc22079c0ba0160abec2660a94b72c0f6fe7295aabf6c7c94fe2f6a4e117c"
+    },
+    {
+      "externalId": "0042500144",
+      "date": "2026-04-27",
+      "arenaName": "Mortgage Matchup Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500144-130942e59021.html.gz",
+      "bodySha256": "130942e590212b00acc2d65bbd69d8a8e3599f5cba03601d47b5ed3388845fc7"
+    },
+    {
+      "externalId": "0028500009",
+      "date": "1985-10-25",
+      "arenaName": "Moda Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500009-4862a94969fd.html.gz",
+      "bodySha256": "4862a94969fd9b28b975c3764cc07e54029fe3438e700baa21a8be947432ca60"
+    },
+    {
+      "externalId": "0049400021",
+      "date": "1995-05-02",
+      "arenaName": "Moda Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049400021-422060026f1d.html.gz",
+      "bodySha256": "422060026f1dfab28a70d5b1e577a7ab7371aa4801225c0c44c9123406f9f2e5"
+    },
+    {
+      "externalId": "0029500007",
+      "date": "1995-11-03",
+      "arenaName": "Moda Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029500007-f6157697bdd4.html.gz",
+      "bodySha256": "f6157697bdd456aad4505ef68854f48a9cab15701c931f1eaaeb89c355e01c5a"
+    },
+    {
+      "externalId": "0042500154",
+      "date": "2026-04-26",
+      "arenaName": "Moda Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500154-7ed335a9da9f.html.gz",
+      "bodySha256": "7ed335a9da9f013f4f205b94f12156571a26caf1cae665db69f6c1c94e4521a4"
+    },
+    {
+      "externalId": "0028500006",
+      "date": "1985-10-25",
+      "arenaName": "Sleep Train Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500006-5aeccd9b138f.html.gz",
+      "bodySha256": "5aeccd9b138fd9c8f300710650e5c3ffcd9e8a76f5e0969a778d98f19bbc81e1"
+    },
+    {
+      "externalId": "0028700937",
+      "date": "1988-04-23",
+      "arenaName": "Sleep Train Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028700937-5dee0218e357.html.gz",
+      "bodySha256": "5dee0218e357894db83c8c61e942ba24ce62f226e341da6bb038ee2147bb2890"
+    },
+    {
+      "externalId": "0028800026",
+      "date": "1988-11-08",
+      "arenaName": "Sleep Train Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028800026-889e39b635f0.html.gz",
+      "bodySha256": "889e39b635f0bb41bc33c3f031f9decae4423dc7d7b425476475d552730d7a80"
+    },
+    {
+      "externalId": "0021501193",
+      "date": "2016-04-09",
+      "arenaName": "Sleep Train Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0021501193-269216be09f9.html.gz",
+      "bodySha256": "269216be09f96e4863e560f5fca1aa9b34e652ca0531f736153453b0df809c22"
+    },
+    {
+      "externalId": "0021600016",
+      "date": "2016-10-27",
+      "arenaName": "Golden 1 Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0021600016-56a36f20e04c.html.gz",
+      "bodySha256": "56a36f20e04cedeb3a28b8a50aa8456a82c8b397cc2ba85d9d14c3a8e3203183"
+    },
+    {
+      "externalId": "0022501184",
+      "date": "2026-04-10",
+      "arenaName": "Golden 1 Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501184-2db6c313f17a.html.gz",
+      "bodySha256": "2db6c313f17ace957cb5991b199d35d7e6c7d95040f8df6797a505714084305a"
+    },
+    {
+      "externalId": "0028500019",
+      "date": "1985-10-26",
+      "arenaName": "Alamodome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500019-690275d507bc.html.gz",
+      "bodySha256": "690275d507bcdd17799e7f94caaeeee66d1bba277c8f43b3d1f0e79f7e4c9544"
+    },
+    {
+      "externalId": "0049200055",
+      "date": "1993-05-20",
+      "arenaName": "US Airways Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049200055-edbb10fa22cd.html.gz",
+      "bodySha256": "edbb10fa22cdf3a0fb22c83a4bf4326a287ab2d5896e015c9818f8300860ef58"
+    },
+    {
+      "externalId": "0029300012",
+      "date": "1993-11-05",
+      "arenaName": "Alamodome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029300012-6c5a5fb389ff.html.gz",
+      "bodySha256": "6c5a5fb389ff09395a11b9be43f152104f92cffae104ccfb1d96d73a3ea5d0de"
+    },
+    {
+      "externalId": "0040100234",
+      "date": "2002-05-12",
+      "arenaName": "Alamodome",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0040100234-d2d0c6a34b6b.html.gz",
+      "bodySha256": "d2d0c6a34b6bec7f5da000a6a4accbb4fd9d34c0a55e0ec8700ab83e46bd90a4"
+    },
+    {
+      "externalId": "0020200026",
+      "date": "2002-11-01",
+      "arenaName": "AT&T Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0020200026-993001c4cf22.html.gz",
+      "bodySha256": "993001c4cf228eda33c64199af209edd3aa6c06b9f67db4eed6d7545b56fca37"
+    },
+    {
+      "externalId": "0042500405",
+      "date": "2026-06-13",
+      "arenaName": "Frost Bank Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0042500405-ae87bf207e7c.html.gz",
+      "bodySha256": "ae87bf207e7c183e835dc1c19232bfc8799862b1567e64698c8edc0a6734e7ea"
+    },
+    {
+      "externalId": "0028500011",
+      "date": "1985-10-25",
+      "arenaName": "EnergySolutions Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0028500011-b3cc649f1194.html.gz",
+      "bodySha256": "b3cc649f11949b9f094f676785cdac024b53573b28d555ad83c97602abce8c96"
+    },
+    {
+      "externalId": "0049000045",
+      "date": "1991-05-12",
+      "arenaName": "EnergySolutions Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0049000045-05dee5735720.html.gz",
+      "bodySha256": "05dee5735720faaf6a8e6585bb37a0f74b0cff923dc156b689f51ee65c434ee1"
+    },
+    {
+      "externalId": "0029100051",
+      "date": "1991-11-07",
+      "arenaName": "EnergySolutions Arena",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0029100051-44b884ea75b3.html.gz",
+      "bodySha256": "44b884ea75b3d388266b3530a220bcdd7c288d804ada793c9f6bab64c86ffb71"
+    },
+    {
+      "externalId": "0022501181",
+      "date": "2026-04-10",
+      "arenaName": "Delta Center",
+      "checksPassed": true,
+      "rawPath": "raw/boundary-0022501181-f84937911c44.html.gz",
+      "bodySha256": "f84937911c442a0c83c3e6f25b3d5a2e2d96691a16b6a48ef8cc49a4e26ece48"
+    }
+  ]
+}
