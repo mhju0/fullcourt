@@ -649,7 +649,8 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <Prose>
           Schedules, scores and results for completed seasons come from the NBA&rsquo;s own
           feeds; the current season&rsquo;s schedule and nightly scores come from ESPN. Archived
-          period scores and team minutes backfill confirmed historical overtime. NBA and venue
+          period scores and team minutes backfill confirmed historical overtime. Reviewed team
+          records and contemporary reports resolve specific archive conflicts. NBA and venue
           records supply accepted arena corrections; unverified tips and results are not guessed.
         </Prose>
         <Prose>
@@ -661,9 +662,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           remain great-circle estimates.
         </Prose>
         <Note>
-          Historical coverage is still uneven. Confirmed archived inputs improve earlier games,
-          but an unverified overtime zero remains <em>unknown</em>, not &ldquo;no overtime&rdquo;.
-          Missing tips use the existing fallback. A 1994 score and a 2024 score therefore are
+          Historical inputs come from different sources. Archived corrections restore verified
+          overtime and venues; older tip times remain incomplete and use the existing fallback.
+          A 1994 score and a 2024 score therefore are
           not built from identical information.
         </Note>
       </Section>

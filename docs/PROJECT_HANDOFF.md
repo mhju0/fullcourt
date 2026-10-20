@@ -71,80 +71,40 @@ Unresolved/standing dispositions retained from these entries:
 - ADR 0006 keeps original ablation evidence plus the October 18 offline-fidelity amendment;
   no fatigue coefficients changed. Unconfirmed early overtime coverage remains a source limit.
 
-## Summary of the entries from 2026-10-07 to 2026-10-18
+## Condensed 2026-10-07 to 2026-10-19 record — 2026-10-20
 
-Condensed again on 2026-10-19; DECISIONS.md D-78 to D-109, dated reports and Git retain detail.
+D-78–D-119, Git and dated reports retain the Games hierarchy, status/rescore locking,
+accessibility/motion, fatigue/date rounding, dependency and readability deliveries. The
+[remediation](reports/2026-10-11-remediation/index.html), [accessibility audit](reports/2026-10-14-accessibility-usability.html)
+and [plans](../plans/README.md) retain evidence. PR #174 shipped dependencies and explicit
+postponed/cancelled states; #175 shipped the audit/sky-tinted neutrals; #176 shipped table A,
+recent-ten homepage comparison and optional 5+ history; #177/#178 shipped quiet publication
+guides, prior-season links and chronological upcoming rested-home edges. Later D-127 restores
+the historical homepage period. Antislop applies throughout. Odds feeds remain excluded;
+filter sharing, extra chart actions and configurable Schedule columns remain deferred.
 
-- D-79–D-109 and their Git history retain the Games hierarchy, status/rescore, writer locking,
-accessibility/motion, fatigue/date rounding, historical naming, calibrated rest bins and
-dependency deliveries. [Remediation](reports/2026-10-11-remediation/index.html) retains the
-launch statuses; [accessibility audit](reports/2026-10-14-accessibility-usability.html) and
-[plans](../plans/README.md) retain UI evidence. The owner excluded odds feeds. Ratified
-coefficients and module-specific cohort rules remain in their ADRs.
+October 19 is the owner's official v1.0.0 release date (D-117), baseline 114617d; subsequent
+releases receive incremented versions and immutable tags. D-118 / v1.0.1 keeps current-season
+Shooting in Awaiting results with explicit prior-season navigation. D-119 / v1.0.2 removes
+the duplicate chart dropdown, adds a pooled five-season home-rate average, separates historical
+picks from known-result playoff fits and adds a league-centered team gap key. The prior
+completed-slate prerequisite is superseded; opening-night observation is still required.
 
-Still open from those entries:
+Standing limits preserved from those entries:
 
-- Never seen in production: a real slate's game status (only a mocked clock), the D-83 rescore,
-  physical iPhone and VoiceOver use, native zoom, capacity, and real Supabase delivery.
-- Explicit postponed/cancelled lifecycle support shipped in PR #174; an actual provider
-  event remains future observation. Equal-tip ordering is deterministic; ESPN equivalence remains an inference, not a contract.
-  The owner kept the scheduler/monitor with variable lateness documented (D-110).
-- The two previously load-sensitive offseason Games cases and the retracting-header navigation
-  case passed targeted checks on the built candidate; no speculative timing changes were made.
-- Officiating item 24: see the current source/reproduction checkpoint in ROADMAP.md.
-  Odds-feed item 18 is closed: the owner excluded feeds from scope (Oct 14 report, row 18).
-- The nine-item accessibility audit is historical. The owner selected defect fixes and deferred
-  optional chart actions and filter sharing on 2026-10-18; current acceptance is in ROADMAP.md.
-- Schedule Edge's capped net days-off wording is equivalent to its days-since arithmetic:
-  subtracting one from both capped sides cancels. Preserve the current calculation.
-- Vercel connector access remains limited; authenticated Chrome dashboard access works.
-  Production 69b5e02 was Ready on 2026-10-18. Both Dependabot PRs have Ready previews.
-- Re-key the ESPN-seeded 2026-27 games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
-- Supabase: the owner will revisit the Pro plan around 2026-11-05, after seeing in-season egress.
-
-## Condensed release history — 2026-10-18 to 2026-10-19
-
-PR #174 merged Next.js/dependency, accessibility and explicit postponed/cancelled support;
-PR #175 delivered the independent audit and sky-tinted neutrals (D-111). PR #176 delivered
-the recent-ten-season homepage comparison, table A and optional raw 5+ Home-court history
-(D-112–D-114), merged as `6ac5c27`. Their dated reviews retain verification evidence.
-The owner selected antislop throughout and kept the existing scheduler/monitor. Optional URL
-filters, extra chart actions and configurable columns remain deferred. Client Sentry
-symbolication was verified; server-event symbolication remains unobserved. Fresh NBA source
-reproduction and the full cached Legends rebuild closed prior provenance gaps; published
-figures and ratified model coefficients did not change. Opening-night pipeline observation,
-human/device checks, December fixtures, canonical-ID re-key and the November 5 plan review
-remain open as listed above. Git/provider state takes precedence over these historical notes.
-PR #177 added quiet publication-specific availability guides, internal readiness, prior-season
-links and chronological large rested-home edges (D-115–D-116); PR #178 fixed the Officiating
-guide heading and wrapping. Their dated reviews retain acceptance evidence.
-
-## Official v1.0.0 release — 2026-10-19
-
-The owner declared October 19, 2026 the official release date and the current site
-v1.0.0 (D-117), superseding the previous completed-slate prerequisite. Version and
-release history now start at 1.0.0 in package.json and CHANGELOG.md; future production
-releases increment the version and receive immutable tags/GitHub release records.
-The product baseline is 114617d. Release designation does not mark the remaining
-opening-night, physical-device or source-publication checks complete.
-
-## Shooting awaiting view — 2026-10-19
-
-D-118 records the owner’s v1.0.1 follow-up: default to the current season and show
-only its Awaiting results view until usable publication, with explicit prior-season
-navigation. Historical tables remain available by selection; no automatic older
-table beneath the notice. Readiness and career guards remain. Delivery/verification
-are recorded by the patch PR, version tag and GitHub release.
-
-## Approved readability refinements — 2026-10-19
-
-D-119 records owner approval of mock controls B, trend A, playoffs A and team
-records A from prototype 0719987. v1.0.2 removes the duplicate chart dropdown, adds
-a pooled five-completed-season home-rate average, separates historical picks from
-known-results playoff fits, and adds a league-centered team gap key. Team gap
-rounding uses original counts. Ratified coefficients, cohorts and generated data
-remain unchanged. Exact PR, review, checks and matching deployment own release
-acceptance; the prototype is retained separately as design evidence.
+- Observe a real slate, provider status/postponement events and the D-83 rescore in production;
+  offseason/mocked-clock checks do not establish those outcomes. Equal-tip order is deterministic;
+  ESPN equivalence remains an inference. The owner kept scheduler/monitor lateness (D-110).
+- Physical iPhone/VoiceOver/native zoom, capacity and real Supabase delivery remain unverified.
+  Previously load-sensitive Games and retracting-header cases passed targeted built checks.
+- Officiating item 24: current source/reproduction checkpoint is in ROADMAP.md. Fresh NBA source
+  reproduction and cached Legends rebuild closed prior provenance gaps. No coefficient change.
+- Vercel connector access remains limited; authenticated browser/CLI are usable. Client Sentry
+  symbolication is verified; server-event symbolication remains unobserved.
+- Re-key ESPN-seeded current-season games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
+  Future Cup/December assignments need rechecking; review Supabase Pro around November 5.
+- The nine-item accessibility audit is historical; current defect acceptance/deferred scope is
+  in ROADMAP.md. Schedule Edge net days-off subtraction remains equivalent to days-since arithmetic.
 
 ## Opening-quarter travel audit — 2026-10-20
 
@@ -222,3 +182,18 @@ separates current generated results, dated studies and retained source limits. P
 evidence owns exact-candidate review and deployed acceptance. v1.0.4/v1.0.5 are released
 with canonical verification; the serverless pool uses production-only transaction mode and
 verified TLS. Next: opening-night writes, future Cup assignments and human/device checks.
+
+## Numeric source follow-up in preparation — 2026-10-20
+
+D-129 / ADR 0015 close the bounded 5,815-game overtime source audit with retained NBA
+responses and 14 field-specific supplemental adjudications. The separate candidate corrects
+346 overtime inputs and 683 fatigue rows with unchanged coefficients/results/predictions/
+playoff tables. Its exact manifest passed independent semantic review, 16 unmocked PostgreSQL
+checks and independent before/after captures after real server restarts. All 15 producers,
+full tests/build, 86-API numeric parity and 61 browser tests pass; no production application
+is claimed. The [record](research/2026-10-20-overtime-correction/README.md)
+separates candidate numbers from live acceptance. Next: frozen-commit review, immediate
+owner approval, then
+coordinated production activation and readback. After this audit, the owner requests repository
+and local audit/script cleanup, preserving source evidence and rollback material while updating
+active tools. That cleanup is queued separately. Opening-night/device/Cup limits remain open.

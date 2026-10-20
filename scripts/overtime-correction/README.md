@@ -86,9 +86,8 @@ Strict raw NBA decisions and counts are preserved. The committed
 
 Every case pins its exact fixture, raw NBA body/gzip hashes, allowed discrepancy fields,
 strict reasons, final fact-file hash and corroborating primary-source byte hash. The
-checked-in skeleton intentionally has unfilled final fact hashes and press provenance;
-preparation refuses it until root completes the final offline source freeze and pins those
-fields. No generic “accept unknown” or tie/score-check bypass exists.
+checked-in adjudications include the final frozen fact hashes and reviewed press provenance.
+Preparation refuses missing bindings or different source bytes. No generic “accept unknown” or tie/score-check bypass exists.
 
 The loader exposes effective acceptance in `sourceProof.supplementalAcceptedGameIds`,
 `supplementalAccepted`, `supplementalPositiveOT`, `supplementalAdjudicationsSha256` and

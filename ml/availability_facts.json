@@ -23,7 +23,7 @@
     "eligibleTeamGames": 51662,
     "regressionGames": 25435,
     "regressionCohortSha256": "eacff9bc447d96a8887714bd441670f70ae7ac0bf8a5a92c9dd60f4ef6356d99",
-    "inputSha256": "5b6b5ad7e523781c9bfc44c38c7bb8de6e1c33f95f51dbdfce3869ceef3b24be"
+    "inputSha256": "81c761042466ad1564bb9824638cfd386a6f4f62604bc13ed43d12fefccde3e8"
   },
   "generatedFrom": "hoopR player box scores + games (final regular season only)",
   "sample": {

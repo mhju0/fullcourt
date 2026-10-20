@@ -122,3 +122,14 @@ filtered out played zero-shot games before calculating personal rest, and five a
 game IDs were absent from Availability's rolling histories. These are being repaired and
 measured separately in v1.0.4; the team-fatigue and database verification above remains
 valid. See the [player-source follow-up](2026-10-20-player-appearance-rest-correction.md).
+
+## Subsequent source audit — 2026-10-20
+
+The figures and limitations above record the v1.0.3 release, rather than a continuously
+updated total. A subsequent audit adjudicated all 5,815 previously unconfirmed overtime
+inputs and prepared a separate correction for 346 positive overtime counts. See the
+[overtime correction record](2026-10-20-overtime-correction/README.md) for its exact source
+evidence, changed cohorts and separate production-acceptance status. Primary records
+also support retaining the stored results for the 17 score observations; two internally
+conflicting NBA archive records remain documented. These findings do not rewrite the
+original release's frozen manifest or imply that the follow-up has been deployed.

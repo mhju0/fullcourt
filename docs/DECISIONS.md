@@ -1919,3 +1919,31 @@ generated results from dated archived research, observed events from modeled pro
 retrospective reconstructions from contemporaneously published forecasts. Fix explanations
 without modifying coefficients, artifacts or database records. Exact candidate review,
 preview and canonical verification remain delivery gates.
+
+## D-129 — Confirm historical overtime before publishing its downstream rates (2026-10-20)
+
+A fresh release audit reproduced the public arithmetic, then found that the remaining
+5,815 source-unconfirmed final games included genuine overtime stored as zero. Retained
+NBA box scores and independent review confirm 346 positive overtime corrections, including
+one five-overtime game. The original archive-only decisions retain 14 conflicts; exact,
+reviewed supplements confirm their duration from period/minute evidence plus official team
+records or contemporary score reports. No blanket source exception is introduced.
+
+[ADR 0015](adr/0015-historical-overtime-requires-period-evidence.md) defines the separate
+OT-only transition, complete engine replay, source-to-fresh-backup bridge, row preservation
+and recovery contract. The cumulative registry retains every earlier correction and four
+workload fixtures. Source decisions and the generated publication record live in the
+[correction report](research/2026-10-20-overtime-correction/README.md).
+
+The correction does not change game results, dates, coefficients, resolved predictions or
+playoff tables. Regenerate every fatigue-dependent publication, including schedule calibration
+and the archived market check. Keep the original fitting windows. The historical rates remain
+descriptive associations; the source repair does not establish a causal rest effect.
+
+The playoff coefficient table also needs explicit attribution to its separate L2, C=1
+interpretation fit. Its values are valid, but they are not the unregularized coefficients
+used to generate the displayed series probabilities.
+
+Production acceptance requires the exact frozen candidate review, local rollback/restart
+verification, immediate owner approval of the production update, and matching public data
+and deployment checks. Local preparation alone does not establish a repaired live site.

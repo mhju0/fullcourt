@@ -34,12 +34,12 @@ describe("the lift table derives from the pinned measurement", () => {
     const published = liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct);
 
     expect(published).toBe(1.2);
-    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.20, 2);
+    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.19, 2);
     expect(Math.abs(REST_STATE_LIFT_PP.restedHome - published)).toBeLessThan(0.1);
   });
 
   it("reads the home-tired row off the rested-visitor row, since they are the same games", () => {
-    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.39, 2);
+    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.36, 2);
     // The published lift subtracts two one-decimal rates, so it can sit up to 0.1 from the
     // count-based figure — the same bound the headline row above is held to.
     expect(
@@ -78,14 +78,14 @@ describe("the lift table derives from the pinned measurement", () => {
 
 describe("rest measured against home court", () => {
   it("states the two spans as one factor swapped each", () => {
-    expect(REST_SPAN_PP).toBeCloseTo(3.60, 2);
+    expect(REST_SPAN_PP).toBeCloseTo(3.55, 2);
     expect(HOME_COURT_SPAN_PP).toBeCloseTo(19.87, 2);
   });
 
   it("puts rest just under a fifth of home court", () => {
     expect(REST_SHARE_OF_HOME_COURT).toBeGreaterThan(0.15);
     expect(REST_SHARE_OF_HOME_COURT).toBeLessThan(0.2);
-    expect(REST_SHARE_OF_HOME_COURT).toBeCloseTo(0.181, 3);
+    expect(REST_SHARE_OF_HOME_COURT).toBeCloseTo(0.179, 3);
   });
 
   /**
@@ -174,13 +174,13 @@ describe("scheduleValueWins", () => {
     };
 
     // Independent wins-first calculation from the corrected producer cohort: 47,094 games,
-    // 28,225 home wins; the remaining no-edge bucket has 4,896 home wins in 8,308 games.
+    // 28,225 home wins; the remaining no-edge bucket has 4,899 home wins in 8,309 games.
     const expectedWins =
-      18 * (17190 / 28117) + 8 * (4896 / 8308) + 15 * (6139 / 10669) +
-      11 * (4530 / 10669) + 11 * (3412 / 8308) + 19 * (10927 / 28117);
+      18 * (17180 / 28109) + 8 * (4899 / 8309) + 15 * (6146 / 10676) +
+      11 * (4530 / 10676) + 11 * (3410 / 8309) + 19 * (10929 / 28109);
     // With 41 games at each venue, the venue-only expectation is exactly 41 wins.
     expect(scheduleValueWins(fixedSchedule)).toBeCloseTo(expectedWins - 41, 10);
-    expect(scheduleValueWins(fixedSchedule)).toBeCloseTo(-0.0777, 4);
+    expect(scheduleValueWins(fixedSchedule)).toBeCloseTo(-0.0773, 4);
     expect(Math.round(scheduleValueWins(fixedSchedule) * 10) / 10).toBe(-0.1);
   });
 

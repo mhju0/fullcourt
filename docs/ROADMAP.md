@@ -13,10 +13,15 @@ coefficients, resolved predictions and prior playoff revisions are preserved. Th
 streak, venue, overtime, type, tip, workload-context and dependent-publication repairs
 listed in the dated audit snapshots below.
 
-Open source limits: 17 unresolved historical score discrepancies, 5,815 games without
-confirmed overtime source coverage, actual airports/itineraries/home stops, and 30 future
-Cup-dependent regular fixtures. Recheck the Cup assignments when published. Opening-night
-and physical-device observation remain future/human checks, not completed by this release.
+Follow-up source audit: all 5,815 previously unconfirmed overtime inputs have now been
+adjudicated from retained primary records, identifying 346 missing positive overtime
+counts. The separate [overtime correction](research/2026-10-20-overtime-correction/README.md)
+is in local rehearsal; this does not claim that the production correction is applied.
+The 17 earlier score discrepancies retain the existing results with primary support;
+two NBA archive conflicts remain explicitly recorded rather than silently reconciled.
+Actual airports/itineraries/home stops, 30 future Cup-dependent fixtures, opening-night
+writes and physical-device observation remain unverified. Recheck Cup assignments when
+published.
 
 ## Player-source correction — v1.0.4
 

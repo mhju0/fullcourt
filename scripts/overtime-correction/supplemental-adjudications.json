@@ -14,7 +14,7 @@
       "awayScore": 104,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 1,
-      "strictFactSha256": null,
+      "strictFactSha256": "872f1e45d09f30d6f1e637ebbf0e64badd3a34d0b41ebc1f8609a1176a15f176",
       "strictRawBodySha256": "80843899e8f05abe988ed8c8ebdc809638751c0a7f716550843d1302d8e45a35",
       "strictRawGzipSha256": "870e3bd19b87328e3ddc653b9ad0b1f0eb60a4e89cef2d85a2f2e32f7c6875df",
       "strictReasons": [
@@ -50,7 +50,7 @@
       "awayScore": 119,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "544d499455a05be81726230e43c254c1d57e45d928038e90297f6e0cda95c57a",
       "strictRawBodySha256": "51d5d473492e3f6ce4302608e252658bb59a26b53879b003d9ca9f364469fee5",
       "strictRawGzipSha256": "722ea9ec5c3866081a9231b4ea66a0b3579ee0c1a6a29b345facbb8bf2f51607",
       "strictReasons": [
@@ -68,16 +68,20 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/bitstreams/07b60b77-21cc-4593-95f8-3f7564d42bf3/download",
+        "rawPath": "supplements/press/0028900220.pdf",
+        "bodySha256": "103701aef918c057c2d52a99b58cbc62deeb9144f37ac71d621d9e8620d27daf",
         "corroboration": {
           "date": "1989-12-06",
           "homeAbbr": "SAS",
           "awayAbbr": "GSW",
           "homeScore": 121,
           "awayScore": 119
-        }
+        },
+        "physicalPage": 27,
+        "scoreExcerpt": "Spurs 121, Warriors 119",
+        "sourceTitle": "Midland Reporter-Telegram",
+        "issueDate": "1989-12-07"
       }
     },
     {
@@ -93,7 +97,7 @@
       "awayScore": 102,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "6f8cecaf3371c628868a846c026d0982aa7d4e2f27eee9129ff2704de12efb2f",
       "strictRawBodySha256": "e0b4791741dce554adb925f8a9e5a10dd9efddafe7f7b445132cc509d255c1a0",
       "strictRawGzipSha256": "8405e705fbeae8292a9784ea5e04cd02c5f5020c61edd92788287d9570630300",
       "strictReasons": [
@@ -111,16 +115,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/bitstreams/6697ccf6-0771-47d1-a89a-01c9f04c3f11/download",
+        "rawPath": "supplements/press/0028900266.pdf",
+        "bodySha256": "c5179c2cc8bd1b282a1ff2b8066f7cdb812933c9a15c31993a10338db2d63ee6",
         "corroboration": {
           "date": "1989-12-14",
           "homeAbbr": "BKN",
           "awayAbbr": "IND",
           "homeScore": 78,
           "awayScore": 102
-        }
+        },
+        "physicalPage": 19,
+        "scoreExcerpt": "Indiana 102, New Jersey 78"
       }
     },
     {
@@ -136,7 +142,7 @@
       "awayScore": 116,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "a7024463b60500adcdfd2bf3e031080cd3b8512a1b1f2c5a4bf91160b1d4a946",
       "strictRawBodySha256": "8d1527265e0b3dd5e923a9122cab28472f8c0d3736ea0225ed5b76300836660b",
       "strictRawGzipSha256": "d23b75ec00c3901a2eaf1c8b5304ecb45b886eb2046d42452224c488b00fefaa",
       "strictReasons": [
@@ -154,16 +160,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/bitstream/handle/20.500.12255/294810/Big_Spring_Herald_1989_12_17.pdf?isAllowed=y&sequence=1",
+        "rawPath": "supplements/press/0028900270.pdf",
+        "bodySha256": "6e9591f2d00ca8d0326040054c3b42b46d4735457e6f9fb84af015c6acb69fa7",
         "corroboration": {
           "date": "1989-12-15",
           "homeAbbr": "POR",
           "awayAbbr": "GSW",
           "homeScore": 111,
           "awayScore": 116
-        }
+        },
+        "physicalPage": 12,
+        "scoreExcerpt": "Golden State 116, Portland 111"
       }
     },
     {
@@ -179,7 +187,7 @@
       "awayScore": 103,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "9402e49ff1fd0768b1b502b73e98adfe9b08d4c80cdad2f1e81d480bdacb27a1",
       "strictRawBodySha256": "cb9b97db019b38772c1ca71a2d416d17c0469dd3540625ceb83b7522c31de53a",
       "strictRawGzipSha256": "9508abd23cf1d86241a6f50f903d3596a42e9a9168702e60c774aefa55e324ac",
       "strictReasons": [
@@ -197,16 +205,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://www.latimes.com/archives/la-xpm-1990-01-04-sp-277-story.html",
+        "rawPath": "supplements/press/0028900387.html",
+        "bodySha256": "eccd3daf2a0f513d4b2826a09fbf91093042470c3bacdf1a3ad197f0efeacb0b",
         "corroboration": {
           "date": "1990-01-03",
           "homeAbbr": "HOU",
           "awayAbbr": "IND",
           "homeScore": 117,
           "awayScore": 103
-        }
+        },
+        "physicalPage": null,
+        "scoreExcerpt": "Houston 117, Indiana 103"
       }
     },
     {
@@ -222,7 +232,7 @@
       "awayScore": 126,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "d12c0d90e33edb55b72538c5101e46e43a690fa7280babf55f46e53bc90ae99c",
       "strictRawBodySha256": "952963c8318a9d96483fd870c4cbb9ff41f1eb7304ca951e4a240dc8cb071710",
       "strictRawGzipSha256": "b035e2d8767dd85b777a47e40b12a56ce125d052643b6bfdc7d5098991046d50",
       "strictReasons": [
@@ -240,16 +250,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/bitstream/handle/20.500.12255/294841/Big_Spring_Herald_1990_01_23.pdf?isAllowed=y&sequence=1",
+        "rawPath": "supplements/press/0028900514.pdf",
+        "bodySha256": "384961bb0426f2300b73e0cb2d11a92f72864ce37cd3f9ca58473cfa7830365e",
         "corroboration": {
           "date": "1990-01-22",
           "homeAbbr": "ORL",
           "awayAbbr": "PHX",
           "homeScore": 103,
           "awayScore": 126
-        }
+        },
+        "physicalPage": 8,
+        "scoreExcerpt": "Suns 126, Magic 103"
       }
     },
     {
@@ -265,7 +277,7 @@
       "awayScore": 117,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "62af8831d57406ecf78ff9b690e57fe54a27739aceea4ea8429513d9adba2e59",
       "strictRawBodySha256": "7bab6d3fca802b6f0dc5691952812dada7755e4761c29a9ef235f218b4d464cc",
       "strictRawGzipSha256": "cbfb094554a59a750121c5dd1747cc81ac927614b789685acfb4607c5b244197",
       "strictReasons": [
@@ -283,16 +295,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://www.latimes.com/archives/la-xpm-1990-02-15-sp-766-story.html",
+        "rawPath": "supplements/press/0028900645.html",
+        "bodySha256": "c7b554332fe60a36d06aeea99b679955220c81bc075bace4cc42e4044fe533b5",
         "corroboration": {
           "date": "1990-02-14",
           "homeAbbr": "MIL",
           "awayAbbr": "DEN",
           "homeScore": 127,
           "awayScore": 117
-        }
+        },
+        "physicalPage": null,
+        "scoreExcerpt": "Milwaukee 127, Denver 117"
       }
     },
     {
@@ -308,7 +322,7 @@
       "awayScore": 86,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "acdea384df41395300cc68b302407517ae7b8538f8bb14b0d330b41051c399ad",
       "strictRawBodySha256": "d269a7c5f39eed27215ca6cf2c0e566f446a6a1d39ee7847cdbf909efaef14d4",
       "strictRawGzipSha256": "1e51deb21b034e4e2552d981fd746b313a8db972db4d0d56b45ce579016d60f0",
       "strictReasons": [
@@ -326,16 +340,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://www.latimes.com/archives/la-xpm-1990-02-17-sp-495-story.html",
+        "rawPath": "supplements/press/0028900664.html",
+        "bodySha256": "a743031c981b9a30244348a24a8eb875bd6136abf5e1e347c5b907555f5c3a77",
         "corroboration": {
           "date": "1990-02-16",
           "homeAbbr": "SAS",
           "awayAbbr": "UTA",
           "homeScore": 100,
           "awayScore": 86
-        }
+        },
+        "physicalPage": null,
+        "scoreExcerpt": "San Antonio 100, Utah 86"
       }
     },
     {
@@ -351,7 +367,7 @@
       "awayScore": 99,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "900a8970a41584bb53a3719da1a7f4abd25b900c07199cfc43ea4f460ea70726",
       "strictRawBodySha256": "01df1de44d00aedd3a88f169c98d6cd927337e0f17ccae9cea468e5a91054d16",
       "strictRawGzipSha256": "c7ebdf842102d4a881d111f647ef959d322a9f96ffa851ccc686ad643e685cfb",
       "strictReasons": [
@@ -369,16 +385,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://www.latimes.com/archives/la-xpm-1990-03-01-sp-2451-story.html",
+        "rawPath": "supplements/press/0028900743.html",
+        "bodySha256": "61574cf2ea5b70156e04210782f74d31d129b418c47dafd3e6e4f443040124ee",
         "corroboration": {
           "date": "1990-02-28",
           "homeAbbr": "ATL",
           "awayAbbr": "IND",
           "homeScore": 102,
           "awayScore": 99
-        }
+        },
+        "physicalPage": null,
+        "scoreExcerpt": "Atlanta 102, Indiana 99"
       }
     },
     {
@@ -394,7 +412,7 @@
       "awayScore": 112,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "65420f0bc8ec8c1b74b24d1bb3c100ff55cc02ec9c6fe6beea680721a4a6dbd9",
       "strictRawBodySha256": "0df3dbb5f55a56f1322c69e04e42353e14fac21b6adf6325c0aad7c7ac098bcf",
       "strictRawGzipSha256": "e6d45c0fa6dcd3f0c81584789946d7c5293504392c367bb944c7427eaad8ac3a",
       "strictReasons": [
@@ -412,16 +430,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://archives.nd.edu/observer/1990-03-07_v23_104.pdf",
+        "rawPath": "supplements/press/0028900781.pdf",
+        "bodySha256": "873041c813d420cea235301792de5f86b66575af1d0c16d9a13e4cf3b74b3593",
         "corroboration": {
           "date": "1990-03-06",
           "homeAbbr": "NYK",
           "awayAbbr": "POR",
           "homeScore": 100,
           "awayScore": 112
-        }
+        },
+        "physicalPage": 12,
+        "scoreExcerpt": "Trailblazers 112, Knicks 100"
       }
     },
     {
@@ -437,7 +457,7 @@
       "awayScore": 102,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "09d76c0e382e422716e01dcadb4e6694f43d95fddb82f67608233f0e150d6633",
       "strictRawBodySha256": "a6253097f890c6e45d200ef4c42a29c27705d029dd72c95720756df489366248",
       "strictRawGzipSha256": "3fe8a31dcea98c9b19245ad2c894c5b94d301f60c4527eae8a9fef60b694c529",
       "strictReasons": [
@@ -455,16 +475,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/bitstream/handle/20.500.12255/364261/Snyder_Daily_News_1990_03_09.pdf?isAllowed=y&sequence=1",
+        "rawPath": "supplements/press/0028900800.pdf",
+        "bodySha256": "fe39d27039ffa1bc929e012a58a2303f5da4061bc8218c7c5af78221122b4b2c",
         "corroboration": {
           "date": "1990-03-08",
           "homeAbbr": "SAC",
           "awayAbbr": "CHA",
           "homeScore": 111,
           "awayScore": 102
-        }
+        },
+        "physicalPage": 4,
+        "scoreExcerpt": "Sacramento 111. Charlotte 102"
       }
     },
     {
@@ -480,7 +502,7 @@
       "awayScore": 102,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "34d8b0cd654e23695e4c5c3f6423cb0a623a71f42829e07c2e325e2c6379181c",
       "strictRawBodySha256": "07870c8d1565d8cab32cfb5d601ad7aba37ee90b822f4e371d4bafa5c37e32ce",
       "strictRawGzipSha256": "983fb5ac1f0d01bf6d628e647983881aacedc1b59e8d3c638946a230a45d1a37",
       "strictReasons": [
@@ -498,16 +520,19 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/server/api/core/bitstreams/4fbda850-cd1e-42cc-a0ce-c37532675449/content",
+        "rawPath": "supplements/press/0028900857.pdf",
+        "bodySha256": "3b0b1918f36dcbf1ed1ee8b3d3a1bd8a9228978f5b85772fa2e42912f3f4bf5e",
         "corroboration": {
           "date": "1990-03-17",
           "homeAbbr": "CLE",
           "awayAbbr": "IND",
           "homeScore": 118,
           "awayScore": 102
-        }
+        },
+        "physicalPage": 8,
+        "scoreExcerpt": "Cleveland 118, Indiana 102",
+        "issueDate": "1990-03-19"
       }
     },
     {
@@ -523,7 +548,7 @@
       "awayScore": 125,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "48571a453b41a8a05deacdd44ed17091b170933164216b99d1325dbc8a407cdf",
       "strictRawBodySha256": "bf0c07f4c314178a67b49b621b1fa7dc6a4f28dabc8601ee561761e8a355e438",
       "strictRawGzipSha256": "895042b6e43cfbc0d6a92f2e341c13b0dde9eca02cbd36c684136cba06bc56df",
       "strictReasons": [
@@ -541,16 +566,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://www.latimes.com/archives/la-xpm-1990-04-02-sp-419-story.html",
+        "rawPath": "supplements/press/0028900958.html",
+        "bodySha256": "a5b2ce347be48c047885cde6dfffe1ee317f2dd78ec88dbf3dc083f58506a30e",
         "corroboration": {
           "date": "1990-04-01",
           "homeAbbr": "BOS",
           "awayAbbr": "ORL",
           "homeScore": 133,
           "awayScore": 125
-        }
+        },
+        "physicalPage": null,
+        "scoreExcerpt": "Boston 133, Orlando 125"
       }
     },
     {
@@ -566,7 +593,7 @@
       "awayScore": 116,
       "beforeOvertimePeriods": 0,
       "overtimePeriods": 0,
-      "strictFactSha256": null,
+      "strictFactSha256": "2967b31fff5eec96914f84f00032602ca529ad1539f1df4db7dbe61f93899bb1",
       "strictRawBodySha256": "90db199847186c7cf3bad3176ff377a6cfbe3017dbab5d10938acd3744a28851",
       "strictRawGzipSha256": "3a1e5f8053b0ab16fc6aafd76ac5d9b3766ab1f3430547e682706faf446569f7",
       "strictReasons": [
@@ -584,16 +611,18 @@
         }
       ],
       "source": {
-        "url": null,
-        "rawPath": null,
-        "bodySha256": null,
+        "url": "https://newspapers.swco.ttu.edu/server/api/core/bitstreams/6f306bc9-af5f-4074-8d46-95b81fee95e2/content",
+        "rawPath": "supplements/press/0028900981.pdf",
+        "bodySha256": "333c15c677c4fd659e3eddb452d3eb7a75c29e1ea14a42b8e927be92c0913f27",
         "corroboration": {
           "date": "1990-04-04",
           "homeAbbr": "DEN",
           "awayAbbr": "CHA",
           "homeScore": 112,
           "awayScore": 116
-        }
+        },
+        "physicalPage": 12,
+        "scoreExcerpt": "Charlotte 116, Denver 112"
       }
     }
   ]
