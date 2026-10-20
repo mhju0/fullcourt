@@ -128,7 +128,7 @@ export function RefereeLegendsContent({ legends }: { legends: RefereeLegends }) 
               variant="cell"
               label="CLEARED p < 0.01"
               value={`${noiseFloor.clearedPoint01} vs ${noiseFloor.expectedPoint01}`}
-              sub="OBSERVED VS EXPECTED BY CHANCE"
+              sub="OBSERVED VS SIMPLE REFERENCE"
             />
           </div>
           <div className="py-3" style={termInsetStyle}>
@@ -136,25 +136,26 @@ export function RefereeLegendsContent({ legends }: { legends: RefereeLegends }) 
               variant="cell"
               label="CLEARED p < 0.05"
               value={`${noiseFloor.clearedPoint05} vs ${noiseFloor.expectedPoint05}`}
-              sub="FEWER THAN CHANCE PRODUCES"
+              sub="OBSERVED VS SIMPLE REFERENCE"
             />
           </div>
         </div>
         <p style={BODY}><KeepTogether>
           <span style={LEAD_IN}>Chance also produces extreme records.</span> Across{" "}
-          {noiseFloor.pairsTested.toLocaleString()}{" "}pairs, the chance calculation&apos;s expected
-          minimum p-value is{" "}
+          {noiseFloor.pairsTested.toLocaleString()}{" "}pairs, a rough reference for the minimum
+          p-value is{" "}
           {noiseFloor.mostExtremePFromNoise}. {legend.official} and {legend.player} come in at p ={" "}
           {legend.p}, {beats ? "more extreme than" : "less extreme than"} that reference.
-          The expected minimum is a comparison scale, not a corrected significance threshold
-          or a guarantee about what chance will produce.
+          This 1/N reference approximates the expected minimum for independent tests with
+          uniformly distributed null p-values. These pairs share games and players, so it is
+          not a calibrated minimum-p distribution or an adjusted significance threshold.
         </KeepTogether></p>
         <p style={BODY}><KeepTogether>
           In the full grid, {noiseFloor.clearedPoint01}{" "}pairs clear p &lt; 0.01
-          where chance predicts {noiseFloor.expectedPoint01}, and{" "}
-          {noiseFloor.clearedPoint05} clear p &lt; 0.05 where chance predicts{" "}
-          {noiseFloor.expectedPoint05}. These counts do not exceed their chance expectations.
-          They provide no aggregate evidence of excess extreme pairs under this comparison.
+          compared with a simple N × 0.01 reference of {noiseFloor.expectedPoint01}, and{" "}
+          {noiseFloor.clearedPoint05} clear p &lt; 0.05 compared with an N × 0.05 reference of{" "}
+          {noiseFloor.expectedPoint05}. These descriptive comparisons alone do not establish
+          an excess of extreme pairs.
         </KeepTogether></p>
       </section>
 
@@ -162,7 +163,7 @@ export function RefereeLegendsContent({ legends }: { legends: RefereeLegends }) 
         <SectionHeading>GAMES AFTER THE CLAIM BECAME KNOWN</SectionHeading>
         <p style={BODY}><KeepTogether>
           A claim found by looking can only be confirmed on games nobody had seen when they found
-          it. This one was in circulation by the end of {legend.famousBySeason}. Before then,
+          it. This one was in circulation by the end of {legend.famousBySeason}. Before then,{" "}
           {legend.player} was{" "}
           {formatRecord(legend.beforeClaimWasFamous.wins, legend.beforeClaimWasFamous.losses)} with{" "}
           {legend.official}, and after it was famous,{" "}

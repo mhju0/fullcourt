@@ -14,11 +14,10 @@ export interface HomepageHistoricalEvidence {
 export function historicalHomeFinding(data: HomepageHistoricalEvidence) {
   const minGap = gapRangeByKey("large").min;
   if (data.minGap !== minGap) return null;
-  // The baseline owns the window: a season with no large gaps still belongs in it.
+  // The baseline owns the population: a season with no large gaps still belongs in it.
   const seasons = data.baselineSeasons
     .filter((row) => row.isComplete && row.homeGames > 0)
-    .sort((left, right) => left.season.localeCompare(right.season))
-    .slice(-10);
+    .sort((left, right) => left.season.localeCompare(right.season));
   const selected = new Set(seasons.map((row) => row.season));
   const largeGaps = data.largeGapSeasons.filter((row) => selected.has(row.season));
   const games = largeGaps.reduce((sum, row) => sum + row.games, 0);

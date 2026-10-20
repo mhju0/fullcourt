@@ -8,7 +8,7 @@ import {
 } from "@/components/behind-the-data-parts";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { DataTable } from "@/components/ui/data-table";
-import { AVAILABILITY_SAMPLE } from "@/lib/availability-facts";
+import { AVAILABILITY_INPUT_COVERAGE } from "@/lib/availability-facts";
 import officiatingData from "@/data/officiating.json";
 
 export const metadata: Metadata = {
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 const COVERAGE = [
   {
     field: "Player box scores",
-    from: AVAILABILITY_SAMPLE.firstSeason,
+    from: AVAILABILITY_INPUT_COVERAGE.firstCacheSeason,
     source: "NBA / hoopR",
-    note: "Player-level shooting and availability inputs; each analysis applies its own filters.",
+    note: `Cached player inputs through ${AVAILABILITY_INPUT_COVERAGE.lastCacheSeason}; shooting and availability apply different sample filters. Source coverage is not the regression sample.`,
   },
   {
     field: "Last Two Minute reports",
@@ -32,7 +32,7 @@ const COVERAGE = [
   },
   {
     field: "Schedules, scores, results",
-    from: "1985-86",
+    from: NBA_SEASONS[0],
     source: "NBA feeds; ESPN",
     note: "Completed seasons from NBA feeds. The current season's schedule and nightly scores come from ESPN.",
   },
@@ -44,8 +44,8 @@ const COVERAGE = [
   },
   {
     field: "Tip-off times",
-    from: "~2002",
-    source: "ESPN",
+    from: "Historical coverage varies",
+    source: "NBA feeds; ESPN",
     note: "Without one, the back-to-back multiplier falls back to its flat value.",
   },
   {
@@ -70,7 +70,7 @@ export default function DataAndLimitsPage() {
       title="Data and limits"
       description="Data sources, season coverage, exclusions, and known gaps in FullCourt's analyses."
     >
-      <Section label="COVERAGE" title="Data sources and coverage" descriptor={`${NBA_SEASONS.length} seasons; coverage varies by field`}>
+      <Section label="COVERAGE" title="Data sources and coverage" descriptor={`Supported seasons: ${NBA_SEASONS[0]} to ${NBA_SEASONS.at(-1)}; field coverage varies`}>
         {/* Deliberately says nothing about *why* three fields come from ESPN. The reason is
             operational, it identifies where this is run from, and no reader of this page is
             served by it. The sources themselves are the answer, and the table lists them. */}
@@ -101,8 +101,13 @@ export default function DataAndLimitsPage() {
       </Section>
 
       <Section label="EXCLUDED ON PURPOSE" title="Exclusion rules and their history" disclosure>
+        <Prose>
+          These rules describe the published regular-season rest findings and schedule
+          comparisons. Individual research fits can use different cohorts; their methods
+          identify those samples separately.
+        </Prose>
         <DataTable wrapperClassName="reference-definitions" rows={[
-          { games: "Playoffs", rule: "Excluded from regular-season fatigue analysis; modeled separately in Playoff Rest." },
+          { games: "Playoffs", rule: "Excluded from regular-season rest win rates; series outcomes are modeled separately in Playoff Rest." },
           { games: "Orlando bubble", rule: "Excluded; the pre-suspension part of 2019-20 remains in regular-season analysis." },
           { games: "2019-20 in Schedule Edge", rule: "Entire season excluded from rankings because teams played unequal schedules." },
           { games: "Preseason", rule: "Excluded; rotations do not represent regular-season play." },
@@ -111,10 +116,10 @@ export default function DataAndLimitsPage() {
           { label: "Rule", cell: (row) => row.rule },
         ]} />
         <Prose>
-          Playoff games are excluded from the regular-season fatigue model because a fixed
-          two-team series breaks its travel assumptions: the opponent never changes and the
-          itinerary is known weeks ahead. They are modeled as whole series on the
-          Playoff Rest page.
+          Playoff outcomes do not enter the regular-season rest win rates. Completed competitive
+          games can still contribute to a team’s preceding workload when they fall inside the
+          relevant window. Playoff Rest uses a separate model of whole series rather than
+          treating its series probabilities as regular-season fatigue picks.
         </Prose>
         <Prose>
           The <strong>2019-20 Orlando bubble</strong> is excluded because every game was played
@@ -133,16 +138,15 @@ export default function DataAndLimitsPage() {
         </Note></details>
         <Prose>
           One surface still withholds the season in full. <strong>Schedule Edge</strong> ranks
-          teams against each other within a single season, and 2019-20 stopped with teams having
-          played between 63 and 67 games. A team with four fewer games has four fewer chances to
-          accumulate an edge, so its total would move without the schedule having favored
-          anyone. This exclusion addresses unequal schedule lengths and applies to no other
-          season on record, where the widest spread is a single game.
+          teams against each other within a single season, and teams finished 2019-20 with
+          unequal numbers of games, including different access to the restart. Fewer games mean
+          fewer chances to accumulate an edge, so raw totals would not be comparable. Schedule
+          Edge applies its schedule-comparability checks before publishing rankings.
         </Prose>
         <Note>
           The lockout seasons are kept for the same reason 2020-21 is: 1998-99 ran 50 games and
-          2011-12 ran 66, both with normal travel and both complete. A short season is only a
-          problem for this site when it is also <em>interrupted</em>.
+          2011-12 ran 66, both with normal travel and equal scheduled lengths. A shorter season
+          does not by itself make teams’ schedules incomparable.
         </Note>
       </Section>
 
@@ -182,9 +186,9 @@ export default function DataAndLimitsPage() {
       <Section label="KNOWN GAPS" title="Known data gaps" disclosure>
         <LimitList
           items={[
-            "Pre-2002 overtime is unknown rather than zero. Basketball-Reference carries it and could close this gap; it has not been done.",
-            "Neutral-site games before 2013 are unmarked, so Mexico City games from 1997 and the 2010-11 London games are geolocated at the listed host's arena. Basketball-Reference marks them.",
-            "Arena coordinates are era-correct for relocations, but neutral-site venues rely on a small hand-maintained list of cities.",
+            "Archived corrections restore confirmed earlier overtime, but some games still lack period-count confirmation. An unverified stored zero does not establish that the game ended in regulation.",
+            "Known earlier neutral games and alternate home arenas use dated venue corrections. The register is not a complete audit of every historical arena; uncovered venues can still use the listed host’s modeled base.",
+            "Arena locations reflect documented relocations and temporary bases. Straight-line Mileage does not observe the airport used, the actual flight route, overnight stays or intermediate trips home.",
           ]}
         />
       </Section>

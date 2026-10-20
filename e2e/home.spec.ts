@@ -19,7 +19,7 @@ test.describe("Rest-focused front door", () => {
     await expect(home.getByRole("link", { name: "Officiating", exact: true })).toHaveCount(0);
   });
 
-  test("headline rates and samples use the same latest ten completed seasons", async ({ page, request }) => {
+  test("headline rates and samples use the same full completed-season history", async ({ page, request }) => {
     const baselineResponse = await request.get("/api/analysis");
     expect(baselineResponse.ok()).toBe(true);
     const { data: baseline }: { data: AnalysisResponse } = await baselineResponse.json();
@@ -28,7 +28,7 @@ test.describe("Rest-focused front door", () => {
     expect(largeGapResponse.ok()).toBe(true);
     const { data: large }: { data: AnalysisResponse } = await largeGapResponse.json();
     const seasons = baseline.seasonWinRates.filter((row) => row.isComplete && row.homeGames > 0)
-      .sort((a, b) => a.season.localeCompare(b.season)).slice(-10);
+      .sort((a, b) => a.season.localeCompare(b.season));
     const selected = new Set(seasons.map((row) => row.season));
     const largeSeasons = large.seasonWinRates.filter((row) => selected.has(row.season));
     const games = largeSeasons.reduce((sum, row) => sum + row.games, 0);
@@ -40,7 +40,7 @@ test.describe("Rest-focused front door", () => {
     const latestDate = seasons.map((row) => row.latestEvidenceDate).sort().at(-1);
     await page.goto("/");
     const home = page.getByTestId("home-findings");
-    await expect(home).toContainText(`Latest ${seasons.length} completed regular seasons · ${seasons[0].season} to ${seasons.at(-1)!.season}`);
+    await expect(home.getByTestId("home-evidence-period")).toHaveText(`All completed regular seasons · ${seasons[0].season} to ${seasons.at(-1)!.season}`);
     await expect(home).toContainText(`${games.toLocaleString()} games with a large rest gap (${minGap}+ fatigue-score points)`);
     await expect(home).toContainText(`${winPct.toFixed(1)}%`);
     await expect(home).toContainText(`${baselinePct.toFixed(1)}%`);

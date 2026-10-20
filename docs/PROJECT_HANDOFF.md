@@ -13,7 +13,7 @@ established publication-aware defaults and venue-baseline history. Games navigat
 D-79; shared filters use 44px targets and 16px text. The hero follows D-67. Ordinary
 rested-home rates retain the 100-game gate; Officiating's archive limits remain documented.
 ## Architecture and safeguards
-- Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
+- Next.js serves pages and API routes. Database reads use Drizzle/node-postgres against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
 - `src/lib/fatigue.ts` computes scores on the write path. The coefficients are ratified;
   changes require an owner decision and the protocol in ADR 0006.
@@ -75,21 +75,12 @@ Unresolved/standing dispositions retained from these entries:
 
 Condensed again on 2026-10-19; DECISIONS.md D-78 to D-109, dated reports and Git retain detail.
 
-- D-79–D-83: finals-only LIVE/PENDING/FINAL, twelve hourly crons, verified schedule,
-  next-game rescoring and the unchanged 103,390-row [recompute](research/2026-10-11-fatigue-recompute-audit.md).
-  LAUNCH_DAY.md retains the live validation procedure.
-- D-84/D-85: lock-before-read writers and monotonic Officiating publication; the
-  [remediation report](reports/2026-10-11-remediation/index.html) retains all 28 launch statuses.
-- PR #127 shipped the selected motion/accessibility fixes and CI/CD hardening F1–F7;
-  [plans](../plans/README.md), [audit](reports/2026-10-14-accessibility-usability.html) and
-  [findings](../anti-slop/audit-002-2026-10-14.md) retain the evidence. Database credentials rotated.
-- D-86–D-100: full days off, two-decimal gap comparison, neutral-host exclusion, historical
-  team names, owner-approved deletion of nine neutral calls, BY DATE/BY TEAM, and ratified
-  altitude-carryover removal (27,420 calls, 61.2% at that snapshot).
-- D-101–D-109: small 0.5–3, medium 3–5, large 5+; venue-labelled rest edges and consistent
-  rested-team-at-home copy. PRs #167–#169 merged as `ab3aa8d` on October 18.
-- October 18 cleanup fixed Officiating season-strip clipping and pinned Node types below23;
-  #156 closed. Supabase Pro was selected for launch; its review remains listed below.
+- D-79–D-109 and their Git history retain the Games hierarchy, status/rescore, writer locking,
+accessibility/motion, fatigue/date rounding, historical naming, calibrated rest bins and
+dependency deliveries. [Remediation](reports/2026-10-11-remediation/index.html) retains the
+launch statuses; [accessibility audit](reports/2026-10-14-accessibility-usability.html) and
+[plans](../plans/README.md) retain UI evidence. The owner excluded odds feeds. Ratified
+coefficients and module-specific cohort rules remain in their ADRs.
 
 Still open from those entries:
 
@@ -218,3 +209,16 @@ Disposable PostgreSQL contracts pass: 20 prospective, 12 lifecycle, five freshne
 pool recovery cases. Independent Supabase transaction-endpoint/TLS probes pass. Next:
 complete exact-candidate review/full checks and preview/API parity, switch Vercel's URL/CA,
 then verify canonical production before declaring the patch released.
+
+
+## Historical homepage and methods audit — 2026-10-20
+
+D-127 restores all eligible completed seasons on the homepage; both bars and their
+denominators share that population. D-128 audits all twelve Behind the Data routes against
+current producers/artifacts and official policy sources. v1.0.6 corrects coverage, travel
+proxies, model evaluation, uncertainty and formula descriptions without changing analytics
+artifacts, coefficients or database state. The [record](research/2026-10-20-methods-accuracy-audit.md)
+separates current generated results, dated studies and retained source limits. PR/tag/provider
+evidence owns exact-candidate review and deployed acceptance. v1.0.4/v1.0.5 are released
+with canonical verification; the serverless pool uses production-only transaction mode and
+verified TLS. Next: opening-night writes, future Cup assignments and human/device checks.

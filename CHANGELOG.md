@@ -1,5 +1,12 @@
 # Release history
 
+## 1.0.6 — 2026-10-20
+
+- Restore the homepage large-rest-gap comparison to all eligible completed regular
+  seasons, with the home baseline, sample counts and period covering the same history.
+- Audit every Behind the Data topic and the referee archive; correct stale coverage,
+  cohort, travel, evaluation, uncertainty and formula descriptions against current producers.
+
 ## 1.0.5 — 2026-10-20
 
 - Use an unpipelined node-postgres application pool for Supabase transaction pooling,

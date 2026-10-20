@@ -11,11 +11,11 @@ const LIMITS: Record<string, string> = {
   "schedule-edge": "Worth uses pooled historical rates relative to venue baselines. It estimates schedule conditions, not the wins a team actually gained.",
   "playoff-predictions": "The tests support better probability estimates more clearly than better winner selection. Injuries and in-series adjustments are not included.",
   "player-shooting": "A positive difference means higher shooting efficiency with more rest. Opponents, shot selection and reasons for missed games can also affect the split.",
-  "shot-value": "Two shots from the same location receive the same expected value, even when the shooters and defenders differ.",
+  "shot-value": "Shots in the same grid cell and season receive the same expected value, even when the shooters and defenders differ.",
   availability: "Absences are identified after games are played. These estimates cannot tell you who will be available tonight, and separate absence effects must not be added together.",
   officiating: "These are the NBA's assessments of selected close-game endings. They cannot measure whole-game accuracy or identify which official made an error.",
   referees: "This is archived research on foul frequency in games each official worked. It cannot identify who made a call or whether the call was correct.",
-  "time-zones": "The tested travel-direction terms did not improve predictions. That does not establish that the biological effect is zero or validate the model's retained directional multipliers.",
+  "time-zones": "The tested home-base-to-venue time-zone terms did not improve predictions. That does not establish that the biological effect is zero or validate the model's retained directional multipliers.",
   "data-and-limits": "Coverage differs by field and season. An unavailable input is not evidence that no overtime, travel or other event occurred.",
 };
 

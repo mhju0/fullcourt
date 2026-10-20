@@ -1901,3 +1901,21 @@ This v1.0.5 candidate changes no schema, stored figures, coefficients or predict
 Disposable PostgreSQL writer/lifecycle/freshness contracts and connection-failure probes
 pass; authenticated read-only transaction-pool/TLS probes pass independently. Preview,
 canonical API parity, exact-candidate review and production deployment remain release gates.
+
+
+## D-127 — Restore the historical homepage comparison (2026-10-20)
+
+The owner reverses D-112’s ten-season homepage window. Pool all eligible completed
+regular seasons for both large-gap rested-home results and the home baseline. Preserve
+the 5+ fatigue-point threshold, current cohort filters, raw-count weighting and uncertainty
+caveats. Keep the period below the explanation and identify the full date range.
+
+## D-128 — Audit every published method against its producer (2026-10-20)
+
+The owner requested every Behind the Data tab be checked for outdated numbers and claims.
+The [audit record](research/2026-10-20-methods-accuracy-audit.md) covers all twelve routes.
+Describe the actual exposure, cohort, evaluation and source limits; distinguish fresh
+generated results from dated archived research, observed events from modeled proxies, and
+retrospective reconstructions from contemporaneously published forecasts. Fix explanations
+without modifying coefficients, artifacts or database records. Exact candidate review,
+preview and canonical verification remain delivery gates.

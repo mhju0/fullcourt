@@ -28,7 +28,7 @@ import { signedNumber } from "@/lib/signed-number";
 export const metadata: Metadata = {
   title: "Playoff Predictions · Behind the Data",
   description:
-    "The playoff series model: its four features and what actually drives it, why the target is the home-court team, and why its edge is calibration rather than accuracy.",
+    "The playoff series model: its four features, corrected input revision, home-court target, and held-out probability and accuracy comparisons.",
 };
 
 const winPctToSeedRatio = (
@@ -60,18 +60,18 @@ const FEATURES = [
     name: "seed_diff",
     weight: PLAYOFF_MODEL_COEFFICIENTS.seed_diff,
     what: "Seed gap between the two teams.",
-    why: "Derived as a win-percentage rank proxy rather than read from an official bracket seed, so it can drift a line in tiebreak eras.",
+    why: "A proxy rank within a reconstructed conference, using win percentage and tie rules. It does not reproduce every historical official seeding rule.",
   },
   {
     name: "prior_grind_diff",
     weight: PLAYOFF_MODEL_COEFFICIENTS.prior_grind_diff,
     what: "The opponent's prior-round grind minus the home-court team's own, where grind is games played beyond a sweep (games_played −\u00a04 for a best-of-7, −\u00a03 otherwise).",
-    why: "The subtraction order is deliberately inverted versus the other three features so a positive coefficient still favors the home-court team. Always 0 in Round 1, since there is no prior round to have been ground down by.",
+    why: "Positive means the opponent played more games beyond a sweep than the home-court team. Always 0 in Round 1 because there is no prior round.",
   },
   {
     name: "h2h_diff",
     weight: PLAYOFF_MODEL_COEFFICIENTS.h2h_diff,
-    what: "Regular-season head-to-head record between the two.",
+    what: "Difference in regular-season head-to-head wins between the two.",
     why: "Usually based on three or four games. It has the smallest standardized coefficient.",
   },
 ] as const;
@@ -130,10 +130,11 @@ export default function PlayoffPredictionsMethodPage() {
           ]}
         />
         <Note>
-          Weights are standardized logistic coefficients, so they are comparable to each other
-          directly. All four are positive: every dimension of home-court advantage pushes the
-          probability the same way, which is why the model almost always picks the home-court
-          team and why its picks are hard to distinguish from that rule.
+          These are the full-sample fit’s standardized logistic coefficients, measured in
+          log-odds per standard deviation of each feature. Walk-forward folds fit their own
+          scalers and weights. All four full-sample coefficients are positive, but feature
+          differences can be negative, so they can favor the opponent. Coefficient size
+          does not establish a causal effect or the value of removing a feature.
           <br />
           <br />
           A fifth column, <strong>is_best_of_7</strong>, records series format. First rounds
@@ -212,7 +213,8 @@ export default function PlayoffPredictionsMethodPage() {
           slightly better by regular-season record, so that difference can confound the comparison.
         </Prose>
         <Prose>
-          Across second-round-or-later series with similar regular-season records, without
+          Across second-round-or-later series with regular-season win percentages within
+          eight percentage points of each other, without
           holding the team&rsquo;s own prior round fixed, the rates are{" "}
           <strong>
             {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct.toFixed(1)}% becomes{" "}
@@ -232,7 +234,7 @@ export default function PlayoffPredictionsMethodPage() {
           depends on both teams&rsquo; prior rounds.
         </Prose>
         <Prose>
-          The same thing counted a second way, by the layoff into Game 1 rather than by the
+          A related descriptive comparison, by the layoff into Game 1 rather than by the
           previous round&rsquo;s length, for rounds 2+:
         </Prose>
         <DataTable
@@ -263,8 +265,8 @@ export default function PlayoffPredictionsMethodPage() {
           <strong>What we cannot tell you:</strong>{" "}
           whether it is really fatigue. A team that
           needed seven games may also be weaker than its regular-season record suggests.
-          These comparisons cannot separate that possibility from fatigue. The association
-          does not fade game by game as a simple recovery explanation would predict.
+          These comparisons cannot separate that possibility from fatigue. They group
+          series-level outcomes and do not observe player recovery.
           <br />
           <br />
           &ldquo;Closed it early&rdquo; means a team won its previous round within one game of a
@@ -281,7 +283,8 @@ export default function PlayoffPredictionsMethodPage() {
           In walk-forward evaluation over{" "}
           {PLAYOFF_MODEL_EVAL.folds} held-out seasons ({PLAYOFF_MODEL_EVAL.series}{" "}
           series, {PLAYOFF_MODEL_EVAL.firstSeason} onward), the model produces{" "}
-          lower probability-error scores than a constant historical home-court win rate.
+          lower probability-error scores than a baseline that assigns each held-out season
+          the home-court series win rate from its training seasons.
         </Prose>
         <DataTable
           minWidth={520}
@@ -332,14 +335,15 @@ export default function PlayoffPredictionsMethodPage() {
         </DataTable>
         <Prose>
           Log loss and Brier score are both lower-is-better measures of whether a stated
-          probability matches the outcome. Both penalise confident errors. The baseline always
-          picks the home-court team and assigns its historical win rate as the probability.
+          probability matches the outcome. Both penalise confident errors. For the pooled
+          comparison, the baseline always picks the home-court team and assigns
+          the training-period home-court win rate as the probability for that fold.
         </Prose>
         <Prose>
           The tests did not establish better <strong>winner accuracy</strong>. Across the same seasons
           the model beat it, tied it, and lost to it {PLAYOFF_MODEL_ACCURACY.winTieLoss}{" "}
-          times, and the confidence interval around the model&rsquo;s accuracy contains the base rate
-          outright. The evaluation provides stronger support for improved probability
+          times. This mixed season-level record does not establish a reliable accuracy gain.
+          The evaluation provides stronger support for improved probability
           estimates than for improved winner selection.
         </Prose>
         <Note>
@@ -419,6 +423,11 @@ export default function PlayoffPredictionsMethodPage() {
           ]}
         />
         <Note>
+          Round-level log-loss baselines above use each displayed evaluation slice’s observed
+          home-court win rate, a hindsight constant. They differ from the training-only
+          baseline in the pooled table.
+        </Note>
+        <Note>
           {PLAYOFF_ROUND_SPLIT.roundsTwoPlus.n} series is not many, so one pooled number is not
           proof. Season by season, from the second round on, the model beat the always-home-court
           rule in {PLAYOFF_ROUNDS_TWO_PLUS_RECORD.win} seasons, tied it in{" "}
@@ -439,7 +448,9 @@ export default function PlayoffPredictionsMethodPage() {
         <Prose>
           A series&rsquo; <strong>pick</strong> comes from a model trained only on seasons that
           had already finished when that series was played. Historical picks are walk-forward
-          predictions: the target season is excluded from training.
+          predictions: the target season is excluded from training. These are reconstructed
+          historical estimates using the current corrected inputs, not proof that those
+          probabilities were published before the series began.
         </Prose>
         <Prose>
           A series&rsquo; <strong>hindsight</strong> figure comes from one model fitted across
@@ -450,8 +461,7 @@ export default function PlayoffPredictionsMethodPage() {
           Hindsight exists for one reason: the model needs about ten seasons of prior history
           before its first walk-forward fit, so the earliest covered brackets have no such forecast.
           For those seasons the hindsight figure is the only number that exists, and the page
-          labels it as such. For every later season the product page shows the forecast beside
-          the hindsight figure, each labelled, so the two are never mistaken for each other.
+          labels it as such. When both estimates are available, the product page labels them separately.
         </Note>
       </Section>
 
@@ -460,9 +470,9 @@ export default function PlayoffPredictionsMethodPage() {
           items={[
             "Injuries and expected player availability.",
             "Matchup and style. A team built to beat one opponent and not another is invisible to win percentage and seeding.",
-            "In-series adjustments. Coaches change rotations and schemes between games; the model predicts once, before game one.",
+            "In-series adjustments. Coaches change rotations and schemes between games; the model uses pre-series features and does not update for later games.",
             "Roster changes are reflected only indirectly through the team's regular-season results.",
-            "Seeds are derived from win-percentage rank rather than read from an official bracket, so they can disagree with the published seeding in tiebreak situations.",
+            "Seeds are proxy conference ranks from win percentage and tie rules, not official bracket seeds. They can disagree with historical seeding rules.",
             "A probability near 0.5 is the model saying it does not know. It is not a lean worth acting on.",
           ]}
         />

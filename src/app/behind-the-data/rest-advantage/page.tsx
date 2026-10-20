@@ -30,16 +30,8 @@ import { signedNumber } from "@/lib/signed-number";
 export const metadata: Metadata = {
   title: "Rest Advantage · Behind the Data",
   description:
-    "The fatigue score in full: its eight terms, every constant, and single-term ablations showing which of them actually carry the result.",
+    "The fatigue score: its eight terms, operational constants, historical venue comparisons, and single-term ablations of the fixed call threshold.",
 };
-
-/**
- * The flagship model's reference page. Constants are read from `FATIGUE_CONSTANTS` rather
- * than retyped, so the prose cannot drift from the code. Measured figures carry the date
- * they were measured, because they need a full-table analysis that is not worth running per
- * page view.
- */
-const MEASURED_ON = "2026-07-30";
 
 /** Rebuilt offline with score-fidelity checks before the producer replaces this snapshot. */
 const ABLATIONS_MEASURED_ON = ablationFacts.measuredOn;
@@ -140,7 +132,7 @@ function RestRowTable() {
           </tr>
           <tr>
             <td style={{ ...termTdStyle, borderTop: "1px solid var(--term-border)" }}>
-              Every completed game since {REST_SPLIT_SAMPLE.firstSeason}
+              Eligible scored games since {REST_SPLIT_SAMPLE.firstSeason}
             </td>
             <td
               style={{
@@ -343,25 +335,25 @@ score      = max(0, baseLoad × backToBack × altitude × density + freshness + 
 restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)`}
         </Formula>
         <Note>
-          A difference under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} is treated as neutral: {NEUTRAL_GAMES} games, about one
-          in six, that carry no rest claim in either direction.
+          An absolute difference under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} is treated as neutral:
+          {" "}{NEUTRAL_GAMES} games ({(REST_SPLIT_SAMPLE.neutral / REST_SPLIT_SAMPLE.scoredGames * 100).toFixed(1)}%
+          of this sample) that carry no rest claim in either direction.
         </Note>
       </Section>
 
       <Section label="HOME COURT AND REST" title="Home court and rest: comparisons and baselines" disclosure>
         <Prose>
-          Rest and home court are entangled, and the entanglement is structural. A visiting team
-          has travelled by definition, so the fresher side is the home side in{" "}
+          Rest and home court overlap in this schedule-based model. Visiting status does not
+          establish an actual journey, but the fresher side is the home side in{" "}
           {RESTED_AT_HOME.games.toLocaleString()} of the{" "}
           {REST_SPLIT_SAMPLE.decided.toLocaleString()} games with a measurable gap. Two of the
           eight terms, road segment (which carries the body-clock charge) and visiting altitude,
-          are tied to playing away from home, and
-          the schedule pushes the same way on its own: the visiting side is playing a second
-          night in a row roughly twice as often as the home side, and nothing in that term knows
-          which team is at home.
+          are tied to playing away from home. Other terms, such as back-to-back load, use the
+          schedule rather than awarding home status a direct bonus.
         </Prose>
         <Prose>
-          In about half the schedule the home team had travelled in too. In those games,
+          In {(HOME_REST_CONFOUND.bothTravelledIn.games / HOME_REST_CONFOUND.population * 100).toFixed(1)}%
+          of this sample, both sides had a modeled inbound distance of at least one mile. In those games,
           the average rest edge falls by{" "}
           {Math.round(
             (1 -
@@ -371,15 +363,15 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           )}
           %, while the home team still won{" "}
           {HOME_REST_CONFOUND.bothTravelledIn.homeWinPct.toFixed(1)}% of those games,{" "}
-          {HOME_REST_CONFOUND.homeFlewFarther.homeWinPct.toFixed(1)}% of the ones where it had
-          flown farther than its opponent, and{" "}
+          {HOME_REST_CONFOUND.homeFlewFarther.homeWinPct.toFixed(1)}% of the ones where its modeled
+          inbound distance exceeded its opponent’s, and{" "}
           {HOME_REST_CONFOUND.homeTravelledInOnBackToBack.homeWinPct.toFixed(1)}% of the ones
-          where it ended a road trip on a back-to-back. These groups all retain
+          where it had a modeled inbound distance of at least one mile on a back-to-back. These groups all retain
           a substantial home win rate.
         </Prose>
         <Note>
           So a rest advantage cannot be read on its own. It has to be read against the venue it
-          arrived with. Home teams win {REST_SPLIT_BASELINE.homeWinPct}% of all{" "}
+          arrived with. Home teams win {REST_SPLIT_BASELINE.homeWinPct}% of the eligible{" "}
           {REST_SPLIT_BASELINE.games.toLocaleString()} games and road teams{" "}
           {REST_SPLIT_BASELINE.roadWinPct}%. The corresponding rested groups sit{" "}
           {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
@@ -398,7 +390,11 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           three gap sizes, small, medium and large, and each game counts in one. These rates use
           the current backtest; its counts by gap size are available in{" "}
           <Link href="/analysis" className="underline underline-offset-4">Model Results</Link>.
-          The tables on this reference page retain their dated analysis samples.
+          The tables on this reference page are committed analysis snapshots covering
+          {" "}{REST_SPLIT_SAMPLE.firstSeason} through {REST_SPLIT_SAMPLE.lastSeason},
+          refreshed with the October 20, 2026 input corrections. They include completed
+          regular-season games with both fatigue scores and an identified home court, excluding
+          the Orlando bubble. They do not update with each new game.
         </Prose>
 
         <Note>
@@ -491,8 +487,9 @@ blowout   = 1 − ${K.blowoutMaxDiscount} × clamp((|margin| − ${K.blowoutFloo
             <Prose>
               <strong>Travel.</strong> Great-circle miles between consecutive venues over a{" "}
               {K.travelLookbackDays}-day window, log-scaled so additional miles add progressively
-              less to the score. The itinerary assumes a trip home only when the <em>next</em>{" "}
-              game is at home.
+              less to the score. Legs join consecutive recorded venues without intermediate home
+              stops. When no prior game is available in the model’s history, the dated team
+              base is the assumed origin. These miles estimate distance; they do not record flights.
             </Prose>
             <div className="mt-2">
               <Formula>{`travel = ${K.travelScale} × ln(1 + miles / ${K.travelReferenceMiles})`}</Formula>
@@ -504,12 +501,13 @@ blowout   = 1 − ${K.blowoutMaxDiscount} × clamp((|margin| − ${K.blowoutFloo
               <strong>Body clock.</strong> A charge for playing at least a{" "}
               {K.displacementMinHours}-hour clock shift from home, resolved from each
               venue&rsquo;s UTC offset. The model assigns a larger multiplier eastward and
-              reduces the charge with nights in the new zone. These are retained assumptions;
+              reduces the charge by the count of consecutive prior games in the current zone. That
+              count is a proxy for acclimation, not observed nights or sleep. These are retained assumptions;
               the Time Zones analysis did not validate their predictive value.
             </Prose>
             <div className="mt-2">
               <Formula>
-                {`displacement = ${K.displacementBonus} × direction × max(0, 1 − nightsInZone / zonesCrossed)
+                {`displacement = ${K.displacementBonus} × direction × max(0, 1 − priorGamesInZone / zonesCrossed)
 direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westward`}
               </Formula>
             </div>
@@ -518,8 +516,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           <div>
             <Prose>
               <strong>Back-to-back.</strong> Playing last night multiplies the load. The size of
-              that multiplier depends on the real gap between tip-offs, because a 10:30pm game
-              into a 7pm game is roughly 21 hours of recovery and the reverse ordering is 27.
+              that multiplier depends on the interval between recorded tip-offs. That interval
+              includes the previous game itself and does not measure recovery time. When
+              either tip is missing, the multiplier falls back to {K.b2bMultiplier}.
             </Prose>
             <div className="mt-2">
               <Formula>
@@ -532,7 +531,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             <Prose>
               <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
-              altitude (Denver, Utah, and Mexico City at 7,350{"\u00a0"}ft) multiplies by{" "}
+              altitude at a flagged venue (including Denver, Utah and Mexico City) multiplies by{" "}
               {K.altitudeMultiplier}. Schedule density compares games played across five windows
               {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
                   of the five windows is clamped before the curve is applied, so the multiplier
@@ -703,12 +702,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           denominators.
         </Prose>
         <Note>
-          In the overhaul recorded on {MEASURED_ON}, nine fixes landed together and the published
-          hit rates rose about a point. On games
-          both the old and new model called, accuracy moved 0.15pp and the two picked the same
-          team 98.8% of the time. The gain was almost entirely the new model declining 2,661
-          games the old one had called at below a coin flip. Most of the reported improvement
-          came from selecting a different set of games.
+          The October 20, 2026 refresh corrected historical inputs and regenerated these
+          measurements. It did not adopt the research fit’s coefficients. ADR 0006 retains
+          earlier dated results; they describe earlier inputs and are not current measurements.
         </Note>
       </Section>
     </BehindTheDataShell>
