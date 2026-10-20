@@ -29,6 +29,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from fatigue_artifacts import require_model_table
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
@@ -73,6 +75,7 @@ def ols(x: np.ndarray, y: np.ndarray, names: list[str]) -> tuple[pd.DataFrame, f
 
 
 def main() -> None:
+    require_model_table(ROOT)
     log.info("loading player box scores")
     play, sides, coverage = load_regular_inputs(SHOOTING, FEATURES)
     box = play

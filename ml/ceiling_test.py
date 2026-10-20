@@ -26,6 +26,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from fatigue_artifacts import require_model_table
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import brier_score_loss, log_loss
 
@@ -110,6 +112,7 @@ def ols_with_t(x: np.ndarray, y: np.ndarray, names: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
+    require_model_table(ROOT)
     df = pd.read_csv(TABLE, low_memory=False)
     df = df[df["season_start"] >= TRAIN_FLOOR].copy()
 

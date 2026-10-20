@@ -30,6 +30,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from fatigue_artifacts import ModelTableGeneration
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
@@ -144,6 +146,14 @@ def add_season_relative(frame: pd.DataFrame, col: str) -> pd.Series:
 
 
 def main() -> None:
+    generation = ModelTableGeneration(ROOT)
+    try:
+        prepare(generation)
+    finally:
+        generation.close()
+
+
+def prepare(generation: ModelTableGeneration) -> None:
     log.info("reading %s", FEATURES_CSV)
     df = pd.read_csv(FEATURES_CSV, low_memory=False)
 
@@ -264,7 +274,8 @@ def main() -> None:
     ).to_numpy()
 
     out = out.sort_values("date").reset_index()
-    out.to_csv(OUT_CSV, index=False)
+    out.to_csv(generation.temporary, index=False)
+    generation.finish()
     log.info("wrote %s (%d games, %d columns)", OUT_CSV, len(out), out.shape[1])
 
 

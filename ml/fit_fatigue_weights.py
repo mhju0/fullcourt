@@ -27,6 +27,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from fatigue_artifacts import require_model_table
 from scipy.optimize import minimize
 from sklearn.metrics import log_loss
 
@@ -140,6 +142,7 @@ def margin(w: np.ndarray, b0: float, x: np.ndarray, mu: np.ndarray, sd: np.ndarr
 
 
 def main() -> None:
+    require_model_table(ROOT)
     df = pd.read_csv(TABLE, low_memory=False)
     df = df[df["season_start"] >= TRAIN_FLOOR].copy()
 

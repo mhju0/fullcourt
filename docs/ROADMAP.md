@@ -16,7 +16,9 @@ listed in the dated audit snapshots below.
 Follow-up source audit: all 5,815 previously unconfirmed overtime inputs have now been
 adjudicated from retained primary records, identifying 346 missing positive overtime
 counts. The separate [overtime correction](research/2026-10-20-overtime-correction/README.md)
-is in local rehearsal; this does not claim that the production correction is applied.
+was released in [v1.0.7](https://github.com/mhju0/fullcourt/releases/tag/v1.0.7).
+The approved production after-state, exact merged deployment and canonical API/browser
+checks passed; scheduled writers were restored after verification.
 The 17 earlier score discrepancies retain the existing results with primary support;
 two NBA archive conflicts remain explicitly recorded rather than silently reconciled.
 Actual airports/itineraries/home stops, 30 future Cup-dependent fixtures, opening-night
@@ -82,7 +84,8 @@ The Home-court advantage study provides venue-baseline history through Explore; 
 shows the selected season's corresponding comparison. See [D-70](DECISIONS.md).
 The approved Home-court refinement adds an optional raw 5+ line and paired seasonal
 comparisons, with actual counts and one general sample-size note (D-114 amendment).
-The homepage uses the same latest ten completed seasons for both compared groups (D-112).
+The homepage uses all eligible completed regular seasons for both compared groups
+(D-127, superseding the earlier ten-season window in D-112).
 Officiating stays focused; prior referee studies remain in the research archive.
 
 Fatigue coefficients require an explicit owner decision under ADR 0006. Schema changes require

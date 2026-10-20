@@ -1,5 +1,13 @@
 # Release history
 
+## 1.0.8 — 2026-10-20
+
+- Reject stale or incomplete local research exports before dependent analysis runs;
+  bind prepared tables to their source files without changing the model calculations.
+- Record v1.0.7 production acceptance and correct the roadmap’s historical homepage window.
+- Synchronize local research outputs to the verified recalculation, preserving prior copies
+  and immutable audit evidence.
+
 ## 1.0.7 — 2026-10-20
 
 - Confirm the remaining historical overtime source gap with retained NBA box scores

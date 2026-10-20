@@ -1,8 +1,16 @@
 # Historical overtime correction — 2026-10-20
 
-Status: source verification, complete local database rehearsal and all 15 analytics
-producer stages passed. The production build and corrected-shadow API/browser checks passed; final frozen-candidate
-review and production acceptance remain pending. No production update is claimed.
+Status: released in [v1.0.7](https://github.com/mhju0/fullcourt/releases/tag/v1.0.7).
+The owner approved the frozen update; the actual production snapshot matches the reviewed
+after-state. The tested production build was promoted and canonical checks passed.
+
+Production acceptance on 2026-10-20: PR #187, merge `65605ae972c2df0391d1eee0a9d246dafe29079a`
+(source-identical to reviewed `7aa04e8292bf2ecf1a5e920896d5336c968d03bb`),
+Vercel deployment `dpl_6MEYfJzbvWn3BcvXXB1Viie5eyuj`. The canonical site passed
+86 API responses / 45,837 independent numerical comparisons with zero mismatches,
+61 Behind the Data browser tests and a database health check. Both scheduled writers
+were restored afterward; deployment protection was preserved. The local acceptance
+record retains hashes, before/after captures and rollback evidence.
 
 ## Why this follow-up was necessary
 

@@ -6,6 +6,12 @@ Run commands from the repository root, with the appropriate Python environment f
 write production data. Inspect the exported database target before any database operation.
 Never edit a published figure directly; regenerate and review its tests and corresponding copy.
 
+The active fatigue research tools require successful content provenance for both intermediate
+CSVs. Follow the [research input sequence](../ml/README.md#fatigue-research-input-provenance)
+before rebuilding Availability, time-zone or fatigue-evaluation output. A retained CSV without
+its success receipt fails closed; regenerating intermediates does not authorize a model fit or
+publication. The receipts prove local input consistency, not freshness against the current DB.
+
 | Published output | Producer / inputs | Consumer / guard | Regeneration |
 | --- | --- | --- | --- |
 | `src/data/referee-whistle.json`, `referee-foul-style.json` | `scripts/fetch_officials.ts`; ESPN officiating records and matched stored games | Historical referee research; `referee-whistle.test.ts`, `referee-foul-style.test.ts` | `corepack pnpm exec tsx scripts/fetch_officials.ts`; inspect script arguments and provider scope first |

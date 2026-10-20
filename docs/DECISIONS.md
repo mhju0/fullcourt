@@ -1947,3 +1947,17 @@ used to generate the displayed series probabilities.
 Production acceptance requires the exact frozen candidate review, local rollback/restart
 verification, immediate owner approval of the production update, and matching public data
 and deployment checks. Local preparation alone does not establish a repaired live site.
+
+## D-130 — Refuse stale research inputs; retain frozen audit evidence (2026-10-20)
+
+The owner requested repository/local cleanup after the numeric audit. Keep active analytical
+programs and immutable correction evidence. Remove reproducible build output, archive previous
+local research outputs, and synchronize current local outputs to the verified recalculation.
+
+The active fatigue export/prepare/analysis chain must reject silently stale inputs. Publish
+content-bound success receipts only after successful generation and fidelity checks; bind
+preparation to the exact player/team cache inventory and producing source. Consumers check
+before calculations or writes. Missing legacy receipts require actual regeneration, not
+retroactive certification. These guards establish local consistency, not production database
+freshness or upstream source truth. No coefficients, evaluation windows or analytics formulas
+change; frozen historical manifests and reports remain reproducible at their original paths.

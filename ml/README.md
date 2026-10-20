@@ -21,3 +21,40 @@ before reproducing it; chronology and exclusion rules are part of the result.
 `data/` stores local raw caches and intermediate evidence. `shot_value/` contains local trained
 models and metrics. Both are ignored and are not a portable database/bootstrap bundle. Preserve
 them when cleaning build output; published artifacts have independent committed copies and tests.
+
+## Fatigue research input provenance
+
+Run the export and preparation in order before an active research consumer:
+
+```sh
+pnpm exec tsx scripts/export_fatigue_features.ts
+python ml/prepare_fatigue_dataset.py
+# Then run the relevant study, after reviewing its publication outputs.
+```
+
+The exporter reads the configured database and compares rebuilt scores with stored scores.
+It replaces `data/fatigue_features.csv` only after that fidelity check succeeds, and writes
+`data/fatigue_features.csv.provenance.json` last. The receipt pins the CSV bytes and the
+exporter's computation dependencies, venue/correction registries and dependency lock.
+`scripts/fatigue-artifact-sources.json` lists that source scope; a Vitest import-closure test
+requires every local exporter dependency to remain included. `--verify-only` checks fidelity
+without issuing or replacing a CSV receipt.
+
+Preparation validates that receipt, then pins its exact bytes, the feature CSV, preparation
+code/environment declaration, and the sorted filenames and SHA-256 contents of every matching
+`shooting/player_boxscores_*.csv` and `shooting/team_boxscores_*.csv`. It replaces the model CSV
+only after those inputs still match and writes `data/fatigue_model_table.csv.provenance.json`
+last. Both producers invalidate the previous success receipt before a writing attempt; a failed
+attempt preserves the previous CSV but leaves it unusable until a successful rerun.
+
+`fit_fatigue_weights.py`, `four_term_model.py`, `ceiling_test.py`, `availability_cost.py`,
+`availability_quality.py`, `availability_facts.py` and `timezone_test.py` validate this chain
+at entry, before loading analysis data or writing any output. `ablate_fatigue_terms.py`
+validates the feature export it consumes. Missing receipts, changed source/data, and cache
+additions, deletions or renames fail with rerun instructions. Existing CSVs cannot be blessed
+by adding receipts manually: rerun their actual producers. File hashes are streamed.
+
+These guards establish local content consistency and a successful export fidelity check.
+They do not query the database at consumption time or prove that the database/cache is current
+or that provider facts are correct. They do not authorize coefficient changes or publication.
+Historical reports, preregistrations and evidence receipts remain frozen.
