@@ -443,7 +443,7 @@ describe("buildSeasonReport — schedule tax", () => {
   });
 });
 
-import { allSeasonNormExcluding, seasonReportVerdict } from "@/lib/season-report";
+import { allSeasonHomeRateExcluding, allSeasonNormExcluding, seasonReportVerdict } from "@/lib/season-report";
 
 describe("buildSeasonReport — loudest calls", () => {
   it("ranks by rest advantage rather than margin, and signs the margin from the rested side", () => {
@@ -545,6 +545,27 @@ describe("allSeasonNormExcluding", () => {
   it("is null when the displayed season is the only one", () => {
     expect(
       allSeasonNormExcluding([{ season: "2025-26", games: 100, restedTeamWins: 50 }], "2025-26")
+    ).toBeNull();
+  });
+});
+
+describe("allSeasonHomeRateExcluding", () => {
+  it("pools the same seasons' home games, so the norm has a baseline from its own years", () => {
+    // 2024-25 is the only other season: 70 home wins of 120 = 58.3%.
+    const rate = allSeasonHomeRateExcluding(
+      [
+        { season: "2024-25", homeGames: 120, homeWins: 70 },
+        { season: "2025-26", homeGames: 100, homeWins: 90 },
+      ],
+      "2025-26"
+    );
+
+    expect(rate).toBe(58.3);
+  });
+
+  it("is null when the displayed season is the only one", () => {
+    expect(
+      allSeasonHomeRateExcluding([{ season: "2025-26", homeGames: 100, homeWins: 60 }], "2025-26")
     ).toBeNull();
   });
 });

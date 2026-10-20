@@ -159,3 +159,16 @@ the time-zone snapshot reproduced byte for byte). Not changed on purpose: no pro
 the board (owner, 2026-10-16) and Shooting's empty 2026-27 default (pinned). Open: secret
 alert #1, unverified agent-reported terminology drift (TRAVEL MILES, JET-LAGGED, Home/rest
 gap), and the kept local branches listed in the archive README.
+
+## Post-v1.0.10 follow-up checks — 2026-10-20
+
+Closed the open items above. Secret alert #1 (a third-party public Maps Embed key in a
+research capture) was resolved as won't-fix: it is redacted on `main` and survives only in
+closed PR #188's ref, which only GitHub Support can purge. PR #195 fixes the agent-reported
+drift that held up (MILEAGE per D-120, TIME ZONES, "swept 4–0", Season Report's
+other-seasons rate now beside its home baseline, Schedule Edge tile units, the referee
+foul-share chance count, zero-rest GAMES as a season total); "Home/rest gap" and the other
+reported items were checked and are accurate. The local archive now lives at
+`../fullcourt-local-archive` and was slimmed to 2.7 GB (README lists what went). Open:
+confirm the first live slate per docs/LAUNCH_DAY.md once finals land (after about 04:00 UTC
+on 2026-10-21); a release bump if #195 merges.

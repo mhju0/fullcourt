@@ -11,6 +11,7 @@ import { formatRestAdvantageValue } from "@/lib/rest-advantage-display";
 import { browsableSeasons, defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season";
 import {
   ABNORMAL_SEASON_NOTES,
+  allSeasonHomeRateExcluding,
   allSeasonNormExcluding,
   MIN_GAMES_FOR_INFERENCE,
   type SeasonReportResponse,
@@ -46,6 +47,9 @@ export function SeasonReportContent() {
   const { data: analysis, loading: normLoading } = useBacktest();
   const norm = analysis
     ? allSeasonNormExcluding(analysis.seasonWinRates, season)
+    : null;
+  const normHome = analysis
+    ? allSeasonHomeRateExcluding(analysis.seasonWinRates, season)
     : null;
   const note = ABNORMAL_SEASON_NOTES[season];
   const stamp = formatDataAsOf(data);
@@ -212,8 +216,8 @@ export function SeasonReportContent() {
               </p>
               <p data-testid="season-vs-history-heading">{season} vs history</p>
               <p className={muted}>
-                {norm !== null
-                  ? `The rate for the rested team at home across other seasons is ${norm.toFixed(1)}%. The displayed season is excluded.`
+                {norm !== null && normHome !== null
+                  ? `Across other seasons the rested team at home won ${norm.toFixed(1)}%, against a home win rate of ${normHome.toFixed(1)}% in those seasons. The displayed season is excluded.`
                   : normLoading
                     ? "Loading historical comparison…"
                     : "Historical comparison unavailable."}

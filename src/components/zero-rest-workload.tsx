@@ -103,7 +103,7 @@ export function ZeroRestWorkload({ season }: { season: string }) {
                 cell: (r) => r.noRestFga.toLocaleString(),
               },
               { label: "NO-REST EFG%", numeric: true, cell: (r) => r.noRestEfg.toFixed(1) },
-              { label: "GAMES", numeric: true, cell: (r) => r.games },
+              { label: "GAMES", unit: "SEASON TOTAL", numeric: true, cell: (r) => r.games },
             ]}
           />
           {/* Stated, not hidden: this file is a hand-run export and will lag a live season. */}

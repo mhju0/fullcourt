@@ -3,11 +3,11 @@ import { grindLineLabels, priorRoundGamesLabel } from "@/lib/playoff-rest-facts"
 
 describe("priorRoundGamesLabel", () => {
   it("names a sweep", () => {
-    expect(priorRoundGamesLabel(4, true)).toBe("swept in 4");
+    expect(priorRoundGamesLabel(4, true)).toBe("swept 4–0");
   });
 
   it("names a best-of-five sweep", () => {
-    expect(priorRoundGamesLabel(3, false)).toBe("swept in 3");
+    expect(priorRoundGamesLabel(3, false)).toBe("swept 3–0");
   });
 
   it("names an early close", () => {
@@ -50,7 +50,7 @@ describe("grindLineLabels", () => {
         homeCourtPriorIsBestOf7: true,
         opponentPriorIsBestOf7: true,
       })
-    ).toEqual({ homeCourt: "closed in 5", opponent: "swept in 4" });
+    ).toEqual({ homeCourt: "closed in 5", opponent: "swept 4–0" });
   });
 
   it("returns null in round 1, so the card emits no grind line at all", () => {

@@ -46,6 +46,9 @@ function boldTypeCells(pick: (row: RefereeFoulStyle["officials"][number]) => Fou
 }
 const WINDOW_BOLD_CELLS = boldTypeCells((row) => row);
 const CAREER_BOLD_CELLS = boldTypeCells((row) => row.career);
+/** Type cells in the published table, and about how many a |z| ≥ 2 bar bolds by chance alone. */
+const TYPE_CELLS = publishable(style.officials).length * FOUL_COLUMNS.length;
+const CHANCE_TYPE_CELLS = Math.round(TYPE_CELLS / 20);
 const timing = timingData as RefereeTiming;
 const legends = legendsData as RefereeLegends;
 const floor = legends.noiseFloor;
@@ -118,9 +121,9 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           ]}
         />
         <Note>
-          The bar cuts both ways and is meant to. At |z| ≥ {NOTABLE_Z}, about{" "}
-          {timing.expectedByChance} of {timing.eligibleOfficials} officials clear it from noise
-          alone, so a bold cell does not establish an individual tendency. The page does not lead with a name on
+          The bar cuts both ways and is meant to. At |z| ≥ {NOTABLE_Z}, about one cell in
+          twenty clears it from noise alone, roughly {CHANCE_TYPE_CELLS} of the {TYPE_CELLS}{" "}
+          type cells in this table, so a bold cell does not establish an individual tendency. The page does not lead with a name on
           that basis. Muted cells are shown rather than hidden, because a table of only the
           significant ones invites the reader to find a pattern that was selected for them.
         </Note>
