@@ -50,9 +50,9 @@ retains the failed build, final evidence hashes and explicitly carried same-sour
 Section 7 stays report-only, and 2026-27 grading remains deferred. Opening-night execution,
 physical-device/human checks, future Cup assignments and unobserved travel remain open.
 Secret alert #1 remains open: current metadata is redacted; revocation/history purge is unknown.
-The v1.0.9 research-cleanup candidate is prepared locally, including arena and TypeScript
-configuration provenance, actual readonly-clone byte parity and preserved old receipts.
-Its final review/publication remains separate from the accepted v1.0.8 correction.
+v1.0.9 (PR #190, `c5e504e`) released the research-cleanup guards: arena and TypeScript
+configuration provenance, readonly-clone byte parity and preserved old receipts. It changed
+no published figure; its closeout is in PROJECT_HANDOFF.md.
 
 ## Maintenance
 
@@ -200,9 +200,9 @@ The owner requested the same audit across every stored season. The [all-season r
 Keep source adjudication, confirmed historical venue corrections, early overtime gaps, the homecoming policy decision and dependent artifact regeneration as separate follow-ups. External source coverage varies by season and field; provider disagreements are not automatically database errors. Actual charter airports and intermediate home stops remain unobserved for most historical journeys. Any controlled production correction needs exact affected rows, backup/rollback, independent review and the applicable owner approval before persistent-data replacement.
 
 
-### Prepared research maintenance (v1.0.9)
+### Research maintenance (v1.0.9, released)
 
 The local candidate integrates content-bound export/prepare/consumer guards after the arena
 release, including the shared registry/factory and `tsconfig.json`. Actual export/preparation
 match accepted AFTER intermediate bytes; prior CSV/receipt evidence remains archived.
-Final review/publication is pending. No model refit or publication regeneration is included.
+Released as v1.0.9 on 2026-10-20. No model refit or publication regeneration is included.

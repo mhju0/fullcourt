@@ -36,6 +36,8 @@ games. Incomplete seasons, neutral-game rules and the 5+ fatigue-point threshold
 their existing definitions. Counts/rates are calculated, not typed into the page.
 The corrected reference is 2,544 / 3,899 large-gap rested-home wins (65.2%) versus
 28,225 / 47,094 home wins (59.9%), a +5.3 percentage-point difference from unrounded rates.
+(Dated v1.0.6 figure. The v1.0.7 and v1.0.8 corrections moved it; the current value comes from
+`ml/rest_split_facts.json` and is rendered on the homepage.)
 The period label remains below the explanation and reads “All completed regular seasons”.
 
 ## Freshness and reproduction
