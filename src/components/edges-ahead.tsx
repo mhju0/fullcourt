@@ -58,7 +58,7 @@ export function EdgesAhead({
           Rested team at home · gap 5+ · {season}
         </p>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-2 lg:grid-cols-3">
         {top.map((g) => {
           const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")
           const value = formatRestAdvantageValue(g.restAdvantageDifferential)
@@ -68,7 +68,7 @@ export function EdgesAhead({
               type="button"
               onClick={() => onJump(g.season, g.date)}
               aria-label={`Jump to ${dateLabel}: ${g.awayTeam.abbreviation} at ${g.homeTeam.abbreviation}, rest edge ${g.predictedAdvantageAbbreviation} ${value}`}
-              className="fc-control-button mono flex flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
+              className="fc-control-button mono flex w-full flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
             >
               <span
@@ -80,29 +80,31 @@ export function EdgesAhead({
               <span className="whitespace-nowrap" style={{ fontSize: 12, letterSpacing: TRACK.data, fontWeight: 600, color: "var(--term-text)" }}>
                 {g.awayTeam.abbreviation} @ {g.homeTeam.abbreviation}
               </span>
-              {/* Always the rested pole at text grade — the named side is the more-rested
-                  side, same law as the RA cell and the old Edge chip. */}
-              <span
-                className="whitespace-nowrap tabular-nums"
-                style={{
-                  background: "var(--term-blue-text)",
-                  color: "var(--term-surface)",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: TRACK.sub,
-                  padding: "2px 8px",
-                  borderRadius: "var(--term-radius-sm)",
-                }}
-              >
-                {g.predictedAdvantageAbbreviation} {value}
-              </span>
-              {g.projectedFatigue && (
+              <span className="ml-auto flex items-center gap-x-3">
+                {/* Always the rested pole at text grade — the named side is the more-rested
+                    side, same law as the RA cell and the old Edge chip. */}
                 <span
-                  style={{ fontSize: TYPE.micro, fontWeight: 600, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
+                  className="whitespace-nowrap tabular-nums"
+                  style={{
+                    background: "var(--term-blue-text)",
+                    color: "var(--term-surface)",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: TRACK.sub,
+                    padding: "2px 8px",
+                    borderRadius: "var(--term-radius-sm)",
+                  }}
                 >
-                  PROJ
+                  {g.predictedAdvantageAbbreviation} {value}
                 </span>
-              )}
+                {g.projectedFatigue && (
+                  <span
+                    style={{ fontSize: TYPE.micro, fontWeight: 600, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
+                  >
+                    PROJ
+                  </span>
+                )}
+              </span>
             </button>
           )
         })}
