@@ -1,5 +1,5 @@
 import { RefereeStyleContent } from "@/components/referee-style-content"
-import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
+import { MIN_GAMES, type RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
 import { BODY, LEAD_IN, SectionHeading } from "@/components/referee-parts"
@@ -48,7 +48,7 @@ export function RefereeEffectContent({
     <div className="flex flex-col gap-12">
       <p style={BODY}>
         <span style={LEAD_IN}>Foul patterns vary across officials&apos; games.</span> Across{" "}
-        {timing.gamesCovered.toLocaleString()} regular-season games since {timing.firstSeason},
+        {timing.gamesCovered.toLocaleString()} regular-season games from {timing.firstSeason} through {timing.lastSeason},
         the analysis compares foul mix, timing, and home-away differences. Because the data
         records crews rather than individual calls, it cannot establish an official&apos;s bias.
       </p>
@@ -57,21 +57,23 @@ export function RefereeEffectContent({
         <SectionHeading>WHAT SEPARATES OFFICIALS · THE MIX</SectionHeading>
         <p style={BODY}>
           Each cell compares a foul type&apos;s share in an official&rsquo;s games with the league
-          average for those seasons. Every row uses the official&apos;s <strong>most recent 200
-          games</strong>. Bold cells exceed two standard errors; muted cells do not. Some
+          average for those seasons. Every row uses the official&apos;s <strong>most recent {MIN_GAMES} games
+          in the published archive</strong>. Bold cells reach the two-standard-error
+          threshold; muted cells do not. Some
           cells will cross that threshold by chance when many are compared.
         </p>
         <RefereeStyleContent data={style} />
       </section>
 
       <section className="flex flex-col gap-4">
-        <SectionHeading>WHEN THE FOULS COME · A REAL, NARROW EFFECT</SectionHeading>
+        <SectionHeading>WHEN THE FOULS COME · QUARTER SHARES</SectionHeading>
         <p style={BODY}>
           In this sample, the league calls{" "}
           {timing.leagueQuarterShares.q1.toFixed(1)}% of them in the first quarter and{" "}
-          {timing.leagueQuarterShares.q4.toFixed(1)}% in the fourth. Officials differ in how far
-          they lean that way, and they differ at the <em>ends</em> of a game rather than through
-          it: the first and fourth quarters separate them, the second and third do not.
+          {timing.leagueQuarterShares.q4.toFixed(1)}% in the fourth. Relative to the chance
+          benchmark, more officials cross the threshold for first- and fourth-quarter shares
+          than for second- and third-quarter shares. These counts do not isolate an official’s
+          contribution.
         </p>
         <div className="grid gap-3 sm:grid-cols-4">
           <VerdictTile label="1ST QUARTER" verdict={timing.byQuarter.q1} />

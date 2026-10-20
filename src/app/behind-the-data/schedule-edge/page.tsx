@@ -44,11 +44,13 @@ export default function ScheduleEdgeMethodPage() {
     >
       <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
-          For every game on a team&rsquo;s schedule, played or projected, the fatigue gap against that night&rsquo;s opponent is
-          the same rest advantage the rest of the site uses. A game counts
+          For a counted game, played or projected, the fatigue gap against that night&rsquo;s
+          opponent is the same rest advantage the rest of the site uses. A game counts
           as <strong>favorable</strong> when the opponent was the more tired side by at least{" "}
           {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team
-          itself was. The season total is the difference.
+          itself was. The season total is the difference. A game is excluded from these counts if either side
+          has no previous game in that season’s workload history. Both fatigue scores must
+          exist to measure an edge; missing scores are not neutral.
         </Prose>
         <Formula>
           {`netEdgeGames = favorableGames − unfavorableGames
@@ -102,8 +104,9 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
           offset each other, and each game is priced at a small difference from its venue baseline.
         </Note>
         <Note>
-          Worth includes season openers because a fatigue score exists for them. Rest-day
-          comparisons exclude openers because there is no previous game.
+          Worth includes scored season openers and excludes neutral-site games, which have
+          no home/road baseline. The net-edge counts and rest-day comparisons exclude any
+          game where either side has no previous game in the season’s workload history.
         </Note>
         <details className="fc-disclosure"><summary>Season-opener revision</summary><Prose>Excluding openers previously made this page and Season Report disagree by a tenth of a win for the same team.</Prose></details>
       </Section>
@@ -141,7 +144,7 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
         <Prose>
           The correlation between a team&rsquo;s net edge
           games and its finish against the line is r&nbsp;=&nbsp;
-          {signedNumber(benchmark.correlation.r, 2)} across {benchmark.correlation.n}{" "}
+          {signedNumber(benchmark.correlation.r, 4)} across {benchmark.correlation.n}{" "}
           team-seasons. The archive does not show
           a consistent relationship between net edge and beating the line. It does not prove
           that markets fully price the schedule or rule out every possible betting strategy.
@@ -164,12 +167,12 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
             {
               label: "Counts as an edge",
               value: `${NEUTRAL_REST_ADVANTAGE_THRESHOLD}`,
-              sub: "shared with every page",
+              sub: "fatigue-score units, shared with every page",
             },
             {
               label: `Counts as a ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge`,
               value: `${BIG_EDGE_FATIGUE_THRESHOLD}`,
-              sub: "medium and large rest edges",
+              sub: "fatigue-score units; medium and large edges",
             },
             {
               label: "Days off capped at",
@@ -185,9 +188,8 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
           page called it too close to matter.
         </Prose>
         <Prose>
-          The rest-days cap exists because of the All-Star break. Without it those few
-          post-break games would swamp the other eighty: both teams get about a week off,
-          rarely the exact same number of days, and the raw difference is enormous. Capping at{" "}
+          The rest-days cap limits unusually long gaps, such as the All-Star break, in the
+          separate net-days-off total. It does not change fatigue-score edge counts or Worth. Capping at{" "}
           {REST_DAYS_CAP - 1} days off per side before differencing keeps the season total
           describing schedule disparity rather than calendar arithmetic. The cap is not where
           the fatigue model stops crediting rest: its freshness credit starts after three days
@@ -197,9 +199,11 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
 
       <Section label="WHAT ELSE IS COUNTED" title="Back-to-backs and dense stretches" disclosure>
         <Prose>
-          Alongside the headline, each team&rsquo;s season carries the raw structural burdens:
-          back-to-backs played and games that were the third in four nights.
-          These counts follow the dates on the schedule and do not use fatigue-score thresholds.
+          Alongside the headline, the schedule breakdown compares each team’s back-to-backs
+          and dense stretches with its opponents’. A positive edge means opponents faced
+          more of those situations. These comparisons follow schedule dates, share the
+          opener gate above, and do not use fatigue-score thresholds. Played Cup finals
+          and other context-only rows can affect workload windows without adding ranked games.
         </Prose>
         <Note>
           A dense-window flag describes the game that <em>closes</em> the window, not every game
@@ -210,12 +214,12 @@ ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} 
       <Section label="WHAT THIS CANNOT SEE" title="Coverage and limitations" disclosure>
         <LimitList
           items={[
-            "2019-20 is excluded from this ranking because teams stopped with 63 to 67 games played. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",
+            "2019-20 is excluded from this ranking because its published non-bubble schedules have unequal lengths. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",
             "Rankings compare teams within a season. Schedule length, travel patterns, and back-to-back frequency change across eras.",
-            "Until a season is played, a game whose earlier games are still unplayed is compared on projected fatigue from the published schedule, and the page says how many games that covers. Projected ranks can move once those games are played.",
-            "The NBA publishes only 80 of each team's 82 games before the season. The last two are added in December once NBA Cup group play resolves, so a forward-looking total is provisionally two games short.",
+            "After the season’s first unresolved game date, later games use projected fatigue from the published schedule; the page counts those projections. On the first unresolved date, prior workload is already known. Rankings can move as games are played.",
+            "In the current NBA Cup calendar, 80 of each team’s 82 regular-season games are initially assigned. The other two depend on Cup results, so a forward-looking total remains incomplete until those fixtures are added. A Cup championship adds workload but is not a regular-season target.",
             "It inherits every limit of the fatigue model it is built on, including no injuries, no rotations and no knowledge of team quality.",
-            "A favorable schedule is not a prediction. It says the calendar handed a team more rested nights than tired ones, not that they were good.",
+            "A favorable schedule is not a prediction. It says a team has more favorable than unfavorable modeled fatigue gaps in the counted games; it does not establish team quality.",
             "The Worth column uses pooled historical rates since 1985-86. A displayed season's observed rates can differ, so this estimate does not explain that season's actual wins and losses.",
           ]}
         />

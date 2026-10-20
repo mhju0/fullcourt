@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Expected shot value (xeFG%) by court location, its zone baseline, and the shooting context the model does not observe.",
 };
 
-const MEASURED_ON = "2026-07-02";
+const EVALUATED_ON = "2026-07-02";
 
 export default function ShotValueMethodPage() {
   return (
@@ -23,23 +23,25 @@ export default function ShotValueMethodPage() {
       topic="shot-value"
       eyebrow="BEHIND THE DATA · SHOT VALUE"
       title="Expected Shot Value"
-      description="The average value of a shot from each court location, measured across the league. Defender position and shooter skill are outside this model."
+      description="A model estimate of shot value at each court location, fitted to league shooting data. Defender position and shooter skill are outside this model."
     >
       <Section label="WHAT IS COMPUTED" title="Expected value by court location">
         <Prose>
           The half court is divided into a grid of one-foot cells. For each cell, the model
-          estimates the probability a shot from there goes in, and converts that to an expected
-          effective field goal percentage, so a cell behind the arc is credited at 1.5 times a
-          cell inside it.
+          estimates make probabilities for two- and three-point attempts, then combines them
+          using the league&rsquo;s observed mix of those attempts in that cell and season.
+          Effective field goal percentage gives a made three-pointer 1.5 times the credit of
+          a made two-pointer.
         </Prose>
         <Formula>
-          {`xeFG% = P(make) × (1.5 if the cell is behind the three-point line, else 1)`}
+          {`r3 = three-point attempts / all attempts in the cell
+xeFG% = 100 × [(1 − r3) × P(make two) + r3 × 1.5 × P(make three)]`}
         </Formula>
         <Prose>
-          Expected eFG% is what an average shooter converts from a given spot. The gap between
-          what a team actually shot and what the surface expected from those same spots is{" "}
-          <strong>shots above expected</strong>. It compares shooting results with the value
-          expected from those locations.
+          Expected eFG% describes the model&rsquo;s estimate for league shooting at a given
+          spot. The difference view shows the <strong>location model minus the zone
+          baseline</strong>, in percentage points. It compares the two models&rsquo; estimates,
+          rather than a team&rsquo;s actual shooting with an expectation.
         </Prose>
         <Note>
           A three-pointer can have a lower make probability and still have a higher expected
@@ -47,13 +49,15 @@ export default function ShotValueMethodPage() {
         </Note>
       </Section>
 
-      <Section label="TWO SURFACES" title="Comparing the two location models" descriptor={`Measured ${MEASURED_ON}`} disclosure>
+      <Section label="TWO SURFACES" title="Comparing the two location models" descriptor={`Evaluation recorded ${EVALUATED_ON}`} disclosure>
         <Prose>
           The page compares two models. The{" "}
-          <strong>zone baseline</strong> assigns every cell the average of its official zone,
-          so its colour changes in blocky steps at zone boundaries. The{" "}
-          <strong>gradient-boosted model</strong> uses court coordinates, so its estimates
-          can vary within a zone.
+          <strong>zone baseline</strong> uses the average make rate for each cell&rsquo;s
+          official zone and distance-range category, then applies the cell&rsquo;s three-point
+          weighting. A category absent from training falls back to the overall training make
+          rate. The <strong>gradient-boosted model</strong> uses distance and angle from
+          the basket, so its estimates can vary within a zone. Left and right are folded
+          together for the location estimate.
         </Prose>
         <ValueGrid
           values={[
@@ -63,15 +67,18 @@ export default function ShotValueMethodPage() {
           ]}
         />
         <Prose>
-          The location model improves log-loss and Brier score by roughly one percent over
-          the zone baseline. Those metrics assess its probability estimates; the improvement
-          does not mean it predicts one percent more makes and misses correctly.
+          In the recorded season-by-season validation, the location model improved pooled
+          log-loss and Brier score by roughly one percent over the zone baseline. Each
+          validation season was predicted using earlier seasons only. Those metrics assess
+          probability estimates; the improvement does not mean it predicts one percent more
+          makes and misses correctly.
         </Prose>
         <Note>
-          Both surfaces are trained on prior seasons under an expanding window, so a season is
-          never scored by a model that has seen it. Shot efficiency drifts upward over time,
-          which means the most recent season&rsquo;s expected values can run slightly low;
-          shots above expected for the current season are therefore biased a little high.
+          The displayed surfaces use models refitted on all seasons in the training data,
+          including seasons shown on the map. They are retrospective reference surfaces,
+          not the held-out predictions used in validation. Period is fixed at the training
+          average and the home/away input is fixed at 0.5; neither varies by cell. New seasons require
+          a separate data and surface update.
         </Note>
       </Section>
 
@@ -79,7 +86,8 @@ export default function ShotValueMethodPage() {
         <Prose>
           Defender distance, shot clock, touch time, and dribbles can help describe a shot.
           Those inputs are absent from the location data used here. A wide-open corner three
-          and a contested one off the dribble receive the same expected value at the same location.
+          and a contested one off the dribble receive the same expected value in the same
+          cell and season.
         </Prose>
         <Prose>
           <strong>Shot value</strong> estimates what a shot from this location is worth on
@@ -93,8 +101,8 @@ export default function ShotValueMethodPage() {
             "Defender distance and contest level.",
             "Shot clock, touch time, dribbles, and whether the shot was assisted.",
             "Shooter skill. Players with different shooting records receive the same expected value from the same cell.",
-            "Game context: score, period, and whether the possession was a scramble or a set play.",
-            "Cells with few attempts are noisy by construction. The corners of the chart carry far less data than the paint.",
+            "Displayed cell values do not vary with the score, period, or whether the possession was a scramble or a set play.",
+            "Sparse cells have less observed shooting evidence. The estimates are model outputs, not direct make percentages from each cell; square size shows the observed attempt volume.",
           ]}
         />
       </Section>

@@ -37,14 +37,14 @@ describe("homepage evidence boundaries", () => {
     expect(historicalHomeFinding(history(baseline, large))).toMatchObject({ minGap: 5, games: 20, winPct: 65 });
     expect(historicalHomeFinding({ ...history(baseline, large), minGap: 0 })).toBeNull();
   });
-  it("uses exactly the latest ten completed baseline seasons, including a zero-large-gap season", () => {
+  it("uses all completed baseline seasons, including older history and a zero-large-gap season", () => {
     const completed = Array.from({ length: 11 }, (_, index) => season(`${2015 + index}-${String(2016 + index).slice(-2)}`));
     const ongoing = season("2026-27", { isComplete: false, homeGames: 1000, homeWins: 0 });
     const baseline = [ongoing, ...completed].reverse();
     const large = baseline.filter((row) => row.season !== "2025-26");
     expect(historicalHomeFinding(history(baseline, large))).toMatchObject({
-      seasonCount: 10, coverage: "2016-17 to 2025-26", baselineGames: 1000,
-      baselinePct: 60, games: 180, winPct: 65, edgePp: 5, latestEvidenceDate: "2026-04-13",
+      seasonCount: 11, coverage: "2015-16 to 2025-26", baselineGames: 1100,
+      baselinePct: 60, games: 200, winPct: 65, edgePp: 5, latestEvidenceDate: "2026-04-13",
     });
   });
   it("pools raw wins and games before calculating rates and the difference", () => {

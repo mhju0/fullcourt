@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import ablationFacts from "../ml/fatigue_ablation_facts.json";
+import { signedNumber } from "../src/lib/signed-number";
 
 test.describe("Behind the Data", () => {
   test("sits in the Reference landmark, not among the six product tabs", async ({ page }) => {
@@ -64,15 +66,15 @@ test.describe("Behind the Data", () => {
     await expect(page.getByText("2.65", { exact: false }).first()).toBeVisible();
 
     // The ablation table's load-bearing pair: travel finds more of the model's calls than any
-    // other term, and those games win. Asserted together with the +0.37pp row they explain,
+    // other term, and those games win. Asserted together with the generated rate change they explain,
     // because the row on its own reads as an argument for deleting the term.
-    await expect(page.getByText("5,990", { exact: true })).toBeVisible();
-    await expect(page.getByText("59.1%", { exact: true })).toBeVisible();
-    await expect(page.getByText("+0.37pp", { exact: true })).toBeVisible();
+    await expect(page.getByText(ablationFacts.terms[0].found.toLocaleString(), { exact: true })).toBeVisible();
+    await expect(page.getByText(`${ablationFacts.terms[0].foundWinPct.toFixed(1)}%`, { exact: true })).toBeVisible();
+    await expect(page.getByText(`${signedNumber(ablationFacts.terms[0].delta)}pp`, { exact: true })).toBeVisible();
 
     // The count is dropped calls, not all winners. Preserve that distinction alongside the rate.
     await expect(
-      page.getByText("5,990 called games", { exact: false })
+      page.getByText(`${ablationFacts.terms[0].found.toLocaleString()} called games`, { exact: false })
     ).toBeVisible();
     await expect(page.getByText("including losses, not a count of winning predictions", { exact: false })).toBeVisible();
   });
@@ -164,6 +166,8 @@ test.describe("Prose spacing", () => {
     "/behind-the-data/referees",
     "/behind-the-data/time-zones",
     "/behind-the-data/data-and-limits",
+    "/behind-the-data/officiating",
+    "/behind-the-data/referees/archive",
     // "/" is the front door (the marketing page, formerly /about); "/games" is the board.
     "/",
     "/games",
@@ -190,7 +194,7 @@ test.describe("Prose spacing", () => {
       const offenders = (text.match(/[A-Za-z0-9.,)]+/g) ?? [])
         .filter((w) => /[a-z.,)][A-Z][a-z]{2,}|\d[a-z]{3,}/.test(w))
         // Legitimately unspaced: proper nouns and metric names the prose uses inline.
-        .filter((w) => !/^(NBA|FullCourt|GBM|UTC|eFG|xeFG|ESPN|hoopR)$/.test(w.replace(/^[.,)]+|[.,)]+$/g, "")));
+        .filter((w) => !/^(NBA|FullCourt|GBM|UTC|eFG|xeFG|ESPN|hoopR|McBride)$/.test(w.replace(/^[.,)]+|[.,)]+$/g, "")));
 
       expect(offenders, `run-together text: ${offenders.join(", ")}`).toEqual([]);
     });
@@ -285,7 +289,7 @@ test("printing reveals evidence and restores the reading state", async ({ page }
   await page.evaluate(() => dispatchEvent(new Event("beforeprint")));
   await expect(page.locator("#reference-body details:not([open])")).toHaveCount(0);
   await page.emulateMedia({ media: "print" });
-  await expect(page.getByText("5,990", { exact: true })).toBeVisible();
+  await expect(page.getByText(ablationFacts.terms[0].found.toLocaleString(), { exact: true })).toBeVisible();
   await page.emulateMedia({ media: "screen" });
   await page.evaluate(() => dispatchEvent(new Event("afterprint")));
   await expect(page.locator("#reference-body details[open]")).toHaveCount(0);

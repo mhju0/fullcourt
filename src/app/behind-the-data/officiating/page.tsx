@@ -16,7 +16,7 @@ export default function OfficiatingMethodPage() {
   return <BehindTheDataShell topic="officiating" eyebrow="BEHIND THE DATA · OFFICIATING" title="Officiating" description="How we count errors in the NBA's Last Two Minute reports.">
     <Section label="THE REVIEWED SAMPLE" title="Which games are reviewed">
       <Prose>Since 2017–18, the NBA publishes reports for games where the lead was three points or fewer at any point in the final two minutes of the fourth quarter or overtime. Reports assess calls and material non-calls. FullCourt displays regular-season reports only.</Prose>
-      <Prose>Reports became public on March 2, 2015, covering games played from March 1. The 2014–15 sample is a partial season. Before 2017–18, eligibility was based on a five-point margin at the two-minute mark; the NBA also revised which non-calls it grades. Those changes limit comparisons across eras.</Prose>
+      <Prose>Reports became public on March 2, 2015, covering games played from March 1. The 2014–15 sample is a partial season. For regular-season games before 2017–18, eligibility was based on a five-point margin at the two-minute mark of the fourth quarter or overtime. The NBA also changed how it presents calls and material non-calls. Those changes limit comparisons across eras.</Prose>
       <Prose>We check that every report in the NBA&apos;s regular-season archive or season index was collected. We do not independently check whether that index includes every eligible game.</Prose>
       <Prose><a className="underline" href="https://official.nba.com/nba-last-two-minute-reports-frequently-asked-questions/">NBA report criteria and definitions ↗</a></Prose>
     </Section>

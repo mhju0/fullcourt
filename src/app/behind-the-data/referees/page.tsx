@@ -69,7 +69,9 @@ export default function RefereeMethodPage() {
       <Section label="WHERE THE NUMBERS COME FROM" title="The research samples" disclosure>
         <Prose>
           The analysis uses cached ESPN play-by-play and box scores, so each test can use the
-          same game records.
+          same game records. These are archived studies through {style.lastSeason}, not a
+          current-season officiating feed. The seasonal Last Two Minute reports use a
+          separate collection and publication process.
         </Prose>
         <Prose>
           The <strong>three game counts</strong> reflect different input requirements and
@@ -112,7 +114,7 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           values={[
             { label: "Emphasis bar", value: `|z| ≥ ${NOTABLE_Z}`, sub: "two standard errors" },
             { label: "Publication bar", value: `${MIN_GAMES} games`, sub: "minimum sample shown" },
-            { label: "Officials shown", value: String(timing.eligibleOfficials), sub: `of ${style.officials.length} in the data` },
+            { label: "Officials shown", value: String(publishable(style.officials).length), sub: `of ${style.officials.length} in the data` },
           ]}
         />
         <Note>
@@ -127,8 +129,8 @@ published only for officials with ≥ ${MIN_GAMES} games`}
       <Section label="THE WINDOW" title="Why each row uses the latest 200 games" disclosure>
         <Prose>
           Careers in this data run from {MIN_GAMES} games to more than 600, and a z-score bar
-          moves with sample size: an identical quirk that clears |z| ≥ {NOTABLE_Z} at n = 700
-          is out of reach at n = 200. Worse, whistles measurably <em>change</em>. A
+          moves with sample size: an effect that clears |z| ≥ {NOTABLE_Z} at n = 700
+          may not clear it at n = 200. The recorded foul mix also changes over time. A
           pre-registered drift test split every official with ≥{" "}
           {driftData.minCareerForSplit} games into their most recent{" "}
           {driftData.windowGames} games and everything earlier:{" "}
@@ -189,22 +191,25 @@ verdict:   how often the null's spread reaches the observed one`}
           {`pairs examined                       ${floor.pairsTested.toLocaleString()}
 minimum shared playoff games        ${floor.minSharedGames}
 
-most extreme p from PURE NOISE      ${floor.mostExtremePFromNoise}
+approximate minimum-p reference     ${floor.mostExtremePFromNoise}
 the most famous pair actually       ${legends.legend.p}
 
-cleared p < 0.01                    ${floor.clearedPoint01}   (chance predicts ${floor.expectedPoint01})
-cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts ${floor.expectedPoint05})`}
+cleared p < 0.01                    ${floor.clearedPoint01}   (simple reference ${floor.expectedPoint01})
+cleared p < 0.05                    ${floor.clearedPoint05}   (simple reference ${floor.expectedPoint05})`}
         </Formula>
         <Prose>
-          Across {floor.pairsTested.toLocaleString()} pairs, the expected minimum p-value under
-          the chance calculation is about {floor.mostExtremePFromNoise}. This is a reference
-          for the scale of extremes, not a corrected significance threshold. The featured
-          pair&rsquo;s result is less extreme than that reference.
+          Across {floor.pairsTested.toLocaleString()} pairs, a rough minimum-p reference is
+          about {floor.mostExtremePFromNoise}. This 1/N reference approximates the expected
+          minimum for independent tests with uniformly distributed null p-values. These
+          pairs share games and players, so it is not a calibrated minimum-p distribution
+          or an adjusted significance threshold. The featured pair’s result is less extreme
+          than that reference. The count references use N multiplied by each p-value cutoff;
+          they are descriptive comparisons, not a global significance test.
         </Prose>
         <Note>
-          One-sided and two-sided p-values are not interchangeable. The noise floor is the
-          expected minimum of a <strong>two-sided</strong> sweep, so every pair compared against it
-          is quoted two-sided too. A test fails if that ever stops being true.
+          One-sided and two-sided p-values are not interchangeable. The reference accompanies
+          a <strong>two-sided</strong> sweep, so every pair compared against it is quoted
+          two-sided too. That consistency does not remove the approximation’s limitations.
         </Note>
       </Section>
 

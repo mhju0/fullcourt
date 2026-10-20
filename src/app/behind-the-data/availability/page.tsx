@@ -43,9 +43,10 @@ export default function AvailabilityMethodPage() {
         <Prose>
           A missing player belongs to the team&rsquo;s recent rotation but did not play
           in the game. Rotation membership comes from <strong>prior participation</strong>,
-          because a box score may omit players who did not play. A player who misses four
-          straight games no longer has two appearances in the window, so a long absence counts
-          for its first four games only.
+          because a box score may omit players who did not play. A long absence can count for
+          at most its first four games: after four straight missed games, the player no longer
+          has two appearances in the window. Players with fewer recent appearances can leave
+          the rotation sooner.
         </Prose>
         <Formula>
           {`rotation   at least ${D.minAppearances} appearances with positive recorded minutes
@@ -77,8 +78,10 @@ missing    a rotation member who did not play tonight`}
       <Section label="WHAT AN ABSENCE IS WORTH" title="Estimating a player's missing contribution" disclosure>
         <Prose>
           Each absence is weighted by <strong>Game Score</strong>, a summary of box-score
-          production measured over the player&rsquo;s previous {D.qualityGames} regular-season appearances
-          with positive recorded minutes.
+          production averaged over up to {D.qualityGames} regular-season appearances with
+          positive recorded minutes, with at least five required. The value is carried forward
+          from the player&rsquo;s latest qualifying appearance in the rotation window; its
+          average ends before that appearance, so that game&rsquo;s own production is not included.
         </Prose>
         <Formula>
           {`GmSc = PTS + 0.4·FGM − 0.7·FGA − 0.4·(FTA − FTM)
@@ -88,15 +91,20 @@ missing    a rotation member who did not play tonight`}
 value = max(0, player's GmSc − the team's own rotation median)`}
         </Formula>
         <Prose>
-          The team&rsquo;s rotation median is a proxy for replacement production. An absent
-          player above that median contributes a positive missing-value score; one at or below
-          it contributes zero. This does not identify who actually took the missing minutes.
+          The median among rotation members with usable quality estimates is a proxy for
+          replacement production. An absent player above that median contributes a positive
+          missing-value score; one at or below it contributes zero. This does not identify
+          who actually took the missing minutes.
         </Prose>
+        <Note>
+          A rotation player without enough usable prior appearances has no quality estimate
+          and contributes no missing-value weight. The rotation count can still include that player.
+        </Note>
         <Note>
           Five weightings were compared against the same baseline: minutes,
           points, raw Game Score, Game Score above replacement, and a plain
           best-player-out flag. Value above replacement had the lowest residual error. The
-          comparison is in <code>ml/availability_quality.py</code>; weighting by minutes alone,
+          comparison is in <code>ml/availability_quality.py</code>; weighting by minutes alone
           was the weakest of the continuous measures. This comparison describes model fit,
           not a held-out forecast evaluation.
         </Note>
@@ -111,7 +119,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
         <Formula>
           {`home margin ~ home court
               + team strength (home − away)
-              + season position
+              + season position     (away − home)
               + schedule terms      (away − home)
               + absence value       (away − home)`}
         </Formula>
@@ -120,13 +128,17 @@ value = max(0, player's GmSc − the team's own rotation median)`}
           team strength uses home minus away. Equal values on both sides cancel.
           Team strength is each side&rsquo;s win rate in its{" "}
           <em>prior</em> games only, shrunk toward .500 early in a season so an October record is
-          not read as established. It is in the model as a control, never as a published effect:
-          without it, an absence would be credited with some of the fact that weaker teams are
-          missing players more often.
+          not read as established. This control helps separate existing differences in team
+          strength from the association with missing players.
+        </Prose>
+        <Prose>
+          &ldquo;Best player&rdquo; means the rotation member with the highest available prior
+          Game Score average. The best-player-out estimate compares one side missing that
+          player with the other side not missing theirs; it is not a fixed penalty for every star.
         </Prose>
         <ValueGrid
           values={[
-            { label: "Games measured", value: AVAILABILITY_SAMPLE.games.toLocaleString(), sub: `${AVAILABILITY_SAMPLE.firstSeason} onward` },
+            { label: "Games measured", value: AVAILABILITY_SAMPLE.games.toLocaleString(), sub: `${AVAILABILITY_SAMPLE.firstSeason} through ${AVAILABILITY_SAMPLE.lastSeason}` },
             { label: "Best player out", value: `${E.bestPlayerOut.points.toFixed(2)} pts`, sub: `t = ${E.bestPlayerOut.t.toFixed(1)}` },
             { label: "Per point above replacement", value: `${E.missValuePerPoint.points.toFixed(2)} pts`, sub: `t = ${E.missValuePerPoint.t.toFixed(1)}` },
           ]}
@@ -136,6 +148,11 @@ value = max(0, player's GmSc − the team's own rotation median)`}
           their estimates become unstable, including a sign reversal. Each published effect comes from
           its own specification rather than from a single model carrying all of them, and they
           should be read as separate answers to separate questions, never summed.
+        </Note>
+        <Note>
+          The t-statistics use ordinary regression standard errors, without adjustments for
+          repeated teams or players. These observational comparisons do not establish that
+          an absence caused the estimated change in margin.
         </Note>
       </Section>
 
@@ -154,7 +171,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
             .join("\n")}
         </Formula>
         <Prose>
-          Every schedule coefficient moves by under {Math.ceil(WORST_SHIFT)}%. Measured
+          Each of these four schedule coefficients moves by under {Math.ceil(WORST_SHIFT)}%. Measured
           absences account for little of these associations in this specification. That does
           not rule out unmeasured absences, changes in playing time, or other confounders.
         </Prose>
@@ -167,6 +184,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
             "It does not know why a player was out. Injury, load management, suspension and a personal matter are one category here, and they are not the same thing.",
             `It does not know who replaced him. Replacement level is the team's own rotation median, which is a reasonable stand-in and not the actual substitute.`,
             "Game Score captures limited defensive information and may miss part of a defensive player's contribution.",
+            "Missing box-score counting-stat fields are filled with zero when computing Game Score, which can affect quality estimates from incomplete records.",
             `Final margins have a standard deviation of ${AVAILABILITY_NOISE.marginStdDev.toFixed(1)} points. The model's error remains ${AVAILABILITY_NOISE.rmseWithAbsence.toFixed(1)} points after including team records, schedule, and absences, leaving much of the variation unexplained.`,
             `The margin comparison includes source-supported games from ${AVAILABILITY_SAMPLE.firstSeason} through ${AVAILABILITY_SAMPLE.lastSeason}. Both teams need usable histories for a game to enter that comparison.`,
             "Coverage varies by season, and some early annual samples are sparse or unavailable. Annual rates describe the included team-games and do not establish a league-wide trend.",

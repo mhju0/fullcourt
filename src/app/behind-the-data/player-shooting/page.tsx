@@ -39,9 +39,10 @@ export default function PlayerShootingMethodPage() {
 rest effect   eFG% on 2–29 days off − eFG% on no rest`}
         </Formula>
         <Note>
-          Games after exactly one day off are excluded from this comparison, and so are gaps
-          of 30 days or more: every season opener and every return from a long absence. Those
-          are not rest between games.
+          Games after exactly one day off are excluded from this comparison, as are games
+          after 30 or more full days off, including season openers and returns from long absences.
+          The Orlando bubble is excluded from the shooting outcomes, although its appearances
+          can contribute to rest history.
         </Note>
       </Section>
 
@@ -51,15 +52,15 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
           a three-pointer at 1.5 times a two-pointer to account for the extra point. Raw field
           goal percentage counts every made shot equally.
         </Prose>
-        <Formula>{`eFG% = (FGM + 0.5 × 3PM) / FGA`}</Formula>
+        <Formula>{`eFG% = 100 × (FGM + 0.5 × 3PM) / FGA`}</Formula>
       </Section>
 
       <Section label="HOW MUCH IS NOISE" title="Attempts and uncertainty" disclosure>
         <Prose>
           A rest effect is a difference of two percentages, each from a limited number of
-          attempts, so it carries real uncertainty. The page computes the standard error of
-          that difference and uses it to decide which splits to emphasise. Smaller splits
-          relative to their uncertainty are muted.
+          attempts, so it carries real uncertainty. For season splits, the page approximates
+          the standard error of that difference with the formula below. Differences smaller
+          than one estimated standard error are muted; this is not a 95% significance test.
         </Prose>
         <Formula>{`standard error ≈ √( 2500 / noRestFGA + 2500 / restedFGA )`}</Formula>
         <Prose>
@@ -70,7 +71,7 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
         </Prose>
         <ValueGrid
           values={[
-            { label: "Default attempt floor", value: "300+", sub: "field goal attempts" },
+            { label: "Default attempt floor", value: "300+", sub: "total field goal attempts, not per group" },
             { label: "Rest states compared", value: "0 vs 2–29", sub: "days off between appearances" },
             { label: "Metric", value: "eFG%", sub: "threes weighted 1.5×" },
           ]}
@@ -79,11 +80,17 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
           Lowering the adjustable attempt floor includes more players, but their splits
           generally have fewer attempts and greater uncertainty.
         </Note>
+        <Note>
+          This study is published as a separate export. Available seasons reflect that export;
+          nightly game updates do not automatically add player shooting results.
+        </Note>
       </Section>
 
       <Section label="CAREER ESTIMATES" title="How career estimates are adjusted" disclosure>
         <Prose>
-          Career estimates require at least 150 attempts in each rest group. The export
+          Career estimates require at least 150 attempts in each rest group. Their standard
+          errors use each group&rsquo;s observed eFG% in a similar binary approximation,
+          rather than fixing it at 50%. The export
           shrinks each raw gap toward the mean gap among eligible players, with more shrinkage
           when its standard error is larger. This reduces uncertain extremes; it does not
           remove differences in opponents, shot selection, or reasons for missing games.

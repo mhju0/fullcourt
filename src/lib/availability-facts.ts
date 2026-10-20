@@ -32,6 +32,8 @@ export interface BestOutSeason {
 /** What the measurement was computed over. */
 export const AVAILABILITY_SAMPLE = Object.freeze(facts.sample);
 
+export const AVAILABILITY_INPUT_COVERAGE = Object.freeze(facts.coverage);
+
 /**
  * How "missing" is defined. Absence is inferred from prior participation rather than from
  * tonight's sheet, because a long-term-injured player may not be listed at all — so the only

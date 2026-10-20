@@ -21,8 +21,8 @@ const METHODS = [
 
 const NULL_RESULTS = [
   { title: "Season win totals", href: "/behind-the-data/schedule-edge#the-market-check", finding: "Favorable schedules did not consistently predict beating preseason win-total lines in the archived sample." },
-  { title: "Time zones", href: "/behind-the-data/time-zones", finding: "Travel direction on short rest added no predictive value after accounting for team strength and other schedule factors." },
-  { title: "Referee folklore", href: "/behind-the-data/referees", finding: "The tested pair records and home-favoring patterns did not exceed their chance comparisons. Foul volume did differ across officials' games." },
+  { title: "Time zones", href: "/behind-the-data/time-zones", finding: "Clock displacement between a team’s modeled home base and the game venue added no clear predictive value in the tested models." },
+  { title: "Referee folklore", href: "/behind-the-data/referees", finding: "The examined official-player records did not establish bias. Many-pair chance comparisons put unusual records in context." },
   { title: "Playoff winner selection", href: "/behind-the-data/playoff-predictions#what-the-model-actually-wins-at", finding: "Winner accuracy was close to always picking the home-court team. Probability estimates improved." },
 ];
 
