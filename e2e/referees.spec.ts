@@ -130,7 +130,7 @@ test.describe("Referee Effect — the folklore chapter", () => {
     await expect(page.getByText(/PLAYOFF RECORD IN GAMES/)).toBeVisible();
     // ...and the count chance puts beside it, which may never be separated from it.
     await expect(page.getByText("EXTREMES EXPECTED FROM MANY COMPARISONS")).toBeVisible();
-    await expect(page.getByText(/OBSERVED VS EXPECTED BY CHANCE/)).toBeVisible();
+    await expect(page.getByText(/OBSERVED VS SIMPLE REFERENCE/).first()).toBeVisible();
   });
 
   test("shows positive and negative records for the same official", async ({ page }) => {

@@ -170,12 +170,12 @@ export function HomeCourtStudy() {
                       <a className="fc-text-link inline-flex min-h-11 items-center" href={`/season?season=${row.season}`}>{row.season}</a>
                       {!row.isComplete ? <span className={`block text-xs font-normal ${muted}`}>Season to date</span> : null}
                     </th>
-                    <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()}</td>
+                    <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()}&nbsp;/&nbsp;{row.homeGames.toLocaleString()}</td>
                     <td className="mono text-right tabular-nums">{formatRate(row.homeBaselinePct)}</td>
-                    <td className="mono text-right tabular-nums">{row.restedTeamWins.toLocaleString()} / {row.games.toLocaleString()}</td>
+                    <td className="mono text-right tabular-nums">{row.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.games.toLocaleString()}</td>
                     <td className="mono text-right tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</td>
                     <td className="mono text-right tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</td>
-                    {showLarge ? <><td className="mono text-right tabular-nums">{row.largeRestGap.restedTeamWins.toLocaleString()} / {row.largeRestGap.games.toLocaleString()}</td><td className="mono text-right tabular-nums">{row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)}</td></> : null}
+                    {showLarge ? <><td className="mono text-right tabular-nums">{row.largeRestGap.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.largeRestGap.games.toLocaleString()}</td><td className="mono text-right tabular-nums">{row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)}</td></> : null}
                   </tr>
                 );
               })}
@@ -236,7 +236,7 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
 
   return (
     <div className={styles.chartFrame} ref={frameRef}>
-      <p id="home-court-chart-help" className={`mb-3 text-[15px] ${muted}`}>Hover or tap to inspect a season. With the chart focused, use ← / → for adjacent seasons, or Home / End for the first / latest season.</p>
+      <p id="home-court-chart-help" className={`mb-3 text-[15px] ${muted}`}>Hover or tap to inspect a season. With the chart focused, use ← or → for adjacent seasons, or Home or End for the first or latest season.</p>
       <svg data-testid="home-court-chart" className={styles.chart} viewBox={`0 0 ${width} ${VIEW.height}`} role="group" aria-label={`Home win rate and the rested team at home's win rate by NBA season${showLarge ? ", including raw 5+ rest gaps" : ""}`} onPointerMove={inspectPointer} onClick={inspectPointer}>
         {ticks.map((tick) => (
           <g key={tick} aria-hidden="true">
@@ -304,7 +304,7 @@ function SeasonInspection({ row, showLarge }: { row: HomeCourtStudySeason; showL
         {!row.isComplete ? <p className={styles.count}>Season to date · through {row.latestEvidenceDate}</p> : null}
         <p className="fc-control-label">Home win rate</p>
         <p className={`mono ${styles.homeRate}`}>{formatRate(row.homeBaselinePct)}</p>
-        <p className={styles.count}>{row.homeWins.toLocaleString()} wins / {row.homeGames.toLocaleString()} games</p>
+        <p className={styles.count}>{row.homeWins.toLocaleString()} wins /&nbsp;{row.homeGames.toLocaleString()} games</p>
       </div>
       <div className={styles.comparisonRegion}>
         <SeasonComparison label="Rested at home · 0.5+" rate={gap === null ? "Too early" : formatRate(row.winPct)} wins={row.restedTeamWins} games={row.games} gap={gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`} kind="rest" />
@@ -320,7 +320,7 @@ function SeasonComparison({ label, rate, wins, games, gap, kind }: { label: stri
     <div className={styles.comparisonMetrics}>
       <p className={`mono ${styles.rate} ${rate.endsWith("%") ? "" : styles.unavailableRate}`}>{rate}</p>
       <div className={styles.gap}><p className={styles.gapLabel}>Vs home rate</p><p className={`mono ${styles.gapValue} ${gap.endsWith("pp") ? "" : styles.unavailableRate}`}>{gap}</p></div>
-      <p className={styles.count}>{wins.toLocaleString()} wins / {games.toLocaleString()} games</p>
+      <p className={styles.count}>{wins.toLocaleString()} wins /&nbsp;{games.toLocaleString()} games</p>
     </div>
   </div>;
 }

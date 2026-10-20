@@ -147,7 +147,7 @@ test("copy failure exposes selectable canonical share text", async ({ page }) =>
 });
 
 test("player result count uses singular wording", async ({ page }) => {
-  await page.goto("/shooting?q=jokic");
+  await page.goto("/shooting?year=2025&q=jokic");
   await expect(page.getByText(/1 PLAYER IN 2025-26/i)).toBeVisible();
 });
 

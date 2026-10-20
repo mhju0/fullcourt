@@ -3,6 +3,7 @@ import { AVAILABILITY_SAMPLE } from "@/lib/availability-facts";
 import { AvailabilityContent } from "@/components/availability-content";
 import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
+import { KeepTogether } from "@/components/ui/keep-together";
 
 export const metadata: Metadata = {
   title: "Availability Cost",
@@ -26,8 +27,8 @@ export default function AvailabilityPage() {
       />
       <MethodLink surfaceHref="/availability" /></header>
       <p className="text-body leading-relaxed text-[var(--term-text-muted)]">
-        Published study: {AVAILABILITY_SAMPLE.firstSeason} through {AVAILABILITY_SAMPLE.lastSeason}.
-        This retrospective analysis changes when the study is rerun; it is not a live availability feed.
+        <KeepTogether>Published study: {AVAILABILITY_SAMPLE.firstSeason} through {AVAILABILITY_SAMPLE.lastSeason}.</KeepTogether>
+        {" "}This retrospective analysis changes when the study is rerun; it is not a live availability feed.
       </p>
       <AvailabilityContent />
     </div>

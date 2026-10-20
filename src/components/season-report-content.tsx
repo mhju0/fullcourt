@@ -20,6 +20,7 @@ import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
 import { SeasonDataGuide } from "@/components/season-data-guide";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { MessageCard } from "@/components/ui/message-card";
+import { keepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
 import { TYPE, WIDTH } from "@/lib/terminal-styles";
 
@@ -93,11 +94,11 @@ export function SeasonReportContent() {
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          {readiness.error
+          {keepTogether(readiness.error
             ? `Showing the ${PRIOR_SEASON} report. Availability of ${LATEST_SEASON} results could not be checked.`
             : !readiness.data
               ? `Showing the ${PRIOR_SEASON} report while checking ${LATEST_SEASON} season data.`
-              : `Showing the ${PRIOR_SEASON} report while ${LATEST_SEASON} season results are unavailable.`}
+              : `Showing the ${PRIOR_SEASON} report while ${LATEST_SEASON} season results are unavailable.`)}
         </p>
       ) : null}
       {needsReadiness ? (

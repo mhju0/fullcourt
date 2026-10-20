@@ -172,3 +172,11 @@ reported items were checked and are accurate. The local archive now lives at
 `../fullcourt-local-archive` and was slimmed to 2.7 GB (README lists what went). Open:
 confirm the first live slate per docs/LAUNCH_DAY.md once finals land (after about 04:00 UTC
 on 2026-10-21); a release bump if #195 merges.
+
+Later the same day: v1.0.11 released (#195, #196). The full e2e suite had 19 deterministic
+failures on `main`. They were stale specs (an empty 2026-27 Shooting default, copy replaced in
+v1.0.6+), macOS overlay scrollbars, and five real figure wraps; the follow-up PR fixes all of
+them except one. Open: at 390×844 the first /games card starts 57px behind the bottom dock
+(`independent-audit.spec.ts` "mobile games keep season, month and date visible"). Making it
+pass means trimming or reordering the mobile board above the slate, which is an owner design
+call. A one-time cloud routine checks the opening-night slate at 2026-10-21 05:00 UTC.

@@ -23,7 +23,7 @@ test("season fallback describes unavailable rest coverage even when final scores
     return route.fulfill({ json: { data: report(season, season === "2026-27"), error: null } });
   });
   await page.goto("/season");
-  await expect(page.getByTestId("season-default-note")).toContainText("No completed games with the required rest data are available for 2026-27. Showing 2025-26.");
+  await expect(page.getByTestId("season-default-note")).toContainText("Showing the 2025-26 report while 2026-27 season results are unavailable.");
   await expect(page.getByTestId("season-default-note")).not.toContainText("no completed games yet");
   await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
 });
