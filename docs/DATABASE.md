@@ -116,7 +116,8 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | `neutral_venue_city` (`neutralVenueCity`) | varchar | yes | — | e.g. `Paris`; `physical-venue.ts` resolves exact fixture corrections before the `neutral-venues.ts` city fallback. |
 
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
-`games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
+`games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`,
+`games_season_date_idx (season, date)` (`0014`).
 
 The [October 20 correction record](research/2026-10-20-arena-shooting/README.md) binds the fresh read-only six-domain snapshot and backup. The dated counts below are retained historical observations, not the current inventory.
 
@@ -394,7 +395,8 @@ Policies (identical wording per table):
 | `Allow public read` | `FOR SELECT` | `USING (true)` |
 | `Allow service role all` | `FOR ALL` | `USING (auth.role() = 'service_role')` |
 
-So anon clients can read every row; the service role can do everything.
+The policies let anon read every row, but since `0013` the anon role holds a table grant only
+on `games`, so the Data API refuses every other table. The service role can do everything.
 
 ## Data API grants — `drizzle/0005_supabase_grants.sql`
 
@@ -415,12 +417,12 @@ grant select, insert, update, delete on public.predictions    to service_role;
 
 | Role | Grant | Used by |
 |------|-------|---------|
-| `anon` | `SELECT` only | browser reads via supabase-js (Realtime + public browsing); `0013` narrows this to `games` once applied |
+| `anon` | `SELECT` on `games` only (since `0013`) | browser Realtime score updates via supabase-js |
 | `service_role` | `SELECT, INSERT, UPDATE, DELETE` | API handlers + pipeline scripts (`DATABASE_URL`) |
 
-**When adding a new public table:** add a new migration mirroring `0005` (a `grant select
-… to anon` and a `grant select, insert, update, delete … to service_role`) **and** an RLS
-block mirroring `0004`, or the Data API won't expose it after the enforcement dates. Apply
+**When adding a new public table:** add a new migration with a `grant select, insert, update,
+delete … to service_role` **and** an RLS block mirroring `0004`. Grant `select … to anon` only
+if the browser reads that table directly; since `0013`, only `games` is readable with the anon key. Apply
 migrations manually (e.g. Supabase SQL editor) — nothing in the repo auto-applies them.
 `drizzle/0006_playoff_series.sql` is the worked example: it bundles the table, RLS policies,
 and grants for `playoff_series` in one standalone file. `0007_playoff_series_predictions.sql`
@@ -443,8 +445,8 @@ grants for **two** tables, `shot_grid` and `shot_value_surface`, in one file).
 | `0010_rename_time_zone_displacement.sql` | Rename `fatigue_scores.has_coast_to_coast_road_swing` → `has_time_zone_displacement`. |
 | `0011_games_tip_off_neutral_site.sql` | Add `tip_off_utc`, `neutral_site`, `neutral_venue_city` to `games`. Applied 2026-07-30. See ADR 0003 for the era limits of the ESPN source. |
 | `0012_playoff_series_prior_grind.sql` | Add `playoff_series.prior_grind_diff` (nullable numeric). Standalone SQL; RLS and grants already cover the table. Applied 2026-07-31. |
-| `0013_limit_anon_reads_to_games.sql` | Revoke `anon`/`authenticated` access to every table except `SELECT` on `games`, which Realtime needs. Written 2026-10-21; **not applied** until the owner runs it. |
-| `0014_games_season_date_index.sql` | `games (season, date)` index for season-scoped reads. Written 2026-10-21; **not applied** until the owner checks the baseline plan and runs it. |
+| `0013_limit_anon_reads_to_games.sql` | Revoke `anon`/`authenticated` access to every table except `SELECT` on `games`, which Realtime needs. Applied 2026-10-21; afterwards the only grant is `anon` `SELECT` on `games`. |
+| `0014_games_season_date_index.sql` | `games (season, date)` index for season-scoped reads. Applied 2026-10-21 (concurrently). The 2025-26 regular-season read went from a sequential scan (1,123 buffers, 487 ms) to an index scan (171 buffers, 65 ms). |
 
 The **next migration number is `0015`**. `drizzle.config.ts` restricts introspection to
 `schemaFilter: ["public"]`,
