@@ -277,3 +277,10 @@ Not done:
 - `/games` dates→slate waterfall (reducer reordering).
 - `public/data` browser caching (unhashed names).
 - Script-side round trips.
+Release: #205–#207 ship together as v1.1.3; tag it after the production build is verified.
+On 2026-10-21 the Sentry US API outage failed every build at source-map upload, including
+the #206 merge on `main`. Production stayed on #205 until a retry. The upload guard was kept.
+Owner actions: apply `drizzle/0013` and `drizzle/0014` (run 0014's baseline EXPLAIN first),
+run the split officiating workflow once, and re-export fatigue features before the next ML run.
+Merged worktrees were removed. Their ignored audit evidence moved to
+`../fullcourt-local-archive/worktree-archive-2026-10-21/`.
