@@ -34,10 +34,9 @@ export const getScheduleDisparity = createStampedCache<string, ScheduleDisparity
 async function buildScheduleDisparity(
   season: string
 ): Promise<ScheduleDisparityResponse> {
-  const [games, directory] = await Promise.all([
-    getRegularSeasonScheduleForDisparity(season),
-    getTeamDirectory(),
-  ]);
+  // Sequential: one connection in production (pool.ts).
+  const games = await getRegularSeasonScheduleForDisparity(season);
+  const directory = await getTeamDirectory();
 
   // Refuse rather than mislead. This module's whole output is a ranking of teams against each
   // other, so a season where they played unequal numbers of games produces a table that looks

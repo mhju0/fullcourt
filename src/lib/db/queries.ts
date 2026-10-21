@@ -357,13 +357,12 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
 
   const date = String(rows[0].date);
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
-  // Every row here shares one date, so it shares one season, so one scalar covers them all.
-  const [is4In6Map, is3In4Map, games30Map, firstUnplayed] = await Promise.all([
-    computeScheduleDensityMap(date, teamIds, 6, 4),
-    computeScheduleDensityMap(date, teamIds, 4, 3),
-    getTeamGameCountsInDaysBefore(date, teamIds, 30),
-    getFirstUnplayedDate(String(rows[0].season)),
-  ]);
+  // Sequential: one connection in production (pool.ts). Every row here shares one date, so it
+  // shares one season, so one scalar covers them all.
+  const is4In6Map = await computeScheduleDensityMap(date, teamIds, 6, 4);
+  const is3In4Map = await computeScheduleDensityMap(date, teamIds, 4, 3);
+  const games30Map = await getTeamGameCountsInDaysBefore(date, teamIds, 30);
+  const firstUnplayed = await getFirstUnplayedDate(String(rows[0].season));
   const projectedFatigue = isProjectedFatigue(date, firstUnplayed);
 
   return rows.map((row) => ({
@@ -403,15 +402,13 @@ export async function getTeamSeasonSchedule(
     .where(eq(teams.abbreviation, abbreviation));
   if (!team) return [];
 
-  const [rows, firstUnplayed] = await Promise.all([
-    selectGamesWithFatigue(
-      publishableGames(
-        eq(games.season, season),
-        or(eq(games.homeTeamId, team.id), eq(games.awayTeamId, team.id))
-      )
-    ),
-    getFirstUnplayedDate(season),
-  ]);
+  const rows = await selectGamesWithFatigue(
+    publishableGames(
+      eq(games.season, season),
+      or(eq(games.homeTeamId, team.id), eq(games.awayTeamId, team.id))
+    )
+  );
+  const firstUnplayed = await getFirstUnplayedDate(season);
 
   return rows.map((row) => {
     const isHome = row.homeTeamId === team.id;
@@ -587,10 +584,8 @@ export async function getGameDetailById(id: number): Promise<GameDetailResponse 
   const game = await getGameById(id);
   if (!game) return null;
 
-  const [homeRecentWeek, awayRecentWeek] = await Promise.all([
-    getTeamRecentFinalResults(game.homeTeam.id, game.date),
-    getTeamRecentFinalResults(game.awayTeam.id, game.date),
-  ]);
+  const homeRecentWeek = await getTeamRecentFinalResults(game.homeTeam.id, game.date);
+  const awayRecentWeek = await getTeamRecentFinalResults(game.awayTeam.id, game.date);
 
   return { game, homeRecentWeek, awayRecentWeek };
 }

@@ -23,10 +23,9 @@ export const getSeasonReport = createStampedCache<string, SeasonReportResponse>(
   readStamp: getSeasonGamesStamp,
   maxAgeMs: seasonCacheMaxAgeMs,
   load: async (season) => {
-    const [rows, directory] = await Promise.all([
-      getSeasonReportRows(season),
-      getTeamDirectory(),
-    ]);
+    // Sequential: one connection in production (pool.ts).
+    const rows = await getSeasonReportRows(season);
+    const directory = await getTeamDirectory();
 
     const built = buildSeasonReport(season, rows);
     const label = teamLabeller(directory);

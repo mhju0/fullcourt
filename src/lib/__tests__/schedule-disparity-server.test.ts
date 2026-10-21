@@ -79,6 +79,21 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
+describe("getScheduleDisparity — one database connection", () => {
+  it("reads the team directory only after the season's games", async () => {
+    let release!: (rows: DisparityGameRow[]) => void;
+    mockGames.mockReturnValueOnce(new Promise((resolve) => { release = resolve; }));
+    const { getScheduleDisparity } = await loadModule();
+
+    const pending = getScheduleDisparity("2024-25");
+    await vi.waitFor(() => expect(mockGames).toHaveBeenCalledOnce());
+    expect(mockDirectory).not.toHaveBeenCalled();
+    release(RANKABLE);
+    await pending;
+    expect(mockDirectory).toHaveBeenCalledOnce();
+  });
+});
+
 describe("getScheduleDisparity — refusing an unrankable season", () => {
   it("refuses rather than ranking teams on unequal exposure", async () => {
     mockGames.mockResolvedValueOnce(UNRANKABLE);

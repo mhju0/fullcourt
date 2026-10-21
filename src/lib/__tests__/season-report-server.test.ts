@@ -38,6 +38,20 @@ describe("getSeasonReport", () => {
     mockTeams.mockResolvedValue([]);
   });
 
+  it("reads the team directory only after the season rows, on a one-connection pool", async () => {
+    mockStamp.mockResolvedValue("1230/1230@2026-04-12");
+    let release!: (rows: never[]) => void;
+    mockRows.mockReturnValue(new Promise((resolve) => { release = resolve; }));
+    const { getSeasonReport } = await loadModule();
+
+    const pending = getSeasonReport("2025-26");
+    await vi.waitFor(() => expect(mockRows).toHaveBeenCalledOnce());
+    expect(mockTeams).not.toHaveBeenCalled();
+    release([]);
+    await pending;
+    expect(mockTeams).toHaveBeenCalledOnce();
+  });
+
   it("reads the season once while the stamp is unchanged", async () => {
     mockStamp.mockResolvedValue("1230/1230@2026-04-12");
     const { getSeasonReport } = await loadModule();
