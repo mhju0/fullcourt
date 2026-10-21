@@ -38,10 +38,10 @@ export function createRouteTransitions() {
     ) {
       // Even a plain navigation supersedes an outstanding animated one.
       release()
+      arrived()
       const current = new URL(currentUrl)
       const destination = new URL(href, current)
       if (destination.origin === current.origin && destination.pathname !== current.pathname) {
-        arrived()
         // Fail open: a navigation that never commits must not silence the page for good.
         leaving = { from: current.pathname, pathname: destination.pathname, timer: setTimeout(arrived, 15000) }
       }

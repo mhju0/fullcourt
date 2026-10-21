@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { Suspense, useMemo, useRef, useState } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EdgesAhead } from "@/components/edges-ahead"
 import { GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice"
+import { GameSlateRouteObserver } from "@/components/game-slate-route-observer"
 import { MatchupTable } from "@/components/matchup-table"
 import { BoardGuide } from "@/components/board-guide"
 import { restEdgeSize } from "@/components/matchup-parts"
@@ -396,6 +397,9 @@ export default function GamesPage() {
   return (
     // The compact entry keeps a complete matchup above the mobile dock.
     <div className="flex flex-col gap-2 sm:gap-6">
+      <Suspense fallback={null}>
+        <GameSlateRouteObserver onSearch={slate.syncRouteSearch} />
+      </Suspense>
       <div className="page-intro">
         {/* "Games", and the reasoning is worth keeping because it reversed twice.
 

@@ -60,6 +60,7 @@ export interface GameSlate {
   checkedAt: number | null;
   retryRefresh: () => void;
   send: (intent: SlateIntent) => void;
+  syncRouteSearch: (search: string) => void;
 }
 
 const RETRY_DELAY_MS = 800;
@@ -78,6 +79,10 @@ async function readEnvelope<T>(url: string, signal: AbortSignal): Promise<T> {
   }
 }
 const noon = (dateKey: string) => parseISO(`${dateKey}T12:00:00`);
+const selectionKey = (search: string) => {
+  const params = new URLSearchParams(search);
+  return JSON.stringify([params.get("season"), params.get("date")]);
+};
 
 export function useGameSlate(): GameSlate {
   // Both frozen at mount: "today" in the NBA's Eastern calendar, and the month to
@@ -99,6 +104,11 @@ export function useGameSlate(): GameSlate {
   }, []);
   const [urlReady, setUrlReady] = useState(false);
   const historyMode = useRef<"push" | "replace">("replace");
+  const [routeSearch, syncRouteSearch] = useState<string | null>(null);
+  const routeSelection = routeSearch === null ? null : selectionKey(routeSearch);
+  const observedRoute = useRef<string | null>(null);
+  const writtenSelection = useRef<string | null>(null);
+  const restoringRoute = useRef(false);
 
   useEffect(() => {
     const restore = () => {
@@ -117,41 +127,62 @@ export function useGameSlate(): GameSlate {
   }, [seed]);
 
   useEffect(() => {
+    if (routeSelection === null || routeSearch === null) return;
+    if (observedRoute.current === null) {
+      observedRoute.current = routeSelection;
+      return;
+    }
+    if (observedRoute.current === routeSelection) return;
+    observedRoute.current = routeSelection;
+    // A slow router commit can describe an older address than the one already on screen.
+    if (routeSelection !== selectionKey(window.location.search)) return;
+    if (writtenSelection.current === routeSelection) {
+      writtenSelection.current = null;
+      return;
+    }
+    writtenSelection.current = null;
+    restoringRoute.current = true;
+    historyMode.current = "replace";
+    dispatch({ type: "LOCATION_RESTORED", ...readSlateUrl(routeSearch, seed.season, seed.todayKey) });
+  }, [routeSearch, routeSelection, seed]);
+
+  useEffect(() => {
     if (!urlReady) return;
+    // Apply a same-page navigation before the old slate is allowed to canonicalize its URL.
+    if (restoringRoute.current) {
+      restoringRoute.current = false;
+      return;
+    }
     // The visitor is already on their way to another page; writing this one's URL now would
     // cancel that navigation.
     if (isLeavingPage()) return;
     const url = slateUrl(window.location.href, season, selectedDate);
     if (url.href !== window.location.href) {
+      writtenSelection.current = selectionKey(url.search);
       if (historyMode.current === "push") window.history.pushState(null, "", url);
       else window.history.replaceState(null, "", url);
     }
     window.dispatchEvent(new Event(LOCATION_CHANGE));
     historyMode.current = "replace";
-  }, [season, selectedDate, urlReady]);
+  }, [season, selectedDate, urlReady, routeSelection]);
 
   // One fetch per season, no `month` param. That is what lets a month click
   // resolve from memory instead of racing a round trip.
   useEffect(() => {
     if (!urlReady) return;
-    const controller = new AbortController();
-    readEnvelope<GameDateCount[]>(
-      `/api/games/dates?season=${encodeURIComponent(season)}`,
-      controller.signal
-    )
-      .then((days) => {
-        if (!controller.signal.aborted) dispatch({ type: "DAYS_RESOLVED", season, generation: daysGeneration, days });
-      })
-      .catch((err: unknown) => {
-        if (controller.signal.aborted || isAbort(err)) return;
-        dispatch({
-          type: "DAYS_REJECTED",
-          season,
-          generation: daysGeneration,
-          message: errMsg(err),
-        });
-      });
-    return () => controller.abort();
+    const loader = createSlateRefresh({
+      load: (signal) => readEnvelope<GameDateCount[]>(
+        `/api/games/dates?season=${encodeURIComponent(season)}`, signal,
+      ),
+      resolved: (days) => dispatch({ type: "DAYS_RESOLVED", season, generation: daysGeneration, days }),
+      rejected: (err) => dispatch({
+        type: "DAYS_REJECTED",
+        season,
+        generation: daysGeneration,
+        message: errMsg(err),
+      }),
+    });
+    return () => loader.dispose();
   }, [season, urlReady, daysGeneration]);
 
   useEffect(() => {
@@ -263,5 +294,6 @@ export function useGameSlate(): GameSlate {
     checkedAt: state.checkedAt,
     retryRefresh,
     send,
+    syncRouteSearch,
   };
 }

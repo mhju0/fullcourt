@@ -47,6 +47,14 @@ source/era paths. `seed_upcoming_season_espn.ts` supports an upcoming schedule w
 source is unavailable. Provider reachability is environment- and time-dependent; old probes
 are historical observations, not guarantees.
 
+The historical hoopR seeder inserts missing fixtures only: repeated fixture/result keys,
+failed ESPN dates, identity conflicts or changes to an existing result refuse the whole
+transaction. Identical stored finals are no-ops; use the reviewed correction/re-key paths
+for changes. The upcoming ESPN seeder requires complete date collection and 30 teams with
+uniform 80 or 82 regular-season games, excluding the Cup final from those counts. It is not
+a shortened-season or partial-schedule importer. Both tools create their local cache directories.
+See [ADR 0016](adr/0016-season-seeds-refuse-ambiguous-fixtures.md) for the write contract.
+
 ESPN-seeded games use `espn-<eventId>` until played-game hoopR data permits a verified canonical
 ID join. `rekey_season_from_hoopr.ts` is dry-run by default, refuses ambiguous/colliding mappings,
 and updates only eligible IDs. [Season rollover](SEASON_ROLLOVER.md) owns that procedure.

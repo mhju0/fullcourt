@@ -59,8 +59,10 @@ import { mapEspnStatus } from "@/lib/espn-scoreboard";
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
+import { deduplicateSeedEvents, validateSeedScoreboard } from "./seed-season-contract";
+import { pathToFileURL } from "node:url";
 
 /** Shared with fetch_officials.ts / fetch_game_context.ts — same `sb-YYYYMMDD.json` names. */
 const CACHE_DIR = "ml/data/officials";
@@ -87,6 +89,7 @@ type SeedGame = {
   neutralSite: boolean;
   neutralVenueCity: string | null;
   gameType: string;
+  sourceStatus?: string;
 };
 
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
@@ -106,22 +109,28 @@ const ET_DATE = new Intl.DateTimeFormat("en-CA", {
   day: "2-digit",
 });
 
-async function fetchScoreboard(dateKey: string, refresh: boolean): Promise<unknown> {
+export async function fetchScoreboard(dateKey: string, refresh: boolean, cacheDirectory = CACHE_DIR): Promise<unknown> {
   const compact = dateKey.replaceAll("-", "");
-  const path = `${CACHE_DIR}/sb-${compact}.json`;
-  if (!refresh && existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+  const path = `${cacheDirectory}/sb-${compact}.json`;
+  if (!refresh && existsSync(path)) {
+    const cached: unknown = JSON.parse(readFileSync(path, "utf8"));
+    validateSeedScoreboard(cached);
+    return cached;
+  }
 
   const url = `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`;
   // No User-Agent override on purpose: sending a browser UA is what trips Akamai's block
   // here (a plain request answers 200, `Mozilla/5.0` answers 403).
   for (let attempt = 1; ; attempt++) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(25_000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const body = await res.text();
-      JSON.parse(body);
+      const parsed: unknown = JSON.parse(body);
+      validateSeedScoreboard(parsed);
+      mkdirSync(cacheDirectory, { recursive: true });
       writeFileSync(path, body);
-      return JSON.parse(body);
+      return parsed;
     } catch (e) {
       if (attempt === 3) throw e;
       await new Promise((r) => setTimeout(r, 2000 * attempt));
@@ -143,13 +152,13 @@ function dateRange(from: string, to: string): string[] {
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- ESPN's payload is untyped upstream */
-function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
+export function parseUpcomingSeedEvent(ev: any, seasonEndYear: number): SeedGame | null {
   if (ev?.season?.type !== 2 || Number(ev?.season?.year) !== seasonEndYear) return null;
 
   const comp = ev?.competitions?.[0];
   const home = comp?.competitors?.find((c: any) => c.homeAway === "home");
   const away = comp?.competitors?.find((c: any) => c.homeAway === "away");
-  if (!home || !away) return null;
+  if (!home || !away) throw new Error("Malformed ESPN fixture: missing competitors");
 
   const homeAbbr = toOurAbbr(String(home.team?.abbreviation ?? ""));
   const awayAbbr = toOurAbbr(String(away.team?.abbreviation ?? ""));
@@ -158,13 +167,17 @@ function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
   if (homeAbbr === "TBD" || awayAbbr === "TBD") return null;
 
   const providerStatus = mapEspnStatus(comp.status?.type?.state, comp.status?.type?.completed, comp.status?.type?.name);
-  if (providerStatus === "unknown") return null;
+  if (providerStatus === "unknown") throw new Error("Malformed ESPN fixture: unknown status");
   const status: SeedGame["status"] = providerStatus === "postponed" || providerStatus === "cancelled" ? providerStatus : "scheduled";
   const tipOffUtc = String(comp.date);
+  if (!/^\d+$/.test(String(ev.id)) || !homeAbbr || !awayAbbr || homeAbbr === awayAbbr || !Number.isFinite(new Date(tipOffUtc).getTime())) {
+    throw new Error("Malformed ESPN fixture identity or tip-off");
+  }
   return applyGameInputCorrection<SeedGame & {homeAbbr:string;awayAbbr:string}>({
     homeAbbr, awayAbbr, gameType: espnScheduleGameType(comp.notes),
     externalId: `espn-${ev.id}`,
     status,
+    sourceStatus: providerStatus,
     date: ET_DATE.format(new Date(tipOffUtc)),
     home: homeAbbr,
     away: awayAbbr,
@@ -177,7 +190,7 @@ function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /** Structural checks. Returns problems; an empty array means the slate is safe to write. */
-function validate(games: readonly SeedGame[]): string[] {
+export function validateUpcomingSeed(games: readonly SeedGame[]): string[] {
   const problems: string[] = [];
   const total = new Map<string, number>();
   const bump = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1);
@@ -190,6 +203,7 @@ function validate(games: readonly SeedGame[]): string[] {
   if (total.size !== 30) problems.push(`expected 30 teams, saw ${total.size}`);
 
   const counts = [...new Set(total.values())].sort((a, b) => a - b);
+  if (counts.some(count => count !== 80 && count !== 82)) problems.push(`expected 80 or 82 regular-season games per team, saw ${counts.join(", ")}`);
   if (counts.length > 1) {
     const odd = [...total.entries()]
       .filter(([, n]) => n !== counts[counts.length - 1])
@@ -246,7 +260,7 @@ async function main() {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const sb: any = await fetchScoreboard(date, refresh);
       for (const ev of sb?.events ?? []) {
-        const g = parseEvent(ev, seasonEndYear);
+        const g = parseUpcomingSeedEvent(ev, seasonEndYear);
         if (g) games.push(g);
       }
     } catch (e) {
@@ -256,9 +270,8 @@ async function main() {
     if (++done % 60 === 0) console.log(`  ${done}/${dates.length} dates`);
   });
 
-  // ESPN repeats a game across adjacent scoreboard calls near midnight UTC; key by event id.
-  const byId = new Map(games.map((g) => [g.externalId, g]));
-  const slate = [...byId.values()].sort((a, b) =>
+  if (errors) throw new Error(`REFUSING TO WRITE — ${errors} ESPN dates failed; schedule coverage is incomplete`);
+  const slate = deduplicateSeedEvents(games).sort((a, b) =>
     a.tipOffUtc === b.tipOffUtc ? a.externalId.localeCompare(b.externalId) : a.tipOffUtc < b.tipOffUtc ? -1 : 1
   );
 
@@ -269,7 +282,8 @@ async function main() {
   );
   console.log(`  neutral-site games: ${slate.filter((g) => g.neutralSite).length}`);
 
-  const problems = validate(slate);
+  const byId = new Map(slate.map(game => [game.externalId, game]));
+  const problems = validateUpcomingSeed(slate);
   if (problems.length > 0) {
     console.error(`\nREFUSING TO WRITE — ${problems.length} structural problem(s):`);
     for (const p of problems.slice(0, 25)) console.error(`  ${p}`);
@@ -363,4 +377,6 @@ async function main() {
   }
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(error => { console.error(error); process.exitCode = 1; });
+}
