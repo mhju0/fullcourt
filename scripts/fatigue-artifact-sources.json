@@ -19,6 +19,7 @@
   "src/lib/game-status.ts",
   "src/lib/haversine.ts",
   "src/lib/load-env-local.ts",
+  "src/lib/nba-season.ts",
   "src/lib/neutral-venues.ts",
   "src/lib/physical-venue.ts",
   "src/lib/team-era-coordinates.ts",
