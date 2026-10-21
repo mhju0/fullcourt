@@ -1,5 +1,11 @@
 # Release history
 
+## 1.1.1 — 2026-10-21
+
+- Make Explore study cards fit their content on phones, with tighter spacing, a short
+  introduction and concise descriptions for Playoff Rest, Shot Value, Officiating and Model Results.
+- Preserve desktop cards, study order and destinations, and Research & sources links.
+
 ## 1.1.0 — 2026-10-21
 
 - Put complete matchups and schedule rankings earlier on phones; simplify Shooting to

@@ -44,7 +44,15 @@ a chart for patterns and a table for lookup. Secondary tables and methods can ex
 mobile comparisons must be visible without sideways page scrolling. No decorative imagery or
 new motion is implied by a cleanup.
 
-Explore uses equal-height study cards with the same category, title, question, and action structure. Keep numerical findings on the destination study rather than adding a second card format. Its reading order is Home-court Advantage, Shooting by Rest, Playoff Rest, Availability Cost, Expected Shot Value, Officiating, then Model Results: core basketball questions first, related studies next, technical validation last.
+Explore uses equal-height study cards on desktop, with the same category, title, question,
+and action structure. Below 640px, the owner-selected compact-card variant fits each card to
+its content, reduces spacing and title size, and uses an unboxed navigation arrow. The short
+mobile introduction and four concise descriptions make more destinations visible while
+retaining whole-card links and the existing design palette and typefaces. Keep numerical
+findings on the destination study rather than adding a second card format. Its reading order
+is Home-court Advantage, Shooting by Rest, Playoff Rest, Availability Cost, Expected Shot
+Value, Officiating, then Model Results: core basketball questions first, related studies next,
+technical validation last. D-134 records this mobile exception.
 
 The homepage has one short CSS hero entrance. Repeated controls, keyboard actions, and record
 expansions are immediate. Respect reduced motion. [Frontend](../FRONTEND.md) and

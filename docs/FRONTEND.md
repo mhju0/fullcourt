@@ -36,10 +36,15 @@ existing links. No active page uses the retired OTHER menu or onboarding dialog.
 header and mobile dock. Explore stays marked for its child analyses. The page palette opens
 from the footer or keyboard shortcut; it is navigation, not universal data search.
 
-Explore uses seven equal navigation tiles, in two columns on desktop and one on mobile.
+Explore uses seven equal-height navigation tiles in two columns from 640px. Below 640px,
+its approved compact-card variant uses one content-height column, a 10px gap, 8px radius,
+14px vertical padding, 18px titles, 15px descriptions and 13px actions. The 18px arrow is
+unboxed; category spacing is 8px and the card has no drop shadow. The mobile introduction
+is one sentence, and four longer questions have concise mobile descriptions. Desktop copy
+and composition remain unchanged. This exception is opt-in and does not change other tiles.
 `StudyLink` supplies a full-surface link with a visible arrow, descriptive action, and immediate
 interaction feedback. Each tile uses the same category, question, and action structure; numerical findings stay on the destination page. Research and archive links remain compact. This pattern is for choosing
-a destination; tables retain their existing density. See D-63 for the owner selection.
+a destination; tables retain their existing density. See D-63 and D-134 for the owner selections.
 
 Standard study pages pair `PageHeader` and the compact `MethodLink` in `.page-intro`.
 Games and Shooting use a 24px entry gap so the first complete row clears the mobile dock.

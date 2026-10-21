@@ -6,7 +6,7 @@
 
 NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
-**v1.1.0 · October 21, 2026** · [Release history](CHANGELOG.md)
+**v1.1.1 · October 21, 2026** · [Release history](CHANGELOG.md)
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
@@ -45,6 +45,7 @@ Selected views remain shareable through URLs and browser history.
 | [Games](https://fullcourt.fyi/games) | Browse matchups by season and date, and expand a game to inspect its schedule load. A rested team at home 3 to 5 points fresher is marked as a medium rest edge, 5 or more as a large one. Edges Ahead jumps to the upcoming games where the rested team is at home with the widest gaps. |
 | [Season Report](https://fullcourt.fyi/season) | Published-season results against their home baseline, team rest records, and the completed games with the largest rest gaps the model called. Small samples are labeled. |
 | [Schedule Edge](https://fullcourt.fyi/schedule) | Within-season rest-edge ranking, schedule worth, travel and workload, and the completed-game fatigue calendar. Details expand on demand. |
+| [Explore](https://fullcourt.fyi/explore) | Seven basketball studies and their research sources, with compact cards and concise descriptions on phones. |
 | [Home-Court Advantage](https://fullcourt.fyi/home-court) | Each season's home win rate beside the record of teams that were also more rested at home. |
 | [Model Results](https://fullcourt.fyi/analysis) | Win rates for the rested team at home by gap size and by era, each compared with its venue baseline, the rested-visitor games reported separately, and a searchable game record filtered by gap size and rested side. |
 | [Playoff Rest](https://fullcourt.fyi/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |

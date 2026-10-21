@@ -2062,3 +2062,19 @@ default. Actual module publication and current-season readiness are independent 
 explicit current-season selection remains Awaiting. Schedule APIs remain available to
 Schedule Edge. No coefficients, generated analytics, schema or historical predictions change.
 The owner separately authorized final security review, main merge and production release.
+
+## D-134 — Explore compact cards on phones (2026-10-21)
+
+The owner selected variant A from the October 21 Explore layout comparison. Below 640px,
+keep all seven category/title/description/action cards but fit their height to content,
+use a 10px gap and a small unboxed arrow, and reduce padding and title size. This makes
+the study directory easier to scan on a phone without changing its navigation structure.
+Use “Pick a basketball question.” as the mobile introduction and concise mobile descriptions
+for Playoff Rest, Expected Shot Value, Officiating and Model Results. Whole-card links and
+visible keyboard focus remain. Preserve desktop copy and equal-height two-column cards,
+the study order and destinations, both Research & sources links, and other StudyLink consumers.
+The existing light palette, Geist type and immediate feedback remain appropriate for choosing
+a study; no new motion or data presentation is introduced (ENERGY 1 / RHYTHM 1 / MOTION 1).
+
+This supersedes the mobile equal-height part of D-63 only. No API, schema, model or generated
+analytics changes are included. The owner authorized implementation and production delivery.
