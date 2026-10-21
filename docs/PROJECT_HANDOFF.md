@@ -284,3 +284,21 @@ Owner actions: apply `drizzle/0013` and `drizzle/0014` (run 0014's baseline EXPL
 run the split officiating workflow once, and re-export fatigue features before the next ML run.
 Merged worktrees were removed. Their ignored audit evidence moved to
 `../fullcourt-local-archive/worktree-archive-2026-10-21/`.
+
+## Review follow-ups applied — 2026-10-21
+
+The owner asked for these to be done through Chrome.
+- **`drizzle/0014`:** the baseline was a sequential scan (1,123 buffers, 487 ms). The index was
+  built concurrently and is valid; the same read is now an index scan (171 buffers, 65 ms).
+- **`drizzle/0013`:** neither `anon` nor `authenticated` can log in, so `DATABASE_URL` cannot be
+  either role. Afterwards the only grant is `anon` `SELECT` on `games`. With the anon key, the
+  Data API returns `games` and refuses `fatigue_scores`, `teams` and `shot_grid` (401, 42501).
+  Live score updates during a slate are still unchecked.
+- **Officiating workflow:** the 2026-27 run had nothing to collect yet. A 2025-26 run passed
+  collect and propose and pushed a data branch that changed only `refreshedAt` and
+  `indexSha256`, so it was deleted. Actions cannot open PRs under the current repository
+  setting, so a data update arrives as a branch for the owner.
+- **Fatigue export:** re-exported and prepared from `main`, with 0 mismatches over 101,004
+  stored rows and both receipts valid. The DST fix moved 645 `body_clock_hour` values by one
+  hour, and opening night moved 85 upcoming 2026-27 rows. The prior files are in
+  `../fullcourt-local-archive/fatigue-export-backup-2026-10-21/`.
