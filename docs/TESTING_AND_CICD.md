@@ -30,6 +30,10 @@ Vitest covers domain logic, API contracts, caches, data pinning, and source/desi
 See `vitest.config.ts` and the tests themselves for the current inventory. Avoid copying test
 counts into this guide; dated release records may report counts observed at a specific commit.
 
+The three historical correction suites (`scripts/{history,overtime,arena}-correction/`) sit
+outside `vitest.config.ts` and run in CI through their own configs; their real-PostgreSQL
+contracts skip there because no contract database URL is set.
+
 The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
 new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
 source-script packet and before/after numeric oracle are retained with the dated local audit.

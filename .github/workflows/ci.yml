@@ -54,6 +54,12 @@ jobs:
       - name: Run unit tests
         run: pnpm test:run
 
+      - name: Run historical correction contract tests
+        run: |
+          pnpm exec vitest run --config scripts/history-correction/vitest.config.ts
+          pnpm exec vitest run --config scripts/overtime-correction/vitest.config.ts
+          pnpm exec vitest run --config scripts/arena-correction/vitest.config.ts
+
       - name: Run automation contract tests
         run: node --test scripts/tests/*.test.mjs
 
