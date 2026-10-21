@@ -1,5 +1,5 @@
 # Project handoff
-Reconciled 2026-10-20. Source/tests and Git take precedence. Rationale: [Decisions](DECISIONS.md).
+Reconciled 2026-10-21. Source/tests and Git take precedence. Rationale: [Decisions](DECISIONS.md).
 ## Product and release
 FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage leads with
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
@@ -108,42 +108,24 @@ The [opening-quarter](research/2026-10-20-opening-quarter-travel-review.md),
 D-120 keeps Mileage wording; D-121/ADR 0011 and D-122 prepared v1.0.3. Actual airports/home
 stops, Cup assignments and physical-device/opening-night observation remain unresolved.
 
-## Condensed v1.0.3–v1.0.8 correction chain — 2026-10-20
+## Condensed v1.0.3–v1.0.9 acceptance — 2026-10-21
 
-v1.0.3 (#182), v1.0.4 player appearance/team identity (D-123–D-125, #184), v1.0.5 serverless
-pool (D-126, #185), v1.0.6 homepage history and methods copy (D-127/D-128, #186), v1.0.7
-overtime inputs (D-129/ADR 0015, #187) and v1.0.8 arena/Shooting (D-131/D-132, #189) each
-passed canonical verification; coefficients and graded predictions were preserved. Their
-records own the evidence: [recalculation](research/2026-10-20-historical-recalculation.md),
-[player source](research/2026-10-20-player-appearance-rest-correction.md),
-[methods](research/2026-10-20-methods-accuracy-audit.md),
-[overtime](research/2026-10-20-overtime-correction/README.md),
-[arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md) (including V11, the
-homepage built before the data apply and later rebuilt).
+v1.0.3–v1.0.8 corrected arenas, appearances, serverless pooling, homepage history, overtime
+and Shooting (D-123–D-132; #182, #184–#189). Canonical acceptance preserved coefficients,
+graded/playoff history and approved production data. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
+retains full hashes, source reports and V11 homepage-rebuild remediation; earlier pending
+records are chronology. v1.0.8 binds merge `6ddf73f4` and deployment `dpl_6doQr64bTQ9LzGcjes14ViUGSFzz`.
+Writers/aliases were restored with SSO unchanged. Ten non-home/four-logo checks remained same-source.
 
-Carried forward: intermittent Google Fonts builds stay monitored; Section 7 is report-only and
-2026-27 grading stays deferred; actual airports, Cup assignments, physical devices and the
-first real slate remain unobserved. Raw backups and private receipts that lived in the
-per-task worktrees are now local-only in `../fullcourt-local-archive/worktree-archive-2026-10-20/`,
-outside the repo because `tsconfig.json` type-checks every `**/*.ts` under it.
-
-## v1.0.8 canonical acceptance; v1.0.9 prepared — 2026-10-20
-
-[v1.0.8](https://github.com/mhju0/fullcourt/releases/tag/v1.0.8) binds merge `6ddf73f4` and
-rebuilt deployment `dpl_6doQr64bTQ9LzGcjes14ViUGSFzz`. Approved production AFTER `83fc2c66…`
-matches all six domains; graded/playoff history is preserved, with eight future gap updates.
-Immutable/canonical 86-API comparisons, staged homepage HTML, final canonical 390/1440 home
-and the real homepage regression pass. V11 remediation is complete. Ten non-home/four-logo
-cases remain carried same-source checks. Writers and automatic aliases are restored; SSO
-protection remained unchanged throughout.
-The ledger's [acceptance](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
-pins full hashes and private receipt identities; older pending entries above are chronology.
-Secret alert #1 is still open; revocation/history purge is unknown. Existing device/slate/Cup/
-travel limits remain. Cleanup implementation `ffc9be7b` is reviewed; final documentation
-review/publication remains pending.
-
-## v1.0.9 release closeout — 2026-10-20
-PR #190 merged as `c5e504e`; tag/release v1.0.9 and canonical deployment `dpl_HbmiLvRZLNtmcU33FzwVrvLTtmc6` verified. Seven live requests (3,440 values) matched; homepage 390/1440px and real-API headline E2E passed. Main local research inputs validate; old files/private evidence preserved and local PostgreSQL stopped. Final receipt: `docs/audit/repository-cleanup-20261020/release/release-acceptance.json` (SHA256 `f5c3843930f8e8583395a75ba72dc931343d91e24662a09fe2ec5ecb66d9621a`). Secret alert #1 remains open; historical exposure/revocation unresolved. This local closeout supplements the merged ledger; no further production data change.
+v1.0.9 (#190, `c5e504e`, `dpl_HbmiLvRZLNtmcU33FzwVrvLTtmc6`) verified seven live requests
+(3,440 values), homepage 390/1440 and real-API headline E2E. Local research inputs validated,
+old/private evidence was preserved and PostgreSQL stopped. Receipt:
+`docs/audit/repository-cleanup-20261020/release/release-acceptance.json`, SHA256
+`f5c3843930f8e8583395a75ba72dc931343d91e24662a09fe2ec5ecb66d9621a`.
+Private worktree evidence is archived outside the repo at `../fullcourt-local-archive`.
+Carried forward: Section 7 report-only/2026-27 grading deferred; actual airports, Cup assignments,
+physical devices and real-slate observation remained open. Later entries close the font-download,
+secret-alert and documentation follow-ups; no further production-data change occurred here.
 
 ## Post-v1.0.9 accuracy audit and local cleanup — 2026-10-20
 
@@ -193,8 +175,20 @@ live deployment. Implemented current actual-publication defaults, explicit-curre
 compact Games/Schedule/Shooting reading order, linked chart readouts, one-court model
 comparison, annual Availability selection and 15px explanatory text. The new read-only
 `/api/season-report-publication` discovers report seasons; schedule API behavior is preserved.
-Claude’s clarity commits are included, with three semantic copy regressions and375px
+Claude’s clarity commits are included, with three semantic copy regressions and 375px
 formula/table overflow corrected. v1.1.0 carries these changes; final release evidence belongs to its immutable Git tag,
 GitHub release and dated local acceptance receipt.
 No schema, fatigue coefficient, published artifact or historical prediction was changed.
 Physical iPhone/Safari/VoiceOver and actual opening-night ingestion remain unverified.
+
+## v1.1.0 release and documentation refresh — 2026-10-21
+
+v1.1.0 is published at merge `9c313de8f6e42ae3f7e89307b15a08225415339e`, canonical Ready
+Vercel deployment `dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc`. The [release verification](reports/2026-10-21-mobile-release-security.html) reported
+50/50 production cases (40 WebKit phone, 10 Chromium desktop), zero page overflow, alerts or
+page errors; real-font, security-header and three source-map-404 checks also passed.
+README/default-season/font descriptions now match source. Six [production screenshots](screenshots/README.md)
+replace October 17 captures and show desktop plus 375/402px reading order; the local social
+preview was re-fetched from the live OG endpoint and already matched. Capture provenance pins URLs, time and SHA.
+Physical iPhone/Safari/VoiceOver and actual completed-slate ingestion remain unverified.
+Next: observe those real-world paths; GitHub/portfolio publication has its own readback evidence.

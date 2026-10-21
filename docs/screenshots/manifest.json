@@ -2,22 +2,79 @@
   "games": {
     "source": "https://fullcourt.fyi",
     "route": "/games?season=2024-25&date=2024-12-02",
+    "url": "https://fullcourt.fyi/games?season=2024-25&date=2024-12-02",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
     "width": 1280,
-    "height": 1205,
-    "capturedAt": "2026-10-17T06:38:44.427Z"
+    "height": 1153,
+    "capturedAt": "2026-10-20T23:58:24.054Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 1280
   },
   "shooting": {
     "source": "https://fullcourt.fyi",
     "route": "/shooting",
+    "url": "https://fullcourt.fyi/shooting",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
     "width": 1280,
-    "height": 1447,
-    "capturedAt": "2026-10-17T06:38:16.134Z"
+    "height": 1400,
+    "capturedAt": "2026-10-20T23:58:24.868Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 1280
   },
   "officiating": {
     "source": "https://fullcourt.fyi",
     "route": "/officiating",
+    "url": "https://fullcourt.fyi/officiating",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
     "width": 1280,
-    "height": 1427,
-    "capturedAt": "2026-10-17T06:38:17.435Z"
+    "height": 1498,
+    "capturedAt": "2026-10-20T23:58:25.388Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 1280
+  },
+  "games-mobile-375": {
+    "source": "https://fullcourt.fyi",
+    "route": "/games?season=2024-25&date=2024-12-02",
+    "url": "https://fullcourt.fyi/games?season=2024-25&date=2024-12-02",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
+    "width": 375,
+    "height": 812,
+    "capturedAt": "2026-10-20T23:59:36.923Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 375
+  },
+  "shooting-mobile-402": {
+    "source": "https://fullcourt.fyi",
+    "route": "/shooting",
+    "url": "https://fullcourt.fyi/shooting",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
+    "width": 402,
+    "height": 874,
+    "capturedAt": "2026-10-20T23:58:27.329Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 402
+  },
+  "schedule-mobile-402": {
+    "source": "https://fullcourt.fyi",
+    "route": "/schedule",
+    "url": "https://fullcourt.fyi/schedule",
+    "deploymentSha": "9c313de8f6e42ae3f7e89307b15a08225415339e",
+    "deploymentId": "dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc",
+    "width": 402,
+    "height": 874,
+    "capturedAt": "2026-10-20T23:58:28.024Z",
+    "browser": "Chromium",
+    "physicalDevice": false,
+    "pageScrollWidth": 402
   }
 }

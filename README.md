@@ -6,7 +6,7 @@
 
 NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
-**v1.0.0 · Official release: October 19, 2026** · [Release history](CHANGELOG.md)
+**v1.1.0 · October 21, 2026** · [Release history](CHANGELOG.md)
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
@@ -34,34 +34,48 @@ data flow, implementation tradeoffs and verification. About identifies the autho
 to that walkthrough in the application.
 
 [Data status](https://fullcourt.fyi/data-status) separates coverage and available
-refresh dates from database connectivity. Playoff Rest and Expected Shot Value open their latest
-published results and preserve selected views in shareable links.
+refresh dates from database connectivity. Result studies open their latest usable published
+season; selecting the new season explicitly keeps its Awaiting state until results are ready.
+Selected views remain shareable through URLs and browser history.
 
 ## What you can examine
 
 | Page | What it shows |
 | --- | --- |
 | [Games](https://fullcourt.fyi/games) | Browse matchups by season and date, and expand a game to inspect its schedule load. A rested team at home 3 to 5 points fresher is marked as a medium rest edge, 5 or more as a large one. Edges Ahead jumps to the upcoming games where the rested team is at home with the widest gaps. |
-| [Season Report](https://fullcourt.fyi/season) | Completed-season results against their home baseline, team rest records, and the completed games with the largest rest gaps the model called. Small samples are labeled. |
+| [Season Report](https://fullcourt.fyi/season) | Published-season results against their home baseline, team rest records, and the completed games with the largest rest gaps the model called. Small samples are labeled. |
 | [Schedule Edge](https://fullcourt.fyi/schedule) | Within-season rest-edge ranking, schedule worth, travel and workload, and the completed-game fatigue calendar. Details expand on demand. |
 | [Home-Court Advantage](https://fullcourt.fyi/home-court) | Each season's home win rate beside the record of teams that were also more rested at home. |
 | [Model Results](https://fullcourt.fyi/analysis) | Win rates for the rested team at home by gap size and by era, each compared with its venue baseline, the rested-visitor games reported separately, and a searchable game record filtered by gap size and rested side. |
 | [Playoff Rest](https://fullcourt.fyi/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |
 | [Player Shooting by Rest](https://fullcourt.fyi/shooting) | Effective field goal percentage on no rest versus 2–29 days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
 | [Expected Shot Value](https://fullcourt.fyi/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
-| [Availability Cost](https://fullcourt.fyi/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors. Absences are identified after games, so this is not a lineup forecast. |
+| [Availability Cost](https://fullcourt.fyi/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors, with selectable annual readouts. Absences are identified after games, so this is not a lineup forecast. |
 | [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 regular seasons (2014–15 through 2025–26), by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
-Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-17; [capture provenance](docs/screenshots/manifest.json).
-Live pages carry the latest data.
+Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-21 at v1.1.0 (`9c313de8`);
+[capture details and reproduction](docs/screenshots/README.md). Desktop images show historical
+Games and the current published studies. Phone images use 375px and 402px Chromium viewports.
+Physical iPhone, Safari and VoiceOver behavior remains unverified; live data can change.
 
 <img src="docs/screenshots/games.png" alt="Games board for December 2, 2024: season and date controls above four matchups, two marked MEDIUM REST EDGE and one LARGE REST EDGE." width="900" />
 
-<img src="docs/screenshots/shooting.png" alt="Compact player shooting table with both rest splits, attempt counts, and signed difference cells." width="900" />
+<img src="docs/screenshots/shooting.png" alt="Player shooting table for the latest published season, with rest splits, attempt counts and signed difference cells." width="900" />
 
 <img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, season context and a link to game reviews." width="900" />
+
+<p>
+<img src="docs/screenshots/games-mobile-375.png" alt="Games at 375px: compact date controls and a complete historical matchup above the bottom navigation." width="250" />
+<img src="docs/screenshots/shooting-mobile-402.png" alt="Shooting at 402px: player search, collapsed advanced filters and the four-column rest comparison." width="268" />
+<img src="docs/screenshots/schedule-mobile-402.png" alt="Schedule Edge at 402px: season controls, summary and team ranking before detailed status." width="268" />
+</p>
+
+On phones, Games puts matchups earlier, Schedule Edge leads with rankings, and Shooting keeps
+its two rest splits and difference together in four columns. Home Court links graph selection
+to the season readout, chart selections offer an explicit game-browsing action, and Expected
+Shot Value compares models on one court while keeping the selected location.
 
 ## How the fatigue score works
 
@@ -159,9 +173,11 @@ server, set `PLAYWRIGHT_BASE_URL`. Python requirements and contract-test command
 
 Built by [Michael Ju](https://github.com/mhju0).
 
-The interface uses Geist and Geist Mono. The bundled Geist fonts used for social images are
-copyright 2023 Vercel, Inc. and licensed separately under the
-[SIL Open Font License 1.1](src/app/fonts/OFL.txt).
+The interface bundles Geist and Geist Mono locally under the
+[SIL Open Font License 1.1](src/app/fonts/Geist-Variable-OFL.txt);
+[font provenance](src/app/fonts/Geist-Variable-PROVENANCE.md) records official sources and hashes.
+The separate static Geist fonts used for social images retain their
+[original license](src/app/fonts/OFL.txt).
 
 Copyright (c) 2026 Michael Ju. All rights reserved. No license is granted for use, copying,
 modification, or distribution of this code. The repository is public for portfolio review.
