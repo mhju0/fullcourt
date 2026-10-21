@@ -1,5 +1,11 @@
 # Release history
 
+## 1.1.2 — 2026-10-21
+
+- Align upcoming large rest edges on phones into equal-width rows with the full date
+  on the left, matchup centered and a consistent rest-advantage badge on the right.
+- Remove repeated PROJ labels from this strip; preserve game selection and refresh behavior.
+
 ## 1.1.1 — 2026-10-21
 
 - Make Explore study cards fit their content on phones, with tighter spacing, a short

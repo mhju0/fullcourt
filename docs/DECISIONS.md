@@ -2078,3 +2078,17 @@ a study; no new motion or data presentation is introduced (ENERGY 1 / RHYTHM 1 /
 
 This supersedes the mobile equal-height part of D-63 only. No API, schema, model or generated
 analytics changes are included. The owner authorized implementation and production delivery.
+
+
+## D-135 — Aligned upcoming rest-edge rows on phones (2026-10-21)
+
+The owner selected and refined mobile A: one line with the full date including year
+left-aligned, away @ home centered, and a consistently sized rest-advantage badge
+right-aligned. All rows share the available width and the same three column tracks.
+Remove the repeated PROJ marker from this upcoming-games strip; do not add a separate
+year or ET line. Existing season context, date-jump interaction, accessible labels,
+upcoming eligibility, ordering and refresh behavior remain. The marker removal does
+not change projected-fatigue data or labeling on the main matchup board.
+
+This is a presentation change, with no API, schema, coefficient or published-figure
+changes. Existing desktop row density is preserved where possible.
