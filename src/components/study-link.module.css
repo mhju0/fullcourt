@@ -49,11 +49,42 @@
 .tile:active { border-color: var(--term-accent); background: color-mix(in srgb, var(--term-accent) 10%, var(--term-surface)); box-shadow: none; }
 .compact { min-height: 192px; }
 .compact .category { margin-bottom: 16px; }
+.mobileQuestion { display: none; }
 
 @media (max-width: 639px) {
   .tile { min-height: 176px; padding: 24px; }
   .category { margin-bottom: 16px; }
   .arrow { top: 20px; right: 20px; }
+  .desktopQuestion { display: none; }
+  .mobileQuestion { display: inline; }
+  .mobileCompact {
+    height: auto;
+    min-height: 0;
+    padding: 14px 40px 14px 16px;
+    border-radius: 8px;
+    box-shadow: none;
+  }
+  .mobileCompact .category {
+    margin-bottom: 8px;
+    padding-right: 0;
+    font-weight: 400;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+  .mobileCompact .title { margin: 0; font-size: 18px; line-height: 1.3; }
+  .mobileCompact .question { max-width: none; margin: 5px 0 0; text-wrap: pretty; }
+  .mobileCompact .action { margin-top: 10px; font-size: 13px; line-height: 1.5; }
+  .mobileCompact .arrow {
+    top: 16px;
+    right: 14px;
+    width: 18px;
+    height: 18px;
+    border-radius: 0;
+    background: transparent;
+    color: var(--term-accent);
+  }
+  .mobileCompact .arrow svg { width: 18px; height: 18px; }
 }
 
 .preview { margin-bottom: 16px; font-size: 15px; color: var(--term-text); }

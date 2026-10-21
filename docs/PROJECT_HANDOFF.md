@@ -178,6 +178,7 @@ comparison, annual Availability selection and 15px explanatory text. The new rea
 Claude’s clarity commits are included, with three semantic copy regressions and 375px
 formula/table overflow corrected. v1.1.0 carries these changes; final release evidence belongs to its immutable Git tag,
 GitHub release and dated local acceptance receipt.
+
 No schema, fatigue coefficient, published artifact or historical prediction was changed.
 Physical iPhone/Safari/VoiceOver and actual opening-night ingestion remain unverified.
 
@@ -192,3 +193,15 @@ replace October 17 captures and show desktop plus 375/402px reading order; the l
 preview was re-fetched from the live OG endpoint and already matched. Capture provenance pins URLs, time and SHA.
 Physical iPhone/Safari/VoiceOver and actual completed-slate ingestion remain unverified.
 Next: observe those real-world paths; GitHub/portfolio publication has its own readback evidence.
+
+## Explore compact-card follow-up — 2026-10-21
+
+Owner selected Explore variant A. v1.1.1 prepares content-height cards below 640px, tighter
+spacing, an unboxed arrow, a short introduction and four concise mobile descriptions.
+Desktop composition/copy, seven study destinations/order, both research links and other
+StudyLink consumers remain unchanged. D-134 records the bounded mobile exception.
+Built-browser checks show3complete cards at375px and4at402/420/440px; desktop card
+geometry and other StudyLink consumers are preserved. All9destinations, keyboard focus,
+200%text, final-link clearance and main-content axe checks pass, with all1,488unit tests.
+Next: preview verification and production release. Physical iPhone/Safari/VoiceOver
+behavior remains unverified.

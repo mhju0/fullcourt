@@ -66,6 +66,9 @@ export const TYPE = {
  * - **`opengraph-image.tsx`** — a fixed 1200×630 brand asset, not a page.
  * - **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*`
  *   variant selectors.
+ * - **Explore mobile compact cards (D-134)**: the approved 13px action, 5px description
+ *   margin, 10px grid/action gaps and 14px/40px padding are exact-line exemptions in
+ *   `audit_design_scale.mjs`, not additions to the shared type or spacing scales.
  */
 
 /**

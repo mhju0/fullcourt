@@ -70,6 +70,26 @@ const EXEMPT = [
     raw: /fontSize: "22px"/,
     why: "the brand wordmark, sized to the brand bar",
   },
+  {
+    match: /^src\/app\/explore\/page\.tsx$/,
+    raw: /^\s*<ul aria-label="Basketball studies" className="grid grid-cols-1 gap-2\.5 sm:auto-rows-fr sm:grid-cols-2 sm:gap-4">\s*$/,
+    why: "D-134 owner-approved Explore mobile compact-card 10px gap",
+  },
+  {
+    match: /^src\/components\/study-link\.module\.css$/,
+    raw: /^\s*padding: 14px 40px 14px 16px;\s*$/,
+    why: "D-134 owner-approved Explore mobile compact-card padding",
+  },
+  {
+    match: /^src\/components\/study-link\.module\.css$/,
+    raw: /^\s*\.mobileCompact \.question \{ max-width: none; margin: 5px 0 0; text-wrap: pretty; \}\s*$/,
+    why: "D-134 owner-approved Explore mobile description spacing",
+  },
+  {
+    match: /^src\/components\/study-link\.module\.css$/,
+    raw: /^\s*\.mobileCompact \.action \{ margin-top: 10px; font-size: 13px; line-height: 1\.5; \}\s*$/,
+    why: "D-134 owner-approved Explore mobile action size and spacing",
+  },
 ];
 
 /**

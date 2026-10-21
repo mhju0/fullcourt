@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 const STUDIES = [
   { href: "/home-court", title: "Home-court Advantage", question: "Are home teams winning less often?", action: "See the season history", category: "Rest and fatigue" },
   { href: "/shooting", title: "Player Shooting by Rest", question: "Do players shoot differently with more rest?", action: "Compare shooting splits", category: "Rest and fatigue" },
-  { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?", action: "Compare playoff workload", category: "Rest and fatigue" },
+  { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?", action: "Compare playoff workload", category: "Rest and fatigue", mobileQuestion: "Prior-round workload and series outcomes." },
   { href: "/availability", title: "Availability Cost", question: "What do historical absences tell us?", action: "Examine availability", category: "Other studies" },
-  { href: "/shot-quality", title: "Expected Shot Value", question: "How does expected efficiency vary around the court?", action: "View the shot map", category: "Other studies" },
-  { href: "/officiating", title: "Officiating", question: "What did the NBA identify in close-game endings?", action: "Browse reviewed games", category: "Other studies" },
-  { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?", action: "See historical results", category: "Rest and fatigue" },
+  { href: "/shot-quality", title: "Expected Shot Value", question: "How does expected efficiency vary around the court?", action: "View the shot map", category: "Other studies", mobileQuestion: "Expected efficiency across the court." },
+  { href: "/officiating", title: "Officiating", question: "What did the NBA identify in close-game endings?", action: "Browse reviewed games", category: "Other studies", mobileQuestion: "NBA reviews of close-game endings." },
+  { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?", action: "See historical results", category: "Rest and fatigue", mobileQuestion: "Model results and venue baselines." },
 ];
 
 const RESEARCH = [
@@ -27,10 +27,10 @@ const RESEARCH = [
 
 export default function ExplorePage() {
   return <div className="flex flex-col gap-12">
-    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description="Pick a basketball question. Compare players, inspect games, or follow a finding back to its evidence." />
-    <ul aria-label="Basketball studies" className="grid auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2">
+    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description={<>Pick a basketball question.<span className="hidden sm:inline"> Compare players, inspect games, or follow a finding back to its evidence.</span></>} />
+    <ul aria-label="Basketball studies" className="grid grid-cols-1 gap-2.5 sm:auto-rows-fr sm:grid-cols-2 sm:gap-4">
       {STUDIES.map((link) => (
-        <li key={link.href}><StudyLink {...link} /></li>
+        <li key={link.href}><StudyLink {...link} mobileCompact /></li>
       ))}
     </ul>
     <section className="flex flex-col gap-3 border-t border-[var(--term-border)] pt-6">
