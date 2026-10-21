@@ -302,3 +302,12 @@ The owner asked for these to be done through Chrome.
   stored rows and both receipts valid. The DST fix moved 645 `body_clock_hour` values by one
   hour, and opening night moved 85 upcoming 2026-27 rows. The prior files are in
   `../fullcourt-local-archive/fatigue-export-backup-2026-10-21/`.
+
+## Season-list rollover note — 2026-10-21
+
+- Owner decision: `NBA_SEASONS` stays computed at module load. `docs/SEASON_ROLLOVER.md` now
+  says to deploy once on or after October 1 and check that the new season appears.
+- Open: the daily season gate (`scripts/season_window.py`) still falls back to the Oct–Apr
+  calendar because cdn.nba.com returns 403. ESPN's core API publishes the regular-season dates
+  (`seasons/{year}/types/2`). The owner is choosing between the calendar-only gate and an
+  ESPN-backed one.

@@ -11,6 +11,10 @@ an upcoming season before it has completed games. Games defaults to the complete
 during the offseason and offers the upcoming season only when its schedule exists. Explicit URL
 selection wins. Other pages validate season support and show a fallback when necessary.
 
+`NBA_SEASONS` reads the date once, when the module loads, so a page built before October 1 and
+a long-running server keep the previous list. Deploy once on or after October 1 (ET), then check
+that the new season appears in the season selector and on `/behind-the-data/data-and-limits`.
+
 Playoff Rest and Expected Shot Value default to their latest usable database publication,
 independently of the October calendar transition. Their explicit season selections remain
 shareable; an unpublished selected season explains the missing data and offers the latest
