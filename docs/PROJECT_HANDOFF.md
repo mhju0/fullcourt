@@ -163,145 +163,42 @@ them except one. Open: at 390×844 the first /games card starts 57px behind the 
 pass means trimming or reordering the mobile board above the slate, which is an owner design
 call. A one-time cloud routine checks the opening-night slate at 2026-10-21 05:00 UTC.
 
-## Behind the Data clarity pass — 2026-10-21
+## Condensed 2026-10-21 releases and full review — 2026-10-21
 
-Branch `docs/behind-the-data-clarity`. Rewrote all ten method pages for plain, short copy and phone width: the rest-advantage page now repeats the combining equation and gives every term its own formula (altitude included), grouped as loads, multipliers and adjustments. Every formula line is at most 40 characters (`behind-the-data-formula-width.test.ts`), padded-text "tables" became real tables, and no method table overflows at 390px. Rule recorded in FRONTEND.md. No coefficient changed; `fatigue.ts` only names the existing per-window stress cap and exports it. Open: hand-typed figures in data-and-limits prose (88, 971, 179, 135, 44 games) and "twenty points" on rest-advantage predate this pass and are still unpinned.
+v1.1.0 (#200) shipped the approved D01–D10 mobile UX with the Behind the Data method-page
+rewrite (ten pages, formula lines at most 40 characters, rule in FRONTEND.md). v1.1.1 (#202)
+made Explore cards fit their content on phones (D-134), and v1.1.2 (#204) made upcoming rest
+edges equal-width rows (D-135). The [release verification](reports/2026-10-21-mobile-release-security.html)
+and Git tags retain the evidence.
 
+A full-repository review shipped as v1.1.3 in three PRs:
+- #205 put the correction suites in CI, isolated per-row score-sync failures, made fatigue
+  backfill per-game and split the officiating refresh into collect and propose.
+- #206 fixed the season verdict band edge, body-clock DST (ADR 0011 amendment), blank ESPN
+  finals, the Schedule Edge average and impossible ids or dates reaching the database.
+- #207 split the `/officiating` payload, lazy-loaded supabase-js, served 72px logos and compiled
+  out unused Sentry code.
 
-## Approved mobile UX implementation and release preparation — 2026-10-21
+A Sentry US outage failed every build at source-map upload. The guard was kept and the builds
+were retried once Sentry recovered. `drizzle/0013`
+(anon reads `games` only) and `drizzle/0014` (`games (season, date)` index: a 487 ms
+sequential scan became a 65 ms index scan) were applied through Chrome at the owner's request
+(#208). The fatigue features were re-exported from `main` with valid receipts. The officiating
+workflow ran for 2026-27 (nothing published yet) and 2025-26 (metadata-only, branch deleted).
+Merged worktrees and branches were removed. Unmerged branches, stashes and the 2026-10-21
+report drafts are in `../fullcourt-local-archive/` (`branch-archive-2026-10-21`,
+`reports-2026-10-21`). PR #199 closed as superseded by #204; #203 bumps certifi.
 
-Owner approved all D01–D10, then explicitly requested final security audit, main merge and
-live deployment. Implemented current actual-publication defaults, explicit-current Awaiting,
-compact Games/Schedule/Shooting reading order, linked chart readouts, one-court model
-comparison, annual Availability selection and 15px explanatory text. The new read-only
-`/api/season-report-publication` discovers report seasons; schedule API behavior is preserved.
-Claude’s clarity commits are included, with three semantic copy regressions and 375px
-formula/table overflow corrected. v1.1.0 carries these changes; final release evidence belongs to its immutable Git tag,
-GitHub release and dated local acceptance receipt.
-
-No schema, fatigue coefficient, published artifact or historical prediction was changed.
-Physical iPhone/Safari/VoiceOver and actual opening-night ingestion remain unverified.
-
-## v1.1.0 release and documentation refresh — 2026-10-21
-
-v1.1.0 is published at merge `9c313de8f6e42ae3f7e89307b15a08225415339e`, canonical Ready
-Vercel deployment `dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc`. The [release verification](reports/2026-10-21-mobile-release-security.html) reported
-50/50 production cases (40 WebKit phone, 10 Chromium desktop), zero page overflow, alerts or
-page errors; real-font, security-header and three source-map-404 checks also passed.
-README/default-season/font descriptions now match source. Six [production screenshots](screenshots/README.md)
-replace October 17 captures and show desktop plus 375/402px reading order; the local social
-preview was re-fetched from the live OG endpoint and already matched. Capture provenance pins URLs, time and SHA.
-Physical iPhone/Safari/VoiceOver and actual completed-slate ingestion remain unverified.
-Next: observe those real-world paths; GitHub/portfolio publication has its own readback evidence.
-
-## Explore compact-card follow-up — 2026-10-21
-
-Owner selected Explore variant A. v1.1.1 prepares content-height cards below 640px, tighter
-spacing, an unboxed arrow, a short introduction and four concise mobile descriptions.
-Desktop composition/copy, seven study destinations/order, both research links and other
-StudyLink consumers remain unchanged. D-134 records the bounded mobile exception.
-Built-browser checks show3complete cards at375px and4at402/420/440px; desktop card
-geometry and other StudyLink consumers are preserved. All9destinations, keyboard focus,
-200%text, final-link clearance and main-content axe checks pass, with all1,488unit tests.
-Next: preview verification and production release. Physical iPhone/Safari/VoiceOver
-behavior remains unverified.
-
-## Upcoming rest-edge mobile A applied — 2026-10-21
-
-Owner approved the refined A preview. Below640px, equal-width one-line buttons use
-full-date left / matchup centered / fixed-width rest-advantage badge right. The strip's
-repeated PROJ marker is removed; board projection labels and all fetch/filter/order/
-refresh/date-jump behavior remain unchanged. D-135 records the decision; v1.1.2 is
-prepared. Typecheck, changed-file ESLint,37related tests,94page contracts, production
-build and production dependency audit passed. Full suite initially had only2spacing
-violations (1test); final scale values pass the targeted recheck. Built WebKit checks
-use public upcoming API data with fixture-backed other endpoints:320/375/390/430px
-and1440px, date-jump keyboard activation and scoped axe. Evidence stays local under
-`docs/audit/rest-edge-columns/`. Hosted preview/production acceptance is pending.
-Physical-device Safari and native text resizing remain unverified.
-
-## Full-repository review, pass 1 — 2026-10-21
-
-Six-area read-only review (API/data, domain logic, frontend performance, pipelines, security,
-tests); every High/Medium finding re-read before reporting. Owner chose three passes: fix-first
-+ tests + security (PR #205), then bugs, then performance. PR #205: correction suites in CI
-(pins 1129 OT / 353 venues per #187/#189), score sync isolates per-row write failures,
-backfill_fatigue selects finals only and replaces rows per game in a transaction, server reads
-sequential on the one-connection pool (source guard), origin row caches for /api/analysis and
-/api/games/search, officiating refresh split into read-only collect + write-only propose.
-Open: owner applies `drizzle/0013_limit_anon_reads_to_games.sql` by hand (not applied); first
-manual run of the split officiating workflow; next 16.4.2 left to Dependabot. Deferred for an
-owner decision: e2e gating, real-SQL coverage of queries.ts, noUncheckedIndexedAccess (751
-errors), type-aware lint. Next: pass 2 (bugs, incl. approved DST fix in fatigue.ts) from main
-after #205 merges. Worktree: ../fullcourt-review-fixes.
-
-## Full-repository review, pass 2 (bugs) — 2026-10-21
-
-Branch `fix/review-pass-2`, one commit per fix, each with a test that failed first.
-- The season verdict compares the gap at one decimal. Before this, 64.7 vs 60.5 against ±4.2
-  read as outside the band.
-- Body-clock DST uses the tip's ET date (owner-approved; ADR 0011 amendment). It is a
-  feature-only change: no score moves. Re-export the fatigue features before the next ML run.
-- An ESPN final with a blank score is skipped, not written over the stored result.
-- The Schedule Edge per-game fatigue edge is averaged over scored games only.
-- `/api/games/[date]` and `/api/game/[id]` return 400 for impossible dates and ids above int4.
-- The games board reads through `apiFetcher`; the officials fetch has a 25s timeout.
-Not changed, needs an owner call: `NBA_SEASONS` is fixed when the module loads (15 importers).
-`season_window.py` always falls back to the Oct–Apr calendar because cdn.nba.com returns 403
-for every user agent. ESPN's calendar includes preseason and playoffs, so it is not a drop-in
-replacement.
-Next: merge after #205 (the history-correction pin fails on `main` until #205 lands), then
-pass 3 (performance).
-
-## Full-repository review, pass 3 (performance) — 2026-10-21
-
-Branch `perf/review-pass-3` (#207), merged after #205 and #206.
-- **Proxy:** a matcher skips `/api/health`, `/_next/static/` and `/favicon.ico`, which it already
-  passed through, so maintenance mode blocks the same set.
-- **supabase-js:** loaded on the first live subscription. `/games` HTML no longer references the
-  chunk. Realtime is filtered server-side to the slate's ids.
-- **Logos:** ESPN's resizer at 72px. About 4 KB each instead of about 45 KB; a missing slug still
-  answers 404.
-- **Edge cache:** `/api/games/upcoming` gets `CACHE.inSeason`.
-- **Sentry:** tracing and debug code compiled out with `compiler.define`. About 22 KB gzip off the
-  shared client chunk. `compiler` is now copied before Sentry wraps the config, because the
-  wrapper writes into it.
-- **CI:** pip cache for `ml/requirements.txt`.
-- **`drizzle/0014`:** a `games (season, date)` index, written but **not applied**. It includes a
-  baseline EXPLAIN step, because the benefit was not measured against production.
-- **`/officiating`:** carries per-season totals only. The selected season's games come from
-  `/api/officiating/[season]` (`historical` cache). Prerendered HTML went from 327 KB to 8.6 KB
-  gzip, and the 13 officiating e2e specs pass. The game list now shows a loading line before
-  it appears.
-Not done:
-- `/games` dates→slate waterfall (reducer reordering).
-- `public/data` browser caching (unhashed names).
-- Script-side round trips.
-Release: #205–#207 ship together as v1.1.3; tag it after the production build is verified.
-On 2026-10-21 the Sentry US API outage failed every build at source-map upload, including
-the #206 merge on `main`. Production stayed on #205 until a retry. The upload guard was kept.
-Owner actions: apply `drizzle/0013` and `drizzle/0014` (run 0014's baseline EXPLAIN first),
-run the split officiating workflow once, and re-export fatigue features before the next ML run.
-Merged worktrees were removed. Their ignored audit evidence moved to
-`../fullcourt-local-archive/worktree-archive-2026-10-21/`.
-
-## Review follow-ups applied — 2026-10-21
-
-The owner asked for these to be done through Chrome.
-- **`drizzle/0014`:** the baseline was a sequential scan (1,123 buffers, 487 ms). The index was
-  built concurrently and is valid; the same read is now an index scan (171 buffers, 65 ms).
-- **`drizzle/0013`:** neither `anon` nor `authenticated` can log in, so `DATABASE_URL` cannot be
-  either role. Afterwards the only grant is `anon` `SELECT` on `games`. With the anon key, the
-  Data API returns `games` and refuses `fatigue_scores`, `teams` and `shot_grid` (401, 42501).
-  Live score updates during a slate are still unchecked.
-- **Officiating workflow:** the 2026-27 run had nothing to collect yet. A 2025-26 run passed
-  collect and propose and pushed a data branch that changed only `refreshedAt` and
-  `indexSha256`, so it was deleted. Actions cannot open PRs under the current repository
-  setting, so a data update arrives as a branch for the owner.
-- **Fatigue export:** re-exported and prepared from `main`, with 0 mismatches over 101,004
-  stored rows and both receipts valid. The DST fix moved 645 `body_clock_hour` values by one
-  hour, and opening night moved 85 upcoming 2026-27 rows. The prior files are in
-  `../fullcourt-local-archive/fatigue-export-backup-2026-10-21/`.
+Open from these entries:
+- Live score updates under the anon `games`-only grant are unchecked during a live game.
+- The owner must tick "Allow GitHub Actions to create and approve pull requests" for the
+  officiating workflow to open its own PRs; until then an update arrives as a branch.
+- Unpinned hand-typed figures remain in data-and-limits prose (88, 971, 179, 135, 44 games)
+  and "twenty points" on the rest-advantage method page.
+- Owner decisions deferred from the review: e2e gating, real-SQL coverage of `queries.ts`,
+  `noUncheckedIndexedAccess` (751 errors), type-aware lint. Not done in the performance pass:
+  the `/games` dates→slate waterfall, `public/data` browser caching, script-side round trips.
+- Physical iPhone/Safari/VoiceOver behavior remains unverified.
 
 ## Season-list rollover note — 2026-10-21
 
