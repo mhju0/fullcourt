@@ -5,7 +5,7 @@ import { format, parseISO } from "date-fns";
 import { useLiveGames } from "@/hooks/useLiveGames";
 import { LOCATION_CHANGE } from "@/hooks/useSeasonUrl";
 import { readSlateUrl, slateUrl } from "@/lib/game-slate-url";
-import { errMsg } from "@/lib/fetcher";
+import { apiFetcher, errMsg } from "@/lib/fetcher";
 import { createSlateRefresh, shouldRefreshSlate } from "@/lib/slate-refresh";
 import { isLeavingPage } from "@/lib/route-transition";
 import {
@@ -29,7 +29,7 @@ import {
   currentDisplaySeason,
   slateDateKey,
 } from "@/lib/nba-season";
-import type { ApiResponse, GameDateCount, GameResponse } from "@/types";
+import type { GameDateCount, GameResponse } from "@/types";
 
 const isAbort = (err: unknown) => err instanceof Error && err.name === "AbortError";
 
@@ -62,14 +62,6 @@ export interface GameSlate {
   send: (intent: SlateIntent) => void;
 }
 
-/** Both endpoints answer in the `{ data, error }` envelope. */
-async function readEnvelopeOnce<T>(url: string, signal: AbortSignal): Promise<T> {
-  const res = await fetch(url, { signal });
-  const body = (await res.json()) as ApiResponse<T>;
-  if (body.error !== null) throw new Error(body.error);
-  return body.data;
-}
-
 const RETRY_DELAY_MS = 800;
 
 /**
@@ -78,11 +70,11 @@ const RETRY_DELAY_MS = 800;
  */
 async function readEnvelope<T>(url: string, signal: AbortSignal): Promise<T> {
   try {
-    return await readEnvelopeOnce<T>(url, signal);
+    return await apiFetcher<T>(url, { signal });
   } catch (err) {
     if (signal.aborted || isAbort(err)) throw err;
     await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
-    return readEnvelopeOnce<T>(url, signal);
+    return apiFetcher<T>(url, { signal });
   }
 }
 const noon = (dateKey: string) => parseISO(`${dateKey}T12:00:00`);

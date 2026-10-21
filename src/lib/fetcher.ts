@@ -4,8 +4,8 @@ import type { ApiResponse } from "@/types"
  * Generic SWR fetcher that unwraps our { data, error } API envelope.
  * Throws on API-level errors so SWR treats them as errors.
  */
-export async function apiFetcher<T>(url: string): Promise<T> {
-  const res = await fetch(url)
+export async function apiFetcher<T>(url: string, init?: { signal?: AbortSignal }): Promise<T> {
+  const res = await fetch(url, init)
   let body: unknown
 
   try {
