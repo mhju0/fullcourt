@@ -228,8 +228,9 @@ export function defaultNbaSeason(todayKey: string = formatEasternDateKey()): Nba
 /**
  * Season to show as "current" for nav/labels/defaults: the in-progress season
  * while it's running (Oct–Apr), the most recently completed one otherwise.
- * Unlike `defaultNbaSeason`, not clamped to `NBA_SEASONS` — takes an explicit
- * date so callers (and tests) aren't tied to the real wall clock.
+ * Unlike `defaultNbaSeason`, it does not move to the upcoming season when its
+ * schedule is released. Takes an explicit date so callers (and tests) aren't
+ * tied to the real wall clock.
  */
 export function currentDisplaySeason(todayKey: string = formatEasternDateKey()): string {
   return seasonLabelForDateKey(todayKey);
