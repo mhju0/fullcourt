@@ -190,6 +190,9 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 > rebuild, which on a live site is an hour-long outage of every page. The repair took 17
 > seconds and needed no downtime. The script was removed once it had run — recover it from
 > git history if the same shape of repair is ever needed again.
+>
+> *2026-10-21:* `--force` no longer deletes the table first. It replaces each final game's two
+> rows in one transaction, and both modes now skip unplayed games (`project_fatigue.ts` owns those).
 
 **Verified coverage (2026-10-15, read-only `SELECT`):** **103,390** rows, exactly two per game across
 all 51,695 games, the projected 2026-27 schedule included.
