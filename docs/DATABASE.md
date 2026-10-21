@@ -415,7 +415,7 @@ grant select, insert, update, delete on public.predictions    to service_role;
 
 | Role | Grant | Used by |
 |------|-------|---------|
-| `anon` | `SELECT` only | browser reads via supabase-js (Realtime + public browsing) |
+| `anon` | `SELECT` only | browser reads via supabase-js (Realtime + public browsing); `0013` narrows this to `games` once applied |
 | `service_role` | `SELECT, INSERT, UPDATE, DELETE` | API handlers + pipeline scripts (`DATABASE_URL`) |
 
 **When adding a new public table:** add a new migration mirroring `0005` (a `grant select
@@ -443,8 +443,9 @@ grants for **two** tables, `shot_grid` and `shot_value_surface`, in one file).
 | `0010_rename_time_zone_displacement.sql` | Rename `fatigue_scores.has_coast_to_coast_road_swing` → `has_time_zone_displacement`. |
 | `0011_games_tip_off_neutral_site.sql` | Add `tip_off_utc`, `neutral_site`, `neutral_venue_city` to `games`. Applied 2026-07-30. See ADR 0003 for the era limits of the ESPN source. |
 | `0012_playoff_series_prior_grind.sql` | Add `playoff_series.prior_grind_diff` (nullable numeric). Standalone SQL; RLS and grants already cover the table. Applied 2026-07-31. |
+| `0013_limit_anon_reads_to_games.sql` | Revoke `anon`/`authenticated` access to every table except `SELECT` on `games`, which Realtime needs. Written 2026-10-21; **not applied** until the owner runs it. |
 
-The **next migration number is `0013`**. `drizzle.config.ts` restricts introspection to
+The **next migration number is `0014`**. `drizzle.config.ts` restricts introspection to
 `schemaFilter: ["public"]`,
 `tablesFilter: ["teams","games","fatigue_scores","predictions","playoff_series"]` (unchanged
 by `0007`/`0008` — see the Conventions note above), and `extensionsFilters: ["postgis"]` (the
