@@ -1,5 +1,18 @@
 # Release history
 
+## 1.1.3 — 2026-10-21
+
+- Fix the Season Report verdict at band edges, the body-clock daylight-saving date, a blank
+  ESPN final overwriting a stored score, the Schedule Edge per-game average and impossible
+  game dates or ids reaching the database (#205, #206).
+- Run the historical correction suites in CI, isolate per-row score-sync failures and split
+  the officiating refresh into read-only collect and write-only propose steps.
+- Ship Officiating totals with the page and load one season's games on demand; load the live
+  score client only when needed, resize team logos to 72px and compile out unused Sentry code
+  (#207).
+- No published figure, fatigue coefficient or applied database schema changes; `drizzle/0013`
+  and `drizzle/0014` are written for the owner to apply.
+
 ## 1.1.2 — 2026-10-21
 
 - Align upcoming large rest edges on phones into equal-width rows with the full date
