@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { browsableSeasonParam, jsonRoute, minRAParam } from "@/lib/api-route";
+import { browsableSeasonParam, CACHE, jsonRoute, minRAParam } from "@/lib/api-route";
 import { getUpcomingGamesWithRA } from "@/lib/db/queries";
 import { defaultNbaSeason } from "@/lib/nba-season";
 
@@ -16,5 +16,8 @@ export const GET = jsonRoute(
     ? getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA, limit, order)
     : limit === undefined
     ? getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA)
-    : getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA, limit)
+    : getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA, limit),
+  // Not a live-score read: it changes when the nightly job rescores or a game tips, so a minute
+  // at the edge only delays a game dropping off the list.
+  CACHE.inSeason
 );
