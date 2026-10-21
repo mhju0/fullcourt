@@ -10,9 +10,10 @@ const MAX_LIMIT = 100;
  * that applied to it. The route fetches the whole matching population and paginates it **in
  * memory** (`rest-advantage-evidence.ts`), so a deep page costs exactly what the first page
  * costs — measured 0.58s for `page=999999` against 0.55s for `page=1`, over ~39,000 rows to
- * return 20. Nothing absorbed a repeat of that. The in-memory pagination itself is left alone
- * deliberately: changing the query shape on a published route is a bigger claim than a cache
- * header, and latency is not a problem today.
+ * return 20. Since 2026-10-21 the rows behind each SQL filter are held at the origin
+ * (`rest-advantage-evidence-server.ts`), so other pages of the same filters reuse one read. The
+ * in-memory pagination itself is left alone deliberately: changing the query shape on a
+ * published route is a bigger claim than a cache, and latency is not a problem today.
  *
  * **`inSeason`, not `historical`, and the distinction is the ordering.** The first draft took
  * `/api/analysis`'s policy on the grounds that both read the same settled backtest population

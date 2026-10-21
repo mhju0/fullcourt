@@ -49,6 +49,7 @@ describe("getHistoricalBacktest", () => {
     mockStamp.mockReset();
     mockRows.mockReset();
     mockRows.mockResolvedValue(ROWS);
+    mockIncomplete.mockReset();
     mockIncomplete.mockResolvedValue(new Set());
     mockIncompleteStamp.mockResolvedValue("");
   });
@@ -77,7 +78,7 @@ describe("getHistoricalBacktest", () => {
     expect(mockRows).toHaveBeenCalledTimes(2);
   });
 
-  it("re-reads when a season becomes pending or complete", async () => {
+  it("rebuilds without re-reading the games when a season becomes pending or complete", async () => {
     mockStamp.mockResolvedValue("1230@2025-04-13");
     mockIncompleteStamp
       .mockResolvedValueOnce("")
@@ -87,10 +88,12 @@ describe("getHistoricalBacktest", () => {
       .mockResolvedValueOnce(new Set(["2026-27"]));
     const { getHistoricalBacktest } = await loadModule();
 
-    await getHistoricalBacktest(0);
-    await getHistoricalBacktest(0);
+    const before = await getHistoricalBacktest(0);
+    const after = await getHistoricalBacktest(0);
 
-    expect(mockRows).toHaveBeenCalledTimes(2);
+    expect(mockIncomplete).toHaveBeenCalledTimes(2);
+    expect(mockRows).toHaveBeenCalledTimes(1);
+    expect(after).not.toBe(before);
   });
 
   it("caches per threshold rather than serving one threshold's answer for another", async () => {
@@ -100,22 +103,28 @@ describe("getHistoricalBacktest", () => {
     const all = await getHistoricalBacktest(0);
     const filtered = await getHistoricalBacktest(5);
 
-    expect(mockRows).toHaveBeenCalledTimes(2);
     expect(filtered).not.toBe(all);
     expect(await getHistoricalBacktest(5)).toBe(filtered);
-    expect(mockRows).toHaveBeenCalledTimes(2);
   });
 
-  it("bounds the cache against arbitrary thresholds from the query string", async () => {
+  it("reads the games once however many thresholds the query string asks for", async () => {
+    // Every new threshold used to re-run the heaviest read in the app (review, 2026-10-21).
     mockStamp.mockResolvedValue("1230@2025-04-13");
     const { getHistoricalBacktest } = await loadModule();
 
-    for (let i = 0; i < 20; i++) await getHistoricalBacktest(i);
+    for (let i = 0; i < 40; i++) await getHistoricalBacktest(i / 100);
 
-    // 16 entries evicted wholesale at the cap, so the earliest is gone and re-reads.
-    const callsBefore = mockRows.mock.calls.length;
+    expect(mockRows).toHaveBeenCalledTimes(1);
+  });
+
+  it("shares one read of the games with the coverage line", async () => {
+    mockStamp.mockResolvedValue("1230@2025-04-13");
+    const { getHistoricalBacktest, getHistoricalEvidenceCoverage } = await loadModule();
+
     await getHistoricalBacktest(0);
-    expect(mockRows.mock.calls.length).toBe(callsBefore + 1);
+    await getHistoricalEvidenceCoverage();
+
+    expect(mockRows).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -188,6 +197,29 @@ describe("searchHistoricalGameEvidence", () => {
     await searchHistoricalGameEvidence({ ...REQUEST, gap: "medium", side: "home" });
 
     expect(mockSearch).toHaveBeenCalledWith({ minRA: 2.99, team: undefined, season: undefined });
+  });
+
+  it("reads the rows once across pages, results and sides of the same filters", async () => {
+    // Paging is in memory, so each page used to cost the whole population (review, 2026-10-21).
+    mockStamp.mockResolvedValue("1230@2025-04-13");
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    for (let page = 1; page <= 5; page++) {
+      await searchHistoricalGameEvidence({ ...REQUEST, page });
+      await searchHistoricalGameEvidence({ ...REQUEST, page, result: "correct", side: "home" });
+    }
+
+    expect(mockSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it("re-reads the rows when a game goes final", async () => {
+    mockStamp.mockResolvedValueOnce("1230@2025-04-13").mockResolvedValueOnce("1231@2025-04-14");
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    await searchHistoricalGameEvidence(REQUEST);
+    await searchHistoricalGameEvidence(REQUEST);
+
+    expect(mockSearch).toHaveBeenCalledTimes(2);
   });
 
   it("carries the paging half into the response", async () => {

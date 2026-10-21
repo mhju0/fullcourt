@@ -8,9 +8,9 @@ on:
         description: "Optional season (YYYY-YY); defaults to the current NBA season"
         required: false
         type: string
+# Read-only by default. Only `propose`, which never runs third-party content, can write.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 concurrency:
   group: officiating-refresh
   cancel-in-progress: false
@@ -18,8 +18,13 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      active: ${{ steps.state.outputs.active }}
+      season: ${{ steps.state.outputs.season }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.11"
@@ -66,10 +71,42 @@ jobs:
           snapshot=$(find "/tmp/officiating-sources/$REVIEW_SEASON" -name manifest.json -print -quit)
           python ml/publish_officiating.py "$(dirname "$snapshot")"
           python -m unittest discover -s ml/tests -p 'test_officiating_publish.py'
-      - name: Prepare data update for preview review
+      - name: Retain publication files
         if: env.OFFICIATING_ACTIVE == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: officiating-publication-${{ github.run_id }}
+          path: |
+            src/data/officiating.json
+            public/data/officiating
+          retention-days: 7
+          if-no-files-found: error
+      - name: Expose state
+        id: state
+        run: |
+          echo "active=$OFFICIATING_ACTIVE" >> "$GITHUB_OUTPUT"
+          echo "season=$REVIEW_SEASON" >> "$GITHUB_OUTPUT"
+  propose:
+    needs: collect
+    if: needs.collect.outputs.active == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Removed first so a report the publisher dropped is dropped here too.
+      - name: Clear published officiating files
+        run: rm -rf public/data/officiating src/data/officiating.json
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: officiating-publication-${{ github.run_id }}
+          path: .
+      - name: Prepare data update for preview review
         env:
           GH_TOKEN: ${{ github.token }}
+          REVIEW_SEASON: ${{ needs.collect.outputs.season }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

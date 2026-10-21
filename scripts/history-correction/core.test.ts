@@ -13,7 +13,7 @@ describe('historical correction safety',()=>{
  });
  it('pins accepted input scope and independently dated arena identities',()=>{
   const counts=Object.fromEntries(['overtimePeriods','gameType','neutralSite','tipOffUtc'].map(field=>[field,inputs.fixtures.filter(f=>field in f.fields).length]));
-  expect(counts).toEqual({overtimePeriods:783,gameType:109,neutralSite:189,tipOffUtc:2});expect(venues.fixtures).toHaveLength(171);expect(venues.fixtures.filter(f=>f.neutral)).toHaveLength(22);
+  expect(counts).toEqual({overtimePeriods:1129,gameType:109,neutralSite:189,tipOffUtc:2});expect(venues.fixtures).toHaveLength(353);expect(venues.fixtures.filter(f=>f.neutral)).toHaveLength(22);
   expect(lookupFixtureVenueCorrection({date:'1990-11-02',homeAbbr:'UTA',awayAbbr:'PHX'})?.arena).toBe('Tokyo Metropolitan Gymnasium');
   expect(venues.fixtures.filter(f=>f.date.startsWith('1996')&&f.city==='Tokyo').every(f=>f.arena==='Tokyo Dome')).toBe(true);
   expect(venues.fixtures.find(f=>f.date==='1997-12-06')?.arena).toBe('Palacio de los Deportes');

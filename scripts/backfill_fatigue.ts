@@ -1,8 +1,9 @@
 /**
- * Fatigue backfill script — computes fatigue_scores for games that are missing them.
+ * Fatigue backfill script — computes fatigue_scores for final games that are missing them.
  *
- * Only processes games that do NOT already have a fatigue_scores entry for the home team,
- * so it is safe to run multiple times without reprocessing already-scored games.
+ * Only processes final games missing a fatigue_scores row for either team, so it is safe to run
+ * multiple times. Unplayed games are never scored here: this script counts only final prior
+ * games, so it would score them 0.0. scripts/project_fatigue.ts projects those.
  *
  * Fatigue scores use the same model for all games; `game_type` in the DB is for filtering only.
  * Processes games in chronological order (oldest first) since fatigue depends on prior games.
@@ -10,7 +11,10 @@
  * Usage:
  *   pnpm exec tsx scripts/backfill_fatigue.ts                         # all unscored games
  *   pnpm exec tsx scripts/backfill_fatigue.ts 2022-10-01 2023-06-30  # optional date range
- *   pnpm exec tsx scripts/backfill_fatigue.ts --force                 # wipe fatigue_scores, recompute all
+ *   pnpm exec tsx scripts/backfill_fatigue.ts --force                 # recompute every final game
+ *
+ * Each game's two rows are replaced in one transaction, so an interrupted --force run leaves
+ * every game either on its old rows or its new ones, never empty or half-written.
  *
  * Typical runtime: scales with game count (~30–90+ minutes for 20 seasons / ~25k+ games).
  *
@@ -22,7 +26,7 @@
  * those migration files manually in the Supabase SQL editor against the same DATABASE_URL.
  */
 
-import { and, asc, between, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
@@ -30,6 +34,7 @@ import { fatigueScores, games, teams } from "@/lib/db/schema";
 import { scoreGameFatigue } from "@/lib/fatigue";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
 import { loadEnvLocal } from "@/lib/load-env-local";
+import { backfillGameFilter } from "./backfill-fatigue-selection";
 
 type AppDb = NodePgDatabase<typeof Schema>;
 
@@ -103,66 +108,43 @@ async function main(): Promise<void> {
   const teamRows = await appDb.select().from(teams);
   const teamById = new Map(teamRows.map((t) => [t.id, t]));
 
-  let gamesToProcess: Array<{
-    id: number;
-    externalId: string;
-    date: string;
-    homeTeamId: number;
-    awayTeamId: number;
-    neutralSite: boolean;
-    neutralVenueCity: string | null;
-    tipOffUtc: Date | null;
-  }>;
-
-  if (force) {
-    console.log("[backfill] --force: deleting all fatigue_scores...");
-    await appDb.delete(fatigueScores).where(sql`true`);
-    gamesToProcess = await appDb
-      .select({
-        id: games.id,
-        externalId: games.externalId,
-        date: games.date,
-        homeTeamId: games.homeTeamId,
-        awayTeamId: games.awayTeamId,
-        neutralSite: games.neutralSite,
-        neutralVenueCity: games.neutralVenueCity,
-        tipOffUtc: games.tipOffUtc,
-      })
-      .from(games)
-      .orderBy(asc(games.date));
-  } else {
-    const homeFatigue = alias(fatigueScores, "home_fatigue");
-
-    const whereClause =
-      startArg && endArg
-        ? and(isNull(homeFatigue.id), between(games.date, startArg, endArg))
-        : isNull(homeFatigue.id);
-
-    gamesToProcess = await appDb
-      .select({
-        id: games.id,
-        externalId: games.externalId,
-        date: games.date,
-        homeTeamId: games.homeTeamId,
-        awayTeamId: games.awayTeamId,
-        neutralSite: games.neutralSite,
-        neutralVenueCity: games.neutralVenueCity,
-        tipOffUtc: games.tipOffUtc,
-      })
-      .from(games)
-      .leftJoin(
-        homeFatigue,
-        and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
-      )
-      .where(whereClause)
-      .orderBy(asc(games.date));
-  }
+  const homeFatigue = alias(fatigueScores, "home_fatigue");
+  const awayFatigue = alias(fatigueScores, "away_fatigue");
+  // Distinct: a game can carry several fatigue revisions, and the joins would repeat it.
+  const gamesToProcess = await appDb
+    .selectDistinct({
+      id: games.id,
+      externalId: games.externalId,
+      date: games.date,
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
+      tipOffUtc: games.tipOffUtc,
+    })
+    .from(games)
+    .leftJoin(
+      homeFatigue,
+      and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
+    )
+    .leftJoin(
+      awayFatigue,
+      and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
+    )
+    .where(backfillGameFilter({
+      force,
+      start: startArg,
+      end: endArg,
+      homeFatigueId: homeFatigue.id,
+      awayFatigueId: awayFatigue.id,
+    }))
+    .orderBy(asc(games.date), asc(games.id));
 
   if (gamesToProcess.length === 0) {
     console.log(
       force
-        ? "No games in database. Nothing to do."
-        : "No games are missing fatigue scores. Nothing to do."
+        ? "No final games in database. Nothing to do."
+        : "No final games are missing fatigue scores. Nothing to do."
     );
     return;
   }
@@ -201,31 +183,32 @@ async function main(): Promise<void> {
         { teamId: game.awayTeamId, result: awayResult },
       ];
 
-      for (const { teamId, result: r } of entries) {
-        const adjustedScore = Math.round(r.score * 100) / 100;
-        await appDb.insert(fatigueScores).values({
-          gameId: game.id,
-          teamId,
-          score: String(adjustedScore),
-          decayLoadScore: String(r.decayLoadScore),
-          travelLoadScore: String(r.travelLoadScore),
-          backToBackMultiplier: String(r.backToBackMultiplier),
-          altitudeMultiplier: String(r.altitudeMultiplier),
-          densityMultiplier: String(r.densityMultiplier),
-          freshnessBonus: String(r.freshnessBonus),
-          gamesInLast7Days: r.gamesInLast7Days,
-          gamesInLast30Days: r.gamesInLast30Days,
-          travelDistanceMiles: String(r.travelDistanceMiles),
-          isBackToBack: r.isBackToBack,
-          daysSinceLastGame: r.daysSinceLastGame,
-          isOvertimePenalty: r.isOvertimePenalty,
-          roadTripConsecutiveAway: r.roadTripConsecutiveAway,
-          isThreeInFour: r.isThreeInFour,
-          isFourInSix: r.isFourInSix,
-          hasTimeZoneDisplacement: r.hasTimeZoneDisplacement,
-        });
-        totalRows++;
-      }
+      const rows = entries.map(({ teamId, result: r }) => ({
+        gameId: game.id,
+        teamId,
+        score: String(Math.round(r.score * 100) / 100),
+        decayLoadScore: String(r.decayLoadScore),
+        travelLoadScore: String(r.travelLoadScore),
+        backToBackMultiplier: String(r.backToBackMultiplier),
+        altitudeMultiplier: String(r.altitudeMultiplier),
+        densityMultiplier: String(r.densityMultiplier),
+        freshnessBonus: String(r.freshnessBonus),
+        gamesInLast7Days: r.gamesInLast7Days,
+        gamesInLast30Days: r.gamesInLast30Days,
+        travelDistanceMiles: String(r.travelDistanceMiles),
+        isBackToBack: r.isBackToBack,
+        daysSinceLastGame: r.daysSinceLastGame,
+        isOvertimePenalty: r.isOvertimePenalty,
+        roadTripConsecutiveAway: r.roadTripConsecutiveAway,
+        isThreeInFour: r.isThreeInFour,
+        isFourInSix: r.isFourInSix,
+        hasTimeZoneDisplacement: r.hasTimeZoneDisplacement,
+      }));
+      await appDb.transaction(async (tx) => {
+        await tx.delete(fatigueScores).where(eq(fatigueScores.gameId, game.id));
+        await tx.insert(fatigueScores).values(rows);
+      });
+      totalRows += rows.length;
     } catch (err) {
       console.error(`  [ERROR] game ${game.id} (${game.date}):`, err);
       errorCount++;
@@ -242,6 +225,7 @@ async function main(): Promise<void> {
   console.log(
     `\nBackfill complete: ${gamesProcessed} games processed, ${totalRows} fatigue rows written, ${errorCount} errors.`
   );
+  if (errorCount > 0) process.exitCode = 1;
 }
 
 main().catch((err) => {

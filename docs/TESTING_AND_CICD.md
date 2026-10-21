@@ -30,6 +30,10 @@ Vitest covers domain logic, API contracts, caches, data pinning, and source/desi
 See `vitest.config.ts` and the tests themselves for the current inventory. Avoid copying test
 counts into this guide; dated release records may report counts observed at a specific commit.
 
+The three historical correction suites (`scripts/{history,overtime,arena}-correction/`) sit
+outside `vitest.config.ts` and run in CI through their own configs; their real-PostgreSQL
+contracts skip there because no contract database URL is set.
+
 The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
 new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
 source-script packet and before/after numeric oracle are retained with the dated local audit.
@@ -64,7 +68,7 @@ polling can prevent network idle. Regression assertions are in `alignment-law.sp
 | `.github/workflows/ci.yml` | Correctness/build checks, secret-free browser smoke, real disposable PostgreSQL contracts; required `verify` aggregates all three |
 | `.github/workflows/daily-update.yml` | Season-gated daily ingest at 21:17 UTC; blocked manual sources reject before secret use |
 | `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics; not proof of successful data ingestion |
-| `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update |
+| `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update; collection runs read-only, and only the `propose` job can push the data branch and open its PR |
 | `.github/workflows/maintenance-health.yml` | Daily scheduled-run completion monitor; weekly full dependency audit |
 | GitHub CodeQL configuration | Code scanning managed on GitHub; not a checked-in workflow |
 | `vercel.json` | Vercel region and `/api/cron/update` schedule |
