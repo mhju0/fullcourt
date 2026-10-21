@@ -2,14 +2,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../games/search/route";
 import { CACHE } from "@/lib/api-route";
-import { searchRegularSeasonGames } from "@/lib/db/queries";
+import { getCompletedGamesStamp, searchRegularSeasonGames } from "@/lib/db/queries";
 
 vi.mock("@/lib/db/queries", () => ({
   searchRegularSeasonGames: vi.fn(),
   getCompletedGamesStamp: vi.fn(),
+  getCompletedGamesWithFatigue: vi.fn(),
+  getIncompleteRegularSeasonSeasons: vi.fn(),
+  getIncompleteRegularSeasonSeasonsStamp: vi.fn(),
 }));
 
 const mockSearchGames = vi.mocked(searchRegularSeasonGames);
+const mockStamp = vi.mocked(getCompletedGamesStamp);
+let stamp = 0;
 
 function req(search = "") {
   return new NextRequest(`http://localhost/api/games/search${search}`);
@@ -18,6 +23,8 @@ function req(search = "") {
 describe("GET /api/games/search", () => {
   beforeEach(() => {
     mockSearchGames.mockReset();
+    // A new stamp per test, so the origin row cache cannot carry one test's rows into the next.
+    mockStamp.mockResolvedValue(`test-${++stamp}`);
   });
 
   it("returns defaults for an unfiltered search", async () => {

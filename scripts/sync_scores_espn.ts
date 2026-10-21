@@ -215,17 +215,28 @@ async function syncScores(sql: Pool, from: string, to: string, dryRun: boolean) 
 
   let written = 0;
   let writeTimeRefusedDowngrades = 0;
+  let writeFailures = 0;
   const appDb = createDatabase(sql);
   for (const update of updates) {
-    const result = await writeGameStatus(appDb, update);
-    written += Number(result.written);
-    if (!result.written) writeTimeRefusedDowngrades++;
+    // A write failure is still fatal (exit 1), but one locked row must not cost the night's
+    // other finals.
+    try {
+      const result = await writeGameStatus(appDb, update);
+      written += Number(result.written);
+      if (!result.written) writeTimeRefusedDowngrades++;
+    } catch (e) {
+      writeFailures++;
+      console.error(`[sync-scores] write failed for game ${update.gameId}:`, e);
+    }
   }
 
   writeStageSummary("scores", { rows_written: written, stored_games: rows.length, date_errors: dateErrors, unmatched: unmatchedStored });
   console.log(`[sync-scores] done — ${written} row(s) updated`);
   console.log(`[sync-scores] write-time final downgrades refused: ${writeTimeRefusedDowngrades}`);
-  if (dateErrors > 0) process.exitCode = 2;
+  if (writeFailures > 0) {
+    console.error(`[sync-scores] ${writeFailures} write(s) failed`);
+    process.exitCode = 1;
+  } else if (dateErrors > 0) process.exitCode = 2;
 }
 
 main().catch((err) => {

@@ -10,8 +10,10 @@ import {
   summarizeHistoricalEvidenceCoverage,
   buildHistoricalGameSearch,
   gapRangeByKey,
+  type HistoricalGameEvidenceRow,
   type HistoricalGameSearchFilters,
   type HistoricalGameSearchOptions,
+  type HistoricalGameSearchRow,
 } from "@/lib/rest-advantage-evidence";
 import { createStampedCache, ORIGIN_CACHE_MAX_AGE } from "@/lib/stamped-cache";
 import type { AnalysisResponse, GameSearchResponse } from "@/types";
@@ -26,53 +28,78 @@ import type { AnalysisResponse, GameSearchResponse } from "@/types";
 export type HistoricalGameSearchRequest = HistoricalGameSearchFilters &
   HistoricalGameSearchOptions;
 
-async function getHistoricalBacktestStamp(): Promise<string> {
-  const completed = await getCompletedGamesStamp();
-  const incomplete = await getIncompleteRegularSeasonSeasonsStamp();
-  return `${completed}|pending=${incomplete}`;
-}
-
 /**
  * The backtest is expensive and rarely different: it reads every final
  * regular-season game with fatigue on both sides — tens of thousands of rows,
  * no LIMIT — and reduces them in JS. Its interface hid that, so callers treated
  * it as a getter and asked for it once per surface.
  *
- * The content/revision fingerprint detects corrections; max age also bounds cache lifetime.
- * `getCompletedGamesStamp` ignores the
- * key because the population does not depend on it — one stamp covers every
- * threshold. Entries are per `seasonMinRA` because that is the only input, and the
- * cache is bounded because that input arrives from a query string.
+ * The rows are held once, behind the stamp that covers them, and every threshold and the
+ * coverage line are built from that one read. Holding per-threshold answers instead meant each
+ * new `seasonMinRA` from the query string re-ran the read (review, 2026-10-21). The pending
+ * season set has its own stamp, so a season closing rebuilds the answer without re-reading
+ * the games.
  */
-const MAX_CACHED_THRESHOLDS = 16;
-
-export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse>({
-  readStamp: getHistoricalBacktestStamp,
-  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
-  load: async (seasonMinRA) => {
-    const rows = await getCompletedGamesWithFatigue();
-    // Keep the cheap completion read sequential. Hosted production has one database connection
-    // slot, so two reads in parallel can turn healthy queries into a timeout.
-    const incompleteSeasons = await getIncompleteRegularSeasonSeasons();
-    return buildHistoricalBacktest(rows, seasonMinRA, incompleteSeasons);
-  },
-  maxEntries: MAX_CACHED_THRESHOLDS,
-});
-
-/** Coverage includes neutral sites, which the home-court venue baseline excludes. */
-const readHistoricalEvidenceCoverage = createStampedCache<"all", {
-  games: number;
-  latestEvidenceDate: string | null;
-}>({
+const readCompletedRows = createStampedCache<"all", HistoricalGameEvidenceRow[]>({
   readStamp: getCompletedGamesStamp,
   maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
-  load: async () => summarizeHistoricalEvidenceCoverage(await getCompletedGamesWithFatigue()),
+  load: () => getCompletedGamesWithFatigue(),
   maxEntries: 1,
 });
 
-export function getHistoricalEvidenceCoverage() {
-  return readHistoricalEvidenceCoverage("all");
+const readIncompleteSeasons = createStampedCache<"all", Set<string>>({
+  readStamp: getIncompleteRegularSeasonSeasonsStamp,
+  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
+  load: () => getIncompleteRegularSeasonSeasons(),
+  maxEntries: 1,
+});
+
+/** Built answers per held read; bounded because the threshold arrives from a query string. */
+const MAX_CACHED_THRESHOLDS = 16;
+const builtBacktests = new WeakMap<
+  HistoricalGameEvidenceRow[],
+  WeakMap<Set<string>, Map<number, AnalysisResponse>>
+>();
+const builtCoverage = new WeakMap<
+  HistoricalGameEvidenceRow[],
+  { games: number; latestEvidenceDate: string | null }
+>();
+
+export async function getHistoricalBacktest(seasonMinRA: number): Promise<AnalysisResponse> {
+  const rows = await readCompletedRows("all");
+  // Sequential: one connection in production (pool.ts).
+  const incompleteSeasons = await readIncompleteSeasons("all");
+  let byPending = builtBacktests.get(rows);
+  if (!byPending) builtBacktests.set(rows, (byPending = new WeakMap()));
+  let byThreshold = byPending.get(incompleteSeasons);
+  if (!byThreshold) byPending.set(incompleteSeasons, (byThreshold = new Map()));
+  const hit = byThreshold.get(seasonMinRA);
+  if (hit) return hit;
+  if (byThreshold.size >= MAX_CACHED_THRESHOLDS) byThreshold.clear();
+  const built = buildHistoricalBacktest(rows, seasonMinRA, incompleteSeasons);
+  byThreshold.set(seasonMinRA, built);
+  return built;
 }
+
+/** Coverage includes neutral sites, which the home-court venue baseline excludes. */
+export async function getHistoricalEvidenceCoverage() {
+  const rows = await readCompletedRows("all");
+  let coverage = builtCoverage.get(rows);
+  if (!coverage) builtCoverage.set(rows, (coverage = summarizeHistoricalEvidenceCoverage(rows)));
+  return coverage;
+}
+
+/**
+ * The explorer's rows per SQL filter, behind the same stamp as the backtest's population.
+ * Paging, result, side and exact gap bounds are applied in memory, so they share one read.
+ * Bounded because team, season and threshold arrive from a query string.
+ */
+const readSearchRows = createStampedCache<string, HistoricalGameSearchRow[]>({
+  readStamp: () => getCompletedGamesStamp(),
+  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
+  load: (key) => searchRegularSeasonGames(JSON.parse(key) as HistoricalGameSearchFilters),
+  maxEntries: 32,
+});
 
 /**
  * Complete server-side game-explorer operation, including retrieval.
@@ -93,10 +120,11 @@ export async function searchHistoricalGameEvidence(
   // counts them.
   const gapFloor = request.gap ? gapRangeByKey(request.gap).min - 0.01 : 0
   const floor = Math.max(request.minRA ?? 0, gapFloor)
-  const rows = await searchRegularSeasonGames({
+  const filters: HistoricalGameSearchFilters = {
     minRA: floor > 0 ? floor : undefined,
     team: request.team,
     season: request.season,
-  });
+  };
+  const rows = await readSearchRows(JSON.stringify(filters));
   return buildHistoricalGameSearch(rows, request);
 }

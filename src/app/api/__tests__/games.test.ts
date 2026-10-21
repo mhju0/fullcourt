@@ -93,6 +93,7 @@ describe("GET /api/games/[date]", () => {
     expect(body.error).toBeNull();
     expect(Array.isArray(body.data)).toBe(true);
     expect(body.data).toHaveLength(1);
+    expect(mockGetGamesByDate).toHaveBeenCalledExactlyOnceWith("2024-12-25");
   });
 
   it("returns 400 with an error message for invalid date strings", async () => {
