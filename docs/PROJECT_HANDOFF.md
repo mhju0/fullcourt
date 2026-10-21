@@ -234,3 +234,27 @@ manual run of the split officiating workflow; next 16.4.2 left to Dependabot. De
 owner decision: e2e gating, real-SQL coverage of queries.ts, noUncheckedIndexedAccess (751
 errors), type-aware lint. Next: pass 2 (bugs, incl. approved DST fix in fatigue.ts) from main
 after #205 merges. Worktree: ../fullcourt-review-fixes.
+
+## Full-repository review, pass 3 (performance) — 2026-10-21
+
+Branch `perf/review-pass-3`, stacked on pass 1 (`fix/review-pass-1`, #205).
+- **Proxy:** a matcher skips `/api/health`, `/_next/static/` and `/favicon.ico`, which it already
+  passed through, so maintenance mode blocks the same set.
+- **supabase-js:** loaded on the first live subscription. `/games` HTML no longer references the
+  chunk. Realtime is filtered server-side to the slate's ids.
+- **Logos:** ESPN's resizer at 72px. About 4 KB each instead of about 45 KB; a missing slug still
+  answers 404.
+- **Edge cache:** `/api/games/upcoming` gets `CACHE.inSeason`.
+- **Sentry:** tracing and debug code compiled out with `compiler.define`. About 22 KB gzip off the
+  shared client chunk. `compiler` is now copied before Sentry wraps the config, because the
+  wrapper writes into it.
+- **CI:** pip cache for `ml/requirements.txt`.
+- **`drizzle/0014`:** a `games (season, date)` index, written but **not applied**. It includes a
+  baseline EXPLAIN step, because the benefit was not measured against production.
+Not done:
+- `/officiating` still ships every season's games (~315 KB gzip, ~26 KB is the selected
+  season). The fix loads the game list after first paint, a visible change, so it awaits an
+  owner call.
+- `/games` dates→slate waterfall (reducer reordering).
+- `public/data` browser caching (unhashed names).
+- Script-side round trips.
