@@ -27,6 +27,12 @@ jobs:
       - name: Probe sources and classify diagnostics
         run: node scripts/probe-data-sources.mjs
 
+      - name: Check the daily season gate reads ESPN's dates
+        if: ${{ always() }}
+        run: |
+          python3 scripts/season_window.py | tee season-gate.log
+          grep -q "ESPN regular season" season-gate.log
+
       - name: Retain safe provider summary
         if: ${{ always() }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
