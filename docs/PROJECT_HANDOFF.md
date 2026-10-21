@@ -251,10 +251,11 @@ Branch `perf/review-pass-3`, stacked on pass 1 (`fix/review-pass-1`, #205).
 - **CI:** pip cache for `ml/requirements.txt`.
 - **`drizzle/0014`:** a `games (season, date)` index, written but **not applied**. It includes a
   baseline EXPLAIN step, because the benefit was not measured against production.
+- **`/officiating`:** carries per-season totals only. The selected season's games come from
+  `/api/officiating/[season]` (`historical` cache). Prerendered HTML went from 327 KB to 8.6 KB
+  gzip, and the 13 officiating e2e specs pass. The game list now shows a loading line before
+  it appears.
 Not done:
-- `/officiating` still ships every season's games (~315 KB gzip, ~26 KB is the selected
-  season). The fix loads the game list after first paint, a visible change, so it awaits an
-  owner call.
 - `/games` dates→slate waterfall (reducer reordering).
 - `public/data` browser caching (unhashed names).
 - Script-side round trips.

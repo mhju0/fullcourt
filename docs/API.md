@@ -22,6 +22,7 @@ are authoritative for individual fields, optional values, and units.
 | `/api/season-readiness` | Required browsable `season` | `{ season, ready, expectedAfterDate }`; operational current-season availability, independent of fatigue evidence and publication coverage | `inSeason` |
 | `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing; separate fixture coverage and unsettled-result status | Current/upcoming: `inSeason`; historical: `historical` |
 | `/api/playoffs` | Optional `season` | Bracket, series, prediction records, and latest published season | `inSeason` |
+| `/api/officiating/[season]` | Path `season` with published L2M reports | That season's reviewed games from `src/data/officiating.json`. `/officiating` carries every season's totals and fetches only the selected season's list. 400 for a season with no reports | `historical` (the file changes only with a deploy) |
 | `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells, display-model hint, and latest published season | `historical` |
 
 Shared numeric rest-advantage parameters default to zero. Season validation uses the calendar

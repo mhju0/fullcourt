@@ -8,6 +8,9 @@ import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import useSWR from "swr";
+import { apiFetcher, errMsg } from "@/lib/fetcher";
+import { MessageCard } from "@/components/ui/message-card";
 import { PageHeader } from "@/components/page-header";
 import { SeasonSelector } from "@/components/season-selector";
 import { OfficiatingReport } from "@/components/officiating-report";
@@ -15,7 +18,8 @@ import {
   categoryLabel,
   filterReviews,
   reviewUrl,
-  type ReviewSeason,
+  type ReviewGame,
+  type ReviewSeasonSummary,
 } from "@/lib/officiating";
 import { ScrollCue } from "@/components/ui/scroll-cue";
 import styles from "./officiating.module.css";
@@ -28,7 +32,7 @@ function displayDate(date: string) {
     timeZone: "America/New_York",
   }).format(new Date(`${date}T12:00:00-05:00`));
 }
-export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
+export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[] }) {
   const params = useSearchParams();
   const requested = params.get("season");
   const currentSeason = defaultNbaSeason();
@@ -74,21 +78,27 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
   const gameId = params.get("game") ?? "";
   const [pageSize, setPageSize] = useState(20);
   const [showAllTypes, setShowAllTypes] = useState(false);
-  const games = filterReviews(season.games, team, category);
+  // Only the selected season's games are fetched; the page carries every season's totals.
+  const { data: seasonGames, error: gamesError, mutate: retryGames, isValidating } = useSWR<ReviewGame[]>(
+    heldCurrent ? null : `/api/officiating/${season.season}`,
+    apiFetcher,
+    { revalidateOnFocus: false },
+  );
+  const games = filterReviews(seasonGames ?? [], team, category);
   const total = season.missed + season.wrong;
   const percent = total ? (season.missed / total) * 100 : null;
   const categories = Object.entries(season.categories)
     .map(([name, count]) => [name, count ?? 0] as const)
     .sort((a, b) => b[1] - a[1]);
   const teams = [
-    ...new Set(season.games.flatMap((g) => [g.home, g.away])),
+    ...new Set((seasonGames ?? []).flatMap((g) => [g.home, g.away])),
   ].sort();
   const displayCount = Math.max(
     pageSize,
     games.findIndex((g) => g.id === gameId) + 1,
   );
   const recent = visibleSeasons.slice(-3);
-  const rates = recent.map((s) => (s.missed + s.wrong) / s.games.length);
+  const rates = recent.map((s) => (s.missed + s.wrong) / s.gameCount);
   const monotonic =
     rates.length === 3 &&
     (rates.every((v, i) => i === 0 || v > rates[i - 1]) ||
@@ -201,7 +211,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                 />
               </div>
               <p className={styles.denominator}>
-                {total} identified errors, {season.games.length} reviewed games
+                {total} identified errors, {season.gameCount} reviewed games
               </p>
               <div className={styles.stripLabel}>
                 Missed share of identified errors · regular season
@@ -270,7 +280,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
               {recent.map((s) => (
                 <div key={s.season}>
                   <strong>
-                    {((s.missed + s.wrong) / s.games.length).toFixed(2)}
+                    {((s.missed + s.wrong) / s.gameCount).toFixed(2)}
                   </strong>
                   <span>{s.season}</span>
                 </div>
@@ -324,7 +334,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
             >
               <option value="">All teams</option>
               {team && !teams.includes(team) && (
-                <option value={team}>{team} (not in this season)</option>
+                <option value={team}>{seasonGames ? `${team} (not in this season)` : team}</option>
               )}
               {teams.map((t) => (
                 <option key={t}>{t}</option>
@@ -332,6 +342,17 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
             </select>
           </label>
         </div>
+        {!seasonGames ? (
+          gamesError ? (
+            <MessageCard tone="error" title="FAILED TO LOAD REVIEWED GAMES" body={errMsg(gamesError)}
+              action={<button type="button" className="fc-text-link min-h-11" disabled={isValidating}
+                onClick={() => { void retryGames().catch(() => undefined); }}>
+                {isValidating ? "Retrying…" : "Retry reviewed games"}
+              </button>} />
+          ) : (
+            <p role="status" className={styles.notice}>Loading reviewed games…</p>
+          )
+        ) : (<>
         <div className={styles.listMeta}>
           <p role="status">
             {games.length} reviewed games · newest first
@@ -449,6 +470,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
             Show more games ({games.length - displayCount} remaining)
           </button>
         )}
+        </>)}
       </section>
       <footer className={styles.footer}>
         <Link href="/behind-the-data/officiating">Behind the Data ↗</Link>
