@@ -7,7 +7,7 @@ import { SeasonDataGuide } from "@/components/season-data-guide";
 import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePageQuery } from "@/hooks/useSeasonUrl";
 import useSWR from "swr";
 import { apiFetcher, errMsg } from "@/lib/fetcher";
 import { MessageCard } from "@/components/ui/message-card";
@@ -33,7 +33,7 @@ function displayDate(date: string) {
   }).format(new Date(`${date}T12:00:00-05:00`));
 }
 export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[] }) {
-  const params = useSearchParams();
+  const { params, update: updateQuery } = usePageQuery();
   const requested = params.get("season");
   const currentSeason = defaultNbaSeason();
   const latest = seasons[seasons.length - 1];
@@ -109,16 +109,12 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
     category?: string;
     game?: string;
   }) {
-    window.history.pushState(
-      null,
-      "",
-      reviewUrl(
-        next.season ?? season.season,
-        next.team ?? team,
-        next.category ?? category,
-        next.game ?? gameId,
-      ),
-    );
+    updateQuery({
+      season: next.season ?? selectedSeason,
+      team: (next.team ?? team) || null,
+      type: (next.category ?? category) || null,
+      game: (next.game ?? gameId) || null,
+    });
   }
   if (heldCurrent) return <div className={`flex flex-col gap-12 ${styles.page}`}>
     <PageHeader eyebrow="NBA L2M · REGULAR SEASON" title="Officiating"

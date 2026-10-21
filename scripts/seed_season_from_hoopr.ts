@@ -17,9 +17,9 @@ import { applyGameInputCorrection, lookupGameInputCorrection, canonicalGameType,
  *
  *   ESPN's scoreboard supplies **the date**, which hoopR's box scores do not carry.
  *
- * The two are matched on (away tricode, away points, home tricode, home points). A repeated
- * fixture with an identical final score inside one season is vanishingly unlikely, and the
- * script refuses to write anything if any game fails to match rather than guessing.
+ * The two are matched on (away tricode, away points, home tricode, home points). Repeated
+ * keys are ambiguous and refused before any write. Existing identical finals are no-ops;
+ * changed identities or results require a reviewed correction or re-key operation.
  *
  * Usage:
  *   npx tsx scripts/seed_season_from_hoopr.ts 2019-20 --dry-run
@@ -28,19 +28,16 @@ import { applyGameInputCorrection, lookupGameInputCorrection, canonicalGameType,
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
+import { assertUniqueHooprMatches, historicalScoreboardResults, HistoricalSeedIndex, validateSeedScoreboard } from "./seed-season-contract";
+import { seedHistoricalRows } from "./seed-season-write";
+import { toOurAbbr } from "@/lib/espn-scoreboard";
+import { pathToFileURL } from "node:url";
 
 const CACHE_DIR = "ml/data/officials"; // shared with fetch_officials/fetch_game_context
 const BOX_DIR = "ml/data/shooting";
 const CONCURRENCY = 8;
-
-/** ESPN scoreboard abbreviation → this project's abbreviation, where they differ. */
-const ESPN_ABBR: Record<string, string> = {
-  GS: "GSW", NO: "NOP", NY: "NYK", SA: "SAS", UTAH: "UTA", WSH: "WAS",
-  SEA: "OKC", NJ: "BKN", NJN: "BKN", NOH: "NOP", NOK: "NOP", CHH: "CHA", CHO: "CHA", VAN: "MEM",
-};
-const toOurAbbr = (a: string) => ESPN_ABBR[a] ?? a;
 
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
   let next = 0;
@@ -51,19 +48,25 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
   );
 }
 
-async function scoreboard(date: string): Promise<unknown> {
+export async function scoreboard(date: string, cacheDirectory = CACHE_DIR): Promise<unknown> {
   const compact = date.replaceAll("-", "");
-  const path = `${CACHE_DIR}/sb-${compact}.json`;
-  if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
+  const path = `${cacheDirectory}/sb-${compact}.json`;
+  if (existsSync(path)) {
+    const cached: unknown = JSON.parse(readFileSync(path, "utf8"));
+    validateSeedScoreboard(cached);
+    return cached;
+  }
   const res = await fetch(
     `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
-    { headers: { "User-Agent": "Mozilla/5.0" } }
+    { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(25_000) }
   );
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${date}`);
   const body = await res.text();
-  JSON.parse(body);
+  const parsed: unknown = JSON.parse(body);
+  validateSeedScoreboard(parsed);
+  mkdirSync(cacheDirectory, { recursive: true });
   writeFileSync(path, body);
-  return JSON.parse(body);
+  return parsed;
 }
 
 /** Every calendar date from `from` to `to`, inclusive. */
@@ -91,6 +94,7 @@ function loadHoopr(startYear: number): HooprGame[] {
   const head = lines[0].split(",");
   const col = (n: string) => head.indexOf(n);
   const [iSide, iTri, iPts, iGid] = [col("side"), col("team_tricode"), col("points"), col("game_id")];
+  if ([iSide, iTri, iPts, iGid].some(index => index < 0)) throw new Error("Missing hoopR identity/result columns");
 
   const sides = new Map<string, { home?: [string, number]; away?: [string, number] }>();
   for (let i = 1; i < lines.length; i++) {
@@ -98,8 +102,11 @@ function loadHoopr(startYear: number): HooprGame[] {
     const c = lines[i].split(",");
     const gid = c[iGid];
     if (!gid) continue;
+    const side = c[iSide];
+    if (side !== "home" && side !== "away") throw new Error(`Invalid hoopR side for ${gid}`);
     const entry = sides.get(gid) ?? {};
-    entry[c[iSide] as "home" | "away"] = [c[iTri], Number(c[iPts] || 0)];
+    if (entry[side] || !c[iPts]?.trim()) throw new Error(`Missing or duplicate hoopR result for ${gid}`);
+    entry[side] = [toOurAbbr(c[iTri]), Number(c[iPts])];
     sides.set(gid, entry);
   }
 
@@ -122,36 +129,31 @@ async function main() {
   const startYear = Number(season.slice(0, 4));
 
   const hoopr = loadHoopr(startYear);
+  assertUniqueHooprMatches(hoopr);
   console.log(`hoopR ${season}: ${hoopr.length} games (${new Set(hoopr.map((g) => g.gameType)).size} types)`);
 
   // A season can run to October of the following year — 2019-20 finished in the bubble on
   // 2020-10-11 — so the scan is deliberately wider than a normal October-to-June season.
   const dates = dateRange(`${startYear}-10-01`, `${startYear + 1}-10-31`);
-  const dated = new Map<string, string>(); // match key -> date
+  const dated = new HistoricalSeedIndex();
   let fetched = 0;
+  let errors = 0;
   await pool(dates, CONCURRENCY, async (date) => {
     try {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const sb: any = await scoreboard(date);
-      for (const ev of sb?.events ?? []) {
-        const c = ev?.competitions?.[0];
-        const h = c?.competitors?.find((x: { homeAway: string }) => x.homeAway === "home");
-        const a = c?.competitors?.find((x: { homeAway: string }) => x.homeAway === "away");
-        if (!h || !a || h.score == null || a.score == null) continue;
-        const key = `${toOurAbbr(a.team.abbreviation)}|${Number(a.score)}|${toOurAbbr(h.team.abbreviation)}|${Number(h.score)}`;
-        if (!dated.has(key)) dated.set(key, date);
-      }
+      for (const game of historicalScoreboardResults(await scoreboard(date), startYear + 1)) dated.add(game);
     } catch (e) {
+      errors++;
       console.log(`  [warn] ${date}: ${e instanceof Error ? e.message : e}`);
     }
     if (++fetched % 100 === 0) console.log(`  ${fetched}/${dates.length} dates`);
   });
   console.log(`ESPN: ${dated.size} dated results across ${dates.length} dates`);
+  if (errors) throw new Error(`REFUSING TO WRITE — ${errors} ESPN dates failed or had ambiguous/malformed results`);
 
   const rows: { externalId: string; date: string; season: string; gameType: string; home: string; away: string; homeScore: number; awayScore: number }[] = [];
   const unmatched: string[] = [];
   for (const g of hoopr) {
-    const date = dated.get(`${g.away}|${g.awayPts}|${g.home}|${g.homePts}`);
+    const date = dated.get(g)?.date;
     if (!date) {
       unmatched.push(`${g.gameId} ${g.away} ${g.awayPts} @ ${g.home} ${g.homePts}`);
       continue;
@@ -173,52 +175,34 @@ async function main() {
     unmatched.slice(0, 15).forEach((u) => console.log("   " + u));
     process.exit(1);
   }
-  if (dryRun) {
-    console.log("\n--dry-run: nothing written");
-    process.exit(0);
-  }
-
   const sql = postgres(process.env.DATABASE_URL!, { max: 4 });
-  const teams = await sql<{ id: number; abbreviation: string }[]>`select id, abbreviation from teams`;
-  const idByAbbr = new Map(teams.map((t) => [t.abbreviation, t.id]));
-  const missing = [...new Set(rows.flatMap((r) => [r.home, r.away]))].filter((a) => !idByAbbr.has(a));
-  if (missing.length) {
-    console.error("Unknown tricodes, refusing to write:", missing.join(", "));
-    process.exit(1);
-  }
+  try {
+    const teams = await sql<{ id: number; abbreviation: string }[]>`select id, abbreviation from teams`;
+    const idByAbbr = new Map(teams.map((t) => [t.abbreviation, t.id]));
+    const missing = [...new Set(rows.flatMap((r) => [r.home, r.away]))].filter((a) => !idByAbbr.has(a));
+    if (missing.length) throw new Error(`Unknown tricodes, refusing to write: ${missing.join(", ")}`);
 
-  let written = 0;
-  const CHUNK = 400;
-  for (let i = 0; i < rows.length; i += CHUNK) {
-    const chunk = rows.slice(i, i + CHUNK);
-    const res = await sql`
-      insert into games ${sql(
-        chunk.map((r) => ({
-          external_id: r.externalId,
-          date: r.date,
-          season: r.season,
-          home_team_id: idByAbbr.get(r.home)!,
-          away_team_id: idByAbbr.get(r.away)!,
-          home_score: r.homeScore,
-          away_score: r.awayScore,
-          status: "final",
-          game_type: r.gameType,
-          overtime_periods: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.overtimePeriods?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.overtimePeriods ?? 0,
-          neutral_site: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.neutralSite?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.neutralSite ?? false,
-          neutral_venue_city: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.neutralVenueCity?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.neutralVenueCity ?? null,
-          tip_off_utc: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.tipOffUtc?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.tipOffUtc ?? null,
-        }))
-      )}
-      on conflict (external_id) do update set
-        date = excluded.date,
-        home_score = excluded.home_score,
-        away_score = excluded.away_score,
-        status = excluded.status,
-        game_type = excluded.game_type`;
-    written += res.count ?? chunk.length;
+    const candidates = rows.map((r) => {
+      const identity = { date: r.date, homeAbbr: r.home, awayAbbr: r.away };
+      const correction = lookupGameInputCorrection(identity)?.fields;
+      const addition = lookupAcceptedAddedFixture(identity);
+      return {
+        externalId: r.externalId, date: r.date, season: r.season, gameType: r.gameType,
+        homeTeamId: idByAbbr.get(r.home)!, awayTeamId: idByAbbr.get(r.away)!,
+        homeScore: r.homeScore, awayScore: r.awayScore,
+        overtimePeriods: correction?.overtimePeriods?.after ?? addition?.overtimePeriods ?? 0,
+        neutralSite: correction?.neutralSite?.after ?? addition?.neutralSite ?? false,
+        neutralVenueCity: correction?.neutralVenueCity?.after ?? addition?.neutralVenueCity ?? null,
+        tipOffUtc: correction?.tipOffUtc?.after ?? addition?.tipOffUtc ?? null,
+      };
+    });
+    const written = await seedHistoricalRows(sql, candidates, { dryRun });
+    console.log(dryRun ? `\n--dry-run: ${written} missing rows eligible; nothing written` : `\ndone — ${written} missing rows inserted; existing identical finals preserved`);
+  } finally {
+    await sql.end();
   }
-  console.log(`\ndone — ${written} rows upserted`);
-  await sql.end();
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(error => { console.error(error); process.exitCode = 1; });
+}

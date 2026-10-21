@@ -191,7 +191,7 @@ export function TeamScheduleContent() {
     [season]
   )
 
-  const { data, error, isLoading, mutate } = useSWR<TeamScheduleGame[]>(
+  const { data, error, isLoading, isValidating, mutate } = useSWR<TeamScheduleGame[]>(
     team ? `/api/games/team?season=${encodeURIComponent(season)}&team=${team}` : null,
     apiFetcher,
     { revalidateOnFocus: false }
@@ -337,15 +337,25 @@ export function TeamScheduleContent() {
 
       {fallbackNote && <MessageCard tone="muted" title={fallbackNote} />}
 
+      {team && error && data ? (
+        <MessageCard tone="error" title="Schedule refresh unavailable"
+          body="Showing the last loaded schedule."
+          action={<button type="button" className="fc-text-link min-h-11" disabled={isValidating}
+            onClick={() => { void mutate().catch(() => undefined) }}>
+            {isValidating ? "Retrying…" : "Retry schedule"}
+          </button>} />
+      ) : null}
+
       {team === null ? (
         <MessageCard tone="muted" title="Choose a team" body="Every game of its season, with the rest gap from its side." />
-      ) : error ? (
+      ) : error && !data ? (
         <MessageCard
           tone="error"
           title="Could not load this schedule"
           body={errMsg(error)}
           action={
-            <button type="button" className="fc-text-link" onClick={() => void mutate()}>
+            <button type="button" className="fc-text-link min-h-11" disabled={isValidating}
+              onClick={() => { void mutate().catch(() => undefined) }}>
               Try again
             </button>
           }

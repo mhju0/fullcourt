@@ -1,5 +1,16 @@
 # Release history
 
+## 1.1.5 — 2026-10-22
+
+- Keep Games dates and shared URLs consistent during same-page navigation; bound calendar
+  loading and release cancelled navigation state immediately.
+- Apply Officiating filters immediately and keep the last loaded team schedule visible when
+  a background refresh fails, with a retry action.
+- Refuse ambiguous historical seed matches and existing fixture/result changes. Insert missing
+  games atomically; reject incomplete upcoming schedules and create missing cache directories.
+- Preserve published figures, model coefficients and database schema. No production seeder run
+  is part of this release. The full code/performance review is in the dated review report.
+
 ## 1.1.4 — 2026-10-21
 
 - Open the daily update on ESPN's published regular-season dates, three days either side,

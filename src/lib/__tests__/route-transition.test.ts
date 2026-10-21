@@ -36,6 +36,16 @@ describe("route transitions", () => {
     expect(h.transitions.isLeaving("/games")).toBe(false)
   })
 
+  it("clears leaving when another navigation stays on the current pathname", () => {
+    vi.useFakeTimers()
+    const h = harness()
+    h.navigate("/season")
+    h.navigate("/games?season=2024-25")
+    expect(h.transitions.isLeaving("/games")).toBe(false)
+    expect(vi.getTimerCount()).toBe(0)
+    h.transitions.dispose()
+  })
+
   it.each(["/games", "/games?season=2025-26", "/games#main"])("pushes %s normally without waiting for a pathname change", (href) => {
     const h = harness()
     h.navigate(href)

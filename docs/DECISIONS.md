@@ -2092,3 +2092,18 @@ not change projected-fatigue data or labeling on the main matchup board.
 
 This is a presentation change, with no API, schema, coefficient or published-figure
 changes. Existing desktop row density is preserved where possible.
+
+## D-136 — 전체 리뷰의 상태 일관성과 시더 안전 계약 (2026-10-22)
+
+같은 경로 탐색도 Games의 명시적 season/date 선택을 복원한다. 자체 history 갱신과
+외부 탐색을 구분하고, 취소된 탐색이 이후 URL 쓰기를 막지 않도록 한다. 달력 요청은
+slate와 동일한 deadline lifecycle을 사용한다. 팀 일정의 갱신 실패는 이미 읽은 결과를
+지우지 않으며, Officiating 필터는 공용 optimistic URL 상태로 즉시 반영한다.
+
+실제 hoopR 점수 키 충돌을 확인해 수동 시더의 계약을 [ADR 0016](adr/0016-season-seeds-refuse-ambiguous-fixtures.md)으로
+고정한다. 모호한 식별·불완전 수집을 거절하고, 과거 시더는 기존 경기나 결과를 수정하지
+않는다. 이번 승인은 코드·별도 로컬 DB 검증·릴리스이며 운영 시더 실행은 포함하지 않는다.
+
+원본 해시를 본문 해시로 간주한 immutable 캐시, maintenance 즉시 차단을 약화하는
+브라우저 TTL, Vercel 함수 경계를 넘는 효과가 확인되지 않은 raw-row 캐시 공유는 채택하지
+않는다. 재현과 측정은 [전체 리뷰](reports/2026-10-22-comprehensive-review.md)에 남긴다.

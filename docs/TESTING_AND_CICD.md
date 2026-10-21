@@ -34,6 +34,11 @@ The three historical correction suites (`scripts/{history,overtime,arena}-correc
 outside `vitest.config.ts` and run in CI through their own configs; their real-PostgreSQL
 contracts skip there because no contract database URL is set.
 
+`scripts/tests/seed-season.pg.ts` runs with the existing disposable PostgreSQL CI job. It
+exercises the historical seeder's transaction, conflict refusal, no-op reruns, rollback and
+concurrent writer serialization. It never invokes a production seed or needs provider access.
+The matching and cache-directory contracts run in the ordinary Vitest suite.
+
 The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
 new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
 source-script packet and before/after numeric oracle are retained with the dated local audit.
