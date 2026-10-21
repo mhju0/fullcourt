@@ -702,6 +702,35 @@
 }
 select.fc-control { padding-right: 32px; }
 .fc-control-button { min-height: var(--term-control-height); min-width: var(--term-control-height); }
+.fc-upcoming-edge-date, .fc-upcoming-edge-badge { letter-spacing: 0.04em; }
+.fc-upcoming-edge-game { letter-spacing: 0.06em; }
+@media (max-width: 639px) {
+  .fc-upcoming-edges { container-type: inline-size; }
+  .fc-upcoming-edge {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr);
+    width: 100%;
+    min-width: 0;
+    min-height: 52px;
+    gap: 4px;
+    padding: 12px 8px;
+  }
+  .fc-upcoming-edge > span { min-width: 0; }
+  .fc-upcoming-edge-date { justify-self: start; white-space: nowrap; letter-spacing: 0; }
+  .fc-upcoming-edge-game { justify-self: center; letter-spacing: 0; }
+  .fc-upcoming-edge-badge {
+    justify-self: end;
+    width: 70px;
+    min-height: 25px;
+    text-align: center;
+    letter-spacing: 0;
+  }
+  /* Keep every field visible when enlarged text leaves too little room for one line. */
+  @container (max-width: 14rem) {
+    .fc-upcoming-edge { grid-template-columns: minmax(0, 1fr); }
+    .fc-upcoming-edge > span { justify-self: start; }
+  }
+}
 .fc-control:disabled { opacity: 0.5; cursor: not-allowed; }
 .fc-control-label {
   font-family: var(--font-geist-mono), monospace;

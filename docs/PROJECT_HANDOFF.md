@@ -205,3 +205,17 @@ geometry and other StudyLink consumers are preserved. All9destinations, keyboard
 200%text, final-link clearance and main-content axe checks pass, with all1,488unit tests.
 Next: preview verification and production release. Physical iPhone/Safari/VoiceOver
 behavior remains unverified.
+
+## Upcoming rest-edge mobile A applied — 2026-10-21
+
+Owner approved the refined A preview. Below640px, equal-width one-line buttons use
+full-date left / matchup centered / fixed-width rest-advantage badge right. The strip's
+repeated PROJ marker is removed; board projection labels and all fetch/filter/order/
+refresh/date-jump behavior remain unchanged. D-135 records the decision; v1.1.2 is
+prepared. Typecheck, changed-file ESLint,37related tests,94page contracts, production
+build and production dependency audit passed. Full suite initially had only2spacing
+violations (1test); final scale values pass the targeted recheck. Built WebKit checks
+use public upcoming API data with fixture-backed other endpoints:320/375/390/430px
+and1440px, date-jump keyboard activation and scoped axe. Evidence stays local under
+`docs/audit/rest-edge-columns/`. Hosted preview/production acceptance is pending.
+Physical-device Safari and native text resizing remain unverified.
