@@ -1,6 +1,8 @@
 # Documentation
 
-Current implementation and operational reference, reconciled with source on 2026-09-08.
+Current implementation and operational reference. The v1.1.0 release overview and screenshots
+were reconciled with source and production on 2026-10-21. Individual guides retain their own
+change history; this date does not imply every operational check was rerun.
 Start with the topic you need; do not use old release notes as setup instructions.
 
 | Question | Source of truth |
@@ -35,7 +37,7 @@ observed results with its commit and verification limits.
 Generated figures belong to their producing scripts. Preserve source snapshots, pre-registrations,
 model evaluation reports, ADR amendments, and published content-addressed report files. Remove
 superseded mockups and disposable captures once their decisions are recorded; Git retains them.
-Screenshots have one generator and capture manifest in `docs/screenshots/`.
+Screenshots have one [generator and capture manifest](screenshots/README.md) in `docs/screenshots/`.
 
 The active contributor contract is [AGENTS.md](../AGENTS.md). Historical Claude material is
 identified as such and does not override it. This cleanup does not migrate agent harnesses.

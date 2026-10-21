@@ -118,12 +118,17 @@ symbolication or later releases. No site code or database was changed by the pro
 
 ```sh
 SCREENSHOT_BASE_URL=http://localhost:3110 node scripts/screenshots.mjs
-SCREENSHOT_BASE_URL=https://fullcourt.fyi node scripts/screenshots.mjs games
+SCREENSHOT_BASE_URL=https://fullcourt.fyi \
+SCREENSHOT_DEPLOYMENT_SHA='<verified-production-commit>' \
+SCREENSHOT_DEPLOYMENT_ID='<verified-ready-deployment>' \
+node scripts/screenshots.mjs games shooting-mobile-402
 node scripts/check-doc-links.mjs
 ```
 
-The screenshot manifest records the source URL, route, viewport, and capture time. Keep one
-current capture per selected route; Git contains old captures. The documentation-link check
+The screenshot manifest records the source URL, route, viewport, capture time, browser,
+page width and supplied deployment identity. Verify the alias and commit before supplying them.
+The default run captures all desktop and phone views; see [capture details](screenshots/README.md).
+Keep one current capture per selected view; Git contains old captures. The documentation-link check
 catches missing local Markdown targets. Neither command verifies the correctness of a finding.
 
 ## Prospective refresh integrity replay

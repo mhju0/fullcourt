@@ -1,5 +1,9 @@
 # Motion fixes · 2026-10-14
 
+Historical implementation and verification record. Pending-production statements below describe
+the October 14 checkpoint; current release state belongs to [the handoff](../docs/PROJECT_HANDOFF.md)
+and [release history](../CHANGELOG.md).
+
 Baseline: `2d458dfdf2baec2d135c7bf7c6554efa5af91b28`. Execute 001→005; no dependencies. Only these five selected findings are authorized.
 
 | Plan | Severity | Status |
