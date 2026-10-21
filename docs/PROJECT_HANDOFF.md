@@ -43,12 +43,9 @@ refit, database migration, accounts, or new analytics are implied by repository 
 
 ## Condensed pre-2026-10-07 history — 2026-10-20
 
-D-64–D-78, Git and dated reviews retain the Behind the Data, reading-page, launch and
-phone-layout deliveries. Build/start CSS verification remains required (D-72); full
-DB-backed e2e stays separate from CI. Shared tiles, footer page finder, privacy/non-affiliation,
-report mail and canonical-domain redirects shipped. PR #104 corrected historical facts;
-v1.0.3 later restored four workload fixtures and confirmed overtime. D-117 supersedes
-old launch gating: v1.0.0 is officially October 19; actual completed-slate checks remain open.
+D-64–D-78, Git and dated reviews retain the methods, shell, launch and phone deliveries.
+Keep built CSS checks (D-72) and separate full DB-backed e2e. D-117 supersedes old launch
+gating: v1.0.0 is October 19; actual completed-slate checks remain open.
 
 Sentry IP storage is off; UptimeRobot checks home/health every five minutes. Eight weekly
 Mac backups use `~/Backups/fullcourt/backup.sh` (Sunday 11:00, pg_dump 18); one restore
@@ -67,22 +64,15 @@ Unresolved/standing dispositions retained from these entries:
 
 ## Condensed 2026-10-07 to 2026-10-19 record — 2026-10-20
 
-D-78–D-119, Git and dated reports retain the Games hierarchy, status/rescore locking,
-accessibility/motion, fatigue/date rounding, dependency and readability deliveries. The
-[remediation](reports/2026-10-11-remediation/index.html), [accessibility audit](reports/2026-10-14-accessibility-usability.html)
-and [plans](../plans/README.md) retain evidence. PR #174 shipped dependencies and explicit
-postponed/cancelled states; #175 shipped the audit/sky-tinted neutrals; #176 shipped table A,
-recent-ten homepage comparison and optional 5+ history; #177/#178 shipped quiet publication
-guides, prior-season links and chronological upcoming rested-home edges. Later D-127 restores
-the historical homepage period. Antislop applies throughout. Odds feeds remain excluded;
-filter sharing, extra chart actions and configurable Schedule columns remain deferred.
+D-78–D-119 and Git retain Games hierarchy/lifecycle, accessibility/motion and dependency
+deliveries. Evidence: [remediation](reports/2026-10-11-remediation/index.html),
+[accessibility audit](reports/2026-10-14-accessibility-usability.html), [plans](../plans/README.md).
+D-127 restores homepage history. Antislop applies throughout; odds feeds remain excluded.
+Filter sharing, extra chart actions and configurable Schedule columns remain deferred.
 
-October 19 is the owner's official v1.0.0 release date (D-117), baseline 114617d; subsequent
-releases receive incremented versions and immutable tags. D-118 / v1.0.1 keeps current-season
-Shooting in Awaiting results with explicit prior-season navigation. D-119 / v1.0.2 removes
-the duplicate chart dropdown, adds a pooled five-season home-rate average, separates historical
-picks from known-result playoff fits and adds a league-centered team gap key. The prior
-completed-slate prerequisite is superseded; opening-night observation is still required.
+D-117 pins official v1.0.0 to October 19 (`114617d`); subsequent releases use incremented
+versions and immutable tags. D-118/D-119 retain publication-aware Shooting and honest
+historical comparisons. Launch no longer requires a completed slate; observation remains open.
 
 Standing limits preserved from those entries:
 
@@ -110,12 +100,9 @@ stops, Cup assignments and physical-device/opening-night observation remain unre
 
 ## Condensed v1.0.3–v1.0.9 acceptance — 2026-10-21
 
-v1.0.3–v1.0.8 corrected arenas, appearances, serverless pooling, homepage history, overtime
-and Shooting (D-123–D-132; #182, #184–#189). Canonical acceptance preserved coefficients,
-graded/playoff history and approved production data. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
-retains full hashes, source reports and V11 homepage-rebuild remediation; earlier pending
-records are chronology. v1.0.8 binds merge `6ddf73f4` and deployment `dpl_6doQr64bTQ9LzGcjes14ViUGSFzz`.
-Writers/aliases were restored with SSO unchanged. Ten non-home/four-logo checks remained same-source.
+v1.0.3–v1.0.8 corrected inputs, pooling and publications (D-123–D-132; #182, #184–#189),
+preserving coefficients and graded/playoff history. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
+retains exact acceptance and V11 remediation. Writers/SSO were restored; ten non-home/four-logo checks remained same-source.
 
 v1.0.9 (#190, `c5e504e`, `dpl_HbmiLvRZLNtmcU33FzwVrvLTtmc6`) verified seven live requests
 (3,440 values), homepage 390/1440 and real-API headline E2E. Local research inputs validated,
@@ -129,11 +116,8 @@ secret-alert and documentation follow-ups; no further production-data change occ
 
 ## Post-v1.0.9 accuracy audit and local cleanup — 2026-10-20
 
-An independent audit of the repository, docs and live site against code, artifacts and a
-read-only database recount found no wrong published figure. It found stale status and
-method text, mislabelled copy and two provenance gaps; fixes ship as separate docs, copy
-and artifact-provenance PRs. All per-task worktrees were removed; their unique evidence is
-in the local archive named above, with branch SHAs in its README.
+The independent audit found no wrong published figure; docs/copy/provenance fixes shipped
+separately. Removed worktrees and unique evidence are retained in the local archive above.
 
 Outcome: docs #191, copy #192 (OG card printed 42 seasons from `NBA_SEASONS` after the
 October rollover; now `BACKTEST_SEASON_COUNT`), provenance #193 (Availability input hash only;
@@ -211,3 +195,11 @@ Open from these entries:
   the previous date. 2020-21 (December to May) is covered by a test.
 - The probe workflow now fails if the gate falls back, which is how runner reachability of
   `sports.core.api.espn.com` is checked.
+
+## 2026-10-22 — 전체 코드·성능 리뷰, v1.1.5
+
+PR #210: Games URL/deadline/취소 상태, Officiating 즉시 필터, 일정 갱신 오류 복구와 시더 안전 계약 8건 수정.
+ADR 0016: 모호한 매칭 거절, 기존 결과 불변, 과거 시더의 잠금·원자적 insert-only/no-op. 운영 시더 실행 없음.
+검증: unit 1,524, browser 580, Python 152, Node 26, correction 115 통과; 실제 PostgreSQL과 독립 frozen-commit 리뷰 통과.
+[전체 보고서](reports/2026-10-22-comprehensive-review.md)는 성능 측정·반증·한계를, [릴리스](https://github.com/mhju0/fullcourt/releases/tag/v1.1.5)는 merge/deployment·운영 확인을 기록한다.
+이전 미해결 운영·물리 기기 항목은 유지한다. 다음 단계는 해당 관측과 owner가 보류한 과제이며 자동 시더 실행은 포함하지 않는다.

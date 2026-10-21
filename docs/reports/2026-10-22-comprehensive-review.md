@@ -62,9 +62,31 @@ p95 추정이 아니며, cold/warm 요청과 네트워크 상황에 따라 달�
   lock 대기를 관측했다. 실제 중복 hoopR 입력은 CLI에서 HTTP/DB 전에 거절했다.
 - 새 브라우저 회귀 6개 통과. 390/1440px 오류 상태는 기존 표·재시도를 표시하며
   document 너비가 viewport와 같고 pageerror가 없었다.
-- 전체 580개 브라우저 검사, exact commit 독립 리뷰, PR 미리보기와 운영 검증은 진행 중.
+- 독립 Astra 리뷰: `5d59cfaa0b90ffd5e1ac7a5b2794ea5e0da1ddfb` 승인. 리뷰어가
+  PostgreSQL 시더 4개 그룹과 실제 CLI usage/종료 경로를 별도로 재실행해 통과했다.
+- [PR #210](https://github.com/mhju0/fullcourt/pull/210) 미리보기:
+  `dpl_GMHvJGNKBKatWL5z2rhbAYDg6fSD`, READY. 실제 Games 11경기, 팀 일정 82경기,
+  활성 Games 날짜 재설정·reload 일치, NYK 필터 즉시 반영, 390/1440px overflow 없음,
+  pageerror 0개, health 200/DB up을 확인했다. 빌드의 Sentry source-map 업로드도 성공했다.
+- 전체 브라우저 검사: `PLAYWRIGHT_BASE_URL=http://localhost:3111 pnpm test:e2e`,
+  **580/580 통과, 9.3분**. 접근성·keyboard·반응형·history·새 회귀를 포함한다.
+- PR의 checks/browser/postgres/verify와 세 CodeQL 언어 검사 모두 통과했다.
+  운영 배포의 정확한 merge SHA·deployment ID·실제 동작은
+  [v1.1.5 릴리스](https://github.com/mhju0/fullcourt/releases/tag/v1.1.5)에 기록한다.
 
 테스트 통과와 실제 운영 수집·물리 기기 확인은 별개다.
+
+## 변경 UI의 antislop gate
+
+기존 Front Office 방향을 유지한다: ENERGY 1 / RHYTHM 1 / MOTION 1.
+새 디자인이나 데이터 인코딩을 추가하지 않고, 실패 안내는 기존 MessageCard를 재사용한다.
+
+| 블록 | 결과·근거 |
+| --- | --- |
+| Hard gate | PASS: 새 재시도 동작·오류 후 복구를 실제 클릭했고, 390/1440px overflow와 pageerror는 0. 빨강 안내 6.16:1, 보조 문구 5.85:1, 재시도 링크 5.63:1 대비율 |
+| Purpose gate | PASS: 기존 오류 카드·타입·색만 사용. 새 아이콘·그림자·장식·애니메이션 없음 |
+| Liveliness | PASS: 기존 평온한 정보 위계와 표를 유지. 갱신 오류 뒤에도 표가 남고 선택은 즉시 반영됨 |
+| Craftsmanship | PASS: 실제 API와 명시한 테스트 fixture를 구분. keyboard/axe 검증과 retry·history 회귀를 실행하며 가짜 수치나 보장 문구를 추가하지 않음 |
 
 ## 남은 낮은 우선순위·한계
 
