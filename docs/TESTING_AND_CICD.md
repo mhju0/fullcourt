@@ -67,7 +67,7 @@ polling can prevent network idle. Regression assertions are in `alignment-law.sp
 | --- | --- |
 | `.github/workflows/ci.yml` | Correctness/build checks, secret-free browser smoke, real disposable PostgreSQL contracts; required `verify` aggregates all three |
 | `.github/workflows/daily-update.yml` | Season-gated daily ingest at 21:17 UTC; blocked manual sources reject before secret use |
-| `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics; not proof of successful data ingestion |
+| `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics, plus a check that the daily season gate reads ESPN's dates rather than the calendar fallback; not proof of successful data ingestion |
 | `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update; collection runs read-only, and only the `propose` job can push the data branch and open its PR |
 | `.github/workflows/maintenance-health.yml` | Daily scheduled-run completion monitor; weekly full dependency audit |
 | GitHub CodeQL configuration | Code scanning managed on GitHub; not a checked-in workflow |

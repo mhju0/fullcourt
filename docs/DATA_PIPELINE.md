@@ -8,8 +8,10 @@ Dependencies differ by workflow: root `requirements.txt`, `scripts/requirements.
 ## Scheduled updates
 
 `.github/workflows/daily-update.yml` runs `scripts/daily_update.py` daily at 21:17 UTC. Its
-America/New_York season gate runs before credentials or ingest dependencies are needed. An
-offseason success means a skip, not a tested ingestion path.
+America/New_York season gate runs before credentials or ingest dependencies are needed. It
+opens three days before ESPN's published regular-season start and closes three days after
+its end; if ESPN cannot be read it falls back to October through April and says so in the
+log. An offseason success means a skip, not a tested ingestion path.
 
 The in-season sequence is:
 

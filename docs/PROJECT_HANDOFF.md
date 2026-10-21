@@ -307,7 +307,10 @@ The owner asked for these to be done through Chrome.
 
 - Owner decision: `NBA_SEASONS` stays computed at module load. `docs/SEASON_ROLLOVER.md` now
   says to deploy once on or after October 1 and check that the new season appears.
-- Open: the daily season gate (`scripts/season_window.py`) still falls back to the Oct–Apr
-  calendar because cdn.nba.com returns 403. ESPN's core API publishes the regular-season dates
-  (`seasons/{year}/types/2`). The owner is choosing between the calendar-only gate and an
-  ESPN-backed one.
+- Owner decision: the daily season gate (`scripts/season_window.py`) now reads ESPN's
+  regular-season dates (`seasons/{year}/types/2`) instead of cdn.nba.com, which returned 403
+  for every user agent. The window runs three days either side; on any ESPN failure it falls
+  back to October through April. ESPN days start at 03:00 ET, so the 06:59Z end belongs to
+  the previous date. 2020-21 (December to May) is covered by a test.
+- The probe workflow now fails if the gate falls back, which is how runner reachability of
+  `sports.core.api.espn.com` is checked.
