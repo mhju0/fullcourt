@@ -653,7 +653,9 @@ export function seasonReportVerdict(
     return { kind: "noNorm" };
   }
 
-  const delta = rate.winPct - norm;
+  // Both rates are shown to one decimal, so compare the gap the page shows: 64.7 − 60.5 is
+  // 4.200000000000003 and would otherwise fall outside a ±4.2 band.
+  const delta = Math.round((rate.winPct - norm) * 10) / 10;
   const shared = { winPct: rate.winPct, band: rate.band, norm };
   if (Math.abs(delta) <= rate.band) return { kind: "inLine", ...shared };
   return { kind: delta > 0 ? "above" : "below", ...shared };
