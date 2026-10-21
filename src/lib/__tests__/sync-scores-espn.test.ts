@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mock = vi.hoisted(() => ({
-  rows: [] as object[], writes: [] as object[], end: vi.fn(), databaseError: false, writeError: false, refused: false,
+  rows: [] as object[], writes: [] as object[], end: vi.fn(), databaseError: false, writeError: false, failGameIds: [] as number[], refused: false,
 }));
 vi.mock("dotenv", () => ({ config: vi.fn() }));
 vi.mock("node:fs", () => ({ existsSync: () => true, mkdirSync: vi.fn(), writeFileSync: vi.fn() }));
@@ -16,8 +16,8 @@ vi.mock("@/lib/db/pool", () => ({
     end: mock.end,
   }),
 }));
-vi.mock("@/lib/game-status-write", () => ({ writeGameStatus: async (_db: unknown, update: object) => {
-  if (mock.writeError) throw new Error("write failed");
+vi.mock("@/lib/game-status-write", () => ({ writeGameStatus: async (_db: unknown, update: { gameId: number }) => {
+  if (mock.writeError || mock.failGameIds.includes(update.gameId)) throw new Error("write failed");
   mock.writes.push(update);
   return {written: !mock.refused, invalidated: 0};
 } }));
@@ -43,6 +43,7 @@ beforeEach(() => {
   mock.writes = [];
   mock.databaseError = false;
   mock.writeError = false;
+  mock.failGameIds = [];
   mock.refused = false;
   mock.end.mockReset();
   process.argv = ["node", "scripts/sync_scores_espn.ts", "2026-10-20", "2026-10-21"];
@@ -123,6 +124,16 @@ describe("score sync process status", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response(JSON.stringify(final)))
       .mockRejectedValueOnce(new Error("feed unavailable")));
     await run();
+    expect(process.exitCode).toBe(1);
+  });
+
+  it("keeps writing the other games after one write fails, then exits as failed", async () => {
+    mock.failGameIds = [1];
+    const nextDay = { events: [{ ...final.events[0], id: "2", date: "2026-10-21T23:00:00Z" }] };
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async (url: string) =>
+      new Response(JSON.stringify(url.includes("20261021") ? nextDay : final))));
+    await run();
+    expect(mock.writes).toEqual([expect.objectContaining({ gameId: 2 })]);
     expect(process.exitCode).toBe(1);
   });
 
