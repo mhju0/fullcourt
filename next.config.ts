@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "a.espncdn.com",
-        pathname: "/i/teamlogos/nba/**",
+        pathname: "/combiner/i",
       },
     ],
   },
