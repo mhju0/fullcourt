@@ -29,7 +29,9 @@ const ESPN_SLUGS: Record<string, string> = { NOP: "no", UTA: "utah" };
  */
 function espnLogo(displayAbbr: string): string {
   const slug = ESPN_SLUGS[displayAbbr] ?? displayAbbr.toLowerCase();
-  return `https://a.espncdn.com/i/teamlogos/nba/500/${slug}.png`;
+  // Resized by ESPN's combiner: the 500px source is ~45 KB for a mark drawn at 20–24px, and
+  // 72px (3× the largest use) is ~4 KB. A missing slug still answers 404, so the chip fallback holds.
+  return `https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/${slug}.png&h=72&w=72`;
 }
 
 /** Current-era logo for a stored abbreviation. The one place a logo URL is built. */

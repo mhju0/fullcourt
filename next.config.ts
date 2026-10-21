@@ -34,12 +34,17 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForBuild: false,
   },
+  // Sentry here is errors only (tracesSampleRate 0), so its tracing and debug code is dead
+  // weight in the client bundle. Booleans, not strings: Turbopack inlines strings as literals.
+  compiler: {
+    define: { __SENTRY_TRACING__: false, __SENTRY_DEBUG__: false },
+  },
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "a.espncdn.com",
-        pathname: "/i/teamlogos/nba/**",
+        pathname: "/combiner/i",
       },
     ],
   },
@@ -86,7 +91,7 @@ export default function config(phase: string): NextConfig {
     return nextConfig;
   }
 
-  const sentryConfig = withSentryConfig({ ...nextConfig, experimental: { ...nextConfig.experimental } }, {
+  const sentryConfig = withSentryConfig({ ...nextConfig, experimental: { ...nextConfig.experimental }, compiler: { ...nextConfig.compiler } }, {
     org: "michael-ju-46",
     project: "javascript-nextjs",
     authToken,

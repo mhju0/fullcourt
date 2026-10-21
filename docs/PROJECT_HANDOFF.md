@@ -252,3 +252,35 @@ for every user agent. ESPN's calendar includes preseason and playoffs, so it is 
 replacement.
 Next: merge after #205 (the history-correction pin fails on `main` until #205 lands), then
 pass 3 (performance).
+
+## Full-repository review, pass 3 (performance) — 2026-10-21
+
+Branch `perf/review-pass-3` (#207), merged after #205 and #206.
+- **Proxy:** a matcher skips `/api/health`, `/_next/static/` and `/favicon.ico`, which it already
+  passed through, so maintenance mode blocks the same set.
+- **supabase-js:** loaded on the first live subscription. `/games` HTML no longer references the
+  chunk. Realtime is filtered server-side to the slate's ids.
+- **Logos:** ESPN's resizer at 72px. About 4 KB each instead of about 45 KB; a missing slug still
+  answers 404.
+- **Edge cache:** `/api/games/upcoming` gets `CACHE.inSeason`.
+- **Sentry:** tracing and debug code compiled out with `compiler.define`. About 22 KB gzip off the
+  shared client chunk. `compiler` is now copied before Sentry wraps the config, because the
+  wrapper writes into it.
+- **CI:** pip cache for `ml/requirements.txt`.
+- **`drizzle/0014`:** a `games (season, date)` index, written but **not applied**. It includes a
+  baseline EXPLAIN step, because the benefit was not measured against production.
+- **`/officiating`:** carries per-season totals only. The selected season's games come from
+  `/api/officiating/[season]` (`historical` cache). Prerendered HTML went from 327 KB to 8.6 KB
+  gzip, and the 13 officiating e2e specs pass. The game list now shows a loading line before
+  it appears.
+Not done:
+- `/games` dates→slate waterfall (reducer reordering).
+- `public/data` browser caching (unhashed names).
+- Script-side round trips.
+Release: #205–#207 ship together as v1.1.3; tag it after the production build is verified.
+On 2026-10-21 the Sentry US API outage failed every build at source-map upload, including
+the #206 merge on `main`. Production stayed on #205 until a retry. The upload guard was kept.
+Owner actions: apply `drizzle/0013` and `drizzle/0014` (run 0014's baseline EXPLAIN first),
+run the split officiating workflow once, and re-export fatigue features before the next ML run.
+Merged worktrees were removed. Their ignored audit evidence moved to
+`../fullcourt-local-archive/worktree-archive-2026-10-21/`.

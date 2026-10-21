@@ -25,6 +25,14 @@ export interface ReviewSeason {
   categories: Partial<Record<string, number>>;
   games: ReviewGame[];
 }
+/**
+ * A season as the page's first load carries it: totals and a game count, no game list. All
+ * seasons' games are ~1.6 MB; the selected season's list comes from /api/officiating/[season].
+ */
+export type ReviewSeasonSummary = Omit<ReviewSeason, "games"> & { gameCount: number };
+export function summarizeSeasons(seasons: readonly ReviewSeason[]): ReviewSeasonSummary[] {
+  return seasons.map(({ games, ...summary }) => ({ ...summary, gameCount: games.length }));
+}
 export const GRADE_LABELS: Record<ReviewGrade, string> = {
   INC: "Incorrect non-call",
   IC: "Incorrect call",

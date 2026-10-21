@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../games/upcoming/route";
 import { getUpcomingGamesWithRA } from "@/lib/db/queries";
+import { CACHE } from "@/lib/api-route";
 
 vi.mock("@/lib/db/queries", () => ({
   getUpcomingGamesWithRA: vi.fn(),
@@ -26,6 +27,12 @@ describe("GET /api/games/upcoming", () => {
     expect(res.status).toBe(200);
     expect(mockGetUpcoming).toHaveBeenCalledWith("2025-26", 3);
     expect(await res.json()).toEqual({ data: [], error: null });
+  });
+
+  it("lets the edge hold an answer for a minute, like the other in-season reads", async () => {
+    mockGetUpcoming.mockResolvedValueOnce([]);
+    const res = await GET(req("?season=2026-27"));
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
   });
 
   it("passes the bounded reserve only when explicitly requested", async () => {

@@ -8,7 +8,7 @@ describe("getTeamBranding", () => {
       abbreviation: "SEA",
       name: "SuperSonics",
       city: "Seattle",
-      logoUrl: "https://a.espncdn.com/i/teamlogos/nba/500/sea.png",
+      logoUrl: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/sea.png&h=72&w=72",
     });
   });
 
@@ -18,7 +18,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Thunder");
     expect(b.city).toBe("Oklahoma City");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/okc.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/okc.png&h=72&w=72"
     );
   });
 
@@ -28,7 +28,7 @@ describe("getTeamBranding", () => {
       abbreviation: "NJN",
       name: "Nets",
       city: "New Jersey",
-      logoUrl: "https://a.espncdn.com/i/teamlogos/nba/500/njn.png",
+      logoUrl: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/njn.png&h=72&w=72",
     });
   });
 
@@ -38,7 +38,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Nets");
     expect(b.city).toBe("Brooklyn");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/bkn.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/bkn.png&h=72&w=72"
     );
   });
 
@@ -48,7 +48,7 @@ describe("getTeamBranding", () => {
       abbreviation: "VAN",
       name: "Grizzlies",
       city: "Vancouver",
-      logoUrl: "https://a.espncdn.com/i/teamlogos/nba/500/van.png",
+      logoUrl: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/van.png&h=72&w=72",
     });
   });
 
@@ -58,7 +58,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Grizzlies");
     expect(b.city).toBe("Memphis");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/mem.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/mem.png&h=72&w=72"
     );
   });
 
@@ -68,7 +68,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Bobcats");
     expect(b.city).toBe("Charlotte");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/cha.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/cha.png&h=72&w=72"
     );
   });
 
@@ -78,7 +78,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Hornets");
     expect(b.city).toBe("Charlotte");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/cha.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/cha.png&h=72&w=72"
     );
   });
 
@@ -88,7 +88,7 @@ describe("getTeamBranding", () => {
       abbreviation: "WSB",
       name: "Bullets",
       city: "Washington",
-      logoUrl: "https://a.espncdn.com/i/teamlogos/nba/500/wsb.png",
+      logoUrl: "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/wsb.png&h=72&w=72",
     });
   });
 
@@ -98,7 +98,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Lakers");
     expect(b.city).toBe("Los Angeles");
     expect(b.logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/lal.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/lal.png&h=72&w=72"
     );
   });
 
@@ -124,10 +124,10 @@ describe("getTeamBranding", () => {
     // ESPN serves these two under a different name; /nop.png and /uta.png are 404s,
     // which would silently fall back to a tricode chip for two teams.
     expect(getTeamBranding("NOP", "2024-25").logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/no.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/no.png&h=72&w=72"
     );
     expect(getTeamBranding("UTA", "2024-25").logoUrl).toBe(
-      "https://a.espncdn.com/i/teamlogos/nba/500/utah.png"
+      "https://a.espncdn.com/combiner/i?img=/i/teamlogos/nba/500/utah.png&h=72&w=72"
     );
   });
 

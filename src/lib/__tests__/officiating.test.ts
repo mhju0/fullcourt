@@ -4,6 +4,7 @@ import {
   categoryLabel,
   filterReviews,
   reviewUrl,
+  summarizeSeasons,
   type ReviewSeason,
 } from "@/lib/officiating";
 
@@ -62,5 +63,17 @@ describe("officiating evidence and browsing", () => {
       type: "Foul: Shooting",
       game: "0022400011",
     });
+  });
+});
+
+describe("officiating page payload", () => {
+  it("summarizes every season without its game list", () => {
+    const seasons = data.seasons as ReviewSeason[];
+    const summaries = summarizeSeasons(seasons);
+
+    expect(summaries.map((s) => [s.season, s.gameCount])).toEqual(seasons.map((s) => [s.season, s.games.length]));
+    expect(summaries.every((s) => !("games" in s))).toBe(true);
+    // The page used to serialize all ~4,500 games (~1.6 MB) into its first load.
+    expect(JSON.stringify(summaries).length).toBeLessThan(20_000);
   });
 });

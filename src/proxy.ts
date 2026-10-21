@@ -25,3 +25,8 @@ export function proxy(request: NextRequest) {
     headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
   });
 }
+
+// Skips exactly the paths proxy() passes through anyway, so static chunks stop paying for it.
+export const config = {
+  matcher: ["/((?!api/health$|_next/static/|favicon\\.ico$).*)"],
+};
