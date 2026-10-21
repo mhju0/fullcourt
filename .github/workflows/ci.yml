@@ -54,8 +54,13 @@ jobs:
       - name: Run unit tests
         run: pnpm test:run
 
+      # The arena suite compares against its released baseline commit, which a depth-1
+      # checkout does not have. The SHA is read from the suite so it is defined once.
       - name: Run historical correction contract tests
         run: |
+          baseline=$(sed -n "s/^export const BASELINE_COMMIT = '\([0-9a-f]\{40\}\)';$/\1/p" scripts/arena-correction/sources.ts)
+          test -n "$baseline"
+          git fetch --no-tags --depth=1 origin "$baseline"
           pnpm exec vitest run --config scripts/history-correction/vitest.config.ts
           pnpm exec vitest run --config scripts/overtime-correction/vitest.config.ts
           pnpm exec vitest run --config scripts/arena-correction/vitest.config.ts
