@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { proxy } from "@/proxy";
+import { config, proxy } from "@/proxy";
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -34,6 +34,25 @@ describe("historical correction cutover", () => {
     vi.stubEnv("FULLCOURT_MAINTENANCE", "historical-recalculation");
     for (const pathname of ["/api/health", "/_next/static/chunks/app.js", "/favicon.ico"]) {
       expect(proxy(new NextRequest(`https://fullcourt.fyi${pathname}`)).headers.get("x-middleware-next")).toBe("1");
+    }
+  });
+});
+
+describe("proxy matcher", () => {
+  // Without a matcher the proxy ran on every static chunk and image. The matcher skips only
+  // what proxy() already passes through, so maintenance blocks the same set.
+  const matches = (pathname: string) =>
+    config.matcher.some((pattern) => new RegExp(`^${pattern}$`).test(pathname));
+
+  it("skips the paths proxy() always lets through", () => {
+    for (const pathname of ["/api/health", "/_next/static/chunks/app.js", "/favicon.ico"]) {
+      expect(matches(pathname)).toBe(false);
+    }
+  });
+
+  it("still runs on pages, APIs, data files and images", () => {
+    for (const pathname of ["/", "/games", "/api/analysis", "/api/healthz", "/api/cron/update", "/data/player-rest.json", "/_next/image", "/icon.png"]) {
+      expect(matches(pathname)).toBe(true);
     }
   });
 });
