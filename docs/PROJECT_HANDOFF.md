@@ -219,3 +219,18 @@ use public upcoming API data with fixture-backed other endpoints:320/375/390/430
 and1440px, date-jump keyboard activation and scoped axe. Evidence stays local under
 `docs/audit/rest-edge-columns/`. Hosted preview/production acceptance is pending.
 Physical-device Safari and native text resizing remain unverified.
+
+## Full-repository review, pass 1 — 2026-10-21
+
+Six-area read-only review (API/data, domain logic, frontend performance, pipelines, security,
+tests); every High/Medium finding re-read before reporting. Owner chose three passes: fix-first
++ tests + security (PR #205), then bugs, then performance. PR #205: correction suites in CI
+(pins 1129 OT / 353 venues per #187/#189), score sync isolates per-row write failures,
+backfill_fatigue selects finals only and replaces rows per game in a transaction, server reads
+sequential on the one-connection pool (source guard), origin row caches for /api/analysis and
+/api/games/search, officiating refresh split into read-only collect + write-only propose.
+Open: owner applies `drizzle/0013_limit_anon_reads_to_games.sql` by hand (not applied); first
+manual run of the split officiating workflow; next 16.4.2 left to Dependabot. Deferred for an
+owner decision: e2e gating, real-SQL coverage of queries.ts, noUncheckedIndexedAccess (751
+errors), type-aware lint. Next: pass 2 (bugs, incl. approved DST fix in fatigue.ts) from main
+after #205 merges. Worktree: ../fullcourt-review-fixes.
