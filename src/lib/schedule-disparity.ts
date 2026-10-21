@@ -145,7 +145,7 @@ export interface DisparityTeamRow {
   /** Season sum of (opponent fatigue − own fatigue). Null when no counted game is scored. */
   netFatigueEdge: number | null;
   /**
-   * The same figure per counted game — what the page displays.
+   * The same figure per scored game — what the page displays.
    *
    * The season sum is the misleading form: 81 games of a small per-game difference reads as a
    * three-digit number and invites over-reading. Per game it lands on the same scale as the
@@ -610,10 +610,9 @@ export function computeScheduleDisparity(
       netRestEdge,
       netRestEdgeUncapped,
       netFatigueEdge: fatiguePairs > 0 ? Number(fatigueSum.toFixed(2)) : null,
+      // Over the scored games, not every counted one: an unscored game is not a zero edge.
       netFatigueEdgePerGame:
-        fatiguePairs > 0 && teamSides.length > 0
-          ? Number((fatigueSum / teamSides.length).toFixed(2))
-          : null,
+        fatiguePairs > 0 ? Number((fatigueSum / fatiguePairs).toFixed(2)) : null,
       backToBackEdge,
       threeInFourEdge,
       fourInSixEdge,

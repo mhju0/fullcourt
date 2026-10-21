@@ -14,6 +14,7 @@ import { differenceInCalendarDays, parseISO, subDays } from "date-fns";
 import { haversineDistance } from "./haversine";
 import { resolvePhysicalVenue } from "./physical-venue";
 import { TRAVEL_LOOKBACK_DAYS } from "./fatigue-windows";
+import { formatEasternDateKey } from "./nba-season";
 export { FATIGUE_RECENT_LOOKBACK_DAYS, TRAVEL_LOOKBACK_DAYS } from "./fatigue-windows";
 
 // ─── Configuration ──────────────────────────────────────────────
@@ -569,7 +570,10 @@ function bodyClockHourAt(
   teamHomeLon: number
 ): number | null {
   if (!tipUtc || Number.isNaN(tipUtc.getTime())) return null;
-  const offset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tipUtc);
+  // The DST rule reads a calendar day. Take the tip's Eastern date, not the host's: an evening
+  // tip before a changeover Sunday is already that Sunday in UTC.
+  const tipDay = parseISO(formatEasternDateKey(tipUtc));
+  const offset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tipDay);
   const utcHours = tipUtc.getUTCHours() + tipUtc.getUTCMinutes() / 60;
   return (((utcHours + offset) % 24) + 24) % 24;
 }

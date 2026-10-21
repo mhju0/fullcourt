@@ -234,3 +234,21 @@ manual run of the split officiating workflow; next 16.4.2 left to Dependabot. De
 owner decision: e2e gating, real-SQL coverage of queries.ts, noUncheckedIndexedAccess (751
 errors), type-aware lint. Next: pass 2 (bugs, incl. approved DST fix in fatigue.ts) from main
 after #205 merges. Worktree: ../fullcourt-review-fixes.
+
+## Full-repository review, pass 2 (bugs) — 2026-10-21
+
+Branch `fix/review-pass-2`, one commit per fix, each with a test that failed first.
+- The season verdict compares the gap at one decimal. Before this, 64.7 vs 60.5 against ±4.2
+  read as outside the band.
+- Body-clock DST uses the tip's ET date (owner-approved; ADR 0011 amendment). It is a
+  feature-only change: no score moves. Re-export the fatigue features before the next ML run.
+- An ESPN final with a blank score is skipped, not written over the stored result.
+- The Schedule Edge per-game fatigue edge is averaged over scored games only.
+- `/api/games/[date]` and `/api/game/[id]` return 400 for impossible dates and ids above int4.
+- The games board reads through `apiFetcher`; the officials fetch has a 25s timeout.
+Not changed, needs an owner call: `NBA_SEASONS` is fixed when the module loads (15 importers).
+`season_window.py` always falls back to the Oct–Apr calendar because cdn.nba.com returns 403
+for every user agent. ESPN's calendar includes preseason and playoffs, so it is not a drop-in
+replacement.
+Next: merge after #205 (the history-correction pin fails on `main` until #205 lands), then
+pass 3 (performance).

@@ -60,3 +60,10 @@ home fixture is separately assigned to Georgia Dome or Alexander Memorial Colise
 fixture evidence fails before the base can be mistaken for the game's physical location.
 This does not introduce a majority-venue, airport or inferred-return rule. The new correction
 protocol is separate from the immutable previous overtime transition.
+
+**Amendment, 2026-10-21.** The body-clock feature no longer reads daylight saving from the
+host's calendar date. It now uses the tip's Eastern calendar date, so an evening tip the night
+before a changeover Sunday is read at the clock the team's home showed. Before this, UTC and
+Asian hosts read that tip as already past the changeover. The feature has no weight in the
+score (ADR 0006), so no published figure moves. Exports made before this change are stale for
+`body_clock_hour`, and `nba-season.ts` is now a pinned exporter source.

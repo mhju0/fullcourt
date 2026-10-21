@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculateFatigue, signedClockShiftHours, venueUtcOffsetHours, type RecentGame } from "@/lib/fatigue";
+import { formatEasternDateKey } from "@/lib/nba-season";
 
 const TOKYO = { lat: 35.68, lon: 139.71, zone: "Asia/Tokyo" };
 const PHOENIX = { lat: 33.446, lon: -112.071, zone: "America/Phoenix" };
@@ -102,5 +103,22 @@ describe("date-line clock adjustment", () => {
     expect(reverse.features.zoneShiftHours).toBe(7);
     expect(reverse.features.zonesCrossed).toBe(7);
     expect(reverse.features.jetLagUnits).toBe(1.25);
+  });
+});
+
+describe("body clock on a daylight-saving changeover", () => {
+  // The rule turns on the tip's Eastern calendar date. These tips are evening games the night
+  // before a changeover Sunday, which is already that Sunday in UTC and in Asia.
+  const bodyClock = (tipUtc: string) =>
+    calculateFatigue({ gameDate: formatEasternDateKey(new Date(tipUtc)), recentGames: [], teamHomeLat: NEW_YORK.lat,
+      teamHomeLon: NEW_YORK.lon, currentVenueLat: NEW_YORK.lat, currentVenueLon: NEW_YORK.lon, currentGameIsHome: true,
+      isVisitingAltitude: false, currentTipOffUtc: new Date(tipUtc) }).features.bodyClockHour;
+
+  it.each([
+    ["2026-03-08T00:30:00Z", 19.5],
+    ["2026-11-01T00:30:00Z", 20.5],
+  ])("reads %s at the clock New York showed", (tipUtc, expected) => {
+    expect(intlOffset(NEW_YORK, new Date(tipUtc)) + 24 + 0.5).toBe(expected);
+    expect(bodyClock(tipUtc)).toBe(expected);
   });
 });

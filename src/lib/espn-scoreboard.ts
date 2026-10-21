@@ -237,6 +237,9 @@ export function reconcileScores(
       inProgress.push(row.id);
       continue;
     }
+    // A final with a blank score is a feed glitch: writing it would null a stored result or
+    // record a final with no score. The next run picks the game up once the score is there.
+    if (espn.status === "final" && (espn.homeScore === null || espn.awayScore === null)) continue;
 
     // Only from a line score, and only from a finished game: anything else would report the
     // periods played so far.

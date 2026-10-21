@@ -393,6 +393,18 @@ describe("computeScheduleDisparity — fatigue edge", () => {
     expect(byId.get(3)!.netFatigueEdgePerGame).toBe(-3);
   });
 
+  it("averages over the scored games only, not over games with no fatigue yet", () => {
+    // G4 unscored: T2's only scored counted game is G3 (+3), so +3 per game, not 3 / 2.
+    const partial = FIXTURE.map((g, i) =>
+      i === 3 ? { ...g, homeFatigueScore: null, awayFatigueScore: null } : g
+    );
+    const { byId } = teamsById(partial);
+
+    expect(byId.get(2)!.games).toBe(2);
+    expect(byId.get(2)!.netFatigueEdge).toBe(3);
+    expect(byId.get(2)!.netFatigueEdgePerGame).toBe(3);
+  });
+
   it("leaves the per-game rate null when the season total is null", () => {
     const unscored = FIXTURE.map((g) => ({ ...g, homeFatigueScore: null, awayFatigueScore: null }));
     const { teams } = computeScheduleDisparity("2023-24", unscored);

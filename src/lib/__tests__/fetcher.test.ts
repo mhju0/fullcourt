@@ -48,6 +48,18 @@ describe("apiFetcher", () => {
     await expect(apiFetcher("/api/games")).rejects.toThrow("Request failed (502)");
   });
 
+  it("passes an abort signal through, so the games board can share these checks", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ data: [], error: null }), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const { signal } = new AbortController();
+
+    await apiFetcher("/api/games/2026-10-21", { signal });
+
+    expect(fetchMock).toHaveBeenCalledExactlyOnceWith("/api/games/2026-10-21", { signal });
+  });
+
   it("rejects a successful JSON response without the API envelope", async () => {
     vi.stubGlobal(
       "fetch",
