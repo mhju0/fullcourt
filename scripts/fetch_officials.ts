@@ -96,7 +96,7 @@ async function pool<T, R>(items: T[], limit: number, fn: (item: T, i: number) =>
 async function fetchJsonCached(url: string, cacheFile: string): Promise<unknown> {
   const path = `${CACHE_DIR}/${cacheFile}`;
   if (existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(25_000) });
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   const body = await res.text();
   JSON.parse(body); // never cache a non-JSON error page

@@ -97,7 +97,7 @@ describe("GET /api/games/[date]", () => {
   });
 
   it("returns 400 with an error message for invalid date strings", async () => {
-    for (const bad of ["banana", "13-25-2024", "2024/12/25", "24-12-25"]) {
+    for (const bad of ["banana", "13-25-2024", "2024/12/25", "24-12-25", "2024-13-45", "2025-02-29"]) {
       const res = await GET(req(), {
         params: Promise.resolve({ date: bad }),
       });

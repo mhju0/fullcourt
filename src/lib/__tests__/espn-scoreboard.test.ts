@@ -158,6 +158,14 @@ describe("reconcileScores", () => {
     expect(reconcileScores([stored], [espn()]).updates).toEqual([]);
   });
 
+  it("writes nothing from a final that arrives without a score", () => {
+    const stored = row({ status: "final", homeScore: 139, awayScore: 116, overtimePeriods: 0 });
+    for (const blank of [{ homeScore: null }, { awayScore: null }]) {
+      expect(reconcileScores([stored], [espn(blank)]).updates).toEqual([]);
+      expect(reconcileScores([row()], [espn(blank)]).updates).toEqual([]);
+    }
+  });
+
   it("derives overtime periods from the line score", () => {
     const [update] = reconcileScores([row()], [espn({ periods: 6 })]).updates;
     expect(update.overtimePeriods).toBe(2);

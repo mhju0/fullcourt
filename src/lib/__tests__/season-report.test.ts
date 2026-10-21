@@ -597,6 +597,14 @@ describe("seasonReportVerdict", () => {
     expect(verdict.kind).toBe("inLine");
   });
 
+  it("is in line when the displayed gap equals the band exactly", () => {
+    // 64.7 − 60.5 is 4.200000000000003 in floating point; the page shows 4.2 against ±4.2.
+    const rate: SeasonReportRate = { games: 500, restedTeamWins: 324, winPct: 64.7, band: 4.2 };
+
+    expect(seasonReportVerdict(rate, 60.5).kind).toBe("inLine");
+    expect(seasonReportVerdict({ ...rate, winPct: 56.3 }, 60.5).kind).toBe("inLine");
+  });
+
   it("is below when the norm sits outside the band above the rate", () => {
     const verdict = seasonReportVerdict(rateOf(489, 940), 55.6);
 
