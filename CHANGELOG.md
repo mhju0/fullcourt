@@ -1,5 +1,12 @@
 # Release history
 
+## 1.1.4 — 2026-10-21
+
+- Open the daily update on ESPN's published regular-season dates, three days either side,
+  instead of the NBA schedule file that answers 403. October through April remains the
+  fallback, and the provider probe now fails when the gate falls back.
+- Document the deploy on or after October 1 that adds the new season to season lists.
+
 ## 1.1.3 — 2026-10-21
 
 - Fix the Season Report verdict at band edges, the body-clock daylight-saving date, a blank
