@@ -65,6 +65,14 @@ describe("shipping-build Sentry source maps", () => {
     expect(() => config(PHASE_PRODUCTION_BUILD)).toThrow("SENTRY_AUTH_TOKEN is required");
   });
 
+  it("strips Sentry tracing from the client bundle with and without the upload wrapper", () => {
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    for (const token of ["", "build-token-test-sentinel"]) {
+      vi.stubEnv("SENTRY_AUTH_TOKEN", token);
+      expect(config(PHASE_PRODUCTION_BUILD).compiler?.define).toMatchObject({ __SENTRY_TRACING__: false, __SENTRY_DEBUG__: false });
+    }
+  });
+
   it("does not require a build token at runtime or during development", () => {
     vi.stubEnv("SENTRY_AUTH_TOKEN", "");
     vi.stubEnv("VERCEL_ENV", "production");
