@@ -28,14 +28,19 @@ test("a phone picks a date from the week strip or the calendar, and restores it 
   await expect(calendar).toBeFocused();
   await expect(week.locator('[aria-current="date"]')).toHaveAccessibleName(/Wednesday, December 25, 2024, 5 games/);
 
-  await page.getByRole("button", { name: "Next week", exact: true }).click();
-  await expect(page).toHaveURL(/date=2025-01-01/);
-  await page.getByRole("button", { name: "Previous week", exact: true }).click();
-  await expect(page).toHaveURL(/date=2024-12-25/);
+  // A step is one day, and stepping past Saturday turns the strip to the next week.
+  await page.getByRole("button", { name: "Next day", exact: true }).click();
+  await expect(page).toHaveURL(/date=2024-12-26/);
+  await page.goto("/games?season=2024-25&date=2024-12-28");
+  await page.getByRole("button", { name: "Next day", exact: true }).click();
+  await expect(page).toHaveURL(/date=2024-12-29/);
+  await expect(week.getByRole("button").first()).toHaveAccessibleName(/Sunday, December 29, 2024/);
+  await page.getByRole("button", { name: "Previous day", exact: true }).click();
+  await expect(page).toHaveURL(/date=2024-12-28/);
 
   await page.reload();
   await expect(season).toHaveValue("2024-25");
-  await expect(week.locator('[aria-current="date"]')).toHaveAccessibleName(/December 25, 2024/);
+  await expect(week.locator('[aria-current="date"]')).toHaveAccessibleName(/December 28, 2024/);
 });
 
 test("from the sm breakpoint every month and date shows at once, with no sideways scroll", async ({ page }) => {

@@ -936,6 +936,11 @@ Not covered: Season Report, Analysis, Playoff Rest and Officiating were not gone
 by table. Their `DataTable`s inherit the cue; their own layouts are unchanged. The survey of
 other sites was at phone width only.
 
+**2026-10-23 amendment:** the owner asked for the phone arrows to step one day, not one week.
+They now send `DAY_SHIFTED` like the wider screens; the week strip still shows Sunday to
+Saturday and follows the selected date, so Saturday's next step lands on the next Sunday.
+`WEEK_SHIFTED` is removed.
+
 ### D-79 · One Games layout, tip-off order, and blocks that read as blocks — ACTIVE
 
 The owner reviewed the site on a phone on 2026-10-07, left nine comments, and ruled on the

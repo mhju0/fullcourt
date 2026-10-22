@@ -151,7 +151,7 @@ test("rapid palette reopening keeps input focus and navigation does not refocus 
 test("Games press feedback honors reduced motion", async ({ page }, info) => {
   const reduced = info.project.name === "phone-reduced";
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(reduced);
-  const previous = page.getByRole("button", { name: reduced ? "Previous week" : "Previous day", exact: true });
+  const previous = page.getByRole("button", { name: "Previous day", exact: true });
   await expect(previous).toBeEnabled();
   await previous.scrollIntoViewIfNeeded();
   const box = await previous.boundingBox();

@@ -377,27 +377,15 @@ describe("the phone week strip and month grid", () => {
     expect(january.days).toHaveLength(31);
   });
 
-  it("a week step keeps the weekday when that day has games", () => {
-    const days = [...DAYS, day("2025-01-08", 6)];
-    const next = slateReducer(ready({ days, selectedDate: "2025-01-01" }), { type: "WEEK_SHIFTED", delta: 1 });
-    expect(next.selectedDate).toBe("2025-01-08");
-    expect(next.status).toBe("loadingSlate");
-  });
-
-  it("a week step lands on the first day with games when the same weekday has none", () => {
-    const next = slateReducer(ready({ selectedDate: "2025-01-06" }), { type: "WEEK_SHIFTED", delta: -1 });
-    // Target is Mon 2024-12-30 (no games); its week runs Dec 29 to Jan 4, first slate Dec 31.
-    expect(next.selectedDate).toBe("2024-12-31");
-  });
-
-  it("a week step into a week with no games still moves seven days", () => {
-    const next = slateReducer(ready(), { type: "WEEK_SHIFTED", delta: -1 });
-    expect(next.selectedDate).toBe("2024-12-18");
-  });
-
-  it("a week step does nothing before a date exists", () => {
-    const state = base();
-    expect(slateReducer(state, { type: "WEEK_SHIFTED", delta: 1 })).toBe(state);
+  it("a day step from Saturday moves the strip to the next Sunday-to-Saturday week", () => {
+    // 2024-12-28 is a Saturday; the phone arrows step one day, and the strip follows the date.
+    const next = slateReducer(ready({ selectedDate: "2024-12-28" }), { type: "DAY_SHIFTED", delta: 1 });
+    expect(next.selectedDate).toBe("2024-12-29");
+    expect(weekDays(next).map((d) => d.date)).toEqual([
+      "2024-12-29", "2024-12-30", "2024-12-31", "2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04",
+    ]);
+    const back = slateReducer(next, { type: "DAY_SHIFTED", delta: -1 });
+    expect(weekDays(back)[6].date).toBe("2024-12-28");
   });
 });
 

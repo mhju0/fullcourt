@@ -60,9 +60,8 @@ exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests bef
 
 ## State and data
 
-Games keeps previous/next-day stepping visible from the `sm` breakpoint; a phone steps by week
-(`WEEK_SHIFTED`), landing on the same weekday when it has games and otherwise on the week's
-first slate. Exact four-night and six-night counts use
+Games steps one day at a time at every width (`DAY_SHIFTED`); on a phone the Sunday-to-Saturday
+strip follows the selected date, so a step past Saturday shows the next week (D-78 amendment). Exact four-night and six-night counts use
 prior games, played or still scheduled, plus the selected game (D-82). ALT means the team is playing at a high-altitude arena away from home (the visitor, or both sides at a neutral site); the ALT TRIP carryover flag was removed with its term (D-100).
 
 Games shares `season`, `date`, and expanded `game`; an old `view` parameter is ignored. Explicit historical selection wins

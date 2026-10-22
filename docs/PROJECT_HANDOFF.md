@@ -203,3 +203,8 @@ ADR 0016: 모호한 매칭 거절, 기존 결과 불변, 과거 시더의 잠금
 검증: unit 1,524, browser 580, Python 152, Node 26, correction 115 통과; 실제 PostgreSQL과 독립 frozen-commit 리뷰 통과.
 [전체 보고서](reports/2026-10-22-comprehensive-review.md)는 성능 측정·반증·한계를, [릴리스](https://github.com/mhju0/fullcourt/releases/tag/v1.1.5)는 merge/deployment·운영 확인을 기록한다.
 이전 미해결 운영·물리 기기 항목은 유지한다. 다음 단계는 해당 관측과 owner가 보류한 과제이며 자동 시더 실행은 포함하지 않는다.
+
+## 2026-10-23 — 폰 Games 화살표를 하루 단위로
+
+Owner 요청: 폰 날짜 화살표가 일주일이 아니라 하루씩 이동. `DAY_SHIFTED`로 바꾸고 `WEEK_SHIFTED` 제거, 주간 스트립(일–토)은 선택 날짜를 따라간다(D-78 amendment).
+검증: unit 1,522, e2e season-navigation·motion-accessibility·release-smoke 해당 케이스 통과. 다음 단계: PR preview를 폰에서 확인 후 merge.

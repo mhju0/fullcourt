@@ -61,8 +61,8 @@ for (const width of [390, 1440]) {
 
       test("Games arrows and date chips share reduced-motion-safe press feedback", async ({ page }) => {
         await page.goto("/games?season=2025-26&date=2026-04-12");
-        const previous = page.getByRole("button", { name: width < 640 ? "Previous week" : "Previous day", exact: true });
-        const next = page.getByRole("button", { name: width < 640 ? "Next week" : "Next day", exact: true });
+        const previous = page.getByRole("button", { name: "Previous day", exact: true });
+        const next = page.getByRole("button", { name: "Next day", exact: true });
         await expect(previous).toBeEnabled({ timeout: 60_000 });
         await pressFeedback(previous, reduced);
         await expect(next).toBeEnabled();

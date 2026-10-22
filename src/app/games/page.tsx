@@ -625,14 +625,14 @@ export default function GamesPage() {
           )}
         </div>
         <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:hidden">
-          {/* A phone steps by week, since its strip is a week; wider screens step by day from the
-              DATE label above. */}
+          {/* A phone steps by day like wider screens; the week strip follows the date, so a step
+              past Saturday shows the next week. */}
           <Button
             variant="outline"
             size="icon-sm"
-            onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: -1 })}
+            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
             disabled={!slate.selectedDate}
-            aria-label="Previous week"
+            aria-label="Previous day"
             className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
@@ -647,9 +647,9 @@ export default function GamesPage() {
           <Button
             variant="outline"
             size="icon-sm"
-            onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: 1 })}
+            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
             disabled={!slate.selectedDate}
-            aria-label="Next week"
+            aria-label="Next day"
             className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
