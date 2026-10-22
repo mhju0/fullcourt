@@ -1,5 +1,10 @@
 # Release history
 
+## 1.1.6 — 2026-10-23
+
+- Step the phone Games date arrows one day at a time instead of one week. The Sunday-to-Saturday
+  strip follows the selected date, so a step past Saturday shows the next week (D-78 amendment).
+
 ## 1.1.5 — 2026-10-22
 
 - Keep Games dates and shared URLs consistent during same-page navigation; bound calendar

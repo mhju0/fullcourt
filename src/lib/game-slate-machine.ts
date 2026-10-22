@@ -101,7 +101,6 @@ export type SlateIntent =
   | { type: "MONTH_SELECTED"; month: number }
   | { type: "DATE_SELECTED"; date: string }
   | { type: "DAY_SHIFTED"; delta: -1 | 1 }
-  | { type: "WEEK_SHIFTED"; delta: -1 | 1 }
   | { type: "RETRY_REQUESTED" };
 
 /**
@@ -235,18 +234,6 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       // Crossing a month boundary needs no special handling: the month is derived
       // from this date, so the tab strip follows on the next render by definition.
       return selectDate(state, shiftDateKey(state.selectedDate, event.delta));
-    }
-
-    case "WEEK_SHIFTED": {
-      if (!state.selectedDate) return state;
-      // Same weekday when it has games; otherwise the first day of that week that does, so a
-      // week step lands on a slate rather than on an empty day whenever the week has one.
-      const target = shiftDateKey(state.selectedDate, event.delta * 7);
-      const played = new Set(state.days.map((d) => d.date));
-      const next = played.has(target)
-        ? target
-        : weekDateKeys(target).find((date) => played.has(date)) ?? target;
-      return selectDate(state, next);
     }
 
     case "RETRY_REQUESTED": {
