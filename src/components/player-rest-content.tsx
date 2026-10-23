@@ -7,6 +7,7 @@ import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
+import { PlayerRestColumnsPrototype } from "@/components/player-rest-columns.prototype";
 import { ZeroRestWorkload } from "@/components/zero-rest-workload";
 import useSWR from "swr";
 import { KeepTogether } from "@/components/ui/keep-together";
@@ -295,6 +296,8 @@ export function PlayerRestContent() {
     evidencedOnly,
   }) : [];
 
+  const prototypeVariant = process.env.NODE_ENV !== "production" && ["A", "B", "C"].includes(params.get("variant") ?? "")
+    ? params.get("variant") as "A" | "B" | "C" : null;
   const columns = useMemo(
     () => playerColumns(toggle, (row) => openPlayer === row.player),
     [toggle, openPlayer],
@@ -474,10 +477,10 @@ export function PlayerRestContent() {
       </p> : refreshUnavailable ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
         Some season data could not be refreshed. Showing available verified records.
       </p> : null}
-      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
+      {!prototypeVariant && <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>}
 
       <div style={{ ...termCardStyle, padding: 0 }}>
-        <DataTable
+        {prototypeVariant ? <PlayerRestColumnsPrototype rows={rows} variant={prototypeVariant} /> : <DataTable
           className="table-fixed text-[12px]"
           wrapperClassName={`fc-rest-table overflow-auto ${styles.table}`}
           stickyHeader
@@ -502,7 +505,7 @@ export function PlayerRestContent() {
               />
             ) : null
           }
-        />
+        />}
         {rows.length === 0 && (
           <p role="status" className={styles.empty}>
             No players match these filters. Try another name, lower the attempt
