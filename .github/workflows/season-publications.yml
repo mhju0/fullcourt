@@ -73,13 +73,3 @@ jobs:
           path: /tmp/season-publications
       - name: Publish validated data without changing application code
         run: python scripts/publish_daily_publications.py --stage /tmp/season-publications
-      - name: Report module results
-        run: |
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          candidate=json.loads(Path('/tmp/season-publications/candidate.json').read_text())
-          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
-              for name, entry in candidate['datasets'].items():
-                  f.write(f"- {name}: {entry['status']}\n")
-          PY

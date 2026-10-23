@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timezone
 import json
 import logging
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -136,13 +137,18 @@ def main():
                 paths = git("ls-tree", "-r", "--name-only", "HEAD", cwd=checkout).stdout.splitlines()
                 if any(p not in ("manifest.json", "vercel.json") and not p.startswith("blobs/") for p in paths):
                     raise ValueError("Unexpected publication tree")
-            prepare(args.stage.resolve(), checkout)
+            published = prepare(args.stage.resolve(), checkout)
             git("config", "user.name", "github-actions[bot]", cwd=checkout)
             git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com", cwd=checkout)
             git("add", "manifest.json", "vercel.json", "blobs", cwd=checkout)
             git("commit", "-m", "Publish verified season observations", cwd=checkout)
             # No force, reset or retry/rebase: a concurrent writer must collect from the new base.
             git("push", "origin", f"HEAD:refs/heads/{BRANCH}", cwd=checkout)
+            summary = os.environ.get("GITHUB_STEP_SUMMARY")
+            if summary:
+                with open(summary, "a") as stream:
+                    for name, check in published["checks"].items():
+                        stream.write(f"- {name}: {check['status']}\n")
         finally:
             git("worktree", "remove", "--force", str(checkout), check=False)
     return 0
