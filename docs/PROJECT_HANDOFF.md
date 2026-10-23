@@ -226,3 +226,5 @@ Root 최종 폰 검토 후 이 표의 양쪽 scroll fade를 제거했다. 끝쪽
 추가 폰 검토로 첫 attempts 열은 145px, 선수 열은 320px 화면에서 120px·390px부터
 150px로 조정했다. 초기 가로 이동 없이 첫 숫자의 textRange 전체가 내부 viewport에
 들어오는지 320/390/430px에서 확인했고, 정렬 화살표를 포함한 단일 헤더·전체 열 정렬도 재통과했다.
+CI의 design-scale 계약은 헤더의 inline letterSpacing:0 한 건을 거절했다. 시각적 간격이
+동일한 표준값 normal로 교체했으며 page-contract·design-scale 110개를 테스트 변경 없이 재통과했다.

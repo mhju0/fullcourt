@@ -138,7 +138,7 @@ function playerColumns(
   ];
   return columns.map(column => ({
     ...column,
-    headStyle: { fontSize: 12, letterSpacing: 0, textTransform: "none" },
+    headStyle: { fontSize: 12, letterSpacing: "normal", textTransform: "none" },
   }));
 }
 
