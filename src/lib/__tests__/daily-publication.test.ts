@@ -4,7 +4,7 @@ import {
   DAILY_PUBLICATION_BASE, MAX_PUBLICATION_BYTES, dailyManifestSchema,
   type DailyDataset, type DailyManifest,
 } from "@/lib/daily-publication";
-import { readDailyDataset } from "@/lib/daily-publication-server";
+import { readDailyDataset, readDailyDatasetHistory } from "@/lib/daily-publication-server";
 
 const NOW = "2026-10-23T12:00:00Z";
 const bytes = (value: unknown) => new TextEncoder().encode(JSON.stringify(value));
@@ -183,5 +183,68 @@ describe("daily publication runtime reads", () => {
     await expect(readDailyDataset("officiating", "../secret")).resolves.toMatchObject({ data: null });
     await expect(readDailyDataset("../secret" as DailyDataset, "a".repeat(64))).resolves.toMatchObject({ data: null });
     expect(fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe("daily publication season history", () => {
+  function rolloverManifest() {
+    const old = publication({ season: "2026-27", revision: "final" });
+    const latest = publication({ season: "2027-28", revision: "first" });
+    const now = "2027-10-23T12:00:00Z";
+    vi.setSystemTime(new Date(now));
+    latest.manifest.updatedAt = now;
+    latest.manifest.checks.officiating = { checkedAt: now, status: "published" };
+    latest.manifest.datasets.officiating = { ...latest.manifest.datasets.officiating!, season: "2027-28", generatedAt: now };
+    const archived = { ...old.manifest.datasets.officiating!, season: "2026-27" };
+    latest.manifest.history = { officiating: { "2026-27": archived, "2027-28": latest.manifest.datasets.officiating } };
+    return { old, latest };
+  }
+  it("reads retained seasons oldest first on a cold rollover and deduplicates the latest hash", async () => {
+    const { old, latest } = rolloverManifest();
+    serve(latest.manifest, new Map([[old.path, old.body], [latest.path, latest.body]]));
+    const results = await readDailyDatasetHistory("officiating");
+    expect(results.map((result) => [result.season, result.hash, result.data])).toEqual([
+      ["2026-27", old.digest, { season: "2026-27", revision: "final" }],
+      ["2027-28", latest.digest, { season: "2027-28", revision: "first" }],
+    ]);
+    expect(results[0].checkedAt).toBeNull();
+    expect(results[1].checkedAt).toBe("2027-10-23T12:00:00Z");
+    expect(fetch).toHaveBeenCalledTimes(3);
+  });
+  it("isolates a missing old blob while preserving the valid latest snapshot", async () => {
+    const { latest } = rolloverManifest();
+    serve(latest.manifest, new Map([[latest.path, latest.body]]));
+    const results = await readDailyDatasetHistory("officiating");
+    expect(results[0]).toMatchObject({ season: "2026-27", data: null, status: "failed" });
+    expect(results[1]).toMatchObject({ season: "2027-28", data: { revision: "first" }, status: "published" });
+  });
+  it("isolates a corrupted old blob instead of discarding other seasons", async () => {
+    const { old, latest } = rolloverManifest();
+    serve(latest.manifest, new Map([[old.path, bytes({ tampered: true })], [latest.path, latest.body]]));
+    const results = await readDailyDatasetHistory("officiating");
+    expect(results[0]).toMatchObject({ data: null, hash: null, status: "failed" });
+    expect(results[1]).toMatchObject({ hash: latest.digest, data: { revision: "first" } });
+  });
+  it("verifies each archived entry's declared length as well as its content hash", async () => {
+    const { old, latest } = rolloverManifest();
+    latest.manifest.history!.officiating!["2026-27"].bytes--;
+    serve(latest.manifest, new Map([[old.path, old.body], [latest.path, latest.body]]));
+    const results = await readDailyDatasetHistory("officiating");
+    expect(results[0]).toMatchObject({ data: null, status: "failed" });
+    expect(results[1]).toMatchObject({ hash: latest.digest, data: { revision: "first" } });
+  });
+  it("enforces archive names, season keys, season binding and content-addressed paths", () => {
+    const { old, latest } = rolloverManifest();
+    const row = latest.manifest.history!.officiating!["2026-27"];
+    for (const entry of [{ ...row, path: "../secret.json" }, { ...row, path: `blobs/shooting-${old.digest}.json` }, { ...row, season: "2025-26" }, { ...row, generatedAt: "2028-01-01T00:00:00Z" }]) {
+      expect(dailyManifestSchema.safeParse({ ...latest.manifest, history: { officiating: { "2026-27": entry } } }).success).toBe(false);
+    }
+    expect(dailyManifestSchema.safeParse({ ...latest.manifest, history: { unknown: { "2026-27": row } } }).success).toBe(false);
+    expect(dailyManifestSchema.safeParse({ ...latest.manifest, history: { officiating: { "../secret": row } } }).success).toBe(false);
+  });
+  it("continues to read a legacy manifest without a history field", async () => {
+    const p = publication();
+    serve(p.manifest, new Map([[p.path, p.body]]));
+    await expect(readDailyDatasetHistory("officiating")).resolves.toMatchObject([{ data: { reports: ["old"] }, hash: p.digest }]);
   });
 });

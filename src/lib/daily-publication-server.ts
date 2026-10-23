@@ -52,7 +52,7 @@ export async function readDailyDataset(name: DailyDataset, pinnedHash?: string):
     const entry = manifest.datasets[name];
     const state = manifest.checks[name];
     const status = state?.status ?? (entry ? "published" : "unavailable");
-    const result: DailyDatasetResult = { ...fallback, checkedAt: state?.checkedAt ?? null, publishedAt: entry?.generatedAt ?? null, status };
+    const result: DailyDatasetResult = { ...fallback, season: entry?.season, checkedAt: state?.checkedAt ?? null, publishedAt: entry?.generatedAt ?? null, status };
     if (!entry) return result;
     const bytes = await readPath(entry.path, entry.bytes);
     if (bytes.byteLength !== entry.bytes || createHash("sha256").update(bytes).digest("hex") !== entry.sha256) return { ...result, status: "failed" };
@@ -60,4 +60,33 @@ export async function readDailyDataset(name: DailyDataset, pinnedHash?: string):
   } catch {
     return { ...fallback, status: "failed" };
   }
+}
+
+/** Season references survive rollover; each archived blob is verified independently. */
+export async function readDailyDatasetHistory(name: DailyDataset): Promise<DailyDatasetResult[]> {
+  const failed: DailyDatasetResult = { data: null, hash: null, checkedAt: null, publishedAt: null, status: "failed" };
+  if (!DAILY_DATASETS.includes(name)) return [failed];
+  try {
+    const raw = await readPath("manifest.json", 32_768);
+    const manifest = dailyManifestSchema.parse(JSON.parse(new TextDecoder().decode(raw)));
+    if (Date.parse(manifest.updatedAt) > Date.now() + 300_000) return [failed];
+    const entries = new Map(Object.values(manifest.history?.[name] ?? {}).map((entry) => [entry.sha256, entry]));
+    const latest = manifest.datasets[name];
+    if (latest) entries.set(latest.sha256, latest);
+    const state = manifest.checks[name];
+    if (!entries.size) return [{ ...failed, checkedAt: state?.checkedAt ?? null, status: state?.status ?? "unavailable" }];
+    return Promise.all([...entries.values()].sort((a, b) => (a.season ?? a.generatedAt).localeCompare(b.season ?? b.generatedAt)).map(async (entry) => {
+      let result: DailyDatasetResult = failed;
+      try {
+        const bytes = await readPath(entry.path, entry.bytes);
+        if (bytes.byteLength === entry.bytes && createHash("sha256").update(bytes).digest("hex") === entry.sha256) {
+          result = { ...failed, data: JSON.parse(new TextDecoder().decode(bytes)), hash: entry.sha256, status: "published" };
+        }
+      } catch { /* A broken archive entry does not hide a different valid season. */ }
+      return { ...result, season: entry.season, publishedAt: entry.generatedAt,
+        checkedAt: entry.sha256 === latest?.sha256 ? state?.checkedAt ?? null : null,
+        status: result.data === null ? "failed" : entry.sha256 === latest?.sha256 ? state?.status ?? "published" : "published",
+      } as DailyDatasetResult;
+    }));
+  } catch { return [failed]; }
 }

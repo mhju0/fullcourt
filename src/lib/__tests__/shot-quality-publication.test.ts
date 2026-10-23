@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { parseCurrentShotQualityArtifact, shotQualityPublication } from "@/lib/shot-quality-publication";
 import type { ShotQualityCell } from "@/types";
 
@@ -22,6 +22,34 @@ describe("shot grid publication", () => {
     expect(meta.models["baseline-zone-v1"].ready).toBe(true);
     expect(shotQualityPublication([]).models["gbm-v1"].ready).toBe(false);
     expect(shotQualityPublication([{ ...cell, gbm: { ...model, pMake: NaN } }]).models["gbm-v1"].coveredCells).toBe(0);
+  });
+  it("rejects future game dates, invalid calendar dates, timestamp reversal and future clocks", () => {
+    const futureGame = artifact();
+    futureGame.snapshot.source.firstGameDate = "2027-06-01";
+    futureGame.snapshot.source.lastGameDate = "2027-06-01";
+    expect(parseCurrentShotQualityArtifact(futureGame)).toBeNull();
+    const reversed = artifact(); reversed.snapshot.source.fetchedAt = "2026-10-22T12:00:00Z";
+    expect(parseCurrentShotQualityArtifact(reversed)).toBeNull();
+    const futureClock = artifact();
+    futureClock.snapshot.generatedAt = new Date(Date.now() + 360_000).toISOString();
+    futureClock.snapshot.source.fetchedAt = futureClock.snapshot.generatedAt;
+    expect(parseCurrentShotQualityArtifact(futureClock)).toBeNull();
+    const easternBoundary = artifact();
+    easternBoundary.snapshot.generatedAt = "2026-10-21T02:00:00Z";
+    easternBoundary.snapshot.source.fetchedAt = easternBoundary.snapshot.generatedAt;
+    easternBoundary.snapshot.source.lastGameDate = "2026-10-21";
+    expect(parseCurrentShotQualityArtifact(easternBoundary)).toBeNull();
+  });
+  it("rejects a nonexistent calendar day even when its period and clock bounds would pass", () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(Date.parse("2027-03-02T12:00:00Z"));
+    try {
+      const invalidDate = artifact();
+      invalidDate.snapshot.generatedAt = "2027-03-01T12:00:00Z";
+      invalidDate.snapshot.source.fetchedAt = invalidDate.snapshot.generatedAt;
+      invalidDate.snapshot.source.firstGameDate = "2027-02-30";
+      invalidDate.snapshot.source.lastGameDate = "2027-02-30";
+      expect(parseCurrentShotQualityArtifact(invalidDate)).toBeNull();
+    } finally { now.mockRestore(); }
   });
   it("rejects duplicate cells, source season mismatches and count corruption", () => {
     const duplicate = artifact(); duplicate.snapshot.cells.push({ ...cell });

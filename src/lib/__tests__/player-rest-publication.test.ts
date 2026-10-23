@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import bundled from "@/data/shooting-current.json";
 import { buildRows, indexPayload, type PlayerRestPayload } from "../player-rest";
-import { mergeHistoricalAndCurrent, parseCurrentShooting, selectCurrentShooting } from "../player-rest-publication";
+import { mergeHistoricalAndCurrent, parseCurrentShooting, selectCurrentShooting, selectShootingHistory } from "../player-rest-publication";
 
 const historical: PlayerRestPayload = {
   generated: "2026-10-23", names: ["Same Name"], teams: ["BOS"], pos: ["G"],
@@ -73,6 +73,49 @@ describe("current Shooting publication", () => {
     }
     expect(selectCurrentShooting(structuredClone(bundled), bundled, "2026-27", now).rejected).toBe(false);
     expect(selectCurrentShooting(null, bundled, "2027-28", now).current).toBeNull();
+  });
+
+  it("retains a completed previous season at rollover and adds the next season without pooling careers", () => {
+    const finalPrevious = structuredClone(bundled);
+    finalPrevious.generated = finalPrevious.publication.generatedAt = "2027-04-21T12:00:00Z";
+    finalPrevious.publication.through = "2027-04-20";
+    finalPrevious.publication.fixtureIds = [...finalPrevious.publication.fixtureIds,
+      ...Array.from({ length: 1000 - finalPrevious.publication.fixtureIds.length }, (_, i) => `espn-${800000000 + i}`)];
+    finalPrevious.publication.expectedGames = finalPrevious.publication.observedGames = finalPrevious.publication.historyGames = 1000;
+    const next = structuredClone(bundled);
+    next.generated = next.publication.generatedAt = "2027-10-22T12:00:00Z";
+    next.publication.season = "2027-28";
+    next.publication.through = "2027-10-21";
+    next.publication.fixtureIds = next.publication.fixtureIds.map((_, i) => `espn-${900000000 + i}`);
+    next.seasons.forEach(row => { row[1] = 2027; });
+    const now = Date.parse("2027-10-23T12:00:00Z");
+    const beforeFirstGame = selectShootingHistory([finalPrevious], bundled, "2027-28", now);
+    expect(beforeFirstGame.publications.map(p => p.publication!.season)).toEqual(["2026-27"]);
+    expect(beforeFirstGame.publications[0].publication!.observedGames).toBe(1000);
+    expect(beforeFirstGame.rejected).toBe(false);
+    const selected = selectShootingHistory([finalPrevious, next], bundled, "2027-28", now);
+    const merged = selected.publications.reduce(mergeHistoricalAndCurrent, historical);
+    const index = indexPayload(merged);
+    expect(index.years).toEqual([2027, 2026, 2025]);
+    expect(merged.seasonOnlyPlayers).toHaveLength(660);
+    const base = { minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
+    expect(buildRows(index, { ...base, year: 2026 })).toHaveLength(330);
+    expect(buildRows(index, { ...base, year: 2027 })).toHaveLength(330);
+    expect(buildRows(index, { ...base, year: "career" })).toHaveLength(1);
+    expect(buildRows(index, { ...base, year: "career" })[0].fga).toBe(4);
+    expect(merged.shrunk).toEqual(historical.shrunk);
+    expect(mergeHistoricalAndCurrent(merged, next)).toBe(merged);
+    expect(mergeHistoricalAndCurrent(merged, finalPrevious)).toBe(merged);
+  });
+  it("keeps a valid older bundled season when a future or malformed history entry is rejected", () => {
+    const future = structuredClone(bundled);
+    future.publication.season = "2028-29";
+    future.publication.through = "2028-10-21";
+    future.generated = future.publication.generatedAt = "2028-10-22T12:00:00Z";
+    future.seasons.forEach(row => { row[1] = 2028; });
+    const selected = selectShootingHistory([null, { version: "wrong-module" }, future], bundled, "2027-28", Date.parse("2028-10-23T12:00:00Z"));
+    expect(selected.rejected).toBe(true);
+    expect(selected.publications).toEqual([bundled]);
   });
 
 });

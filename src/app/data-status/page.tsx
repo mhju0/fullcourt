@@ -5,9 +5,9 @@ import { keepTogether } from "@/components/ui/keep-together";
 import { db } from "@/lib/db";
 import { loadPlayerRestPublication } from "@/lib/player-rest-publication-server";
 import { loadOfficiatingPublication } from "@/lib/officiating-publication-server";
-import { readDailyDataset } from "@/lib/daily-publication-server";
+import { readDailyDatasetHistory } from "@/lib/daily-publication-server";
 import { parseCurrentShotQualityArtifact, getCurrentShotQualitySnapshot } from "@/lib/shot-quality-publication";
-import { defaultNbaSeason } from "@/lib/nba-season";
+import { currentDisplaySeason } from "@/lib/nba-season";
 import {
   getDataAsOf,
   getLatestPublishedPlayoffSeason,
@@ -88,11 +88,15 @@ function StatusCard({
 
 export default async function DataStatusPage() {
   const [playerPayload, officiating, shots] = await Promise.all([
-    loadPlayerRestPublication(), loadOfficiatingPublication(), readDailyDataset("shotQuality"),
+    loadPlayerRestPublication(), loadOfficiatingPublication(), readDailyDatasetHistory("shotQuality"),
   ]);
   const officiatingSeasons = officiating.seasons;
-  const candidate = parseCurrentShotQualityArtifact(shots.data) ?? getCurrentShotQualitySnapshot();
-  const currentShots = candidate?.season === defaultNbaSeason() ? candidate : null;
+  const shotCheck = shots.at(-1);
+  const shotSnapshots = [getCurrentShotQualitySnapshot(), ...shots.map(entry => {
+    const snapshot = parseCurrentShotQualityArtifact(entry.data);
+    return snapshot && (!entry.season || entry.season === snapshot.season) ? snapshot : null;
+  })].filter(snapshot => snapshot !== null).filter(snapshot => snapshot.season <= currentDisplaySeason())
+    .sort((a, b) => a.season.localeCompare(b.season) || a.generatedAt.localeCompare(b.generatedAt));
   const latestOfficiating = [...officiatingSeasons].sort((a, b) => a.season.localeCompare(b.season)).at(-1)!;
   const shootingCoverage = shootingHomeCoverage(playerPayload);
 
@@ -113,6 +117,10 @@ export default async function DataStatusPage() {
     playoffSeason = await readStatusValue("playoffs", getLatestPublishedPlayoffSeason);
     shotSeason = await readStatusValue("shot-quality", getLatestPublishedShotQualitySeason);
   }
+
+  const candidate = shotSnapshots.at(-1);
+  const currentShots = candidate && (!shotSeason || candidate.season >= shotSeason) ? candidate : null;
+  const shotStatus = shotCheck?.data != null && !parseCurrentShotQualityArtifact(shotCheck.data) ? "failed" : shotCheck?.status ?? "bundled";
 
   return (
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
@@ -174,7 +182,7 @@ export default async function DataStatusPage() {
           href="/shot-quality"
           coverage={currentShots ? `${currentShots.source.gameIds.length} observed games · ${currentShots.source.shotCount.toLocaleString()} source attempts` : shotSeason ? `League court surfaces through ${shotSeason}` : "Unavailable"}
           through={currentShots?.source.lastGameDate ?? shotSeason ?? "Unknown"}
-          refresh={currentShots ? `Snapshot generated ${formatUtcTimestamp(currentShots.generatedAt)}. Latest check: ${shots.status}.` : `Historical refresh not recorded. Latest current-season check: ${shots.status}.`}
+          refresh={currentShots ? `Snapshot generated ${formatUtcTimestamp(currentShots.generatedAt)}. Latest check: ${shotStatus}.` : `Historical refresh not recorded. Latest current-season check: ${shotStatus}.`}
         />
         <StatusCard
           title="Player Shooting by Rest"

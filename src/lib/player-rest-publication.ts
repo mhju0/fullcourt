@@ -77,6 +77,27 @@ export function selectCurrentShooting(remote: unknown, bundled: unknown, current
   return { current: candidate, rejected: false };
 }
 
+/** Keep each observed season, with the bundled season as its own rollback floor. */
+export function selectShootingHistory(remotes: readonly unknown[], bundled: unknown, latestSeason: string, now = Date.now()): { publications: PlayerRestPayload[]; rejected: boolean } {
+  const bySeason = new Map<string, PlayerRestPayload>();
+  const baseline = parseCurrentShooting(bundled, now);
+  if (baseline && baseline.publication!.season! <= latestSeason) bySeason.set(baseline.publication!.season!, baseline);
+  let rejected = false;
+  for (const remote of remotes) {
+    if (remote === null || remote === undefined) continue;
+    const candidate = parseCurrentShooting(remote, now);
+    const season = candidate?.publication?.season;
+    if (!candidate || !season || season > latestSeason) {
+      rejected = true;
+      continue;
+    }
+    const selected = selectCurrentShooting(candidate, bySeason.get(season), season, now);
+    rejected ||= selected.rejected;
+    if (selected.current) bySeason.set(season, selected.current);
+  }
+  return { publications: [...bySeason].sort(([a], [b]) => a.localeCompare(b)).map(([, publication]) => publication), rejected };
+}
+
 export function mergeHistoricalAndCurrent(historical: PlayerRestPayload, current: PlayerRestPayload): PlayerRestPayload {
   const offset = historical.names.length, teamOffset = historical.teams.length;
   const currentYear = Number(current.publication!.season!.slice(0, 4));
@@ -91,7 +112,7 @@ export function mergeHistoricalAndCurrent(historical: PlayerRestPayload, current
     teams: [...historical.teams, ...current.teams],
     pos: [...(historical.pos ?? historical.names.map(() => "")), ...(current.pos ?? [])],
     seasons: [...historical.seasons, ...current.seasons.map(row => row.map((v, i) => i === S.PLAYER ? v + offset : i === S.TEAM ? v + teamOffset : v))],
-    seasonOnlyPlayers: current.names.map((_, i) => i + offset),
+    seasonOnlyPlayers: [...(historical.seasonOnlyPlayers ?? []), ...current.names.map((_, i) => i + offset)],
     shrunk: historical.shrunk,
   };
 }

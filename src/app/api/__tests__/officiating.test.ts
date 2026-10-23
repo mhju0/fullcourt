@@ -3,7 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 import { GET } from "../officiating/[season]/route";
 import { CACHE } from "@/lib/api-route";
 import data from "@/data/officiating.json";
-vi.mock("@/lib/daily-publication-server", () => ({ readDailyDataset: async () => ({ data: null, hash: null, checkedAt: null, publishedAt: null, status: "bundled" }) }));
+vi.mock("@/lib/daily-publication-server", () => ({
+  readDailyDataset: async () => ({ data: null, hash: null, checkedAt: null, publishedAt: null, status: "bundled" }),
+  readDailyDatasetHistory: async () => [{ data: null, hash: null, checkedAt: null, publishedAt: null, status: "bundled" }],
+}));
 
 const req = () => new NextRequest("http://localhost/api/officiating/x");
 

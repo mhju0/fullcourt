@@ -28,12 +28,22 @@ def load_manifest(path):
     if not path.is_file() or path.stat().st_size > 32768:
         raise ValueError("Invalid manifest size")
     value = json.loads(path.read_text())
-    if value.get("schemaVersion") != 1 or set(value) != {"schemaVersion", "updatedAt", "datasets", "checks"}:
+    if value.get("schemaVersion") != 1 or (set(value) - {"history"}) != {"schemaVersion", "updatedAt", "datasets", "checks"}:
         raise ValueError("Invalid manifest")
     instant(value["updatedAt"])
     if set(value["datasets"]) - set(DATASETS) or set(value["checks"]) - set(DATASETS):
         raise ValueError("Unknown dataset")
-    for name, entry in value["datasets"].items():
+    history = value.get("history", {})
+    if set(history) - set(DATASETS):
+        raise ValueError("Unknown history dataset")
+    entries = list(value["datasets"].items())
+    for name, seasons in history.items():
+        for season, entry in seasons.items():
+            year = int(season[:4])
+            if season != f"{year}-{str(year + 1)[-2:]}" or entry.get("season") != season:
+                raise ValueError("Invalid history season")
+            entries.append((name, entry))
+    for name, entry in entries:
         digest = entry["sha256"]
         if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest) or entry["path"] != f"blobs/{name}-{digest}.json":
             raise ValueError("Invalid blob path")
@@ -54,11 +64,11 @@ def read_blob(path):
     return path.read_bytes()
 
 
-def entry_for(name, body, generated):
+def entry_for(name, body, generated, season=None):
     instant(generated)
     digest = hashlib.sha256(body).hexdigest()
     return {"path": f"blobs/{name}-{digest}.json", "sha256": digest,
-            "bytes": len(body), "generatedAt": generated}
+            "bytes": len(body), "generatedAt": generated, **({"season": season} if season else {})}
 
 
 def merge_candidate(previous, candidate, files, now):
@@ -85,11 +95,15 @@ def merge_candidate(previous, candidate, files, now):
             continue
         body = files[name]
         generated = change["generatedAt"]
-        new = entry_for(name, body, generated)
+        new = entry_for(name, body, generated, change.get("season"))
         if old and instant(generated) < instant(old["generatedAt"]):
             raise ValueError("Snapshot moved backwards")
         if instant(generated) > instant(now) or instant(checked) > instant(now):
             raise ValueError("Snapshot from the future")
+        if old and old.get("season"):
+            result.setdefault("history", {}).setdefault(name, {})[old["season"]] = old
+        if new.get("season"):
+            result.setdefault("history", {}).setdefault(name, {})[new["season"]] = new
         result["datasets"][name] = new
     result["updatedAt"] = now
     return result

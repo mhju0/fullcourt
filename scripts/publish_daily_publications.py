@@ -55,24 +55,44 @@ def prepare(stage, publication):
         raise ValueError("Invalid candidate")
     previous = load_manifest(publication / "manifest.json")
     files = {}
-    for name, change in candidate["datasets"].items():
+    candidate = json.loads(json.dumps(candidate))
+    now = datetime.now(timezone.utc).isoformat()
+    for name, change in list(candidate["datasets"].items()):
+        old = previous["datasets"].get(name)
+        if change["expectedPriorHash"] != (old["sha256"] if old else None) or (
+            name in previous["checks"] and instant(change["checkedAt"]) < instant(previous["checks"][name]["checkedAt"])
+        ):
+            del candidate["datasets"][name]
+            continue
         if change["status"] != "published":
             continue
-        source = stage / f"{name}.json"
-        files[name] = read_blob(source)
-        result = validate(name, source)
-        if result["generatedAt"] != change["generatedAt"]:
-            raise ValueError("Generation instant differs")
-        old = previous["datasets"].get(name)
-        if old:
-            prior_path = publication / old["path"]
-            body = read_blob(prior_path)
-            import hashlib
-            if len(body) != old["bytes"] or hashlib.sha256(body).hexdigest() != old["sha256"]:
-                raise ValueError("Stored publication corrupt")
-            validate(name, prior_path)
-            continuity(name, json.loads(body), json.loads(files[name]))
-    now = datetime.now(timezone.utc).isoformat()
+        try:
+            source = stage / f"{name}.json"
+            content = read_blob(source)
+            result = validate(name, source)
+            if result["generatedAt"] != change["generatedAt"] or (change.get("season") and result["season"] != change["season"]):
+                raise ValueError("Generation identity differs")
+            change["season"] = result["season"]
+            if instant(change["generatedAt"]) > instant(now) or old and instant(change["generatedAt"]) < instant(old["generatedAt"]):
+                raise ValueError("Generation instant regressed")
+            if old:
+                prior_path = publication / old["path"]
+                body = read_blob(prior_path)
+                import hashlib
+                if len(body) != old["bytes"] or hashlib.sha256(body).hexdigest() != old["sha256"]:
+                    raise ValueError("Stored publication corrupt")
+                prior_identity = validate(name, prior_path)
+                if old.get("season") and prior_identity["season"] != old["season"]:
+                    raise ValueError("Stored season differs")
+                continuity(name, json.loads(body), json.loads(content))
+            files[name] = content
+        except Exception:
+            change.pop("generatedAt", None)
+            change.pop("season", None)
+            change["status"] = "failed"
+            logging.warning("%s publication refused; previous snapshot retained.", name)
+    if not candidate["datasets"]:
+        raise ValueError("Stale candidate: no current dataset bases")
     next_manifest = merge_candidate(previous, candidate, files, now)
     (publication / "blobs").mkdir(exist_ok=True)
     for name, body in files.items():

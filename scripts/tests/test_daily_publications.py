@@ -20,6 +20,7 @@ def candidate(name="shooting", prior=None, status="published"):
     entry = {"expectedPriorHash": prior, "checkedAt": NOW, "status": status}
     if status == "published":
         entry["generatedAt"] = EARLIER
+        entry["season"] = "2026-27"
     return {"schemaVersion": 1, "datasets": {name: entry}}
 
 
@@ -72,6 +73,37 @@ class MergeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "membership"):
             publisher.continuity("shooting", before, after)
 
+    def test_rollover_keeps_both_season_references(self):
+        first = merge_candidate(empty_manifest(EARLIER), candidate(), {"shooting": b'first'}, NOW)
+        old = first["datasets"]["shooting"]
+        new = candidate(prior=old["sha256"])
+        new["datasets"]["shooting"].update(season="2027-28", checkedAt="2027-10-23T12:00:00Z", generatedAt="2027-10-23T11:00:00Z")
+        result = merge_candidate(first, new, {"shooting": b'second'}, "2027-10-23T12:01:00Z")
+        self.assertEqual(result["history"]["shooting"]["2026-27"], old)
+        self.assertEqual(set(result["history"]["shooting"]), {"2026-27", "2027-28"})
+        self.assertEqual(result["datasets"]["shooting"]["season"], "2027-28")
+
+    def test_publisher_isolates_a_regression_discovered_during_final_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); stage = root / "stage"; pub = root / "pub"
+            stage.mkdir(); pub.mkdir(); (pub / "blobs").mkdir()
+            old_body = json.dumps({"snapshot": {"season": "2026-27", "source": {"gameIds": ["0022600001"], "shotCount": 2}}}).encode()
+            old = entry_for("shotQuality", old_body, EARLIER, "2026-27")
+            previous = empty_manifest(EARLIER); previous["datasets"]["shotQuality"] = old
+            (pub / old["path"]).write_bytes(old_body)
+            (pub / "manifest.json").write_text(json.dumps(previous))
+            update = candidate("shotQuality", old["sha256"])
+            update["datasets"].update(candidate("officiating")["datasets"])
+            (stage / "candidate.json").write_text(json.dumps(update))
+            (stage / "shotQuality.json").write_text(json.dumps({"snapshot": {"season": "2026-27", "source": {"gameIds": ["0022600001"], "shotCount": 1}}}))
+            (stage / "officiating.json").write_text('{"valid":true}')
+            with patch.object(publisher, "validate", return_value={"generatedAt": EARLIER, "season": "2026-27"}):
+                result = publisher.prepare(stage, pub)
+            self.assertEqual(result["datasets"]["shotQuality"], old)
+            self.assertEqual(result["checks"]["shotQuality"]["status"], "failed")
+            self.assertEqual(result["checks"]["officiating"]["status"], "published")
+            self.assertEqual((pub / old["path"]).read_bytes(), old_body)
+
 
 class GitPublicationTests(unittest.TestCase):
     def git(self, root, *args):
@@ -92,7 +124,7 @@ class GitPublicationTests(unittest.TestCase):
             self.git(repo, "push", "origin", "main")
             (stage / "shooting.json").write_text('{"publication":{"season":"2026-27","fixtureIds":["one"]}}')
             (stage / "candidate.json").write_text(json.dumps(candidate()))
-            with patch.object(publisher, "ROOT", repo), patch.object(publisher, "validate", return_value={"generatedAt": EARLIER}), patch.object(sys, "argv", ["publish", "--stage", str(stage)]):
+            with patch.object(publisher, "ROOT", repo), patch.object(publisher, "validate", return_value={"generatedAt": EARLIER, "season": "2026-27"}), patch.object(sys, "argv", ["publish", "--stage", str(stage)]):
                 self.assertEqual(publisher.main(), 0)
                 first = self.git(remote, "rev-parse", "data-publications")
                 manifest = json.loads(self.git(remote, "show", "data-publications:manifest.json"))

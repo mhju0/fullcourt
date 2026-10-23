@@ -5,8 +5,9 @@ import {
   getShotQualityGrid,
 } from "@/lib/db/queries";
 import { getCurrentShotQualitySnapshot, parseCurrentShotQualityArtifact, shotQualityPublication } from "@/lib/shot-quality-publication";
-import { defaultNbaSeason } from "@/lib/nba-season";
-import { readDailyDataset } from "@/lib/daily-publication-server";
+import { currentDisplaySeason } from "@/lib/nba-season";
+import type { DailyDatasetResult } from "@/lib/daily-publication";
+import { readDailyDatasetHistory } from "@/lib/daily-publication-server";
 import { PublicApiError } from "@/lib/api-errors";
 import type { ShotQualityModelVersion, ShotQualityResponse } from "@/types";
 
@@ -29,20 +30,39 @@ export const GET = jsonRoute(
     model: z.enum(["gbm-v1", "baseline-zone-v1"]).default(DEFAULT_MODEL),
   }),
   async ({ season, model }): Promise<ShotQualityResponse> => {
-    const daily = await readDailyDataset("shotQuality");
-    const parsedSnapshot = parseCurrentShotQualityArtifact(daily.data);
-    const candidate = parsedSnapshot ?? getCurrentShotQualitySnapshot();
-    const snapshot = candidate?.season === defaultNbaSeason() ? candidate : null;
-    const databaseLatest = await getLatestPublishedShotQualitySeason().catch(error => { if (snapshot) return null; throw error; });
-    const latestPublishedSeason = [databaseLatest, snapshot?.season].filter((s): s is string => Boolean(s)).sort().at(-1);
+    const history = await readDailyDatasetHistory("shotQuality");
+    const daily = history.at(-1);
+    const currentSeason = currentDisplaySeason();
+    const parsePublication = (item: DailyDatasetResult) => {
+      const snapshot = parseCurrentShotQualityArtifact(item.data);
+      return snapshot && (!item.season || item.season === snapshot.season) && snapshot.season <= currentSeason ? snapshot : null;
+    };
+    const snapshots = new Map<string, NonNullable<ReturnType<typeof parseCurrentShotQualityArtifact>>>();
+    for (const candidate of [getCurrentShotQualitySnapshot(), ...history.map(parsePublication)]) {
+      if (!candidate || candidate.season > currentSeason) continue;
+      const previous = snapshots.get(candidate.season);
+      if (!previous || Date.parse(candidate.generatedAt) > Date.parse(previous.generatedAt)) snapshots.set(candidate.season, candidate);
+    }
+    const databaseLatest = await getLatestPublishedShotQualitySeason().catch(error => { if (snapshots.size) return null; throw error; });
+    const latestPublishedSeason = [databaseLatest, ...snapshots.keys()].filter((s): s is string => Boolean(s)).sort().at(-1);
     if (!latestPublishedSeason) {
       throw new PublicApiError("Expected shot value data is not available yet.", 503);
     }
     const selectedSeason = season ?? latestPublishedSeason;
-    // Sequential: one connection in production (pool.ts).
-    const selectedSnapshot = snapshot?.season === selectedSeason ? snapshot : null;
-    const cells = selectedSnapshot?.cells ?? await getShotQualityGrid(selectedSeason);
-    const previousPublishedSeason = await getLatestPublishedShotQualitySeason(latestPublishedSeason).catch(error => { if (selectedSnapshot) return null; throw error; });
+    let selectedSnapshot = snapshots.get(selectedSeason) ?? null;
+    // Historical models take precedence only as a complete, unmixed database publication.
+    let cells = selectedSnapshot?.cells ?? [];
+    if (!selectedSnapshot || selectedSeason < currentSeason) {
+      const databaseCells = await getShotQualityGrid(selectedSeason).catch(error => { if (selectedSnapshot) return []; throw error; });
+      const coverage = shotQualityPublication(databaseCells).models;
+      if (!selectedSnapshot || Object.values(coverage).some(model => model.ready)) {
+        selectedSnapshot = null;
+        cells = databaseCells;
+      }
+    }
+    const databasePrevious = await getLatestPublishedShotQualitySeason(latestPublishedSeason).catch(error => { if (snapshots.size) return null; throw error; });
+    const previousPublishedSeason = [databasePrevious, ...[...snapshots.keys()].filter(s => s < latestPublishedSeason)]
+      .filter((s): s is string => Boolean(s)).sort().at(-1) ?? null;
 
     return {
       season: selectedSeason,
@@ -53,7 +73,7 @@ export const GET = jsonRoute(
       meta: {
         cellCount: cells.length,
         totalFga: cells.reduce((sum, c) => sum + c.fga, 0),
-        publication: { ...shotQualityPublication(cells, selectedSnapshot), checkedAt: daily.checkedAt, updateStatus: daily.data !== null && !parsedSnapshot ? "failed" : daily.status },
+        publication: { ...shotQualityPublication(cells, selectedSnapshot), checkedAt: daily?.checkedAt ?? null, updateStatus: daily?.data != null && !parsePublication(daily) ? "failed" : daily?.status ?? "bundled" },
       },
     };
   },

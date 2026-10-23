@@ -191,6 +191,24 @@ describe("officiating publication merging and recovery", () => {
     expect(result.publication).toMatchObject({ hash: p.digest, checkedAt: NOW, publishedAt: NOW, status: "published" });
     expect(result.publication.data).toBeUndefined();
   });
+  it("rejects snapshot generation time that differs from the verified manifest provenance", async () => {
+    const previous = snapshot(2025).season;
+    bundled.seasons.push(previous);
+    const p = serve(snapshot());
+    p.manifest.datasets.officiating!.generatedAt = "2026-10-22T12:00:00Z";
+    const result = await loadOfficiatingPublication();
+    expect(result.seasons).toEqual([previous]);
+    expect(result.snapshot).toBeNull();
+    expect(result.publication.status).toBe("failed");
+  });
+  it("accepts equivalent generation instants with different timezone notation", async () => {
+    const value = snapshot();
+    const p = serve(value);
+    p.manifest.datasets.officiating!.generatedAt = "2026-10-23T12:00:00+00:00";
+    const result = await loadOfficiatingPublication();
+    expect(result.snapshot).toEqual(value);
+    expect(result.publication.status).toBe("published");
+  });
   it("keeps pinned summary/game/detail views coherent after a newer bundled generation is released", async () => {
     const old = snapshot(2026, [1], "2026-10-22T12:00:00Z");
     const latest = snapshot(2026, [1, 2]);
@@ -211,6 +229,67 @@ describe("officiating publication merging and recovery", () => {
     const result = await loadOfficiatingPublication();
     expect(result.seasons).toEqual([previous]);
     expect(result.snapshot).toBeNull();
+    expect(result.publication.status).toBe("failed");
+  });
+});
+
+describe("officiating cold-start rollover archives", () => {
+  function rollover(corruptArchive = false, wrongArchiveSeason = false) {
+    const now = "2027-10-23T12:00:00Z";
+    vi.setSystemTime(new Date(now));
+    const bundledPartial = snapshot(2026, [1, 2], "2026-10-23T12:00:00Z").season;
+    bundled.seasons.push(snapshot(2025).season, bundledPartial);
+    const archived = snapshot(2026, [1, 2, 3], "2027-04-15T12:00:00Z");
+    archived.season.games[2].date = "2027-04-14";
+    archived.season.through = "2027-04-14";
+    const current = snapshot(2027, [1], now);
+    const old = fixturePublication(archived);
+    const latest = fixturePublication(current);
+    latest.manifest.updatedAt = now;
+    latest.manifest.checks.officiating = { checkedAt: now, status: "published" };
+    latest.manifest.datasets.officiating = { ...latest.manifest.datasets.officiating!, season: "2027-28" };
+    latest.manifest.history = { officiating: {
+      [wrongArchiveSeason ? "2025-26" : "2026-27"]: { ...old.manifest.datasets.officiating!, season: wrongArchiveSeason ? "2025-26" : "2026-27" },
+      "2027-28": latest.manifest.datasets.officiating,
+    } };
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
+      if (url.endsWith("manifest.json")) return new Response(JSON.stringify(latest.manifest));
+      if (url.endsWith(latest.path)) return new Response(latest.body);
+      if (url.endsWith(old.path)) return new Response(corruptArchive ? "tampered" : old.body);
+      return new Response("Missing", { status: 404 });
+    }));
+    return { archived, current, old, latest, bundledPartial };
+  }
+  it("keeps the final prior remote season beyond the bundled partial while adding the next season's first report", async () => {
+    const { archived, current, old, latest } = rollover();
+    const result = await loadOfficiatingPublication();
+    expect(result.seasons.map((season) => season.season)).toEqual(["2025-26", "2026-27", "2027-28"]);
+    expect(summarizeSeasons(result.seasons).map((season) => [season.season, season.gameCount])).toEqual([
+      ["2025-26", 1], ["2026-27", 3], ["2027-28", 1],
+    ]);
+    expect(result.seasons[1]).toMatchObject({ ...archived.season, publicationHash: old.digest });
+    expect(result.seasons[2]).toMatchObject({ ...current.season, publicationHash: latest.digest });
+    expect(result.snapshot).toEqual(current);
+    expect(result.publication.status).toBe("published");
+    const pinned = await loadOfficiatingPublication(old.digest);
+    expect(pinned.snapshot).toEqual(archived);
+    expect(pinned.seasons.find((season) => season.season === "2026-27")?.games).toHaveLength(3);
+    expect(pinned.snapshot!.details).toEqual(archived.details);
+  });
+  it("isolates an invalid archived blob, preserves its bundled fallback, and still shows the valid next season", async () => {
+    const { current, latest, bundledPartial } = rollover(true);
+    const result = await loadOfficiatingPublication();
+    expect(result.seasons[1]).toEqual(bundledPartial);
+    expect(result.seasons[1].publicationHash).toBeUndefined();
+    expect(result.seasons[2]).toMatchObject({ ...current.season, publicationHash: latest.digest });
+    expect(result.snapshot).toEqual(current);
+    expect(result.publication.status).toBe("failed");
+  });
+  it("does not merge a snapshot under a different manifest season even when its bytes and hash are valid", async () => {
+    const { current, bundledPartial } = rollover(false, true);
+    const result = await loadOfficiatingPublication();
+    expect(result.seasons[1]).toEqual(bundledPartial);
+    expect(result.seasons[2].games).toEqual(current.season.games);
     expect(result.publication.status).toBe("failed");
   });
 });

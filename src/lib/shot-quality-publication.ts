@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { formatEasternDateKey } from "@/lib/nba-season";
 import currentArtifact from "@/data/shot-quality-current.json";
 import type { CurrentShotQualitySnapshot, ShotQualityCell, ShotQualityPublication } from "@/types";
 
@@ -9,7 +10,10 @@ const cellSchema = z.object({
   fga: count.positive(), fgm: count, fg3a: count, fg3m: count,
   gbm: z.null(), baseline: z.null(),
 }).refine(c => c.fgm <= c.fga && c.fg3a <= c.fga && c.fg3m <= c.fgm && c.fg3m <= c.fg3a);
-const dateKey = z.iso.date();
+const dateKey = z.iso.date().refine(value => {
+  const date = new Date(`${value}T00:00:00Z`);
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+});
 const snapshotSchema = z.object({
   season: z.string().regex(/^\d{4}-\d{2}$/), generatedAt: z.iso.datetime({ offset: true }),
   source: z.object({
@@ -26,6 +30,7 @@ const snapshotSchema = z.object({
   && s.source.lastGameDate < `${Number(s.season.slice(0, 4)) + 1}-10-01`
   && Date.parse(s.generatedAt) <= Date.now() + 300_000
   && Date.parse(s.source.fetchedAt) <= Date.parse(s.generatedAt)
+  && s.source.lastGameDate <= formatEasternDateKey(new Date(s.source.fetchedAt))
   && new Set(s.source.gameIds).size === s.source.gameIds.length
   && new Set(s.cells.map(c => `${c.cellX}:${c.cellY}`)).size === s.cells.length
   && s.cells.reduce((n, c) => n + c.fga, 0) + s.source.droppedNoLocation + s.source.droppedOutsideHalfCourt === s.source.shotCount);

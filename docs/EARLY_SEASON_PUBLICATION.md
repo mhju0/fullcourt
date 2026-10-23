@@ -44,8 +44,9 @@ ESPN 현재 선수 ID는 NBA 과거 선수 ID와 이름으로 합치지 않는�
    실패/미게시 항목은 다른 항목의 성공을 막지 않으며 기존 정상 공개본을 대체하지 않는다.
 3. 별도 `publish` job만 contents write를 갖는다. 신뢰된 코드로 후보를 재검증하고
    `data-publications` 브랜치에 `manifest.json`과 SHA-256 주소의 append-only blob을 원자적으로 commit한다.
-   main에 push하거나 PR을 자동 merge하지 않는다. 데이터 브랜치의 고정 `vercel.json`은 자동 앱 배포를 끈다. 동일 dataset의 stale 후보와 Git 동시 push 충돌은 거절한다.
-4. 서버는 고정 저장소의 manifest와 content hash를 검증한다. 외부 URL·임의 경로·초과 크기·변조 JSON을 거절한다.
+   main에 push하거나 PR을 자동 merge하지 않는다. 데이터 브랜치의 고정 `vercel.json`은 자동 앱 배포를 끈다. 동일 dataset의 stale 후보는 제외하고 Git 동시 push 충돌은 거절한다. 최종 검증·커버리지 역행도 해당 모듈만 실패 처리한다.
+4. manifest의 시즌별 `history` 참조와 append-only blob은 다음 시즌에도 보존한다. 새 서버에서도 과거 시즌의 최종 공개본을 읽으며 앱의 개막 fallback으로 되돌리지 않는다.
+   서버는 고정 저장소의 manifest와 content hash를 검증한다. 외부 URL·임의 경로·초과 크기·변조 JSON을 거절한다.
    오래된 manifest도 이전 blob을 유지하므로 같은 공개본의 요약·경기·상세를 일관되게 읽는다.
 5. 조회 실패 시 브랜치의 마지막 정상 공개본 또는 앱에 묶인 fallback과 실제 자료 날짜를 제공한다.
    새 서버가 과거 다른 서버의 최신 자료를 기억한다고 보장하지 않는다. 캐시는 최대 수분 지연을 허용한다.

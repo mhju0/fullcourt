@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import json
 import logging
 import math
@@ -19,6 +19,7 @@ import tempfile
 import time
 import urllib.parse
 import urllib.request
+from zoneinfo import ZoneInfo
 
 from season_window import current_season_start_year
 
@@ -67,9 +68,17 @@ def valid_season(season: str) -> bool:
     return bool(re.fullmatch(r"\d{4}-\d{2}", season)) and int(season[-2:]) == (int(season[:4]) + 1) % 100
 
 
-def build_snapshot(payload: dict, season: str, fetched_at: str) -> dict | None:
+def build_snapshot(payload: dict, season: str, fetched_at: str, generated_at: str | None = None) -> dict | None:
     if not valid_season(season):
         raise ValueError("Invalid season")
+    generated_at = generated_at or datetime.now(timezone.utc).isoformat()
+    fetched = datetime.fromisoformat(fetched_at.replace("Z", "+00:00"))
+    generated = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+    if fetched.utcoffset() is None or generated.utcoffset() is None:
+        raise ValueError("Snapshot timestamps must include a timezone")
+    if fetched > generated or generated > datetime.now(timezone.utc) + timedelta(minutes=5):
+        raise ValueError("Snapshot timestamp order or future clock is invalid")
+    fetched_date_et = fetched.astimezone(ZoneInfo("America/New_York")).date()
     rows = shot_rows(payload)
     if not rows:
         return None
@@ -84,7 +93,12 @@ def build_snapshot(payload: dict, season: str, fetched_at: str) -> dict | None:
         if event in event_ids:
             raise ValueError("Duplicate shot event")
         event_ids.add(event)
-        date = datetime.strptime(str(row["GAME_DATE"]), "%Y%m%d").date()
+        raw_date = str(row["GAME_DATE"])
+        if not re.fullmatch(r"\d{8}", raw_date):
+            raise ValueError("Shot game date must use YYYYMMDD")
+        date = datetime.strptime(raw_date, "%Y%m%d").date()
+        if date > fetched_date_et:
+            raise ValueError("Shot game date is later than the Eastern collection date")
         if not (datetime(int(season[:4]), 10, 1).date() <= date < datetime(int(season[:4]) + 1, 10, 1).date()):
             raise ValueError("Shot date outside requested season")
         if row["SHOT_ATTEMPTED_FLAG"] != 1 or row["SHOT_MADE_FLAG"] not in (0, 1):
@@ -124,7 +138,7 @@ def build_snapshot(payload: dict, season: str, fetched_at: str) -> dict | None:
     for (x, y), counts in sorted(cells.items()):
         zones = [sorted(counter, key=lambda label: (-counter[label], label))[0] if counter else None for counter in counts.pop("zones")]
         output_cells.append({"cellX": x, "cellY": y, "zoneBasic": zones[0], "zoneRange": zones[1], "zoneArea": zones[2], **counts, "gbm": None, "baseline": None})
-    return {"season": season, "generatedAt": fetched_at, "source": {
+    return {"season": season, "generatedAt": generated_at, "source": {
         "provider": "NBA Stats ShotChartDetail", "url": source_url(season), "fetchedAt": fetched_at,
         "firstGameDate": min(dates), "lastGameDate": max(dates), "gameIds": sorted(game_ids),
         "shotCount": len(rows), "droppedNoLocation": no_location, "droppedOutsideHalfCourt": outside,
