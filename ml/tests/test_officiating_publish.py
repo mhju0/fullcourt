@@ -6,6 +6,7 @@ import sys
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "ml"))
@@ -46,10 +47,11 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Incomplete"):
                 build(p)
 
-    def fixture(self, p, season_index=-1, game_id=None):
-        season = json.loads((ROOT / "src/data/officiating.json").read_text())[
-            "seasons"
-        ][season_index]
+    def fixture(self, p, season="2025-26", game_id=None):
+        season = next(
+            s for s in json.loads((ROOT / "src/data/officiating.json").read_text())["seasons"]
+            if s["season"] == season
+        )
         g = next(g for g in season["games"] if g["id"] == game_id) if game_id else season["games"][0]
         detail = json.loads(
             (
@@ -103,6 +105,23 @@ class PublisherTests(unittest.TestCase):
         (p / "manifest.json").write_text(json.dumps(manifest))
         return g, raw, manifest
 
+    def test_fixture_seasons_survive_publication_growth_and_reordering(self):
+        index = json.loads((ROOT / "src/data/officiating.json").read_text())
+        index["seasons"] = [{"season": "2099-00", "games": []}, *reversed(index["seasons"])]
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "src/data").mkdir(parents=True)
+            (root / "src/data/officiating.json").write_text(json.dumps(index))
+            (root / "public").symlink_to(ROOT / "public", target_is_directory=True)
+            snapshot = root / "snapshot"
+            snapshot.mkdir()
+            with patch.dict(self.fixture.__globals__, ROOT=root):
+                _, _, manifest = self.fixture(snapshot)
+                self.assertEqual(manifest["season"], "2025-26")
+                game, _, manifest = self.fixture(snapshot, season="2024-25", game_id="0022401229")
+                self.assertEqual(manifest["season"], "2024-25")
+                self.assertEqual(game["id"], "0022401229")
+
     def test_changed_source_hash_and_disappeared_report_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp)
@@ -118,7 +137,7 @@ class PublisherTests(unittest.TestCase):
     def test_cup_alias_preserves_nba_report_and_content_addressed_detail_identity(self):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp)
-            g, _, _ = self.fixture(p, season_index=-2, game_id="0022401229")
+            g, _, _ = self.fixture(p, season="2024-25", game_id="0022401229")
             published, details = build(p)
             game = published["games"][0]
             self.assertEqual(game["id"], "0022401229")
@@ -301,9 +320,11 @@ class PublisherTests(unittest.TestCase):
             valid.mkdir()
             stale.mkdir()
             self.fixture(valid)
-            self.fixture(stale, season_index=-2)
+            self.fixture(stale, season="2024-25")
             previous, _ = build(stale)
-            previous["refreshedAt"] = "2026-10-12T12:00:00+00:00"
+            previous["refreshedAt"] = (
+                datetime.fromisoformat(previous["refreshedAt"]) + timedelta(days=1)
+            ).isoformat()
             index = output / "src/data/officiating.json"
             index.parent.mkdir(parents=True)
             index.write_text(json.dumps({"seasons": [previous]}))
