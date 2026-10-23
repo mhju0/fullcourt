@@ -14,7 +14,6 @@ import {
   type HomeCourtStudySeason,
   type HomeCourtStudyData,
 } from "@/lib/home-court-study";
-import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
 import { liftOverBaseline } from "@/lib/rest-split-facts";
 import { KeepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
@@ -28,15 +27,15 @@ function formatRate(value: number) {
 }
 
 function largeRestGapVersusHome(row: HomeCourtStudySeason) {
-  return row.largeRestGap.winPct === null
+  return row.largeRestGap.winPct === null || row.homeGames === 0
     ? null
     : liftOverBaseline(Number(row.largeRestGap.winPct.toFixed(1)), row.homeBaselinePct);
 }
 
 function chartScale(rows: readonly HomeCourtStudySeason[], showLarge: boolean) {
   const values = rows.flatMap((row) => [
-    row.homeBaselinePct,
-    ...(row.games >= MIN_GAMES_FOR_INFERENCE ? [row.winPct] : []),
+    ...(row.homeGames > 0 ? [row.homeBaselinePct] : []),
+    ...(row.games > 0 ? [row.winPct] : []),
     ...(showLarge && row.largeRestGap.winPct !== null ? [row.largeRestGap.winPct] : []),
   ]);
   const low = values.length ? Math.min(...values) : 50;
@@ -63,12 +62,12 @@ function chartPath(
 function seasonAriaLabel(row: HomeCourtStudySeason, showLarge: boolean) {
   const gap = restedHomeGap(row);
   const rest = gap === null
-    ? `The rate for the rested team at home is too early, with ${row.games} of ${MIN_GAMES_FOR_INFERENCE} games.`
+    ? "No eligible rested-home games."
     : `The rested team at home won ${row.restedTeamWins} of ${row.games}, ${formatRate(row.winPct)}, ${signedNumber(gap, 1)} percentage points versus the home rate.`;
   const large = row.largeRestGap;
   const largeGap = largeRestGapVersusHome(row);
   const largeLabel = showLarge ? ` Rested at home with a 5+ gap: ${large.winPct === null ? "no eligible games" : `${large.restedTeamWins} wins of ${large.games}, ${formatRate(large.winPct)}, ${signedNumber(largeGap!, 1)} percentage points versus the home rate`}.` : "";
-  return `${row.season}${row.isComplete ? "" : ", season to date"}. Home teams won ${row.homeWins} of ${row.homeGames}, ${formatRate(row.homeBaselinePct)}. ${rest}${largeLabel}`;
+  return `${row.season}${row.isComplete ? "" : ", season to date"}. ${row.homeGames > 0 ? `Home teams won ${row.homeWins} of ${row.homeGames}, ${formatRate(row.homeBaselinePct)}.` : "No eligible home games."} ${rest}${largeLabel}`;
 }
 
 export function HomeCourtStudy() {
@@ -85,7 +84,7 @@ export function HomeCourtStudy() {
   );
   const [showLarge, setShowLarge] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
-  const selected = rows.find((row) => row.season === selectedSeason) ?? rows.findLast((row) => row.isComplete) ?? rows.at(-1) ?? null;
+  const selected = rows.find((row) => row.season === selectedSeason) ?? rows.at(-1) ?? null;
   const summary = homeCourtEraSummary(rows);
 
   if (loading) {
@@ -177,10 +176,10 @@ export function HomeCourtStudy() {
                       {!row.isComplete ? <span className={`block text-xs font-normal ${muted}`}>Season to date</span> : null}
                     </th>
                     <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()}&nbsp;/&nbsp;{row.homeGames.toLocaleString()}</td>
-                    <td className="mono text-right tabular-nums">{formatRate(row.homeBaselinePct)}</td>
+                    <td className="mono text-right tabular-nums">{row.homeGames > 0 ? formatRate(row.homeBaselinePct) : "No eligible games"}</td>
                     <td className="mono text-right tabular-nums">{row.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.games.toLocaleString()}</td>
-                    <td className="mono text-right tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</td>
-                    <td className="mono text-right tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</td>
+                    <td className="mono text-right tabular-nums">{row.games > 0 ? formatRate(row.winPct) : "No eligible games"}</td>
+                    <td className="mono text-right tabular-nums">{gap === null ? "Unavailable" : `${signedNumber(gap, 1)}\u00a0pp`}</td>
                     {showLarge ? <><td className="mono text-right tabular-nums">{row.largeRestGap.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.largeRestGap.games.toLocaleString()}</td><td className="mono text-right tabular-nums">{row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)}</td></> : null}
                   </tr>
                 );
@@ -226,8 +225,8 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
   const plotHeight = VIEW.height - VIEW.top - VIEW.bottom;
   const x = (index: number) => VIEW.left + (rows.length <= 1 ? plotWidth / 2 : (index / (rows.length - 1)) * plotWidth);
   const y = (rate: number) => VIEW.top + ((maximum - rate) / (maximum - minimum)) * plotHeight;
-  const homePaths = chartPath(rows, (row) => row.homeBaselinePct, x, y);
-  const restPaths = chartPath(rows, (row) => row.games >= MIN_GAMES_FOR_INFERENCE ? row.winPct : null, x, y);
+  const homePaths = chartPath(rows, (row) => row.homeGames > 0 ? row.homeBaselinePct : null, x, y);
+  const restPaths = chartPath(rows, (row) => row.games > 0 ? row.winPct : null, x, y);
   const largePaths = showLarge ? chartPath(rows, (row) => row.largeRestGap.winPct, x, y) : [];
   const xTicks = new Set(homeCourtTickIndices(rows.length, width < 560 ? 4 : 6));
   const selectedIndex = selected ? rows.indexOf(selected) : -1;
@@ -258,8 +257,8 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
         {selected ? <line x1={x(selectedIndex)} x2={x(selectedIndex)} y1={VIEW.top} y2={VIEW.height - VIEW.bottom} stroke="var(--term-text-muted)" strokeWidth="1" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" aria-hidden="true" /> : null}
         {rows.map((row, index) => (
           <g key={row.season} pointerEvents="none" aria-hidden="true">
-            <circle data-series="home" cx={x(index)} cy={y(row.homeBaselinePct)} r="2.5" fill="var(--term-text-dim)" />
-            {row.games >= MIN_GAMES_FOR_INFERENCE ? <circle data-series="rested-home" cx={x(index)} cy={y(row.winPct)} r="2.5" fill="var(--term-blue)" /> : null}
+            {row.homeGames > 0 ? <circle data-series="home" cx={x(index)} cy={y(row.homeBaselinePct)} r="2.5" fill="var(--term-text-dim)" /> : null}
+            {row.games > 0 ? <circle data-series="rested-home" cx={x(index)} cy={y(row.winPct)} r="2.5" fill="var(--term-blue)" /> : null}
             {showLarge && row.largeRestGap.winPct !== null ? <circle data-series="large-rest-gap" cx={x(index)} cy={y(row.largeRestGap.winPct)} r="2.5" fill="var(--term-accent)" /> : null}
           </g>
         ))}
@@ -286,8 +285,8 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
             }}
           >
             <rect className={styles.focusTarget} x={x(selectedIndex) - 22} y={y(selected.homeBaselinePct) - 22} width="44" height="44" fill="transparent" stroke="transparent" />
-            <circle data-selected-series="home" cx={x(selectedIndex)} cy={y(selected.homeBaselinePct)} r="4.5" fill="var(--term-text-dim)" />
-            {selected.games >= MIN_GAMES_FOR_INFERENCE ? <circle data-selected-series="rested-home" cx={x(selectedIndex)} cy={y(selected.winPct)} r="4.5" fill="var(--term-blue)" /> : null}
+            {selected.homeGames > 0 ? <circle data-selected-series="home" cx={x(selectedIndex)} cy={y(selected.homeBaselinePct)} r="4.5" fill="var(--term-text-dim)" /> : null}
+            {selected.games > 0 ? <circle data-selected-series="rested-home" cx={x(selectedIndex)} cy={y(selected.winPct)} r="4.5" fill="var(--term-blue)" /> : null}
             {showLarge && selected.largeRestGap.winPct !== null ? <circle data-selected-series="large-rest-gap" cx={x(selectedIndex)} cy={y(selected.largeRestGap.winPct)} r="4.5" fill="var(--term-accent)" /> : null}
           </g>
         ) : null}
@@ -308,10 +307,10 @@ function SeasonInspection({ row, showLarge }: { row: HomeCourtStudySeason; showL
       <div className={styles.homeRegion} data-testid="home-court-home-inspection">
         <div><p className={styles.comparisonLabel}>Home win rate · venue baseline</p>
         <p className={styles.count}>{row.homeWins.toLocaleString()} wins /&nbsp;{row.homeGames.toLocaleString()} games</p></div>
-        <p className={`mono ${styles.homeRate}`}>{formatRate(row.homeBaselinePct)}</p>
+        <p className={`mono ${styles.homeRate}`}>{row.homeGames > 0 ? formatRate(row.homeBaselinePct) : "No eligible games"}</p>
       </div>
       <div className={styles.comparisonRegion}>
-        <SeasonComparison label="Rested at home · 0.5+" rate={gap === null ? "Too early" : formatRate(row.winPct)} wins={row.restedTeamWins} games={row.games} gap={gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`} kind="rest" />
+        <SeasonComparison label="Rested at home · 0.5+" rate={row.games > 0 ? formatRate(row.winPct) : "No eligible games"} wins={row.restedTeamWins} games={row.games} gap={gap === null ? "Unavailable" : `${signedNumber(gap, 1)}\u00a0pp`} kind="rest" />
         {showLarge ? <SeasonComparison label="Rested at home · 5+ (raw)" rate={row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)} wins={row.largeRestGap.restedTeamWins} games={row.largeRestGap.games} gap={largeGap === null ? "Unavailable" : `${signedNumber(largeGap, 1)}\u00a0pp`} kind="large" /> : null}
       </div>
     </div>

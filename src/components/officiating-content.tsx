@@ -4,8 +4,6 @@ import Link from "next/link";
 import { defaultNbaSeason } from "@/lib/nba-season";
 import { latestUsableResultSeason } from "@/lib/result-season";
 import { SeasonDataGuide } from "@/components/season-data-guide";
-import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
-import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { useState, useRef, useEffect } from "react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import useSWR from "swr";
@@ -37,16 +35,16 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
   const requested = params.get("season");
   const currentSeason = defaultNbaSeason();
   const latest = seasons[seasons.length - 1];
-  const hasCurrentPublication = seasons.some((season) => season.season === currentSeason);
-  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication);
-  const previous = seasons.filter((s) => s.season < currentSeason).at(-1);
-  const defaultSeason = latestUsableResultSeason(seasons.map((s) => s.season), currentSeason, readiness.ready);
+  const hasCurrentPublication = seasons.some((season) => season.season === currentSeason && season.gameCount > 0);
+  const previous = seasons.filter((s) => s.season < currentSeason && s.gameCount > 0).at(-1);
+  const publishedSeasons = seasons.filter((s) => s.gameCount > 0);
+  const defaultSeason = latestUsableResultSeason(publishedSeasons.map((s) => s.season), currentSeason);
   const selectedSeason = requested === currentSeason || seasons.some((s) => s.season === requested)
     ? requested! : defaultSeason ?? currentSeason;
   const season = seasons.find((s) => s.season === selectedSeason) ?? previous ?? latest;
-  const heldCurrent = selectedSeason === currentSeason && (!hasCurrentPublication || !readiness.ready);
+  const heldCurrent = selectedSeason === currentSeason && !hasCurrentPublication;
   const selectableSeasons = [...new Set([...seasons.map((s) => s.season), currentSeason])].sort();
-  const visibleSeasons = seasons.filter((value) => value.season !== currentSeason || readiness.ready);
+  const visibleSeasons = publishedSeasons.filter((value) => value.season <= currentSeason);
   const stripRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const strip = stripRef.current;
@@ -80,14 +78,14 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
   const [showAllTypes, setShowAllTypes] = useState(false);
   // Only the selected season's games are fetched; the page carries every season's totals.
   const { data: seasonGames, error: gamesError, mutate: retryGames, isValidating } = useSWR<ReviewGame[]>(
-    heldCurrent ? null : `/api/officiating/${season.season}`,
+    heldCurrent ? null : `/api/officiating/${season.season}${season.publicationHash ? `?publication=${encodeURIComponent(season.publicationHash)}` : ""}`,
     apiFetcher,
     { revalidateOnFocus: false },
   );
   const games = filterReviews(seasonGames ?? [], team, category);
-  const total = season.missed + season.wrong;
+  const total = (season?.missed ?? 0) + (season?.wrong ?? 0);
   const percent = total ? (season.missed / total) * 100 : null;
-  const categories = Object.entries(season.categories)
+  const categories = Object.entries(season?.categories ?? {})
     .map(([name, count]) => [name, count ?? 0] as const)
     .sort((a, b) => b[1] - a[1]);
   const teams = [
@@ -97,12 +95,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
     pageSize,
     games.findIndex((g) => g.id === gameId) + 1,
   );
-  const recent = visibleSeasons.slice(-3);
-  const rates = recent.map((s) => (s.missed + s.wrong) / s.gameCount);
-  const monotonic =
-    rates.length === 3 &&
-    (rates.every((v, i) => i === 0 || v > rates[i - 1]) ||
-      rates.every((v, i) => i === 0 || v < rates[i - 1]));
+  const recent = visibleSeasons.filter((value) => value.season < currentSeason).slice(-3);
   function update(next: {
     season?: string;
     team?: string;
@@ -121,13 +114,10 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
       description="What the NBA’s Last Two Minute reports found in close games." />
     <SeasonSelector id="officiating-season" season={selectedSeason} seasons={selectableSeasons}
       onSeasonChange={(value) => update({ season: value, game: "", category: "" })} />
-    {!hasCurrentPublication ? <SeasonDataGuide title="Awaiting results" season={currentSeason}
+    <SeasonDataGuide title="Awaiting results" season={currentSeason}
       body="Last Two Minute reports for this season have not been published."
       previousHref={previous ? `/officiating?season=${previous.season}` : undefined}
-      previousLabel={previous ? `View published results · ${previous.season}` : undefined} /> : <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-      body="New-season officiating results are not available yet. Earlier published Last Two Minute reports remain available."
-      previousHref={previous ? `/officiating?season=${previous.season}` : undefined}
-      previousLabel={previous ? `View published results · ${previous.season}` : undefined} />}
+      previousLabel={previous ? `View published results · ${previous.season}` : undefined} />
   </div>;
 
   return (
@@ -170,6 +160,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
       ) : null}
       <div>
         <p className="mb-4 text-body text-[var(--term-text-muted)]">
+          {season.season === currentSeason ? "Season to date: published reports so far. " : ""}
           {season.season === "2014-15" ? "Partial season: reports begin with March 1, 2015 games. " : ""}
           {season.season < "2017-18" ? "These reports used the earlier five-point review rule. " : ""}
           Review criteria changed in 2017–18. <a className="underline" href="/behind-the-data/officiating">How coverage differs</a>
@@ -258,20 +249,18 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
             </div>
           </div>
           <p className={styles.caveat}>
-            Covers only the close-game endings the NBA chose to review.
+            Covers only the close-game endings the NBA chose to review. The missed-call share describes identified errors, not whole-game officiating accuracy.
           </p>
         </section>
         <section className={styles.trend}>
           <div>
-            <h3>Is officiating getting worse?</h3>
+            <h3>Errors in reviewed game endings</h3>
             <p>
-              {monotonic
-                ? "The recorded rate changed consistently; different games get reviewed each season."
-                : `No clear trend across these ${recent.length} seasons; the reviewed games differ.`}
+              Different games get reviewed each season. These counts do not establish a trend in officiating quality. The current season is excluded from this completed-season comparison.
             </p>
           </div>
           <div>
-            <p className={styles.stripLabel}>Errors per reviewed game · latest three seasons</p>
+            <p className={styles.stripLabel}>Errors per reviewed game · latest completed seasons</p>
             <div className={styles.trendValues}>
               {recent.map((s) => (
                 <div key={s.season}>

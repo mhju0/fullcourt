@@ -1,7 +1,5 @@
 name: Refresh officiating reports
 on:
-  schedule:
-    - cron: "30 20 * * *"
   workflow_dispatch:
     inputs:
       season:

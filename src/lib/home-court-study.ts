@@ -1,5 +1,4 @@
 import { liftOverBaseline } from "@/lib/rest-split-facts";
-import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
 import type { AnalysisResponse } from "@/types";
 import { buildHistoricalBacktest, gapRangeByKey, type HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 
@@ -44,7 +43,7 @@ export function homeCourtChartSegments(values: readonly (number | null)[]): { in
 
 /** The difference of the two rates as printed beside it, so the row's arithmetic holds (D-93). */
 export function restedHomeGap(row: HomeCourtSeason): number | null {
-  if (row.games < MIN_GAMES_FOR_INFERENCE) return null;
+  if (row.games === 0 || row.homeGames === 0) return null;
   return liftOverBaseline(row.winPct, row.homeBaselinePct);
 }
 

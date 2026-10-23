@@ -50,9 +50,9 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   await expect(finding).toContainText('55.0%');
   await expect(finding).toContainText('2024-25');
   await expect(finding).not.toContainText('2025-26');
-  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveValue('2024-25');
+  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveValue('2025-26');
   const chartButton = page.getByTestId('home-court-chart').getByRole('button');
-  await expect(chartButton).toHaveAccessibleName(/^2024-25/);
+  await expect(chartButton).toHaveAccessibleName(/^2025-26, season to date/);
   await page.getByRole('combobox', { name: 'Inspect season' }).selectOption('2015-16');
   await expect(chartButton).toHaveAccessibleName(/^2015-16/);
   await expect(page.getByTestId('home-court-season-inspection').getByRole('heading', { name: '2015-16', exact: true })).toBeVisible();
@@ -61,7 +61,7 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   const inspection = page.locator('[aria-live="polite"]');
   await expect(inspection).toContainText('Season to date');
   await expect(inspection).toContainText('50.0%');
-  await expect(inspection.getByText('Too early', { exact: true })).toHaveCount(2);
+  await expect(inspection.getByText('No eligible games', { exact: true })).toHaveCount(1);
   await expect(inspection.getByText('0.0%', { exact: true })).toHaveCount(0);
   await page.locator('summary').filter({ hasText: 'View season data' }).click();
   const table = page.getByRole('region', { name: 'Home-court season data' });
@@ -71,20 +71,15 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   await expect(table.getByRole('link', { name: '2024-25', exact: true })).toHaveAttribute('href', '/season?season=2024-25');
 });
 
-for (const games of [99, 100]) {
-  test(`rested-home display gate at ${games} games`, async ({ page }) => {
+for (const games of [1, 99, 100]) {
+  test(`rested-home observed rate is available at ${games} games`, async ({ page }) => {
     await mockStudy(page, [...completed, partial(games)]);
     await page.getByTestId('home-court-chart').getByRole('button').focus();
     await page.keyboard.press('End');
     const inspection = page.locator('[aria-live="polite"]');
-    if (games === 99) {
-      await expect(inspection.getByText('Too early', { exact: true })).toHaveCount(2);
-      await expect(inspection).not.toContainText('59.6%');
-    } else {
-      await expect(inspection).toContainText('60.0%');
-      await expect(inspection).toContainText('+10.0 pp');
-      await expect(inspection.getByText('Too early', { exact: true })).toHaveCount(0);
-    }
+    await expect(inspection).toContainText(`${partial(games).winPct.toFixed(1)}%`);
+    await expect(inspection.getByText('Too early', { exact: true })).toHaveCount(0);
+    await expect(page.locator('[data-series="rested-home"]')).toHaveCount(11);
   });
 }
 
@@ -99,7 +94,8 @@ test('season report shows its home baseline without historical API or rested-hom
   await expect(result).toContainText('70.0%');
   await expect(result).toContainText('7 wins / 10 eligible games');
   await expect(result).toContainText('SEASON TO DATE');
-  await expect(result.getByText('Too early', { exact: true })).toHaveCount(2);
+  await expect(result.getByText('No eligible games', { exact: true })).toHaveCount(1);
+  await expect(result.getByText('Unavailable', { exact: true })).toHaveCount(1);
   await expect(result.getByRole('link', { name: 'See home-court history' })).toHaveAttribute('href', '/home-court');
 });
 

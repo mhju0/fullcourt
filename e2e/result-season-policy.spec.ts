@@ -42,46 +42,34 @@ for (const width of [390, 1280]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 
-  test(`officiating keeps explicit unpublished current selected at ${width}px`, async ({ page }) => {
+  test(`officiating defaults to published current results and preserves season history at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/officiating");
     const selector = page.locator("#officiating-season");
-    await expect(selector).not.toHaveValue("2026-27");
-    const published = await selector.inputValue();
-    await selector.selectOption("2026-27");
     await expect(selector).toHaveValue("2026-27");
-    await expect(page.getByRole("heading", { name: "Awaiting results · 2026-27" })).toBeVisible();
-    await expect(page.getByRole("region", { name: "Season finding" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "Season finding" })).toBeVisible();
+    await expect(page.getByText(/Season to date: published reports so far/)).toBeVisible();
+    await selector.selectOption("2025-26");
     await page.reload();
-    await expect(selector).toHaveValue("2026-27");
-    await page.getByRole("link", { name: `View published results · ${published}` }).click();
-    await expect(selector).toHaveValue(published);
+    await expect(selector).toHaveValue("2025-26");
+    await selector.selectOption("2026-27");
     await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
     await page.goBack();
-    await expect(selector).toHaveValue("2026-27");
-    await expect(page.getByRole("heading", { name: "Awaiting results · 2026-27" })).toBeVisible();
+    await expect(selector).toHaveValue("2025-26");
     await page.goForward();
-    await expect(selector).toHaveValue(published);
+    await expect(selector).toHaveValue("2026-27");
   });
 }
 
-test("report current publication stays held during delayed and failed readiness", async ({ page }) => {
+test("report current publication displays despite a failed unrelated readiness endpoint", async ({ page }) => {
   await reportFixtures(page, ["2024-25", "2026-27"]);
-  let finish!: () => void;
-  const wait = new Promise<void>(resolve => { finish = resolve; });
   await page.route("**/api/season-readiness?*", async route => {
-    await wait;
     await route.fulfill({ status: 503, json: { data: null, error: "Unavailable" } });
   });
   await page.goto("/season");
-  await expect(page.locator("#season-report-season")).toHaveValue("2024-25");
-  await page.locator("#season-report-season").selectOption("2026-27");
-  await expect(page.getByText("Checking season data…", { exact: true })).toBeVisible();
-  await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
-  finish();
-  await expect(page.locator("main").getByRole("alert")).toContainText("COULD NOT CHECK SEASON DATA");
   await expect(page.locator("#season-report-season")).toHaveValue("2026-27");
-  await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
+  await expect(page.getByTestId("season-rest-win-rate")).toHaveText("No eligible games");
+  await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
 });
 
 test("shot value defaults to its actual publication and keeps an explicit unpublished current awaiting", async ({ page }) => {
@@ -103,7 +91,7 @@ test("shot value defaults to its actual publication and keeps an explicit unpubl
   await expect(page.locator('[data-shot-anchor="two-court"]')).toBeVisible();
   await selector.selectOption("2026-27");
   await expect(selector).toHaveValue("2026-27");
-  await expect(page.getByRole("heading", { name: "Awaiting results · 2026-27" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Awaiting season data · 2026-27" })).toBeVisible();
   await expect(page.locator('[data-shot-anchor="two-court"]')).toHaveCount(0);
   await page.goBack();
   await expect(selector).toHaveValue("2024-25");

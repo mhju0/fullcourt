@@ -26,10 +26,17 @@ export const S = {
   EFG_NUMERATOR: 11,
   NO_REST_NUMERATOR: 12,
   RESTED_NUMERATOR: 13,
+  EFG_SECOND_MOMENT: 14,
+  NO_REST_SECOND_MOMENT: 15,
+  RESTED_SECOND_MOMENT: 16,
 } as const
 
 export interface PlayerRestPayload {
   generated: string
+  refresh?: { checkedAt: string | null; status: string; publishedAt: string | null }
+  playerIds?: string[]
+  seasonOnlyPlayers?: number[]
+  publication?: { through: string | null; expectedGames: number; observedGames: number; missingGameIds: string[]; season?: string; source?: string; generatedAt?: string; emptyArms?: number; historyGames?: number; fixtureIds?: string[]; fixtureIdentitySha256?: string }
   names: string[]
   teams: string[]
   /** Original 11 columns, optionally followed by whole/no-rest/rested integer 2*FGM+3PM numerators. */
@@ -48,9 +55,12 @@ export interface CareerEstimate {
 
 export interface PlayerRestIndex {
   generated: string
+  refresh?: PlayerRestPayload["refresh"]
+  publication?: PlayerRestPayload["publication"]
   names: string[]
   teams: string[]
   pos: string[]
+  seasonOnlyPlayers: Set<number>
   /** Search keys with diacritics stripped, parallel to `names`. */
   searchKeys: string[]
   /** Every season a player appeared in, oldest first. */
@@ -88,6 +98,7 @@ export interface CareerTotals {
   restedFga: number
   restedEfg: number | null
   effect: number | null
+  se: number | null
   exactNumerators: boolean
   ageLo: number | null
   ageHi: number | null
@@ -116,18 +127,31 @@ export function restEffect(noRestEfg: number | null, restedEfg: number | null): 
   return restedEfg - noRestEfg
 }
 
-/**
- * Standard error of the difference between two eFG% means, in percentage points.
- * p(1-p)/n on each arm with p at 0.5 — close to the league rate and the widest
- * the binomial gets, so this never understates the uncertainty.
- *
- * In pp the per-arm SE is 50/sqrt(n), so its variance is 2500/n and the two add.
- * No further scaling: at 100 attempts an arm is worth 5 pp and the difference
- * 7.07 pp, which is the order the whole page's "one season is noise" claim rests on.
+/** Sample-mean variance for attempts worth 0, 1 or 1.5 eFG makes.
+ * Numerators are 2*FGM+FG3M and second moments are 4*FGM+5*FG3M.
+ * A single attempt cannot estimate sampling variation; legacy payloads lack moments.
  */
-export function effectSe(noRestFga: number, restedFga: number): number | null {
-  if (!noRestFga || !restedFga) return null
-  return Math.sqrt(2500 / noRestFga + 2500 / restedFga)
+export function effectSe(
+  noRestFga: number, restedFga: number,
+  noRestNumerator?: number, restedNumerator?: number,
+  noRestSecondMoment?: number, restedSecondMoment?: number,
+): number | null {
+  const variance = (n: number, numerator?: number, second?: number) => {
+    if (n < 2 || numerator === undefined || second === undefined ||
+      !Number.isFinite(numerator) || !Number.isFinite(second)) return null
+    const centered = second / 4 - numerator * numerator / (4 * n)
+    return Math.max(0, centered) / (n * (n - 1))
+  }
+  const a = variance(noRestFga, noRestNumerator, noRestSecondMoment)
+  const b = variance(restedFga, restedNumerator, restedSecondMoment)
+  return a === null || b === null ? null : 100 * Math.sqrt(a + b)
+}
+
+export function defaultPlayerVolume(year: number | "career", currentYear: number, explicit: string | null): number {
+  const fallback = year === currentYear ? 0 : 300
+  if (explicit === null) return fallback
+  const value = Number(explicit)
+  return [0, 300, 600, 900].includes(value) ? value : fallback
 }
 
 export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
@@ -148,9 +172,12 @@ export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
 
   return {
     generated: payload.generated,
+    refresh: payload.refresh,
+    publication: payload.publication,
     names: payload.names,
     teams: payload.teams,
     pos: payload.pos ?? [],
+    seasonOnlyPlayers: new Set(payload.seasonOnlyPlayers ?? []),
     searchKeys: payload.names.map(searchKey),
     seasonsByPlayer,
     career,
@@ -181,6 +208,12 @@ export function careerTotals(seasons: number[][]): CareerTotals {
     restedFga += r[S.RESTED_FGA]
     restedMade += hasExactNumerators(r) ? 50 * r[S.RESTED_NUMERATOR] : r[S.RESTED_EFG] * r[S.RESTED_FGA]
   }
+  const exactMoments = seasons.length > 0 && seasons.every(r =>
+    [S.NO_REST_SECOND_MOMENT, S.RESTED_SECOND_MOMENT].every(c => Number.isSafeInteger(r[c]) && r[c] >= 0))
+  const sumColumn = (column: number) => seasons.reduce((total, r) => total + r[column], 0)
+  const se = exactMoments ? effectSe(noRestFga, restedFga,
+    sumColumn(S.NO_REST_NUMERATOR), sumColumn(S.RESTED_NUMERATOR),
+    sumColumn(S.NO_REST_SECOND_MOMENT), sumColumn(S.RESTED_SECOND_MOMENT)) : null
   const noRestEfg = noRestFga ? noRestMade / noRestFga : null
   const restedEfg = restedFga ? restedMade / restedFga : null
   return {
@@ -192,6 +225,7 @@ export function careerTotals(seasons: number[][]): CareerTotals {
     restedFga,
     restedEfg,
     effect: restEffect(noRestEfg, restedEfg),
+    se,
     exactNumerators: seasons.length > 0 && seasons.every(hasExactNumerators),
     ageLo: seasons.length ? seasons[0][S.AGE] || null : null,
     ageHi: seasons.length ? seasons[seasons.length - 1][S.AGE] || null : null,
@@ -203,7 +237,9 @@ export function seasonRow(index: PlayerRestIndex, r: number[]): BrowseRow {
   const noRestEfg = seasonEfg(r, S.NO_REST_FGA, S.NO_REST_EFG, S.NO_REST_NUMERATOR)
   const restedEfg = seasonEfg(r, S.RESTED_FGA, S.RESTED_EFG, S.RESTED_NUMERATOR)
   const effect = restEffect(noRestEfg, restedEfg)
-  const se = effectSe(r[S.NO_REST_FGA], r[S.RESTED_FGA])
+  const se = effectSe(r[S.NO_REST_FGA], r[S.RESTED_FGA],
+    r[S.NO_REST_NUMERATOR], r[S.RESTED_NUMERATOR],
+    r[S.NO_REST_SECOND_MOMENT], r[S.RESTED_SECOND_MOMENT])
   return {
     player: r[S.PLAYER],
     name: index.names[r[S.PLAYER]],
@@ -218,7 +254,7 @@ export function seasonRow(index: PlayerRestIndex, r: number[]): BrowseRow {
     restedEfg,
     effect,
     se,
-    underEvidenced: effect === null || se === null || Math.abs(effect) < se,
+    underEvidenced: effect === null || se === null || se === 0 || Math.abs(effect) < se,
   }
 }
 
@@ -286,11 +322,12 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
 
   if (opts.year === "career") {
     for (const [player, seasons] of index.seasonsByPlayer) {
+      if (index.seasonOnlyPlayers.has(player)) continue
       const est = index.career.get(player)
-      if (!est) continue // no career estimate: too thin in one arm to rank
       if (opts.team && !seasons.some((s) => matchesFranchise(index.teams[s[S.TEAM]], opts.team!))) continue
       const t = careerTotals(seasons)
-      const effect = t.exactNumerators ? t.effect : est.delta
+      const effect = t.exactNumerators ? t.effect : (est?.delta ?? t.effect)
+      const se = t.se
       rows.push({
         player,
         name: index.names[player],
@@ -304,8 +341,8 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
         restedFga: t.restedFga,
         restedEfg: t.restedEfg,
         effect,
-        se: est.se,
-        underEvidenced: effect === null || Math.abs(effect) < est.se,
+        se,
+        underEvidenced: effect === null || se === null || se === 0 || Math.abs(effect) < se,
       })
     }
   } else {
@@ -364,7 +401,7 @@ export function zeroRestWorkload(
   limit: number
 ): ZeroRestWorkloadRow[] {
   return payload.seasons
-    .filter((row) => row[S.YEAR] === seasonStartYear)
+    .filter((row) => row[S.YEAR] === seasonStartYear && row[S.NO_REST_FGA] > 0)
     .map((row) => ({
       name: payload.names[row[S.PLAYER]],
       team: payload.teams[row[S.TEAM]],

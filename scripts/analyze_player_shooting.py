@@ -62,9 +62,17 @@ def efg(fgm: float, fga: float, fg3m: float) -> float:
 
 
 def efg_se(fgm: float, fga: float, fg3m: float) -> float:
-    """SE of eFG% in pp, treating each attempt as roughly binomial on points-per-shot/2."""
-    p = efg(fgm, fga, fg3m)
-    return math.sqrt(max(p * (1 - p), 0.01) / fga) * 100
+    """Observed per-attempt sample SE in pp for scores 0, 1 and 1.5.
+
+    Unavailable below two attempts; no normal confidence claim is made for tiny arms.
+    """
+    if fga < 2:
+        return float("nan")
+    if not 0 <= fg3m <= fgm <= fga:
+        raise ValueError("Impossible eFG shooting counts")
+    total = fgm + 0.5 * fg3m
+    second = fgm + 1.25 * fg3m
+    return 100 * math.sqrt(max(0, second - total * total / fga) / (fga * (fga - 1)))
 
 
 def norm_p(z: float) -> float:

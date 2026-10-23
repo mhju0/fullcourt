@@ -127,20 +127,15 @@ test.describe("Player Shooting by Rest", () => {
     expect(await page.getByTestId("player-row").first().textContent()).not.toBe(top);
   });
 
-  test("career view ranks only players with a career estimate", async ({ page }) => {
-    await page.goto("/shooting?year=2025");
+  test("career view includes observed totals without requiring a model estimate", async ({ page }) => {
+    await page.goto("/shooting?year=career&volume=0");
     await page.getByTestId("player-row").first().waitFor(READY);
-
-    await page.selectOption("#pr-season", "career");
-    await page.getByText(/^Advanced filters \(/).click();
-    await page.selectOption("#pr-volume", "0");
-    // Every listed player carries an effect; nobody is ranked on a number we lack.
-    const dashes = await page
-      .getByTestId("player-row")
-      .locator("td:last-child")
-      .filter({ hasText: /^—$/ })
-      .count();
-    expect(dashes).toBe(0);
+    await page.getByRole("searchbox", { name: "Search player" }).fill("Sarunas Marciulionis");
+    await expect(page.getByTestId("player-row")).toHaveCount(1);
+    await page.getByTestId("player-row").getByRole("button").click();
+    await expect(page.getByTestId("career-row")).toBeVisible();
+    await expect(page.locator("main")).toContainText("No career estimate is available");
+    await expect(page.locator("main")).toContainText("150 attempts in each rest arm");
   });
 
   test("a ?player= link opens that player directly", async ({ page }) => {
@@ -166,7 +161,7 @@ test.describe("Player Shooting by Rest", () => {
     expect(okc).toBeGreaterThan(0);
     expect(okc).toBeLessThan(all);
     // Every visible team cell belongs to the franchise (the SEA arm matters only in pre-2008 seasons).
-    for (const cell of await page.getByTestId("player-row").locator("td:first-child small").allTextContents()) {
+    for (const cell of await page.getByTestId("player-row").locator("td:first-child small:first-of-type").allTextContents()) {
       expect(cell).toMatch(/OKC|SEA/);
     }
   });
@@ -207,9 +202,9 @@ test("shooting filter and player links restore the same view", async ({ page }) 
   await page.goto("/shooting?year=2024&volume=0&q=jokic&certain=1&sort=effect&dir=asc");
   await expect(page.locator("#pr-season")).toHaveValue("2024");
   await expect(page.locator("#pr-volume")).toHaveValue("0");
-  await expect(page.getByLabel("Hide uncertain differences")).toBeChecked();
+  await expect(page.getByLabel("Show gaps exceeding one observed standard error")).toBeChecked();
   await page.locator("summary").filter({ hasText: /^Advanced filters/ }).click();
-  await page.getByLabel("Hide uncertain differences").uncheck();
+  await page.getByLabel("Show gaps exceeding one observed standard error").uncheck();
   await page.getByTestId("player-row").first().click();
   await page.reload();
   await expect(page.locator("#pr-season")).toHaveValue("2024");

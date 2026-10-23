@@ -14,12 +14,10 @@ import {
   ABNORMAL_SEASON_NOTES,
   allSeasonHomeRateExcluding,
   allSeasonNormExcluding,
-  MIN_GAMES_FOR_INFERENCE,
+  winRateInterval,
   type SeasonReportResponse,
 } from "@/lib/season-report";
-import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
 import { SeasonDataGuide } from "@/components/season-data-guide";
-import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { MessageCard } from "@/components/ui/message-card";
 import { keepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
@@ -34,17 +32,15 @@ export function SeasonReportContent() {
     LATEST_SEASON,
     browsableSeasons(),
   );
-  const needsReadiness = !explicit || urlSeason === LATEST_SEASON;
-  const readiness = useSeasonReadiness(LATEST_SEASON, needsReadiness);
   const publication = useSWR<SeasonReportPublication>("/api/season-report-publication", apiFetcher,
     { revalidateOnFocus: true, refreshInterval: 60_000 });
   const publishedSeasons = publication.data?.seasons ?? [];
-  const defaultSeason = latestUsableResultSeason(publishedSeasons, LATEST_SEASON, readiness.ready && !publication.error);
+  const defaultSeason = latestUsableResultSeason(publishedSeasons, LATEST_SEASON);
   const season = explicit ? urlSeason : defaultSeason ?? LATEST_SEASON;
   const previousPublished = latestUsableResultSeason(publishedSeasons, LATEST_SEASON, false);
   const awaitingLatest = !explicit && defaultSeason !== null && defaultSeason < LATEST_SEASON;
   const heldSelection = season === LATEST_SEASON &&
-    (!readiness.ready || !publishedSeasons.includes(LATEST_SEASON) || Boolean(publication.error));
+    (!publishedSeasons.includes(LATEST_SEASON) || Boolean(publication.error));
   const { data: loaded, error, isLoading, isValidating, mutate } = useSWR<SeasonReportResponse>(
     heldSelection || (!explicit && !defaultSeason) ? null : reportKey(season),
     apiFetcher,
@@ -63,14 +59,12 @@ export function SeasonReportContent() {
   const previous = browsableSeasons()
     .filter((value) => value < season)
     .at(-1);
-  const enough =
-    data &&
-    data.overall.games >= MIN_GAMES_FOR_INFERENCE &&
-    data.overall.band !== null;
+  const hasRestRate = data && data.overall.games > 0;
+  const interval = data ? winRateInterval(data.overall.restedTeamWins, data.overall.games) : null;
   const homeRate = data?.homeRate;
   const comparisonUnavailable = data && !homeRate;
   const delta =
-    enough && homeRate && homeRate.games > 0
+    hasRestRate && homeRate && homeRate.games > 0
       ? Math.round(
           ((data.overall.restedTeamWins / data.overall.games) -
             (homeRate.homeWins / homeRate.games)) *
@@ -100,7 +94,7 @@ export function SeasonReportContent() {
       {fallbackNote ? <p role="status">{fallbackNote.replace(`Showing ${urlSeason}.`, `Showing ${season}.`)}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          {keepTogether(`Showing the ${season} report. ${LATEST_SEASON} results are ${readiness.error ? "unconfirmed" : "awaiting publication and season data"}.`)}
+          {keepTogether(`Showing the ${season} report. ${LATEST_SEASON} results are ${publication.error ? "unconfirmed" : "awaiting publication"}.`)}
         </p>
       ) : null}
       {publication.error && (!explicit || urlSeason === LATEST_SEASON) ? (
@@ -109,17 +103,12 @@ export function SeasonReportContent() {
           action={<button type="button" className="fc-text-link min-h-11" onClick={() => { void publication.mutate().catch(() => undefined); }}>Retry published reports</button>} />
       ) : null}
       {!explicit && !publication.data && !publication.error ? <p role="status">Checking published seasons…</p> : null}
-      {heldSelection && publication.data ? (
-        <div data-testid={heldSelection && readiness.awaiting ? "season-awaiting-results" : undefined}>
-          {!publishedSeasons.includes(LATEST_SEASON) && readiness.ready ? (
+      {heldSelection && publication.data && !publication.error ? (
+        <div data-testid="season-awaiting-results">
             <SeasonDataGuide title="Awaiting results" season={LATEST_SEASON}
               body="The new season’s report has not been published yet."
               previousHref={previousPublished ? `/season?season=${previousPublished}` : undefined}
               previousLabel={previousPublished ? `View ${previousPublished} report` : undefined} />
-          ) : <SeasonReadinessNotice readiness={readiness} season={LATEST_SEASON} showExpectedTiming
-            body="The new season’s results are not available yet. Explore the previous report or follow the current schedule."
-            previousHref={previousPublished ? `/season?season=${previousPublished}` : undefined}
-            previousLabel={previousPublished ? `View ${previousPublished} report` : undefined} />}
         </div>
       ) : null}
       {note ? (
@@ -187,42 +176,38 @@ export function SeasonReportContent() {
                 <div className="py-4 sm:pr-4">
                   <p className="fc-control-label sm:min-h-10">Home win rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
-                    {data.homeRate.games > 0 ? `${data.homeRate.winPct.toFixed(1)}%` : "Awaiting results"}
+                    {data.homeRate.games > 0 ? `${data.homeRate.winPct.toFixed(1)}%` : "No eligible games"}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>{data.homeRate.homeWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.homeRate.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:px-4">
                   <p className="fc-control-label sm:min-h-10">Rested at home win rate</p>
                   <p data-testid="season-rest-win-rate" className="mono mt-2 text-2xl font-semibold tabular-nums text-[var(--term-blue-text)]">
-                    {enough ? `${data.overall.winPct.toFixed(1)}%` : "Too early"}
+                    {hasRestRate ? `${data.overall.winPct.toFixed(1)}%` : "No eligible games"}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.overall.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
                   <p className="fc-control-label sm:min-h-10">Vs home rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
-                    {delta === null ? "Too early" : `${signedNumber(delta, 1)}\u00a0pp`}
+                    {delta === null ? "Unavailable" : `${signedNumber(delta, 1)}\u00a0pp`}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>Rested team at home versus all designated-home games</p>
                 </div>
               </div>
-              {!enough ? (
-                <p className="mt-4">The comparison for the rested team at home appears after {MIN_GAMES_FOR_INFERENCE} eligible games. {data.overall.games} recorded so far.</p>
-              ) : null}
               <p className={`mt-4 ${muted}`}>
                 {data.completedGames.toLocaleString()} / {data.scheduledGames.toLocaleString()} published regular-season games completed with scored fatigue pairs.
               </p>
+              {data.availableFinalGames !== undefined ? <p className={`mt-2 ${muted}`}>
+                {data.availableFinalGames.toLocaleString()} scored final games; {data.missingFatigueGames.toLocaleString()} awaiting one or both fatigue records.
+              </p> : null}
               <a className="fc-text-link mt-3 inline-block min-h-11 content-center" href="/home-court">
                 See home-court history →
               </a>
             </div>
             <div className="fc-report-interpretation flex flex-col gap-3">
               <h3 className="text-lg font-semibold">
-                {delta === null
-                  ? "The home baseline is available before the rest comparison."
-                  : Math.abs(delta) <= (data.overall.band ?? 0)
-                  ? "The result is close to home court alone."
-                  : "The record of the rested team at home differs from the home baseline."}
+                {data.seasonComplete ? "A descriptive season record" : "A season-to-date record that will change"}
               </h3>
               <p className={muted}>
                 This is a record of completed games. Team strength, venue, and
@@ -237,9 +222,9 @@ export function SeasonReportContent() {
                     ? "Loading historical comparison…"
                     : "Historical comparison unavailable."}
               </p>
-              {enough && data.overall.band !== null ? (
+              {interval !== null ? (
                 <p className={muted}>
-                  Uncertainty for the rested team at home: ±{data.overall.band.toFixed(1)} percentage points (95% interval).
+                  Rested-at-home win rate: {interval.lower.toFixed(1)}% to {interval.upper.toFixed(1)}% (95% Wilson interval). This interval describes one rate; it does not test the difference from the overlapping home baseline.
                 </p>
               ) : null}
               <a

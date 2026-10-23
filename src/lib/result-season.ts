@@ -1,8 +1,8 @@
-/** Publication is module-specific; only the current regular season also needs the GP gate. */
+/** Publication is module-specific; callers may impose a separate model-readiness constraint. */
 export function latestUsableResultSeason(
   publishedSeasons: readonly string[],
   currentSeason: string,
-  currentReady: boolean,
+  currentReady = true,
 ): string | null {
   return publishedSeasons
     .filter((season) => season < currentSeason || (season === currentSeason && currentReady))

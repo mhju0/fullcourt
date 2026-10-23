@@ -8,14 +8,15 @@ const dialect = new PgDialect();
 
 beforeEach(() => { execute.mockReset(); });
 describe("shot-value publication discovery", () => {
-  it("bounds the same usable-publication population strictly before the supplied season", async () => {
+  it("discovers raw grids independently of missing model surfaces", async () => {
     execute.mockResolvedValue({ rows: [{ latest: "2024-25" }] });
     expect(await getLatestPublishedShotQualitySeason("2026-27")).toBe("2024-25");
     const query = dialect.sqlToQuery(execute.mock.calls[0][0]);
     expect(query.sql).toContain("max(g.season)");
     expect(query.sql).toContain("g.season < $1");
     expect(query.params[0]).toBe("2026-27");
-    expect(query.sql.match(/AND EXISTS/g)).toHaveLength(2);
+    expect(query.sql).toContain("g.fga > 0");
+    expect(query.sql).not.toContain("shot_value_surface");
   });
 
   it("leaves bare latest discovery unbounded and reports empty prior coverage as null", async () => {

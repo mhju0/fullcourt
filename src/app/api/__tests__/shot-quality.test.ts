@@ -11,12 +11,16 @@ vi.mock("@/lib/db/queries", () => ({
   getShotQualityGrid: vi.fn(),
 }));
 
+const daily = vi.hoisted(() => ({ data: null as unknown, status: "bundled", checkedAt: null, publishedAt: null, hash: null }));
+vi.mock("@/lib/daily-publication-server", () => ({ readDailyDataset: vi.fn(async () => daily) }));
+
 const latest = vi.mocked(getLatestPublishedShotQualitySeason);
 const grid = vi.mocked(getShotQualityGrid);
 const request = (query = "") => new NextRequest(`http://localhost/api/shot-quality${query}`);
 
 describe("GET /api/shot-quality", () => {
   beforeEach(() => {
+    daily.data = null;
     latest.mockReset();
     grid.mockReset();
     latest.mockResolvedValue("2025-26");
@@ -53,6 +57,21 @@ describe("GET /api/shot-quality", () => {
     latest.mockResolvedValueOnce("2026-27").mockResolvedValueOnce(null);
     const res = await GET(request());
     expect((await res.json()).data.previousPublishedSeason).toBeNull();
+  });
+
+  it("serves validated current raw shots without requiring a database surface", async () => {
+    const cell = { cellX: 0, cellY: 0, zoneBasic: "Restricted Area", zoneRange: "Less Than 8 ft.", zoneArea: "Center(C)", fga: 2, fgm: 1, fg3a: 0, fg3m: 0, gbm: null, baseline: null };
+    daily.data = { schemaVersion: 1, snapshot: { season: "2026-27", generatedAt: "2026-10-22T12:00:00Z", source: {
+      provider: "NBA Stats ShotChartDetail", url: "https://stats.nba.com/stats/shotchartdetail?Season=2026-27", fetchedAt: "2026-10-22T12:00:00Z", firstGameDate: "2026-10-21", lastGameDate: "2026-10-21", gameIds: ["0022600001"], shotCount: 2, droppedNoLocation: 0, droppedOutsideHalfCourt: 0,
+    }, cells: [cell] } };
+    latest.mockRejectedValue(new Error("database unavailable"));
+    const response = await GET(request("?season=2026-27"));
+    const body = await response.json();
+    expect(response.status).toBe(200);
+    expect(grid).not.toHaveBeenCalled();
+    expect(body.data.cells).toEqual([cell]);
+    expect(body.data.meta.publication.models["gbm-v1"]).toMatchObject({ ready: false, coveredCells: 0, totalCells: 1 });
+    expect(body.data.meta.publication.gameCount).toBe(1);
   });
 
   it("returns a safe unavailable response when publication discovery is empty", async () => {

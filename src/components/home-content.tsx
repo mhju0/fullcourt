@@ -1,6 +1,7 @@
 import { TransitionLink } from "@/components/transition-link";
 import { signedNumber } from "@/lib/signed-number";
 import type { HomeFindings } from "@/lib/home-findings";
+import { HomeSeasonToDate } from "@/components/home-season-to-date";
 import styles from "./home.module.css";
 
 function RateBar({ label, value, rested = false }: { label: string; value: number; rested?: boolean }) {
@@ -22,6 +23,8 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <TransitionLink href="/games" className={styles.primary}>Find a game <span aria-hidden="true">→</span></TransitionLink>
         </div>
       </header>
+
+      <HomeSeasonToDate />
 
       <section className={styles.finding} aria-labelledby="rest-finding">
         <div>

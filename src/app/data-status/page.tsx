@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import { sql } from "drizzle-orm";
 import { PageHeader } from "@/components/page-header";
 import { keepTogether } from "@/components/ui/keep-together";
-import data from "@/data/officiating.json";
 import { db } from "@/lib/db";
+import { loadPlayerRestPublication } from "@/lib/player-rest-publication-server";
+import { loadOfficiatingPublication } from "@/lib/officiating-publication-server";
+import { readDailyDataset } from "@/lib/daily-publication-server";
+import { parseCurrentShotQualityArtifact, getCurrentShotQualitySnapshot } from "@/lib/shot-quality-publication";
+import { defaultNbaSeason } from "@/lib/nba-season";
 import {
   getDataAsOf,
   getLatestPublishedPlayoffSeason,
@@ -15,8 +17,6 @@ import {
 import { isNbaOffSeason } from "@/lib/nba-season";
 import { shootingHomeCoverage } from "@/lib/home-findings";
 import { AVAILABILITY_SAMPLE } from "@/lib/availability-facts";
-import type { ReviewSeason } from "@/lib/officiating";
-import type { PlayerRestPayload } from "@/lib/player-rest";
 import { getHistoricalEvidenceCoverage } from "@/lib/rest-advantage-evidence-server";
 import { termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 
@@ -87,10 +87,12 @@ function StatusCard({
 }
 
 export default async function DataStatusPage() {
-  const playerPayload = JSON.parse(
-    await readFile(join(process.cwd(), "public/data/player-rest.json"), "utf8")
-  ) as PlayerRestPayload;
-  const officiatingSeasons = data.seasons as ReviewSeason[];
+  const [playerPayload, officiating, shots] = await Promise.all([
+    loadPlayerRestPublication(), loadOfficiatingPublication(), readDailyDataset("shotQuality"),
+  ]);
+  const officiatingSeasons = officiating.seasons;
+  const candidate = parseCurrentShotQualityArtifact(shots.data) ?? getCurrentShotQualitySnapshot();
+  const currentShots = candidate?.season === defaultNbaSeason() ? candidate : null;
   const latestOfficiating = [...officiatingSeasons].sort((a, b) => a.season.localeCompare(b.season)).at(-1)!;
   const shootingCoverage = shootingHomeCoverage(playerPayload);
 
@@ -170,16 +172,16 @@ export default async function DataStatusPage() {
         <StatusCard
           title="Expected Shot Value"
           href="/shot-quality"
-          coverage={shotSeason ? `League court surfaces through ${shotSeason}` : "Unavailable"}
-          through={shotSeason ?? "Unknown"}
-          refresh="Not recorded."
+          coverage={currentShots ? `${currentShots.source.gameIds.length} observed games · ${currentShots.source.shotCount.toLocaleString()} source attempts` : shotSeason ? `League court surfaces through ${shotSeason}` : "Unavailable"}
+          through={currentShots?.source.lastGameDate ?? shotSeason ?? "Unknown"}
+          refresh={currentShots ? `Snapshot generated ${formatUtcTimestamp(currentShots.generatedAt)}. Latest check: ${shots.status}.` : `Historical refresh not recorded. Latest current-season check: ${shots.status}.`}
         />
         <StatusCard
           title="Player Shooting by Rest"
           href="/shooting"
           coverage={shootingCoverage ?? "Unavailable"}
-          through={shootingCoverage?.split(" to ").at(-1) ?? "Unknown"}
-          refresh={`Export generated ${playerPayload.generated}.`}
+          through={playerPayload.publication?.through ?? shootingCoverage?.split(" to ").at(-1) ?? "Unknown"}
+          refresh={`Published observations generated ${playerPayload.generated}. Latest check: ${playerPayload.refresh?.status ?? "bundled"}.`}
         />
         <StatusCard
           title="Availability Cost"
@@ -193,7 +195,7 @@ export default async function DataStatusPage() {
           href="/officiating"
           coverage={`${officiatingSeasons[0]?.season ?? "Unknown"} to ${latestOfficiating.season}`}
           through={latestOfficiating.through}
-          refresh={`NBA report index refreshed ${formatUtcTimestamp(latestOfficiating.refreshedAt)}.`}
+          refresh={`NBA report index refreshed ${formatUtcTimestamp(latestOfficiating.refreshedAt)}. Latest check: ${officiating.publication.status}.`}
         />
       </div>
     </div>

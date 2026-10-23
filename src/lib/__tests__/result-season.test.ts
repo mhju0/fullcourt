@@ -10,6 +10,10 @@ describe("latest usable result season", () => {
     expect(latestUsableResultSeason(["2024-25", "2026-27"], "2026-27", true)).toBe("2026-27");
     expect(latestUsableResultSeason(["2024-25"], "2026-27", true)).toBe("2024-25");
   });
+  it("uses current descriptive publications without a separate model-readiness gate", () => {
+    expect(latestUsableResultSeason(["2024-25", "2026-27"], "2026-27")).toBe("2026-27");
+    expect(latestUsableResultSeason(["2027-28"], "2026-27")).toBeNull();
+  });
   it("returns no made-up fallback when no usable publication exists", () => {
     expect(latestUsableResultSeason([], "2026-27", false)).toBeNull();
     expect(latestUsableResultSeason(["2026-27", "2027-28"], "2026-27", false)).toBeNull();

@@ -49,8 +49,12 @@ describe("restedHomeGap", () => {
     expect(restedHomeGap(row)).toBe(1.9);
   });
 
-  it("withholds the rest comparison below 100 games", () => {
-    expect(restedHomeGap(season("2026-27", 30, 50, 39, 99, false))).toBeNull();
+  it("shows a descriptive comparison from the first eligible game, including zero wins", () => {
+    expect(restedHomeGap(season("2026-27", 1, 2, 1, 1, false))).toBe(50);
+    expect(restedHomeGap(season("2026-27", 1, 2, 0, 1, false))).toBe(-50);
+  });
+  it("keeps an absent sample distinct from a genuine zero rate", () => {
+    expect(restedHomeGap(season("2026-27", 1, 2, 0, 0, false))).toBeNull();
   });
 });
 

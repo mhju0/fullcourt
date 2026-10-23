@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   buildSeasonReport,
-  MIN_GAMES_FOR_INFERENCE,
   THREE_PLUS_THRESHOLD,
   winRateBand,
-  type SeasonReportRate,
+  winRateInterval,
   type SeasonReportRow,
   type SeasonReportSide,
 } from "@/lib/season-report";
@@ -39,13 +38,26 @@ function game(overrides: Partial<SeasonReportRow> & { gameId: number }): SeasonR
 }
 
 describe("winRateBand", () => {
-  it("returns the 95% Wald half-width in percentage points", () => {
-    // p = 0.52, n = 100 → 1.96 * sqrt(0.52 * 0.48 / 100) = 0.0979
-    expect(winRateBand(52, 100)).toBe(9.8);
+  it("retains the Wilson half-width for older consumers", () => {
+    expect(winRateInterval(52, 100)).toEqual({ lower: 42.3, upper: 61.5 });
+    expect(winRateBand(52, 100)).toBe(9.6);
   });
 
   it("is null with no games rather than NaN", () => {
     expect(winRateBand(0, 0)).toBeNull();
+  });
+});
+
+describe("winRateInterval", () => {
+  it("does not invent a rate or interval for an empty sample", () => {
+    expect(winRateInterval(0, 0)).toBeNull();
+  });
+  it.each([
+    [0, 1, 0, 79.3], [1, 1, 20.7, 100],
+    [0, 10, 0, 27.8], [10, 10, 72.2, 100],
+    [1, 2, 9.5, 90.5],
+  ])("keeps nondegenerate bounds for %i wins in %i games", (wins, games, lower, upper) => {
+    expect(winRateInterval(wins, games)).toEqual({ lower, upper });
   });
 });
 
@@ -196,9 +208,16 @@ describe("buildSeasonReport — what counts", () => {
   });
 });
 
-describe("buildSeasonReport — MIN_GAMES_FOR_INFERENCE", () => {
-  it("is the documented gate of 100 decidable games", () => {
-    expect(MIN_GAMES_FOR_INFERENCE).toBe(100);
+describe("buildSeasonReport — early-season coverage", () => {
+  it("publishes the first eligible observation and distinguishes missing fatigue coverage", () => {
+    const report = buildSeasonReport("2026-27", [
+      game({ gameId: 1 }), game({ gameId: 2, home: null }),
+      game({ gameId: 3, status: "scheduled", homeScore: null, awayScore: null }),
+      game({ gameId: 4, status: "live" }),
+      game({ gameId: 5, homeScore: null }),
+    ]);
+    expect(report).toMatchObject({ availableFinalGames: 2, missingFatigueGames: 1, completedGames: 1 });
+    expect(report.overall).toMatchObject({ games: 1, winPct: 100, interval: { lower: 20.7, upper: 100 } });
   });
 });
 
@@ -443,7 +462,7 @@ describe("buildSeasonReport — schedule tax", () => {
   });
 });
 
-import { allSeasonHomeRateExcluding, allSeasonNormExcluding, seasonReportVerdict } from "@/lib/season-report";
+import { allSeasonHomeRateExcluding, allSeasonNormExcluding } from "@/lib/season-report";
 
 describe("buildSeasonReport — loudest calls", () => {
   it("ranks by rest advantage rather than margin, and signs the margin from the rested side", () => {
@@ -567,54 +586,6 @@ describe("allSeasonHomeRateExcluding", () => {
     expect(
       allSeasonHomeRateExcluding([{ season: "2025-26", homeGames: 100, homeWins: 60 }], "2025-26")
     ).toBeNull();
-  });
-});
-
-describe("seasonReportVerdict", () => {
-  const rateOf = (wins: number, games: number): SeasonReportRate => ({
-    games,
-    restedTeamWins: wins,
-    winPct: Math.round((wins / games) * 1000) / 10,
-    band: winRateBand(wins, games),
-  });
-
-  it("is too early below the gate, however far the rate sits from the norm", () => {
-    expect(seasonReportVerdict(rateOf(99, 99), 55.6)).toEqual({ kind: "tooEarly", games: 99 });
-  });
-
-  it("reports noNorm, not tooEarly, when the sample is sufficient but the baseline failed to load", () => {
-    expect(seasonReportVerdict(rateOf(500, 1000), null)).toEqual({ kind: "noNorm" });
-  });
-
-  it("still reports tooEarly for a thin sample even when the norm is also unavailable", () => {
-    expect(seasonReportVerdict(rateOf(40, 99), null)).toEqual({ kind: "tooEarly", games: 99 });
-  });
-
-  it("is in line when the gap falls inside the band", () => {
-    // 52% of 940 → band 3.2, so a 54.0 norm is 2.0 away and inside it.
-    const verdict = seasonReportVerdict(rateOf(489, 940), 54);
-
-    expect(verdict.kind).toBe("inLine");
-  });
-
-  it("is in line when the displayed gap equals the band exactly", () => {
-    // 64.7 − 60.5 is 4.200000000000003 in floating point; the page shows 4.2 against ±4.2.
-    const rate: SeasonReportRate = { games: 500, restedTeamWins: 324, winPct: 64.7, band: 4.2 };
-
-    expect(seasonReportVerdict(rate, 60.5).kind).toBe("inLine");
-    expect(seasonReportVerdict({ ...rate, winPct: 56.3 }, 60.5).kind).toBe("inLine");
-  });
-
-  it("is below when the norm sits outside the band above the rate", () => {
-    const verdict = seasonReportVerdict(rateOf(489, 940), 55.6);
-
-    expect(verdict).toMatchObject({ kind: "below", norm: 55.6, band: 3.2 });
-  });
-
-  it("is above when the rate clears the norm by more than the band", () => {
-    const verdict = seasonReportVerdict(rateOf(600, 940), 55.6);
-
-    expect(verdict.kind).toBe("above");
   });
 });
 
