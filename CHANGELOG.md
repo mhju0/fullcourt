@@ -1,5 +1,9 @@
 # Release history
 
+## 1.2.1 — 2026-10-23
+
+- Replace the Officiating report’s self-navigation link with “Copy report link”. Copy the full filtered report URL, announce success, and offer selectable text when clipboard access fails.
+
 ## 1.2.0 — 2026-10-23
 
 - Publish current-season observations as soon as each module has validated data; remove the shared ten-game and descriptive hundred-game holds.

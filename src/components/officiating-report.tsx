@@ -44,6 +44,22 @@ export function OfficiatingReport({
   shareHref: string;
 }) {
   const [all, setAll] = useState(false);
+  const [copyResult, setCopyResult] = useState<{
+    href: string;
+    status: "copied" | "error";
+    link: string;
+  } | null>(null);
+  const currentCopy = copyResult?.href === shareHref ? copyResult : null;
+  async function copyReportLink() {
+    const href = shareHref;
+    const link = new URL(href, window.location.origin).href;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopyResult({ href, status: "copied", link });
+    } catch {
+      setCopyResult({ href, status: "error", link });
+    }
+  }
   const { data, error, mutate, isValidating } = useSWR(
     game.detailUrl ?? `/data/officiating/${season}/${game.id}-${game.sha256.slice(0, 16)}.json`,
     fetchReport,
@@ -81,8 +97,26 @@ export function OfficiatingReport({
             ? "Show identified errors"
             : `Show all assessed plays (${data.events.length})`}
         </button>
-        <a href={shareHref}>Link to game ↗</a>
+        <button type="button" onClick={() => void copyReportLink()}>
+          Copy report link
+        </button>
       </div>
+      <p role="status" className={styles.muted}>
+        {currentCopy?.status === "copied"
+          ? "Report link copied"
+          : currentCopy?.status === "error"
+            ? "Copy unavailable. Select the report link below."
+            : ""}
+      </p>
+      {currentCopy?.status === "error" && (
+        <textarea
+          aria-label="Report link"
+          readOnly
+          value={currentCopy.link}
+          onFocus={(event) => event.currentTarget.select()}
+          className="w-full border border-[var(--term-border)] bg-[var(--term-surface)] p-2 text-xs text-[var(--term-text)]"
+        />
+      )}
       {events.length === 0 && (
         <p className={styles.muted}>
           No errors identified in this report. You can still inspect all
