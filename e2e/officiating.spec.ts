@@ -190,6 +190,13 @@ for (const width of [390, 1440]) {
     await expect(page.locator("#review-0022600090")).toHaveAttribute("open", "");
     await expect(page.locator("blockquote").first()).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.getByRole("button", { name: "Copy report link", exact: true }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toBeVisible();
+    await page.getByLabel("Team", { exact: true }).selectOption("IND");
+    await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Copy report link", exact: true }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toBeVisible();
+    expect(new URL(await page.evaluate(() => navigator.clipboard.readText())).searchParams.get("team")).toBe("IND");
   });
 }
 
@@ -200,5 +207,11 @@ test("report sharing offers the link when clipboard access fails", async ({ page
   await page.goto(url(errorGame.id));
   await page.getByRole("button", { name: "Copy report link", exact: true }).click();
   await expect(page.getByRole("status").filter({ hasText: "Copy unavailable" })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "Report link", exact: true })).toHaveValue(new RegExp(`game=${errorGame.id}`));
+  const fallback = page.getByRole("textbox", { name: "Report link", exact: true });
+  await expect(fallback).toHaveValue(new RegExp(`game=${errorGame.id}`));
+  await page.getByLabel("Team", { exact: true }).selectOption(errorGame.home);
+  await expect(fallback).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "Copy unavailable" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Copy report link", exact: true }).click();
+  await expect(fallback).toHaveValue(new RegExp(`team=${errorGame.home}`));
 });

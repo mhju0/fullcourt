@@ -44,16 +44,20 @@ export function OfficiatingReport({
   shareHref: string;
 }) {
   const [all, setAll] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
-  const [fallbackLink, setFallbackLink] = useState("");
+  const [copyResult, setCopyResult] = useState<{
+    href: string;
+    status: "copied" | "error";
+    link: string;
+  } | null>(null);
+  const currentCopy = copyResult?.href === shareHref ? copyResult : null;
   async function copyReportLink() {
-    const link = new URL(shareHref, window.location.origin).href;
+    const href = shareHref;
+    const link = new URL(href, window.location.origin).href;
     try {
       await navigator.clipboard.writeText(link);
-      setCopyStatus("copied");
+      setCopyResult({ href, status: "copied", link });
     } catch {
-      setFallbackLink(link);
-      setCopyStatus("error");
+      setCopyResult({ href, status: "error", link });
     }
   }
   const { data, error, mutate, isValidating } = useSWR(
@@ -98,17 +102,17 @@ export function OfficiatingReport({
         </button>
       </div>
       <p role="status" className={styles.muted}>
-        {copyStatus === "copied"
+        {currentCopy?.status === "copied"
           ? "Report link copied"
-          : copyStatus === "error"
+          : currentCopy?.status === "error"
             ? "Copy unavailable. Select the report link below."
             : ""}
       </p>
-      {copyStatus === "error" && (
+      {currentCopy?.status === "error" && (
         <textarea
           aria-label="Report link"
           readOnly
-          value={fallbackLink}
+          value={currentCopy.link}
           onFocus={(event) => event.currentTarget.select()}
           className="w-full border border-[var(--term-border)] bg-[var(--term-surface)] p-2 text-xs text-[var(--term-text)]"
         />
