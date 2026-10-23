@@ -230,6 +230,7 @@ for (const width of [320, 390, 430, 1440]) {
     }));
     expect(sizes.every(size => size.nowrap === "nowrap" && size.fontSize === "12px" && size.textTransform === "none" && size.fits)).toBe(true);
     const scroll = page.locator(".fc-rest-table");
+    await expect(scroll).toHaveCSS("mask-image", "none");
     const pinned = page.getByTestId("player-row").first().locator("td").first();
     const before = (await pinned.boundingBox())!;
     if (width <= 430) expect(before.width).toBeLessThanOrEqual(160);
@@ -239,7 +240,7 @@ for (const width of [320, 390, 430, 1440]) {
       await expect.poll(() => scroll.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
       await scroll.evaluate(node => { node.scrollLeft = 300; });
       await page.getByRole("searchbox").focus();
-      await expect.poll(() => scroll.evaluate(node => getComputedStyle(node).maskImage)).toMatch(/270deg/);
+      await expect(scroll).toHaveCSS("mask-image", "none");
       await scroll.evaluate(node => { node.scrollLeft = node.scrollWidth; });
       expect(Math.abs((await pinned.boundingBox())!.x - before.x)).toBeLessThan(1);
     }

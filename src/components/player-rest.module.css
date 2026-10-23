@@ -29,12 +29,10 @@
   .page :global(.fc-season-selector) select { width: 100%; }
 }
 
-.table { max-width: 100%; }
+.table { max-width: 100%; mask-image: none !important; }
 .table .boundary { border-left: 1px solid var(--term-border); }
 .table :is(th, td):first-child:not([colspan]) { position: sticky; left: 0; z-index: 1; background: var(--term-surface); }
 .table th:first-child { z-index: 3 !important; background: var(--term-surface-2) !important; }
-.table[data-more-start] { mask-image: none !important; }
-.table[data-more-end] { mask-image: linear-gradient(to left, transparent, #000 40px) !important; }
 .table:focus-visible { mask-image: none !important; outline: 2px solid var(--term-text); outline-offset: 2px; }
 .table tbody tr:global(.fc-open) > td:first-child,
 .table tbody tr:global(.fc-sub) > td:first-child { background: var(--term-surface-2); }

@@ -221,3 +221,5 @@ Owner가 선택한 B 구분에 단일 헤더를 적용했다(D-138). 각 rest ar
 검증: unit 1,629개, targeted 60개, typecheck·변경 ESLint·build와 Shooting browser 28개 통과.
 320/390/430/1440px 단일 줄 헤더·열 정렬·내부 스크롤·페이지 overflow 없음과 150px 폰 선수 열을 확인했다.
 물리 iPhone/Safari/VoiceOver는 미검증. 다음 단계: root의 정확한 candidate 검토와 PR preview 확인 후 릴리스.
+Root 최종 폰 검토 후 이 표의 양쪽 scroll fade를 제거했다. 끝쪽 숫자도 완전히 보이며,
+기존 내부 스크롤과 안내는 유지한다. build·변경 ESLint와 해당 네 viewport 검증을 재통과했다.
