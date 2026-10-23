@@ -107,7 +107,7 @@ export interface CareerTotals {
 }
 
 export type SortKey =
-  | "name" | "age" | "games" | "fga" | "efg" | "noRestEfg" | "restedEfg" | "effect"
+  | "name" | "age" | "games" | "fga" | "efg" | "noRestFga" | "noRestEfg" | "restedFga" | "restedEfg" | "effect"
 
 /** "2025" → "2025-26", the season format used everywhere else on the site. */
 export function seasonLabel(startYear: number): string {

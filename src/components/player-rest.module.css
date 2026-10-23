@@ -1,17 +1,15 @@
-.page { --shooting-row-height: 60px; }
+.page { --shooting-row-height: 60px; --shooting-player-width: 220px; min-width: 0; }
 .player { display: flex; flex-direction: column; justify-content: center; min-height: 44px; width: 100%; text-align: left; white-space: normal; font-family: var(--font-geist), sans-serif; font-size: 15px; cursor: pointer; }
 .player small, .seasonContext { display: block; color: var(--term-text-muted); font-family: var(--font-geist-mono), monospace; font-size: 12px; font-weight: 400; }
-.arm { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.55; white-space: nowrap; font-family: var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; font-size: 12px; }
-.arm small { color: var(--term-text-muted); font-size: 12px; }
 .effect { display: flex; min-height: var(--shooting-row-height); align-items: center; justify-content: flex-end; padding: 8px; font-family: var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; font-size: 12px; white-space: nowrap; }
 .effect sup { font-size: 12px; align-self: center; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; line-height: 1.5; }
 .legend > span:last-child { flex-basis: 100%; color: var(--term-text-muted); }
 .empty { padding: 16px; font-size: 12px; color: var(--term-text-muted); }
-.table table { width: 100%; }
+.table table { width: 100%; min-width: calc(920px + var(--shooting-player-width)); }
 .table :is(td, th) { padding: 4px 8px; }
-.table th { white-space: normal !important; }
-.table th button { min-height: 44px; white-space: normal; flex-wrap: wrap; justify-content: flex-end; }
+.table th { white-space: nowrap; }
+.table th button { min-height: 44px; white-space: nowrap; flex-wrap: nowrap; justify-content: flex-end; }
 .table th:first-child button { justify-content: flex-start; }
 .table tbody tr:not(:global(.fc-groupend)) > td:last-child { padding: 0; }
 .table tbody tr > td { height: var(--shooting-row-height); }
@@ -22,10 +20,22 @@
 .page select, .page input { min-height: 44px; }
 .readingKey { font-size: 15px; line-height: 1.5; max-width: 75ch; color: var(--term-text-muted); }
 @media (max-width: 700px) {
+  .page { --shooting-player-width: 150px; }
   .table :is(th, td) { padding: 4px; }
   .table th { font-size: 12px; letter-spacing: 0; }
-  .table th span { white-space: normal; }
+  .table th span { white-space: nowrap; }
   .effect { padding: 4px; }
   .table :global(.fc-sub) td:first-child { padding-left: 8px !important; }
   .page :global(.fc-season-selector) select { width: 100%; }
 }
+
+.table { max-width: 100%; }
+.table .boundary { border-left: 1px solid var(--term-border); }
+.table :is(th, td):first-child:not([colspan]) { position: sticky; left: 0; z-index: 1; background: var(--term-surface); }
+.table th:first-child { z-index: 3 !important; background: var(--term-surface-2) !important; }
+.table[data-more-start] { mask-image: none !important; }
+.table[data-more-end] { mask-image: linear-gradient(to left, transparent, #000 40px) !important; }
+.table:focus-visible { mask-image: none !important; outline: 2px solid var(--term-text); outline-offset: 2px; }
+.table tbody tr:global(.fc-open) > td:first-child,
+.table tbody tr:global(.fc-sub) > td:first-child { background: var(--term-surface-2); }
+.table tbody tr:global(.fc-sub.fc-here) > td:first-child { background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface)); }

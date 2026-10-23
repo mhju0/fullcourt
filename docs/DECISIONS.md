@@ -2130,3 +2130,16 @@ manifest commit으로 부분 실패와 동시 갱신을 다룬다. 실패한 모
 실제 날짜와 함께 표시한다. 앱 코드·검증기 변경에는 기존 preview/CI와 frozen 독립 검토를 적용한다.
 데이터 발행은 앱 버전 릴리스와 별개다. 자세한 페이지별 조건과 운영은
 [공개 정책](EARLY_SEASON_PUBLICATION.md)에 기록한다.
+
+## D-138 — Shooting 비교표의 시도·효율 열 분리 (2026-10-23)
+
+Owner는 B 시안의 비교군별 구분을 선택하고 헤더는 한 줄만 사용하도록 승인했다.
+Player, No rest attempts, No rest eFG%, 2+ days rest attempts, 2+ days rest eFG%,
+Gap (pp)의 여섯 열을 사용한다. 시도 수는 독립 정렬하며 0을 표시하고, 분모가 없는
+효율과 차이는 dash로 유지한다. 확장 시즌·career 행도 같은 열을 공유한다.
+폰에서는 선수명을 고정하고 표 내부를 가로 스크롤한다. 헤더를 줄이거나 접지 않는다.
+
+메인 표의 2+ days rest는 기존 2–29 full days off 비교군을 표시하는 짧은 이름이다.
+정확한 범위·장기 결장·시즌 첫 경기 제외는 Methods에 둔다. gap 기반 장기 결장 필터는
+부상 여부를 판별하지 않으며 짧은 부상 복귀는 남을 수 있다. 산식·모집단·공급자별
+identity와 career 추정 범위는 변경하지 않는다.
