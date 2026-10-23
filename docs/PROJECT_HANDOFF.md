@@ -210,4 +210,4 @@ typecheck, 변경 파일 ESLint, build와 Officiating browser 16개 통과. v1.2
 
 동일 보고서를 연 채 팀 필터를 바꾸면 기존 복사 성공/실패 안내가 남는 검토 지적을 보완했다.
 복사 결과를 당시 URL과 묶고 현재 URL과 일치할 때만 안내·대체 URL을 표시한다.
-390/1440px 실제 복사 후 팀 변경·재복사와 실패 대체 URL 갱신을 browser 회귀 검증에 추가했다.
+390/1440px 실제 복사 후 같은 문서의 URL 팀 변경·재복사, 실패 대체 URL 갱신, 늦은 복사 완료를 browser 회귀 검증에 추가했다. 변경 검증 5개와 rebuild·typecheck·변경 ESLint 통과.

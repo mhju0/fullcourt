@@ -192,7 +192,11 @@ for (const width of [390, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.getByRole("button", { name: "Copy report link", exact: true }).click();
     await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toBeVisible();
-    await page.getByLabel("Team", { exact: true }).selectOption("IND");
+    await page.evaluate(() => {
+      const next = new URL(location.href);
+      next.searchParams.set("team", "IND");
+      history.pushState(null, "", next);
+    });
     await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toHaveCount(0);
     await page.getByRole("button", { name: "Copy report link", exact: true }).click();
     await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toBeVisible();
@@ -209,9 +213,36 @@ test("report sharing offers the link when clipboard access fails", async ({ page
   await expect(page.getByRole("status").filter({ hasText: "Copy unavailable" })).toBeVisible();
   const fallback = page.getByRole("textbox", { name: "Report link", exact: true });
   await expect(fallback).toHaveValue(new RegExp(`game=${errorGame.id}`));
-  await page.getByLabel("Team", { exact: true }).selectOption(errorGame.home);
+  await page.evaluate((team) => {
+    const next = new URL(location.href);
+    next.searchParams.set("team", team);
+    history.pushState(null, "", next);
+  }, errorGame.home);
   await expect(fallback).toHaveCount(0);
   await expect(page.getByRole("status").filter({ hasText: "Copy unavailable" })).toHaveCount(0);
   await page.getByRole("button", { name: "Copy report link", exact: true }).click();
   await expect(fallback).toHaveValue(new RegExp(`team=${errorGame.home}`));
+});
+
+test("late clipboard completion does not announce a different report URL", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: () => new Promise<void>((resolve) => {
+        Object.assign(window, { finishReportCopy: resolve });
+      }) },
+    });
+  });
+  await page.goto(url(errorGame.id));
+  await page.getByRole("button", { name: "Copy report link", exact: true }).click();
+  await page.evaluate((team) => {
+    const next = new URL(location.href);
+    next.searchParams.set("team", team);
+    history.pushState(null, "", next);
+  }, errorGame.home);
+  await expect(page.getByLabel("Team", { exact: true })).toHaveValue(errorGame.home);
+  await page.evaluate(() => {
+    Reflect.get(window, "finishReportCopy")();
+  });
+  await expect(page.getByRole("status").filter({ hasText: "Report link copied" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy report link", exact: true })).toBeVisible();
 });
