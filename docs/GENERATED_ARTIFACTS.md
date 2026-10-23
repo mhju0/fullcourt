@@ -105,3 +105,11 @@ PLAYWRIGHT_BASE_URL=https://fullcourt.fyi pnpm exec playwright test e2e/home.spe
 Use the exact staged URL for its pre-promotion run. Preserve the full 13-field staged
 homepage parity receipt alongside the browser result. The secret-free fixture-backed CI
 browser gate does not certify database-derived SSG on a real deployment.
+
+## 현재 시즌 관측 overlay (D-137)
+
+현재 Shooting은 `publish_current_shooting.py`의 검증된 ESPN 관측과 과거 NBA export를 별도 ID로 합쳐
+`/api/player-rest`에서 제공한다. 과거 raw 행은 유지하며 정확한 제곱합/ID를 exporter에서 재생성한다.
+Expected Shot Value의 현재 원시 지도는 `publish_current_shot_grid.py`, L2M은 기존 collector/publisher에서
+생성한다. 일일 manifest·blob은 앱에 묶인 초기 JSON과 별도로 검증·발행한다.
+[모듈별 공개·운영 계약](EARLY_SEASON_PUBLICATION.md)을 따른다. 공급자 실패는 산출물 생성 성공으로 기록하지 않는다.

@@ -81,15 +81,19 @@ rest effect = eFG% rested
           noisier.
         </Note>
         <Note>
-          This study comes from a separate export, so it covers the seasons in that export.
-          Nightly game updates do not add to it.
+          Historical seasons come from a verified export. Current-season ESPN observations
+          update separately after fixture and box-score checks. A first observed appearance
+          has no inferred prior-season rest. Current identities are not joined to historical
+          careers by name.
         </Note>
       </Section>
 
       <Section label="CAREER ESTIMATES" title="How career estimates are adjusted" disclosure>
         <Prose>
-          Career estimates need at least 150 shots in each rest group. Their standard errors
-          use each group&rsquo;s own eFG% instead of a fixed 50%.
+          Historical career estimates need at least 150 shots in each rest group. Raw records
+          remain available below that floor. Standard errors use the observed variance of
+          attempts worth zero, one or one-and-a-half eFG makes. A single attempt cannot
+          estimate sampling variation; repeated identical outcomes do not establish certainty.
         </Prose>
         <Prose>
           Each raw gap is then pulled toward the average gap of all eligible players. Noisier

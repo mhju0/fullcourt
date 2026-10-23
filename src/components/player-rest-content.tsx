@@ -3,8 +3,6 @@
 import { defaultNbaSeason, parseSeasonStartYear } from "@/lib/nba-season";
 import { latestUsableResultSeason } from "@/lib/result-season";
 import { SeasonDataGuide } from "@/components/season-data-guide";
-import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
-import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -16,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   buildRows,
   careerTotals,
-  effectSe,
+  defaultPlayerVolume,
   franchiseOptions,
   indexPayload,
   S,
@@ -47,10 +45,9 @@ import { DataTable, type DataColumn } from "@/components/ui/data-table";
 import styles from "./player-rest.module.css";
 
 /**
- * Static asset, not an API route: this export changes once a season, so there is
- * nothing for a round trip to Postgres to discover. See scripts/export_player_rest.py.
+ * A validated daily snapshot. See scripts/export_player_rest.py.
  */
-const DATA_URL = "/data/player-rest.json";
+const DATA_URL = "/api/player-rest";
 
 async function payloadFetcher(url: string): Promise<PlayerRestPayload> {
   const res = await fetch(url);
@@ -96,6 +93,7 @@ function playerColumns(
             <span>{row.name}</span>
           </span>
           <small>{row.context}</small>
+          <small>{row.games} games · {row.fga.toLocaleString()} att. · {fmt(row.efg)}% eFG</small>
         </button>
       ),
     },
@@ -162,7 +160,7 @@ function EffectValue({
     >
       {signedNumber(value, 1)}
       {quiet && (
-        <sup aria-label="difference smaller than estimated standard error">
+        <sup aria-label="difference uncertain or sampling variation unavailable">
           †
         </sup>
       )}
@@ -216,14 +214,10 @@ export function PlayerRestContent() {
   const currentSeason = defaultNbaSeason();
   const currentYear = parseSeasonStartYear(currentSeason);
   const hasCurrentPublication = index?.years.includes(currentYear) ?? false;
-  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication);
   const previousYear = index?.years.find((year) => year < currentYear) ?? null;
-  const availableYears = useMemo(
-    () => [currentYear, ...(index?.years ?? []).filter((year) => year !== currentYear)],
-    [currentYear, index],
-  );
+  const availableYears = [currentYear, ...(index?.years ?? []).filter((year) => year !== currentYear)];
   const defaultSeason = latestUsableResultSeason(
-    (index?.years ?? []).map(seasonLabel), currentSeason, readiness.ready,
+    (index?.years ?? []).map(seasonLabel), currentSeason,
   );
   const activeYear =
     rawYear === "career"
@@ -231,13 +225,8 @@ export function PlayerRestContent() {
       : rawYear && availableYears.includes(Number(rawYear))
         ? Number(rawYear)
         : defaultSeason ? parseSeasonStartYear(defaultSeason) : currentYear;
-  const heldPublication = hasCurrentPublication && !readiness.ready;
-  const heldCurrent = activeYear === currentYear && (!hasCurrentPublication || !readiness.ready);
-  const heldCareer = activeYear === "career" && heldPublication;
-  const volume = params.has("volume") ? Number(params.get("volume")) : 300;
-  const minFga = VOLUME_OPTIONS.some((option) => option.value === volume)
-    ? volume
-    : 300;
+  const heldCurrent = activeYear === currentYear && !hasCurrentPublication;
+  const minFga = defaultPlayerVolume(activeYear, currentYear, params.get("volume"));
   const team = params.get("team") ?? "";
   const pos = params.get("position") ?? "";
   const evidencedOnly = params.get("certain") === "1";
@@ -260,8 +249,11 @@ export function PlayerRestContent() {
         : ("fga" as SortKey),
     dir: params.get("dir") === "asc" ? (1 as const) : (-1 as const),
   };
-  const linkedIndex =
-    index && linkedName ? index.searchKeys.indexOf(searchKey(linkedName)) : -1;
+  const linkedIndex = index && linkedName ? index.searchKeys.findIndex((key, player) =>
+    key === searchKey(linkedName) && (activeYear === "career"
+      ? !index.seasonOnlyPlayers.has(player)
+      : index.seasonsByPlayer.get(player)?.some(season => season[S.YEAR] === activeYear)),
+  ) : -1;
   const openPlayer = linkedIndex < 0 ? null : linkedIndex;
   const setYear = (value: number | "career") => update({ year: String(value) });
   const setMinFga = (value: number) => update({ volume: String(value) });
@@ -292,31 +284,16 @@ export function PlayerRestContent() {
             : "desc",
     });
 
-  const rows = useMemo(() => {
-    if (!index || heldCurrent || heldCareer) return [];
-    return buildRows(index, {
-      year: activeYear,
-      minFga,
-      query: searchKey(query),
-      sort: sort.key,
-      dir: sort.dir,
-      team: team || null,
-      pos: (pos || null) as BuildOptions["pos"],
-      evidencedOnly,
-    });
-  }, [
-    index,
-    activeYear,
+  const rows = index && !heldCurrent ? buildRows(index, {
+    year: activeYear,
     minFga,
-    query,
-    sort.key,
-    sort.dir,
-    team,
-    pos,
+    query: searchKey(query),
+    sort: sort.key,
+    dir: sort.dir,
+    team: team || null,
+    pos: (pos || null) as BuildOptions["pos"],
     evidencedOnly,
-    heldCurrent,
-    heldCareer,
-  ]);
+  }) : [];
 
   const columns = useMemo(
     () => playerColumns(toggle, (row) => openPlayer === row.player),
@@ -342,21 +319,13 @@ export function PlayerRestContent() {
         </button>} />
     </div>;
   }
-  if (index && (heldCurrent || heldCareer)) return (
+  if (index && (heldCurrent)) return (
     <div className="flex flex-col gap-4">
       {seasonSelector}
       {error ? <p role="status">Refresh unavailable. Showing the last loaded player export.</p> : null}
-      {hasCurrentPublication && (readiness.error || !readiness.data) ? (
-        <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-          body="Player shooting results are not available yet."
-          previousHref={previousHref} previousLabel={previousLabel} />
-      ) : (
-        <SeasonDataGuide title="Awaiting results" season={currentSeason}
-          body={heldCareer
-            ? "Career results include the current season and will appear after those results are available. Earlier seasons remain available."
-            : `Player shooting results for ${currentSeason} are not available yet.`}
-          previousHref={previousHref} previousLabel={previousLabel} />
-      )}
+      <SeasonDataGuide title="Awaiting results" season={currentSeason}
+        body={`Verified player shooting results for ${currentSeason} are not available yet.`}
+        previousHref={previousHref} previousLabel={previousLabel} />
     </div>
   );
 
@@ -374,6 +343,11 @@ export function PlayerRestContent() {
       </div>
     );
   }
+
+  const selectedSeason = activeYear === "career" ? null : seasonLabel(activeYear);
+  const publication = selectedSeason ? index.publications?.[selectedSeason] ??
+    (index.publication?.season === selectedSeason ? index.publication : undefined) : undefined;
+  const refreshUnavailable = index.refresh?.status === "failed" || index.refresh?.status === "unavailable";
 
   return (
     <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
@@ -472,7 +446,7 @@ export function PlayerRestContent() {
               onChange={(e) => setEvidencedOnly(e.target.checked)}
               style={{ accentColor: "var(--term-blue)" }}
             />
-            Hide uncertain differences
+            Show gaps exceeding one observed standard error
           </label>
           <button type="button" className="fc-text-link min-h-11 text-left underline" onClick={() => update({ team: null, volume: null, position: null, certain: null })}>
             Reset advanced filters
@@ -491,6 +465,15 @@ export function PlayerRestContent() {
         </div>
       </div>
 
+      {publication ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
+        {publication.season ? `${publication.season} · ` : ""}Observed through {publication.through ?? "no completed games"} · {publication.observedGames}/{publication.expectedGames} completed games covered.
+        {publication.missingGameIds.length ? ` ${publication.missingGameIds.length} games missing; the last verified results are retained.` : ""}
+        {" "}Snapshot generated {publication.generatedAt ?? index.generated}.
+        {refreshUnavailable ? " Some season data could not be refreshed. Showing available verified records." : ""}
+        {index.refresh?.checkedAt ? ` Latest daily update check ${index.refresh.checkedAt}.` : ""}
+      </p> : refreshUnavailable ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
+        Some season data could not be refreshed. Showing available verified records.
+      </p> : null}
       <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
@@ -516,7 +499,6 @@ export function PlayerRestContent() {
                 row={row}
                 index={index}
                 browsedYear={activeYear}
-                heldFromYear={heldPublication ? currentYear : undefined}
               />
             ) : null
           }
@@ -535,7 +517,7 @@ export function PlayerRestContent() {
         <div className={styles.legend} id="pr-color-note">
           <span style={{ color: "#991b1b" }}>− Lower with rest</span>
           <span style={{ color: "#166534" }}>+ Higher with rest</span>
-          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Below one estimated standard error: the difference is small relative to its uncertainty. This is not a 95% significance threshold.</span>
+          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Sampling variation is unavailable, zero in the observed sample, or larger than the gap. Available errors use the observed mix of misses, twos and threes; tiny samples remain unstable. This is not a 95% significance threshold.</span>
         </div>
       </details>
 
@@ -550,13 +532,11 @@ export function PlayerRestContent() {
           margin: 0,
         }}
       >
-        {index.names.length.toLocaleString()} players · 1996-97 through{" "}
+        {index.names.length.toLocaleString()} player source records · 1996-97 through{" "}
         {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the
         games played before the March 2020 suspension. Orlando bubble games are
         excluded because the long shutdown changes the meaning of time between
-        appearances. eFG% counts a three as 1.5 makes. A single season&rsquo;s
-        rest split carries a standard error near 7 pp and correlates with the
-        player&rsquo;s own next season at roughly zero. Career estimates pool
+        appearances. eFG% counts a three as 1.5 makes. Small rest splits can change sharply after one game. Career estimates pool
         more attempts and shrink uncertain gaps toward the player-pool mean, but
         still do not isolate a causal effect of rest.
       </p>
@@ -584,17 +564,16 @@ function PlayerExpansion({
   row,
   index,
   browsedYear,
-  heldFromYear,
 }: {
   row: BrowseRow;
   index: PlayerRestIndex;
   browsedYear: number | "career";
-  heldFromYear?: number;
 }) {
   const allSeasons = index.seasonsByPlayer.get(row.player) ?? [];
-  const seasons = [...allSeasons].filter((season) => heldFromYear === undefined || season[S.YEAR] < heldFromYear).reverse();
-  const totals = heldFromYear === undefined ? careerTotals(allSeasons) : null;
-  const estimate = heldFromYear === undefined ? index.career.get(row.player) : undefined;
+  const seasons = [...allSeasons].reverse();
+  const totals = careerTotals(allSeasons);
+  const seasonOnly = index.seasonOnlyPlayers.has(row.player);
+  const estimate = seasonOnly || totals.se === null ? undefined : index.career.get(row.player);
 
   return (
     <>
@@ -641,7 +620,7 @@ function PlayerExpansion({
               fontWeight: 600,
             }}
           >
-            Career
+            {seasonOnly ? "Observed season" : "Career"}
           </td>
           <td style={ARM_TD}>
             <ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} />
@@ -653,9 +632,8 @@ function PlayerExpansion({
             <EffectValue
               value={totals.effect}
               quiet={
-                totals.effect !== null &&
-                Math.abs(totals.effect) <
-                  (effectSe(totals.noRestFga, totals.restedFga) ?? Infinity)
+                totals.se === null || totals.se === 0 ||
+                (totals.effect !== null && Math.abs(totals.effect) < totals.se)
               }
             />
           </td>
@@ -679,20 +657,14 @@ function PlayerExpansion({
                 one — a raw career gap off ~250 attempts per side carries a standard error near
                 4 points, so the extremes of a raw ranking are mostly noise — but it now says
                 why in words rather than naming the method. */}
-            Raw career gap: {signed(totals?.exactNumerators ? totals.effect : estimate.delta)} percentage points, give or
+            Historical career gap ({seasonLabel(allSeasons[0][S.YEAR])} through {seasonLabel(allSeasons[allSeasons.length - 1][S.YEAR])}): {signed(totals?.exactNumerators ? totals.effect : estimate.delta)} percentage points, give or
             take {estimate.se.toFixed(2)} as one standard error. The estimate
             shrunk toward the player-pool mean is {signed(estimate.shrunk)},
             which reduces the influence of uncertain extremes.
           </td>
         </tr>
       )}
-      {heldFromYear !== undefined ? (
-        <tr className="fc-sub fc-groupend" data-testid="career-data-held">
-          <td colSpan={4} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 15, color: "var(--term-text-muted)" }}>
-            Career totals and estimates are unavailable while current-season data awaits release. Earlier season results remain available.
-          </td>
-        </tr>
-      ) : !estimate && (
+      {!estimate && (
         <tr className="fc-sub fc-groupend">
           <td
             colSpan={4}
@@ -703,8 +675,9 @@ function PlayerExpansion({
               color: "var(--term-text-muted)",
             }}
           >
-            No career estimate: fewer than 150 shots on no rest or on two to
-            29 days off, so only his seasons are shown.
+            {seasonOnly
+              ? "Current-season ESPN records are shown separately from the historical NBA records. No cross-provider player identity has been inferred; historical career totals and estimates are unchanged."
+              : "No career estimate is available. Estimates require at least 150 attempts in each rest arm and exact shooting counts. Observed totals remain available."}
           </td>
         </tr>
       )}

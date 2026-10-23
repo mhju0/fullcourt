@@ -17,7 +17,8 @@ function files(dir: string, keep: (name: string) => boolean): string[] {
 
 const serverReaders = [
   ...files("src/lib/db", (name) => name.endsWith(".ts")),
-  ...files("src/lib", (name) => /^[^/]+-server\.ts$/.test(name)),
+  // This reader fetches immutable HTTP blobs and never uses the database pool.
+  ...files("src/lib", (name) => /^[^/]+-server\.ts$/.test(name) && name !== "daily-publication-server.ts"),
   ...files("src/app/api", (name) => name.endsWith("route.ts")),
 ];
 

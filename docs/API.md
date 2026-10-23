@@ -14,7 +14,7 @@ are authoritative for individual fields, optional values, and units.
 | `/api/games/team` | Required browsable `season`; required `team`, one of the thirty current abbreviations (case-insensitive) | One team's regular-season games (`publishableGames()`), in slate order, from that team's side: opponent, home/away/neutral, the team's and opponent's scores, `tipOffEt`, `tipOffUtc`, `projectedFatigue`, and the home-relative `restAdvantage` the board shows (D-99) | `seasonCachePolicy(season)` |
 | `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA`, integer `limit` 3–30, `order=strongest|soonest` | Called games only (rested team at home, `isCalledSide`) that have an open prediction, are not final and have not tipped off. Rested visitors never appear | `CACHE.inSeason` |
 | `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
-| `/api/analysis` | Optional nonnegative `seasonMinRA` (no published page sends it since D-102) | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state. `gapRanges` splits the called games into small 0.5–3, medium 3–5 and large 5+, each game in one range; `eras` groups complete seasons in fives, each with its own home win rate and the same three ranges (D-102). `thresholds` retains cumulative 3+ and 5+ rates. `seasonMinRA` narrows the rested-home annual rows only; top-level baselines and threshold buckets keep their full historical population. The homepage separately pools the canonical annual counts over its latest ten completed seasons (D-112). The Games guide links to Model Results for historical comparisons | `inSeason` (the population includes current finals) |
+| `/api/analysis` | Optional nonnegative `seasonMinRA` (no published page sends it since D-102) | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state. `gapRanges` splits the called games into small 0.5–3, medium 3–5 and large 5+, each game in one range; `eras` groups complete seasons in fives, each with its own home win rate and the same three ranges (D-102). `thresholds` retains cumulative 3+ and 5+ rates. `seasonMinRA` narrows the rested-home annual rows only; top-level baselines and threshold buckets keep their full historical population. The homepage separately pools all completed eligible seasons (D-127) and shows current-season observations separately. The Games guide links to Model Results for historical comparisons | `inSeason` (the population includes current finals) |
 | `/api/home-court` | None | Annual home-court study evidence. Each `seasonWinRates` row retains the ordinary home/rested-home fields and adds `largeRestGap: { games, restedTeamWins, winPct }` for the rested home team at 5+. Both groups derive from one eligible-game snapshot and completion set. Zero large-gap games means zero counts and `winPct: null`, not 0%. Large-gap percentages use raw wins/counts; the optional chart view retains the actual counts and a general sample-size note (D-114 amendment) | `inSeason`, with stamped origin cache |
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `gap` (`small`, `medium`, `large`), `side` (`home`, `away`, `either`), `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence. Without `side` both venues are returned, rested visitors included, although the model does not call those games; any `side` drops neutral-site games, and `home` is exactly the called games. `gap` keeps one disjoint range on the rounded gap (D-102). `correct` / `incorrect` mean the rested team won / lost, not that a call was right; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
 | `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
@@ -64,8 +64,9 @@ season state participates in the historical cache stamp. Reads remain sequential
 
 Season Report returns `homeRate` from the same eligible finals before rest filtering, so its
 selected-season baseline does not depend on the all-history endpoint. Its `seasonComplete`
-field describes the recorded season rows. The 100-game rested-home threshold is a presentation
-rule; underlying observed counts remain available. Versioned query URLs on the new displays
+field describes the recorded season rows. Observed rates are available from the first eligible
+game with numerator/denominator and Wilson interval bounds; zero eligible games have no rate.
+`availableFinalGames` and `missingFatigueGames` distinguish source results from analytical coverage. Versioned query URLs on the new displays
 avoid consuming older edge-cached response shapes during deployment.
 
 The rest-advantage headline counts `isCalledSide()` games (rested home teams) against venue
@@ -98,13 +99,12 @@ stored-final reconciliation rules. See [Data pipeline](DATA_PIPELINE.md) and
 
 ### Quiet season availability
 
-`/api/season-readiness` counts physical score-bearing final regular-season appearances
-for every expected current franchise. The internal release condition is separate from
-analytical cohorts and is not a public progress counter. The optional expected-after date
-is derived from each team's usable fixture schedule; missing coverage has no estimate.
-Clients suppress an expired estimate and keep request failures distinct from awaiting data.
-The result does not certify Shooting, L2M, shot-location or playoff publication. The shared
-Season Report API remains available to Schedule Edge's projected workload view.
+`/api/season-readiness` remains a compatibility/diagnostic endpoint; it no longer controls
+result-tab publication. Each page follows its own observation and artifact availability.
+See [publication policy](EARLY_SEASON_PUBLICATION.md). `/api/player-rest` overlays verified
+current ESPN observations on historical NBA rows without merging identities by name.
+Officiating game lists pin their content-addressed publication hash; `/api/officiating/report`
+serves the matching detail. Source check failures preserve fallback data with its actual dates.
 
 The Games strip requests `/api/games/upcoming?minRA=5&order=soonest&limit=6` and displays
 the earliest three unstarted fixtures. `soonest` sorts the full qualifying set before limit.

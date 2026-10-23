@@ -1,0 +1,75 @@
+name: Publish current-season observations
+on:
+  schedule:
+    - cron: "50 10,21 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: current-season-publications
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: pnpm
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: pnpm install --frozen-lockfile
+      - run: python -m pip install psycopg2-binary==2.9.12
+      - name: Collect and validate isolated observations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/collect_daily_publications.py --out /tmp/season-publications
+      - name: Retain validated candidates
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: season-publications-${{ github.run_id }}
+          path: |
+            /tmp/season-publications/candidate.json
+            /tmp/season-publications/officiating.json
+            /tmp/season-publications/shooting.json
+            /tmp/season-publications/shotQuality.json
+          retention-days: 30
+          if-no-files-found: error
+      - name: Retain L2M sources
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: season-l2m-sources-${{ github.run_id }}
+          path: /tmp/season-publications/officiating-sources
+          retention-days: 90
+          if-no-files-found: warn
+  publish:
+    needs: collect
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: pnpm
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: season-publications-${{ github.run_id }}
+          path: /tmp/season-publications
+      - name: Publish validated data without changing application code
+        run: python scripts/publish_daily_publications.py --stage /tmp/season-publications

@@ -10,11 +10,7 @@ import { DataTable } from "@/components/ui/data-table"
 
 const ROW_LIMIT = 15
 
-// ponytail: the payload is a hand-run Python export, so this section goes stale mid-season
-// while the rest of the page updates daily off the cron. The `generated` stamp is rendered so
-// a reader can see how old it is. Upgrade path: move scripts/export_player_rest.py into the
-// daily pipeline, at which point this comment and the stamp caveat both go away.
-const PAYLOAD_URL = "/data/player-rest.json"
+const PAYLOAD_URL = "/api/player-rest"
 
 async function fetchPayload(url: string): Promise<PlayerRestPayload> {
   const res = await fetch(url)
@@ -24,7 +20,7 @@ async function fetchPayload(url: string): Promise<PlayerRestPayload> {
 
 /** Formats the export's stamp for display: "2026-07-30" → "JUL 30, 2026". */
 function stampLabel(generated: string): string {
-  const date = new Date(`${generated}T00:00:00Z`)
+  const date = new Date(generated.includes("T") ? generated : `${generated}T00:00:00Z`)
   if (Number.isNaN(date.getTime())) return generated.toUpperCase()
   return date
     .toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })

@@ -1408,11 +1408,10 @@ function buildShotModelValues(
   xpps: string | null
 ): ShotQualityModelValues | null {
   if (pMake === null || expectedEfg === null || xpps === null) return null;
-  return {
-    pMake: parseFloat(pMake),
-    expectedEfg: parseFloat(expectedEfg),
-    xpps: parseFloat(xpps),
-  };
+  const values = { pMake: Number(pMake), expectedEfg: Number(expectedEfg), xpps: Number(xpps) };
+  return Object.values(values).every(Number.isFinite) && values.pMake >= 0 && values.pMake <= 1
+    && values.expectedEfg >= 0 && values.expectedEfg <= 1.5 && values.xpps >= 0 && values.xpps <= 3
+    ? values : null;
 }
 
 function mapShotQualityRow(row: ShotQualityGridRow): ShotQualityCell {
@@ -1466,37 +1465,20 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
       AND base.cell_x = g.cell_x
       AND base.cell_y = g.cell_y
       AND base.model_version = ${SHOT_MODEL_BASELINE}
-    WHERE g.team_id IS NULL AND g.season = ${season}
+    WHERE g.team_id IS NULL AND g.fga > 0 AND g.season = ${season}
     ORDER BY g.cell_x, g.cell_y
   `)).rows as unknown as ShotQualityGridRow[];
 
   return rows.map(mapShotQualityRow);
 }
 
-/**
- * Newest season with a league grid and both surfaces needed by the comparison view.
- * `shot_grid` and `shot_value_surface` deliberately remain raw SQL tables in this app.
- */
+/** Newest positive raw league grid. Model readiness is measured independently across every cell. */
 export async function getLatestPublishedShotQualitySeason(beforeSeason?: string): Promise<string | null> {
   const rows = (await db.execute(sql`
     SELECT max(g.season) AS latest
     FROM shot_grid g
-    WHERE g.team_id IS NULL
+    WHERE g.team_id IS NULL AND g.fga > 0
       AND ${beforeSeason ? sql`g.season < ${beforeSeason}` : sql`true`}
-      AND EXISTS (
-        SELECT 1 FROM shot_value_surface s
-        WHERE s.season = g.season
-          AND s.cell_x = g.cell_x
-          AND s.cell_y = g.cell_y
-          AND s.model_version = ${SHOT_MODEL_GBM}
-      )
-      AND EXISTS (
-        SELECT 1 FROM shot_value_surface s
-        WHERE s.season = g.season
-          AND s.cell_x = g.cell_x
-          AND s.cell_y = g.cell_y
-          AND s.model_version = ${SHOT_MODEL_BASELINE}
-      )
   `)).rows as unknown as { latest: string | null }[];
 
   return rows[0]?.latest ? String(rows[0].latest) : null;

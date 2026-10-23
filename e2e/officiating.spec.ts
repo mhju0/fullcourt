@@ -3,7 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import data from "../src/data/officiating.json";
 import { defaultNbaSeason } from "../src/lib/nba-season";
 
-const season = data.seasons[data.seasons.length - 1];
+const season = data.seasons.find((value) => value.season === "2025-26")!;
 const errorGame = season.games.find((g) => g.missed + g.wrong > 0)!;
 const cleanGame = season.games.find((g) => g.missed + g.wrong === 0)!;
 const url = (id: string) => `/officiating?season=${season.season}&game=${id}`;
@@ -79,7 +79,7 @@ test("clean report retains all assessments and unavailable report offers recover
 });
 
 test("empty filter retains the league figures", async ({ page }) => {
-  await page.goto("/officiating?team=UNKNOWN");
+  await page.goto(`/officiating?season=${season.season}&team=UNKNOWN`);
   await expect(page.getByText("No reports match these filters.")).toBeVisible();
   await expect(
     page.getByText(
@@ -144,7 +144,7 @@ for (const historical of [data.seasons[0], data.seasons[2], data.seasons[4]]) {
 // Both sideways rows on a phone fade the edge that hides content, and stop once it is reached.
 test("the season strip and call-type row show that they scroll on a phone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/officiating");
+  await page.goto(`/officiating?season=${season.season}`);
   for (const name of [/Season comparison/, "Call-type filters"]) {
     const row = page.getByLabel(name);
     await expect(row).toHaveAttribute("data-overflow", "");

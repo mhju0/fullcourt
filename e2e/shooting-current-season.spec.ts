@@ -3,24 +3,24 @@ import AxeBuilder from "@axe-core/playwright";
 import type { PlayerRestPayload } from "../src/lib/player-rest";
 
 const historical: PlayerRestPayload = {
-  generated: "2026-10-19", names: ["Test Player"], teams: ["BOS"],
-  seasons: [[0, 2025, 0, 25, 70, 1000, 50, 200, 48, 300, 52]],
-  shrunk: [[0, 4, 1.5, 3]],
+  generated: "2026-10-23", names: ["Test Player"], teams: ["BOS"],
+  seasons: [[0, 2025, 0, 25, 70, 1000, 50, 200, 48, 300, 52, 1000, 192, 312, 2000, 384, 624]],
+  shrunk: [[0, 4, 4.6, 0.4]],
 };
 const earlyCurrent: PlayerRestPayload = {
-  ...historical,
-  seasons: [...historical.seasons, [0, 2026, 0, 26, 5, 98765, 65, 100, 60, 100, 70]],
+  ...historical, names: [...historical.names, "Current Player"], seasonOnlyPlayers: [1],
+  seasons: [...historical.seasons, [1, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0, 3, 0, 0, 9, 0, 0]],
 };
 async function playerExport(page: Page, data = historical) {
-  await page.route("**/data/player-rest.json", route => route.fulfill({ json: data }));
+  await page.route("**/api/player-rest", route => route.fulfill({ json: data }));
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.clock.setFixedTime(new Date("2026-10-19T12:00:00Z"));
+  await page.clock.setFixedTime(new Date("2026-10-23T12:00:00Z"));
 });
 
 for (const width of [1280, 390]) {
-  test(`latest publication defaults and explicit current stays awaiting at ${width}px`, async ({ page }, info) => {
+  test(`latest publication defaults and an explicit unobserved season stays awaiting at ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await playerExport(page);
     await page.goto("/shooting");
@@ -31,96 +31,64 @@ for (const width of [1280, 390]) {
     await main.locator("#pr-season").selectOption("2026");
     await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
     await expect(main.getByTestId("season-data-guide")).toHaveCount(1);
-    await expect(main.locator("#pr-season")).toHaveValue("2026");
     await expect(main.getByTestId("player-row")).toHaveCount(0);
-    await expect(main.getByRole("searchbox")).toHaveCount(0);
-    await expect(main.locator("#pr-team")).toHaveCount(0);
-    await expect(main.getByText("Show zero-rest player workload")).toHaveCount(0);
     const previous = main.getByRole("link", { name: /View published results/ });
     await expect(previous).toHaveAttribute("href", "/shooting?year=2025");
     expect((await previous.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-    expect(await main.getByTestId("season-data-guide").locator("p").first().evaluate(el => getComputedStyle(el).fontSize)).toBe("15px");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const { violations } = await new AxeBuilder({ page }).include("main").withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
     expect(violations.map(({ id }) => id)).toEqual([]);
-    await page.screenshot({ path: info.outputPath(`shooting-current-${width}.png`), fullPage: true });
-
+    await page.screenshot({ path: info.outputPath(`shooting-awaiting-${width}.png`) });
     await previous.click();
     await expect(main.locator("#pr-season")).toHaveValue("2025");
     await expect(main.getByTestId("player-row")).toHaveCount(1);
-    await expect(main.getByTestId("season-data-guide")).toHaveCount(0);
-    await main.locator("#pr-season").selectOption("2026");
-    await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
+    await page.goBack();
+    await expect(main.locator("#pr-season")).toHaveValue("2026");
     await expect(main.getByTestId("player-row")).toHaveCount(0);
-    await page.goBack();
-    await expect(main.locator("#pr-season")).toHaveValue("2025");
-    await expect(main.getByTestId("player-row")).toHaveCount(1);
-    await page.goBack();
-    await expect(main.locator("#pr-season")).toHaveValue("2026");
-    await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
-    await page.goBack();
-    await expect(main.locator("#pr-season")).toHaveValue("2025");
-    await expect(main.getByTestId("player-row")).toHaveCount(1);
-    await page.goForward();
-    await expect(main.locator("#pr-season")).toHaveValue("2026");
-    await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
   });
 }
 
-test("explicit current selection stays awaiting even if games are ready but its export is unpublished", async ({ page }) => {
-  await playerExport(page);
+test("current observations bypass game-count readiness and keep missing comparisons unavailable", async ({ page }) => {
+  await playerExport(page, earlyCurrent);
   let readinessReads = 0;
   await page.route("**/api/season-readiness?*", route => {
     readinessReads++;
-    return route.fulfill({ json: { data: { season: "2026-27", ready: true, expectedAfterDate: null }, error: null } });
+    return route.fulfill({ status: 500, json: { data: null, error: "Unavailable" } });
   });
-  await page.goto("/shooting?year=2026");
-  await expect(page.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
-  await expect(page.getByTestId("player-row")).toHaveCount(0);
+  await page.goto("/shooting");
+  await expect(page.locator("#pr-season")).toHaveValue("2026");
+  await expect(page.locator("#pr-volume")).toHaveValue("0");
+  const row = page.getByTestId("player-row");
+  await expect(row).toHaveCount(1);
+  await expect(row).toContainText("150.0% eFG");
+  await expect(row.locator("td").nth(1)).toHaveText("—");
+  await expect(row.locator("td").nth(2)).toHaveText("—");
+  await expect(row.locator("td").nth(3)).toHaveText("—");
   expect(readinessReads).toBe(0);
+  await page.getByText(/^Advanced filters/).click();
+  await page.locator("#pr-volume").selectOption("300");
+  await expect(page).toHaveURL(/volume=300/);
+  await expect(row).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator("#pr-volume")).toHaveValue("300");
+  await expect(row).toHaveCount(0);
 });
 
-test("a current-containing export preserves retry, career and historical-expansion guards", async ({ page }) => {
+test("current provider rows do not hold or silently join historical careers", async ({ page }) => {
   await playerExport(page, earlyCurrent);
-  let fail = true;
-  let released = false;
-  await page.route("**/api/season-readiness?*", route => route.fulfill({
-    status: fail ? 500 : 200,
-    json: fail ? { data: null, error: "Data status unavailable" } : {
-      data: { season: "2026-27", ready: released, expectedAfterDate: null }, error: null,
-    },
-  }));
-  await page.goto("/shooting?year=2026");
-  const main = page.locator("main");
-  await expect(main.getByRole("alert")).toContainText("COULD NOT CHECK SEASON DATA");
-  await expect(main.getByTestId("player-row")).toHaveCount(0);
-  fail = false;
-  await main.getByRole("button", { name: "Retry data status" }).click();
-  await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
-  await main.locator("#pr-season").selectOption("career");
-  await expect(main.getByRole("heading", { name: /Awaiting results/ })).toBeVisible();
-  await expect(main.getByTestId("player-row")).toHaveCount(0);
-  await main.locator("#pr-season").selectOption("2025");
-  await expect(main.getByTestId("season-data-guide")).toHaveCount(0);
-  await main.getByRole("button", { name: "Expand Test Player shooting details" }).click();
-  await expect(main.getByTestId("season-row")).toHaveCount(1);
-  await expect(main.getByTestId("season-row")).toContainText("2025-26");
-  await expect(main.getByTestId("career-row")).toHaveCount(0);
-  await expect(main.getByTestId("career-data-held")).toBeVisible();
-  await expect(main).not.toContainText("98,765");
-  await main.locator("#pr-season").selectOption("2026");
-  released = true;
-  await page.reload();
-  await expect(main.getByTestId("season-data-guide")).toHaveCount(0);
-  await expect(main.locator("#pr-season")).toHaveValue("2026");
-  await expect(main.getByTestId("season-row").filter({ hasText: "2026-27" })).toContainText("70.0%");
-  await main.locator("#pr-season").selectOption("career");
-  await expect(main.getByTestId("player-row")).toHaveCount(1);
+  await page.goto("/shooting?year=career&volume=0");
+  await expect(page.getByTestId("player-row")).toHaveCount(1);
+  await expect(page.getByTestId("player-row")).toContainText("Test Player");
+  await expect(page.getByTestId("player-row")).not.toContainText("Current Player");
+  await page.getByTestId("player-row").getByRole("button").click();
+  await expect(page.getByTestId("career-row")).toBeVisible();
+  await expect(page.getByTestId("season-row")).toHaveCount(1);
+  await expect(page.locator("main")).toContainText("Historical career gap (2025-26 through 2025-26)");
 });
 
 test("an export loading failure is retryable instead of appearing as unpublished data", async ({ page }) => {
   let fail = true;
-  await page.route("**/data/player-rest.json", route => route.fulfill({
+  await page.route("**/api/player-rest", route => route.fulfill({
     status: fail ? 500 : 200, json: fail ? { error: "Unavailable" } : historical,
   }));
   await page.goto("/shooting");

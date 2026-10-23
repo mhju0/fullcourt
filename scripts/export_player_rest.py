@@ -5,11 +5,8 @@ player's OWN rest situation, and writes one compact JSON file:
 
     public/data/player-rest.json
 
-Why a static file rather than a table plus an API route, which is how every other
-surface on the site is fed: this export changes once a season, not once a night.
-The live surfaces read `games`, `fatigue_scores` and `predictions` because those
-move daily. Nothing here does, so a CDN-cacheable asset is both simpler and
-faster than a round trip to Postgres for numbers that cannot have changed.
+The historical baseline is rebuilt deliberately. Daily current-season snapshots
+are collected separately and verified before serving alongside this baseline.
 
 Rest uses covered competitive NBA appearances, including zero-attempt games.
 A player who sat out can have a longer personal gap than his team; the data does
@@ -37,7 +34,9 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import json
+import tempfile
 import math
 import logging
 import os
@@ -83,7 +82,39 @@ def pct(a: tuple[int, int, int]) -> float | None:
     return round(efg(*a) * 100, 2) if a[1] else None
 
 
+def atomic_write_payload(dest: Path, payload: dict) -> None:
+    """Serialize and validate before replacing the last good published file."""
+    data = json.dumps(payload, separators=(",", ":"), allow_nan=False)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=dest.parent, delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, dest)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cache", type=Path)
+    parser.add_argument("--through-year", type=int, help="Freeze a historical baseline through this season start year")
+    parser.add_argument("--output", type=Path, default=DEST)
+    args = parser.parse_args()
+    if args.cache:
+        import analyze_player_shooting
+        analyze_player_shooting.CACHE = args.cache
+    if args.through_year is not None:
+        import analyze_player_shooting
+        load_fixtures = analyze_player_shooting.load_outcome_fixtures
+        analyze_player_shooting.load_outcome_fixtures = lambda conn: {
+            gid: row for gid, row in load_fixtures(conn).items() if int(row["season"][:4]) <= args.through_year
+        }
+    dest = args.output
     dsn = os.environ.get("DATABASE_URL")
     if not dsn:
         print("DATABASE_URL not set", file=sys.stderr)
@@ -95,14 +126,19 @@ def main() -> int:
     try:
         rows, coverage = load_annotated_player_games(conn, birth)
         require_player_season_publication(conn, (r["season"] for r in rows))
-    except SeasonPublicationHeld as error:
+    except (SeasonPublicationHeld, ValueError) as error:
         logging.error("%s", error)
         return 1
     finally:
         conn.close()
     print(f"{len(rows):,} player-games with personal rest and age")
 
+    if not rows:
+        logging.error("No observed player-games; keeping the previous export")
+        return 1
+
     names: list[str] = []
+    player_ids: list[str] = []
     nix: dict[str, int] = {}
     teams: list[str] = []
     tix: dict[str, int] = {}
@@ -111,6 +147,7 @@ def main() -> int:
         if pid not in nix:
             nix[pid] = len(names)
             names.append(name)
+            player_ids.append("nba:" + pid)
         return nix[pid]
 
     def team_idx(label: str) -> int:
@@ -143,6 +180,7 @@ def main() -> int:
             len(games), whole[1], pct(whole) or 0,
             t[1], pct(t) or 0, c[1], pct(c) or 0,
             2 * whole[0] + whole[2], 2 * t[0] + t[2], 2 * c[0] + c[2],
+            4 * whole[0] + 5 * whole[2], 4 * t[0] + 5 * t[2], 4 * c[0] + 5 * c[2],
         ])
     seasons.sort(key=lambda r: (r[0], r[1]))
 
@@ -181,9 +219,9 @@ def main() -> int:
         se = math.sqrt(efg_se(*t) ** 2 + efg_se(*c) ** 2)
         raw.append((nix[pid], d, se))
 
-    mean = sum(d for _, d, _ in raw) / len(raw)
-    var_obs = sum((d - mean) ** 2 for _, d, _ in raw) / (len(raw) - 1)
-    tau2 = max(var_obs - sum(s * s for _, _, s in raw) / len(raw), 0.0)
+    mean = sum(d for _, d, _ in raw) / len(raw) if raw else 0
+    var_obs = sum((d - mean) ** 2 for _, d, _ in raw) / (len(raw) - 1) if len(raw) > 1 else 0
+    tau2 = max(var_obs - sum(s * s for _, _, s in raw) / len(raw), 0.0) if raw else 0
     shrunk = []
     for p, d, se in raw:
         w = tau2 / (tau2 + se * se) if (tau2 + se * se) > 0 else 0.0
@@ -191,7 +229,8 @@ def main() -> int:
     shrunk.sort()
 
     payload = {
-        "version": "1.0.4",
+        "version": "1.1.0",
+        "playerIds": player_ids,
         "appearanceCoverage": coverage,
         "empiricalBayes": {"mean": mean, "tau": math.sqrt(tau2), "eligiblePlayers": len(raw),
                            "minimumArmFga": CAREER_MIN_ARM},
@@ -202,8 +241,7 @@ def main() -> int:
         "seasons": seasons,
         "shrunk": shrunk,
     }
-    DEST.parent.mkdir(parents=True, exist_ok=True)
-    DEST.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+    atomic_write_payload(dest, payload)
 
     yrs = sorted({r[1] for r in seasons})
     print(f"{len(names):,} players · {len(seasons):,} player-seasons · "
@@ -215,7 +253,7 @@ def main() -> int:
     print(f"seasons {yrs[0]}-{yrs[-1]}, {len(yrs)} of them "
           f"({'2019-20 present' if 2019 in yrs else 'WARNING: 2019-20 missing'})")
     print(f"league mean rest effect {mean:+.3f} pp, tau {math.sqrt(tau2):.2f}")
-    print(f"-> {DEST.relative_to(ROOT)}  {DEST.stat().st_size / 1024:.0f} KB")
+    print(f"-> {dest}  {dest.stat().st_size / 1024:.0f} KB")
     return 0
 
 

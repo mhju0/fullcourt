@@ -1,5 +1,12 @@
 # Release history
 
+## 1.2.0 — 2026-10-23
+
+- Publish current-season observations as soon as each module has validated data; remove the shared ten-game and descriptive hundred-game holds.
+- Show denominators, missing cohorts, Wilson win-rate intervals and corrected weighted eFG sampling variation. Keep current ESPN players separate from historical career estimates.
+- Publish daily content-addressed snapshots independently of application releases, with per-module failure retention and checked source coverage.
+- Open the first current-season L2M reports, expose raw shot maps independently of model availability, and keep historical studies and completed-season findings scoped to their evidence.
+
 ## 1.1.6 — 2026-10-23
 
 - Step the phone Games date arrows one day at a time instead of one week. The Sunday-to-Saturday

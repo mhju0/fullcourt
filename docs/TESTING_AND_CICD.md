@@ -209,3 +209,11 @@ counts retain scope, commit and pnpm version. Do not blanket-override all transi
 All these workflows require integration into main before scheduled behavior can be observed.
 
 The Node-only maintenance monitor and provider probe disable setup-node package-manager auto-caching. Neither installs pnpm; the pinned action otherwise detects the root packageManager and fails before the monitor starts. The dependencies job retains its pnpm setup/cache. The release-gate contracts scan all workflow jobs for this boundary, preserving cache use only where pnpm is installed first.
+
+## 일일 데이터 발행 계약
+
+`test_daily_publications.py`는 임시 bare Git origin에서 첫 발행·재실행 거절·다른 모듈 갱신·이전 blob
+보존을 실행한다. 테스트는 production 원격·DB에 쓰지 않는다. TS reader/Officiating 계약은 경로 탈출,
+변조 해시, 거짓 Content-Length·stream 초과, 이전 공개본 pin, 불완전 상세와 fallback을 검사한다.
+앱과 데이터 reader/publisher의 frozen SHA는 Class-3 독립 검토를 통과해야 한다.
+현재 운영은 [공개 정책](EARLY_SEASON_PUBLICATION.md)을 따른다.

@@ -1,5 +1,6 @@
 export type ReviewGrade = "IC" | "INC" | "CC" | "CNC" | "Undetectable" | "NCI" | "NCC" | "";
 export interface ReviewGame {
+  detailUrl?: string;
   id: string;
   canonicalExternalId?: string;
   date: string;
@@ -15,6 +16,7 @@ export interface ReviewGame {
   sha256: string;
 }
 export interface ReviewSeason {
+  publicationHash?: string;
   season: string;
   refreshedAt: string;
   through: string;

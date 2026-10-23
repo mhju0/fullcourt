@@ -32,16 +32,6 @@ import {
 } from "@/lib/schedule-value";
 
 /**
- * Decidable games below which a season's rest win rate is shown as "too early"
- * rather than as a finding.
- *
- * A full season yields ~940 decidable games, worth ±3.2pp. At 100 the interval
- * is ±9.8pp — wide, but the number is no longer meaningless, and the band is
- * printed beside it either way. This is a display gate, not a modelling one.
- */
-export const MIN_GAMES_FOR_INFERENCE = 100;
-
-/**
  * Seasons that did not run the ordinary 82-game shape, and what to say about them.
  *
  * Display copy only. It changes nothing that is computed and is deliberately separate from
@@ -119,14 +109,16 @@ export interface SeasonReportRow {
   away: SeasonReportSide | null;
 }
 
-/** A rest-advantage hit rate with the interval that says whether to believe it. */
+/** An observed rested-home rate with its binomial uncertainty. */
 export interface SeasonReportRate {
   games: number;
   restedTeamWins: number;
   /** Percentage to one decimal, rounded by the shared `winPct`. */
   winPct: number;
-  /** Half-width of the 95% Wald interval in percentage points. Null with no games. */
+  /** Half-width of the Wilson interval, retained for older API consumers. */
   band: number | null;
+  /** 95% Wilson bounds in percentage points. Null with no games. */
+  interval: { lower: number; upper: number } | null;
 }
 
 /** The selected season's designated-home record over every eligible completed game. */
@@ -223,22 +215,6 @@ export interface SeasonReportWeek {
   avgFatigue: number;
 }
 
-/**
- * The one sentence under the tiles. Four states and no superlative: a "biggest
- * gap since 2011-12" claim reads as a finding and is a ranking of noise.
- *
- * `noNorm` is distinct from `tooEarly`: `norm === null` means the all-season baseline
- * could not be loaded (e.g. `/api/analysis` failed), not that this season's sample is
- * thin. Conflating the two would have a fully-played season announce itself as too
- * early to call.
- */
-export type SeasonReportVerdict =
-  | { kind: "tooEarly"; games: number }
-  | { kind: "noNorm" }
-  | { kind: "inLine"; winPct: number; band: number; norm: number }
-  | { kind: "above"; winPct: number; band: number; norm: number }
-  | { kind: "below"; winPct: number; band: number; norm: number };
-
 export interface SeasonReport {
   season: string;
   /**
@@ -276,6 +252,10 @@ export interface SeasonReport {
   seasonComplete: boolean;
   /** Games with a final score and both fatigue sides — every aggregate's denominator. */
   completedGames: number;
+  /** Final, scored games before requiring fatigue rows. */
+  availableFinalGames: number;
+  /** Final, scored games missing at least one fatigue side. */
+  missingFatigueGames: number;
   /** Home win rate before the rest-advantage filter, available from the first eligible final. */
   homeRate: SeasonHomeRate;
   overall: SeasonReportRate;
@@ -298,17 +278,23 @@ export interface SeasonReport {
   weeks: SeasonReportWeek[];
 }
 
-/**
- * Half-width of the 95% Wald interval, in percentage points to one decimal.
- *
- * Wald rather than Wilson: at the sample sizes this page publishes (gated at 100
- * games, typically 400–950) and rates near 0.5, the two agree to well under the
- * 0.1pp this rounds to, and Wald is one line.
- */
-export function winRateBand(wins: number, games: number): number | null {
-  if (games === 0) return null;
+/** 95% Wilson score interval, including one-game and all-win/all-loss samples. */
+export function winRateInterval(wins: number, games: number): SeasonReportRate["interval"] {
+  if (games <= 0) return null;
+  const z = 1.96;
   const p = wins / games;
-  return Math.round(1960 * Math.sqrt((p * (1 - p)) / games)) / 10;
+  const denominator = 1 + z * z / games;
+  const center = (p + z * z / (2 * games)) / denominator;
+  const radius = z * Math.sqrt(p * (1 - p) / games + z * z / (4 * games * games)) / denominator;
+  return {
+    lower: Math.round(Math.max(0, center - radius) * 1000) / 10,
+    upper: Math.round(Math.min(1, center + radius) * 1000) / 10,
+  };
+}
+
+export function winRateBand(wins: number, games: number): number | null {
+  const interval = winRateInterval(wins, games);
+  return interval === null ? null : Math.round((interval.upper - interval.lower) * 5) / 10;
 }
 
 function rate(wins: number, games: number): SeasonReportRate {
@@ -317,6 +303,7 @@ function rate(wins: number, games: number): SeasonReportRate {
     restedTeamWins: wins,
     winPct: winPct(wins, games),
     band: winRateBand(wins, games),
+    interval: winRateInterval(wins, games),
   };
 }
 
@@ -406,6 +393,8 @@ export function buildSeasonReport(
   const basis: SeasonReport["basis"] = hasCompletedGame ? "played" : "schedule";
 
   let completedGames = 0;
+  let availableFinalGames = 0;
+  let missingFatigueGames = 0;
   let homeGames = 0;
   let homeWins = 0;
   let overallGames = 0;
@@ -426,6 +415,10 @@ export function buildSeasonReport(
     // that goes wrong the day someone reorders the read. ISO dates compare lexically.
     if (row.status === "final" && (latestFinalDate === null || row.date > latestFinalDate)) {
       latestFinalDate = row.date;
+    }
+    if (row.status === "final" && row.homeScore !== null && row.awayScore !== null) {
+      availableFinalGames++;
+      if (row.home === null || row.away === null) missingFatigueGames++;
     }
 
     // Both fatigue sides are required on either basis — they are what every figure below is
@@ -579,6 +572,8 @@ export function buildSeasonReport(
     latestFinalDate,
     seasonComplete: rows.length > 0 && rows.every((row) => isSettledGame(row.status)),
     completedGames,
+    availableFinalGames,
+    missingFatigueGames,
     homeRate: {
       games: homeGames,
       homeWins,
@@ -633,32 +628,6 @@ export function allSeasonHomeRateExcluding(
     wins += row.homeWins;
   }
   return games === 0 ? null : winPct(wins, games);
-}
-
-/**
- * Which of the three things the page is allowed to say about a season's rate.
- *
- * "Inside the band" means the season and the norm are not distinguishable at
- * this sample size, which is the common case: a full season carries ±3.2pp and
- * seasons rarely move further than that.
- */
-export function seasonReportVerdict(
-  rate: SeasonReportRate,
-  norm: number | null
-): SeasonReportVerdict {
-  if (rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null) {
-    return { kind: "tooEarly", games: rate.games };
-  }
-  if (norm === null) {
-    return { kind: "noNorm" };
-  }
-
-  // Both rates are shown to one decimal, so compare the gap the page shows: 64.7 − 60.5 is
-  // 4.200000000000003 and would otherwise fall outside a ±4.2 band.
-  const delta = Math.round((rate.winPct - norm) * 10) / 10;
-  const shared = { winPct: rate.winPct, band: rate.band, norm };
-  if (Math.abs(delta) <= rate.band) return { kind: "inLine", ...shared };
-  return { kind: delta > 0 ? "above" : "below", ...shared };
 }
 
 /** A team row with the labels the UI needs, attached by the server module. */

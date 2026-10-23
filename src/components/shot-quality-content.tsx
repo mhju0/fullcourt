@@ -3,8 +3,6 @@
 import { useMemo, useState } from "react"
 import useSWR from "swr"
 import { SeasonDataGuide } from "@/components/season-data-guide"
-import { SeasonReadinessNotice } from "@/components/season-readiness-notice"
-import { useSeasonReadiness } from "@/hooks/useSeasonReadiness"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
@@ -89,16 +87,19 @@ const divColor = (t: number): string =>
 
 // ─── Encoding toggle ───────────────────────────────────────────────
 
-type ColorMode = "value" | "diff"
+type ColorMode = "actual" | "value" | "diff"
 
 function EncodingToggle({
   mode,
   onModeChange,
+  modelsAvailable,
 }: {
   mode: ColorMode
   onModeChange: (m: ColorMode) => void
+  modelsAvailable: boolean
 }) {
   const options: { key: ColorMode; label: string }[] = [
+    { key: "actual", label: "SHOT ATTEMPTS" },
     { key: "value", label: "EXPECTED eFG%" },
     { key: "diff", label: "MODEL DIFFERENCE" },
   ]
@@ -107,14 +108,15 @@ function EncodingToggle({
       <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
         MAP VIEW
       </span>
-      <div className="inline-flex" role="group" aria-label="Map view">
-        {options.map((o, i) => {
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Map view">
+        {options.map((o) => {
           const active = mode === o.key
           return (
             <button
               key={o.key}
               type="button"
               aria-pressed={active}
+              disabled={o.key !== "actual" && !modelsAvailable}
               onClick={() => onModeChange(o.key)}
               className={`fc-control-button mono px-3 py-2 ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
@@ -125,11 +127,7 @@ function EncodingToggle({
                 background: active ? "var(--term-text)" : undefined,
                 color: active ? "var(--term-surface)" : "var(--term-text-dim)",
                 border: "1px solid var(--term-border)",
-                borderLeft: i === 0 ? "1px solid var(--term-border)" : "none",
-                borderTopLeftRadius: i === 0 ? 4 : 0,
-                borderBottomLeftRadius: i === 0 ? 4 : 0,
-                borderTopRightRadius: i === options.length - 1 ? 4 : 0,
-                borderBottomRightRadius: i === options.length - 1 ? 4 : 0,
+                borderRadius: 4,
               }}
             >
               {o.label}
@@ -438,7 +436,9 @@ function ShotModelComparison({ cells, scaleFga, getColor, formatValue }: {
   getColor: (value: number) => string
   formatValue: (value: number) => string
 }) {
-  const [model, setModel] = useState<"baseline" | "gbm">("baseline")
+  const { params, update } = usePageQuery()
+  const model = params.get("model") === "gbm-v1" ? "gbm" : "baseline"
+  const setModel = (value: "baseline" | "gbm") => update({ model: value === "gbm" ? "gbm-v1" : null })
   return <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
     <div className="grid grid-cols-2 gap-2" role="group" aria-label="Shot value model">
       <button type="button" className="fc-control-button min-h-11 border border-[var(--term-border)] px-3 py-2 text-[15px] aria-pressed:border-[var(--term-accent)] aria-pressed:bg-[var(--term-surface-2)]" aria-pressed={model === "baseline"} onClick={() => setModel("baseline")}>Zone average</button>
@@ -470,8 +470,6 @@ export function ShotQualityContent() {
     ? requestedSeason
     : null
   const requestedMode = params.get("mode")
-  const mode: ColorMode = requestedMode === "diff" ? "diff" : "value"
-  const compareModels = mode === "value" && params.get("compare") === "1"
 
   const { data: publication, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
     validRequestedSeason ? `/api/shot-quality?season=${validRequestedSeason}` : "/api/shot-quality",
@@ -479,37 +477,32 @@ export function ShotQualityContent() {
     { revalidateOnFocus: false }
   )
   const currentSeason = defaultNbaSeason()
-  const hasCurrentPublication = publication?.latestPublishedSeason === currentSeason
-  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication)
-  const previousSeason = publication?.previousPublishedSeason && publication.previousPublishedSeason < currentSeason
-    ? publication.previousPublishedSeason
-    : null
-  const usePrevious = !validRequestedSeason && hasCurrentPublication && !readiness.ready
-  const previous = useSWR<ShotQualityResponse>(
-    usePrevious && previousSeason ? `/api/shot-quality?season=${previousSeason}` : null,
-    apiFetcher, { revalidateOnFocus: false },
-  )
-  const data = usePrevious ? previous.data : publication
-  const failure = swrError ?? (usePrevious ? previous.error : undefined)
-  const error = failure ? errMsg(failure) : null
-  const season = validRequestedSeason ?? (usePrevious ? previousSeason : data?.season) ?? currentSeason
-  const heldCurrent = Boolean(publication) && season === currentSeason && (!hasCurrentPublication || !readiness.ready)
-  const dataMatchesSelection = Boolean(data && data.season === season && !heldCurrent)
+  const data = publication
+  const error = swrError ? errMsg(swrError) : null
+  const season = validRequestedSeason ?? data?.season ?? currentSeason
+  const dataMatchesSelection = Boolean(data && data.season === season)
+  const hasModelValues = Boolean(data?.cells.some(c => c.baseline || c.gbm))
+  const mode: ColorMode = requestedMode === "diff" ? "diff" : requestedMode === "actual" ? "actual" : requestedMode === "value" || hasModelValues ? "value" : "actual"
+  const compareModels = mode === "value" && params.get("compare") === "1"
   const setSeason = (value: string) => update({ season: value })
   const setMode = (value: ColorMode) => update({
-    mode: value === "diff" ? "diff" : null,
+    mode: value,
     compare: value === "diff" ? null : compareModels ? "1" : null,
   })
   const fallbackNotes = [
     requestedSeason && !validRequestedSeason && data
       ? `${requestedSeason} is unavailable on this page. Showing ${data.season}.`
       : null,
-    requestedMode && requestedMode !== "value" && requestedMode !== "diff"
+    requestedMode && requestedMode !== "value" && requestedMode !== "diff" && requestedMode !== "actual"
       ? `${requestedMode} is not a supported map view. Showing expected eFG%.`
       : null,
   ].filter(Boolean)
 
   const cells = useMemo(() => data?.cells ?? [], [data])
+  const modelCoverage = data?.meta.publication?.models
+  const completeModels = Boolean(cells.length && cells.every(c => c.baseline && c.gbm))
+  const publicationMeta = data?.meta.publication
+
 
   // Color-scale domains, derived per season from the cells actually returned.
   const stats = useMemo(() => {
@@ -550,13 +543,13 @@ export function ShotQualityContent() {
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="flex flex-wrap items-end gap-4">
       <SeasonSelector id="shot-quality-season" season={season} onSeasonChange={setSeason} />
-      <EncodingToggle mode={mode} onModeChange={setMode} />
+      <EncodingToggle mode={mode} onModeChange={setMode} modelsAvailable={hasModelValues} />
       </div>
       {dataMatchesSelection ? (
         <CopyFindingButton
           key={`${season}-${mode}-${compareModels}`}
-          text={`${season} Expected Shot Value · ${mode === "diff" ? "location model minus zone average, in percentage points" : "expected effective field-goal percentage"}. Model estimates describe shot locations, not guaranteed outcomes.`}
-          query={{ season, mode: mode === "diff" ? "diff" : null, compare: compareModels ? "1" : null }}
+          text={`${season} Expected Shot Value · ${mode === "actual" ? "observed shot attempts by location" : mode === "diff" ? "location model minus zone average, in percentage points" : "expected effective field-goal percentage"}. Model estimates describe shot locations, not guaranteed outcomes.`}
+          query={{ season, mode, compare: compareModels ? "1" : null, model: params.get("model") }}
         />
       ) : null}
     </div>
@@ -570,17 +563,6 @@ export function ShotQualityContent() {
       </div>
     )
   }
-
-  if (heldCurrent) return <div className="flex flex-col gap-12">
-    {controls}
-    {!hasCurrentPublication ? <SeasonDataGuide title="Awaiting results" season={currentSeason}
-      body="The expected shot value surface for this season has not been published."
-      previousHref={publication ? `/shot-quality?season=${publication.latestPublishedSeason}` : undefined}
-      previousLabel={publication ? `View published results · ${publication.latestPublishedSeason}` : undefined} /> : <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-      body={previousSeason ? "New-season shot-value results are not available yet. Earlier published surfaces remain available." : "New-season shot-value results are not available yet."}
-      previousHref={previousSeason ? `/shot-quality?season=${previousSeason}` : undefined}
-      previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />}
-  </div>
 
   if ((isLoading && !data) || !data || !dataMatchesSelection) {
     return (
@@ -597,14 +579,14 @@ export function ShotQualityContent() {
     <div className="flex flex-col gap-12">
       {controls}
       {fallbackNotes.map((note) => <p key={note} role="status" className="mono text-xs text-[var(--term-text-muted)]">{note}</p>)}
+      {publicationMeta?.checkedAt || publicationMeta?.updateStatus === "failed" ? <p role="status" className="text-body text-[var(--term-text-muted)] [overflow-wrap:anywhere]">{publicationMeta.checkedAt ? <>Last update check {publicationMeta.checkedAt}. </> : null}{publicationMeta.updateStatus === "failed" ? "The latest update failed; the previous publication is retained." : publicationMeta.updateStatus === "unavailable" ? "The source has no new publication." : "Published snapshot available."}</p> : null}
 
-      {usePrevious ? <p role="status" className="text-body text-[var(--term-text-muted)]">Showing the previous published surface · {season}. {currentSeason} results are awaiting season data.</p> :
-        !isEmpty && !validRequestedSeason && season < currentSeason ? <p role="status" className="text-body text-[var(--term-text-muted)]">
-          Showing {season}, the latest published surface. {currentSeason} results are not available yet.
-        </p> : null}
+      {!isEmpty && !validRequestedSeason && season < currentSeason ? <p role="status" className="text-body text-[var(--term-text-muted)]">
+        Showing {season}, the latest published shot grid. {currentSeason} shot data is not available yet.
+      </p> : null}
 
       {isEmpty && season >= currentSeason ? <SeasonDataGuide season={season}
-        body="The expected shot value surface for this season has not been published. New maps depend on updated shot-location data."
+        body="Shot-location data for this season has not been published. Observed attempts will appear as soon as a validated shot grid is available."
         previousHref={`/shot-quality?season=${data.latestPublishedSeason}`}
         previousLabel={`View published results · ${data.latestPublishedSeason}`} /> : isEmpty ? (
         <div className="flex flex-col gap-3">
@@ -634,11 +616,22 @@ export function ShotQualityContent() {
             </span>
           </div>
 
-          <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
+          <div className="mb-4 flex flex-col gap-2 text-body text-[var(--term-text-muted)] [overflow-wrap:anywhere]" role="status">
+            <p>Observed attempts in {cells.length.toLocaleString()} measured locations. Early-season totals describe the shots collected so far.</p>
+            {publicationMeta?.source === "nba-stats-snapshot" ? <>
+              <p>NBA Stats ShotChartDetail · {publicationMeta.gameCount?.toLocaleString()} games · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
+              <p>Snapshot generated {publicationMeta.generatedAt}. {publicationMeta.droppedShotCount?.toLocaleString()} attempts outside the map or without coordinates are excluded.</p>
+              <p>Coverage is the games returned by the source; completeness against the NBA schedule has not been established.</p>
+            </> : <p>Historical database grid. Source collection date and game coverage are unavailable.</p>}
+            {hasModelValues ? <p>Model coverage: zone average {modelCoverage?.["baseline-zone-v1"].coveredCells ?? cells.filter(c => c.baseline).length}/{cells.length} cells; location model {modelCoverage?.["gbm-v1"].coveredCells ?? cells.filter(c => c.gbm).length}/{cells.length} cells. {completeModels ? "Both surfaces cover every location." : "Incomplete surfaces retain unavailable locations."} Model training period is unavailable for these published surfaces.</p> : <p>Model estimates are awaiting publication. The map shows observed shot attempts.</p>}
+          </div>
+          {mode === "actual" ? <p className="mb-4 text-body text-[var(--term-text-muted)]">Larger, darker squares mark more shot attempts. Counts describe observed volume at each location.</p> : hasModelValues ? <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} /> : null}
 
-          {mode === "value" ? (
+          {mode === "actual" || !hasModelValues ? (
+            <div className="mx-auto w-full max-w-lg"><ShotCourt cells={cells} scaleFga={stats.scaleFga} getValue={c => c.fga} getColor={v => seqColor(v / stats.scaleFga)} formatValue={v => `${v.toLocaleString()} attempts`} title="Actual shot attempts" subtitle="OBSERVED VOLUME · REGULAR SEASON" /></div>
+          ) : mode === "value" ? (
             <ShotModelComparison cells={cells} scaleFga={stats.scaleFga} getColor={seqColorFor} formatValue={fmtEfg} />
-          ) : (
+          ) : !completeModels ? <MessageCard tone="muted" title="MODEL COMPARISON INCOMPLETE" body="A model difference requires both estimates at every location. Inspect the available values in Expected eFG%." /> : (
             <div className="mx-auto w-full md:max-w-md">
               <ShotCourt
                 cells={cells}

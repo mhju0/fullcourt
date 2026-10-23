@@ -223,13 +223,12 @@ missing rather than becoming a fabricated zero. [Lifecycle contract](GAME_STATUS
 
 ## Season-data guides
 
-`SeasonDataGuide` uses the shared card border, radius and spacing, 15px body type and
-44px link targets. Its heading is “Awaiting season data”; previous publication and current
-schedule links provide the next actions. The current-season release rule remains internal:
-no team-game progress counter, milestone explanation or statistical-significance claim.
-A schedule-derived expected-after date is shown only for a supported result availability
-estimate, never as a universal study-publication promise. Current selections fail closed
-while readiness is unknown, and a failed request has a retryable error state.
+`SeasonDataGuide` uses shared 15px body type and 44px link targets. Each module opens
+when its own validated observations exist; no all-teams-ten-finals gate or expected release
+date controls descriptive data. Empty cohorts, pending source publication, failed collection
+and an unavailable model are distinct states. Raw rates keep numerator/denominator; n=0 is
+unavailable. Wilson intervals and exact weighted eFG moments replace assumptions that relied
+on a hidden sample floor. See [publication policy](EARLY_SEASON_PUBLICATION.md).
 
 Static/pipeline-driven studies retain their latest published coverage. Schedule Edge is
 available as a provisional outlook before results. Availability Cost remains a retrospective.

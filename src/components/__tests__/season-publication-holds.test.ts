@@ -30,7 +30,7 @@ vi.mock("@/components/zero-rest-workload", () => ({ ZeroRestWorkload: () => null
 const playerPayload: PlayerRestPayload = {
   generated: "2026-11-01", names: ["Test Player"], teams: ["BOS"],
   seasons: [
-    [0, 2025, 0, 25, 70, 1000, 50, 200, 48, 300, 52],
+    [0, 2025, 0, 25, 70, 1000, 50, 200, 48, 300, 52, 1000, 192, 312, 2000, 384, 624],
     [0, 2026, 0, 26, 5, 98765, 65, 100, 60, 100, 70],
   ],
   shrunk: [[0, 99.99, 1.5, 88.88]],
@@ -56,127 +56,115 @@ beforeEach(() => {
   state.ready = false;
   state.failure = false;
   state.reads = [];
-  state.data = { "/data/player-rest.json": playerPayload };
+  state.data = { "/api/player-rest": playerPayload };
 });
 
 afterEach(() => vi.useRealTimers());
 
-describe("current player publication holds", () => {
-  it.each([false, true])("defaults to actual published player rows while current is held (readiness error=%s)", (failure) => {
+describe("observed player publications", () => {
+  it.each([false, true])("shows current observed rows independently of the old readiness check (error=%s)", (failure) => {
     state.failure = failure;
     const html = renderPlayer();
-    expect(html).toContain('value="2025" selected=""');
+    expect(html).toContain('value="2026" selected=""');
     expect(html).toContain('data-testid="player-row"');
-    expect(html).not.toContain('data-testid="season-data-guide"');
-    expect(html).not.toContain("98,765");
+    expect(html).toContain("98,765");
+    expect(html).not.toContain("Awaiting results");
+  });
+
+  it("uses Everyone for a tiny current row and retains an explicit filter", () => {
+    state.data["/api/player-rest"] = { ...playerPayload, seasons: [[0, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0]] };
+    expect(renderPlayer()).toContain("150.0% eFG");
+    expect(renderPlayer()).toContain('value="0" selected=""');
+    state.search = "volume=300";
+    expect(renderPlayer()).not.toContain('data-testid="player-row"');
+    expect(renderPlayer()).toContain('value="300" selected=""');
   });
 
   it("uses the newest actual player publication across a calendar gap", () => {
-    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: [[0, 2024, 0, 25, 70, 1000, 50, 200, 48, 300, 52]] };
-    const html = renderPlayer();
-    expect(html).toContain('value="2024" selected=""');
-    expect(html).toContain("player in 2024-25");
-    expect(html).toContain("2026-27");
-    expect(html).toContain("awaiting results");
+    state.data["/api/player-rest"] = { ...playerPayload, seasons: [[0, 2024, 0, 25, 70, 1000, 50, 200, 48, 300, 52]] };
+    expect(renderPlayer()).toContain('value="2024" selected=""');
+    expect(renderPlayer()).toContain("2026-27 awaiting results");
   });
 
-  it("opens current only when its publication and readiness both exist", () => {
-    state.ready = true;
-    state.search = "player=Test+Player";
-    expect(renderPlayer()).toContain('value="2026" selected=""');
-    expect(renderPlayer()).toContain("60.0%");
-    expect(renderPlayer()).toContain("70.0%");
-    expect(renderPlayer().match(/data-testid="season-row"/g)).toHaveLength(2);
-  });
-
-  it.each(["year=2026"])("keeps an unpublished current selection on one guide without earlier results (%s)", (search) => {
-    state.search = search;
-    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
+  it("keeps an explicit current selection awaiting when the artifact has no observations", () => {
+    state.search = "year=2026";
+    state.data["/api/player-rest"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
     const html = renderPlayer();
     expect(html).toContain("Awaiting results");
-    expect(html.match(/data-testid="season-data-guide"/g)).toHaveLength(1);
-    expect(html).toContain('value="2026" selected=""');
     expect(html).toContain('href="/shooting?year=2025"');
     expect(html).not.toContain('data-testid="player-row"');
-    expect(html).not.toContain('id="pr-team"');
-    expect(html).not.toContain("Show zero-rest player workload");
   });
 
-  it("keeps current results awaiting even when GP readiness passes but the player publication is absent", () => {
+  it("opens the selected season's provider record when historical and current names match", () => {
+    state.data["/api/player-rest"] = { ...playerPayload, names: ["Test Player", "Test Player"],
+      seasonOnlyPlayers: [1], seasons: [playerPayload.seasons[0], [1, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0, 3, 0, 0, 9, 0, 0]] };
+    state.search = "year=2026&player=Test+Player";
+    const current = renderPlayer();
+    expect(current).toContain('aria-expanded="true"');
+    expect(current).toContain("Observed season");
+    expect(current).toContain("No cross-provider player identity has been inferred");
+    expect(current.match(/data-testid="season-row"/g)).toHaveLength(1);
+    state.search = "year=career&volume=0&player=Test+Player";
+    expect(renderPlayer()).toContain("Historical career gap (2025-26 through 2025-26)");
+  });
+
+  it("shows the selected season's observation date and counts rather than the newest season's metadata", () => {
+    const previous = { season: "2025-26", through: "2026-04-20", observedGames: 1000, expectedGames: 1000, missingGameIds: [], generatedAt: "2026-04-21T12:00:00Z" };
+    const current = { season: "2026-27", through: "2026-10-22", observedGames: 16, expectedGames: 16, missingGameIds: [], generatedAt: "2026-10-23T12:00:00Z" };
+    state.data["/api/player-rest"] = { ...playerPayload, publication: current, publications: { "2025-26": previous, "2026-27": current } };
+    state.search = "year=2025";
+    const prior = renderPlayer();
+    expect(prior).toContain("2025-26 · Observed through 2026-04-20 · 1000/1000 completed games covered");
+    expect(prior).toContain("Snapshot generated 2026-04-21T12:00:00Z");
+    expect(prior).not.toContain("Observed through 2026-10-22");
     state.search = "year=2026";
-    state.ready = true;
-    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
-    expect(renderPlayer()).toContain("Awaiting results");
-    expect(renderPlayer()).not.toContain('data-testid="player-row"');
+    expect(renderPlayer()).toContain("2026-27 · Observed through 2026-10-22 · 16/16 completed games covered");
   });
 
-  it.each([false, true])("holds Career when current data is held or its readiness check fails (error=%s)", (failure) => {
-    state.search = "year=career";
-    state.failure = failure;
+  it("shows incomplete history refreshes even in a historical career view with no current-season metadata", () => {
+    state.data["/api/player-rest"] = { ...playerPayload, refresh: { status: "failed", checkedAt: null, publishedAt: null } };
+    state.search = "year=career&volume=0";
     const html = renderPlayer();
-    expect(html).not.toContain('data-testid="player-row"');
-    expect(html).not.toContain("99.99");
-    expect(html).not.toContain("88.88");
-    expect(html).toContain(failure ? "COULD NOT CHECK SEASON DATA" : "Awaiting results");
-  });
-
-  it.each([false, true])("preserves prior results and removes current expansion rows and pooled career data (error=%s)", (failure) => {
-    state.search = "year=2025&player=Test+Player";
-    state.failure = failure;
-    const html = renderPlayer();
+    expect(html).toContain("Some season data could not be refreshed. Showing available verified records.");
     expect(html).toContain('data-testid="player-row"');
-    expect(html).not.toContain('data-testid="season-data-guide"');
-    expect(html).not.toContain("COULD NOT CHECK SEASON DATA");
-    expect(html.match(/data-testid="season-row"/g)).toHaveLength(1);
-    expect(html).toContain('data-testid="career-data-held"');
-    expect(html).not.toContain('data-testid="career-row"');
-    expect(html).not.toContain("98,765");
-    expect(html).not.toContain("Raw career gap:");
-    expect(html).not.toContain("No career estimate: fewer");
+    expect(html).not.toContain("Observed through");
   });
 
-  it("shows the unchanged shipped career estimate and all seasons after readiness succeeds", () => {
-    state.search = "year=2025&player=Test+Player";
-    state.ready = true;
-    const html = renderPlayer();
-    expect(html.match(/data-testid="season-row"/g)).toHaveLength(2);
-    expect(html).toContain('data-testid="career-row"');
-    expect(html).toContain("Raw career gap:");
-    expect(html).toContain("99.99");
-    expect(html).toContain("88.88");
-  });
-
-  it("keeps historical-only exports unchanged without hiding career data", () => {
-    state.search = "year=2025&player=Test+Player";
-    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
+  it("keeps historical careers visible while current coverage is unavailable", () => {
+    state.search = "year=career&player=Test+Player";
+    state.failure = true;
+    state.data["/api/player-rest"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
     const html = renderPlayer();
     expect(html).toContain('data-testid="career-row"');
-    expect(html).toContain("99.99");
-    expect(html).not.toContain('data-testid="career-data-held"');
+    expect(html).toContain("Historical career gap (2025-26 through 2025-26)");
+    expect(html).not.toContain("Awaiting results");
   });
 });
 
-describe("actual prior shot-value publications", () => {
-  it("requests the available prior publication even when the calendar's previous year is absent", () => {
+describe("actual shot-value publications", () => {
+  it("shows current observations without a GP-readiness hold or a prior-season request", () => {
     state.data["/api/shot-quality"] = shotResponse("2026-27");
     state.data["/api/shot-quality?season=2024-25"] = shotResponse("2024-25");
     const html = renderShot();
-    expect(state.reads).toContain("/api/shot-quality?season=2024-25");
+    expect(state.reads).not.toContain("/api/shot-quality?season=2024-25");
     expect(state.reads).not.toContain("/api/shot-quality?season=2025-26");
-    expect(html).toContain('value="2024-25" selected=""');
-    expect(html).toContain("Showing the previous published surface");
+    expect(html).toContain('value="2026-27" selected=""');
+    expect(html).not.toContain("Showing the previous published surface");
     expect(html).toContain('data-shot-anchor="two-court"');
     expect(html).not.toContain("NO SHOT DATA FOR THIS SEASON");
   });
 
-  it.each([null, undefined])("shows only an honest guide when no actual prior publication is known (%s)", (prior) => {
-    state.data["/api/shot-quality"] = { ...shotResponse("2026-27"), previousPublishedSeason: prior };
+  it.each([false, true])("shows raw current attempts while models await publication even if old readiness fails (%s)", (failure) => {
+    state.failure = failure;
+    const payload = shotResponse("2026-27");
+    state.data["/api/shot-quality"] = { ...payload, cells: payload.cells.map((cell) => ({ ...cell, fga: 1, fgm: 0, gbm: null, baseline: null })), meta: { cellCount: 1, totalFga: 1 } };
     const html = renderShot();
     expect(state.reads.filter((key) => key.includes("?season="))).toEqual([]);
-    expect(html).toContain("Awaiting season data");
+    expect(html).toContain("Actual shot attempts");
+    expect(html).toContain("Model estimates are awaiting publication");
+    expect(html).toContain('value="2026-27" selected=""');
     expect(html).not.toContain("View published results");
     expect(html).not.toContain("Earlier published surfaces remain available");
-    expect(html).not.toContain('href="/shot-quality?season=2026-27"');
     expect(html).not.toContain("NO SHOT DATA FOR THIS SEASON");
   });
 });

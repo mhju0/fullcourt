@@ -45,7 +45,7 @@ export function OfficiatingReport({
 }) {
   const [all, setAll] = useState(false);
   const { data, error, mutate, isValidating } = useSWR(
-    `/data/officiating/${season}/${game.id}-${game.sha256.slice(0, 16)}.json`,
+    game.detailUrl ?? `/data/officiating/${season}/${game.id}-${game.sha256.slice(0, 16)}.json`,
     fetchReport,
     { revalidateOnFocus: false },
   );

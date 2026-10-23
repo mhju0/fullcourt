@@ -1,6 +1,6 @@
 # Officiating operations
 
-The release contains 12 regular seasons of Officiating reports (2014–15 through 2025–26) and its publication pipeline. No database migration or new service credentials are needed to render it. Release verification is recorded in `docs/design/redesign-release-review.md`.
+The historical archive contains 12 regular seasons (2014–15 through 2025–26). New-season reports open with the first validated NBA publication. No database migration or new service credentials are needed to render it. Release verification is recorded in `docs/design/redesign-release-review.md`.
 
 ## Published data
 
@@ -30,18 +30,18 @@ Historical PDF/JSON collection, normalization, independent grade checks, and sou
 
 ## Refresh workflow
 
-`.github/workflows/officiating-refresh.yml` runs daily at 20:30 UTC from October through June, or manually for a supplied season. Scheduled runs skip July through September; manual collection remains available. It re-fetches the entire current season so earlier revisions are eligible for publication. Missing indexes, failed requests, duplicate anomalies, and removed published IDs fail the refresh; they never overwrite the live site with partial totals. Before the NBA publishes the first report of a season this site has never published, the season index is missing or empty; the collector exits 3 and the job ends green with a notice while the previous season remains available. Once a season has been published, a missing or empty index fails the refresh again.
+The daily path is `.github/workflows/season-publications.yml`, at 10:50 and 21:50 UTC. It collects
+the complete current NBA index, including source revisions, and publishes a validated
+content-addressed snapshot to the dedicated data branch. No app deployment or manual data
+PR merge is required. [Publication policy](EARLY_SEASON_PUBLICATION.md) documents validation,
+per-module failures, compare-and-swap, hash-pinned details and fallback freshness.
 
-The workflow uploads raw source evidence and its manifest as a run artifact retained for 90 days. Download evidence before expiration if permanent offline archival is required. Published sources remain externally linked and their hashes are retained in Git.
-
-Successful refreshes prepare a data-update branch and attempt to open a PR, never merge to main. When repository policy blocks bot-created PRs, the job summary links to the validated branch comparison so an owner can open it. This implements the existing preview-review requirement. Public freshness advances only after review, merge and deployment, not merely when a scheduled job runs. Daily timestamps may create a PR even when counts are unchanged. Close superseded pending updates rather than merging stale snapshots after newer ones.
-
-Operational checks:
-
-- Workflow is on the default branch; Actions are enabled.
-- Repository settings currently block Actions-created PRs; the validated-branch comparison link is the supported fallback.
-- Confirm whether the Vercel integration builds previews for bot-created PRs. GITHUB_TOKEN-created events do not automatically trigger other GitHub workflows; do not assume CI ran. Run the required checks and verify the preview before merging an update.
-- `official.nba.com` was reachable from Actions in the successful manual run on 2026-09-08. Complete collection, evidence upload, publication contracts, and the review-branch fallback passed.
+The previous `officiating-refresh.yml` remains manual-only for archive investigation and
+review branches. Missing indexes, failed requests, duplicate anomalies and removed report IDs
+still refuse replacement. Before a never-published season has reports, exit 3 means unavailable.
+Raw L2M source artifacts are retained for 90 days. The page shows current reports immediately
+and keeps historical comparisons separate from a partial current season; no automatic
+three-point monotonicity claim describes officiating as improving or worsening.
 
 First remote verification: [run 34179954451](https://github.com/mhju0/fullcourt/actions/runs/34179954451). The 2025–26 refresh changed only the source-index hash and successful-refresh timestamp; report content and all counts were unchanged.
 

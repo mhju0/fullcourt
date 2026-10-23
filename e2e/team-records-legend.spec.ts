@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import type { SeasonReportResponse, SeasonReportTeamLabelled } from "../src/lib/season-report";
+import { winRateBand, winRateInterval, type SeasonReportResponse, type SeasonReportTeamLabelled } from "../src/lib/season-report";
 
 const abbreviations = ["PHX", "NYK", "GSW", "PHI", "CLE", "LAL", "DEN", "CHA", "ATL", "BOS", "BKN", "CHI", "DAL", "DET", "HOU", "IND", "LAC", "MEM", "MIA", "MIL", "MIN", "NOP", "OKC", "ORL", "POR", "SAC", "SAS", "TOR", "UTA", "WAS"];
 
@@ -19,10 +19,11 @@ function reportFixture(baseline: number | null = 20): SeasonReportResponse {
   Object.assign(teams[5], { restedGames: 5, restedWins: 2, restedWinPct: 40, swing: 0 });
   return {
     season: "2025-26", basis: "played", completedGames: 150, scheduledGames: 1230,
+    availableFinalGames: 150, missingFatigueGames: 0,
     latestFinalDate: "2026-04-12", seasonComplete: false,
     homeRate: { games: 150, homeWins: 90, winPct: 60 },
-    overall: { games: 100, restedTeamWins: 60, winPct: 60, band: 9.6 },
-    threePlus: { games: 20, restedTeamWins: 12, winPct: 60, band: 21.5 },
+    overall: { games: 100, restedTeamWins: 60, winPct: 60, band: winRateBand(60, 100), interval: winRateInterval(60, 100) },
+    threePlus: { games: 20, restedTeamWins: 12, winPct: 60, band: winRateBand(12, 20), interval: winRateInterval(12, 20) },
     swingBaseline: baseline, teams, weeks: [], loudestCalls: [],
   };
 }

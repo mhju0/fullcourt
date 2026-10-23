@@ -72,8 +72,10 @@ Use `python3 scripts/fetch_shooting_data.py --season-year 2026 --force` to reque
 unchanged; this command does not write the database or publish the site. Retain the canonical
 ID reconciliation above before expecting seeded ESPN fixtures to join NBA-stat boxscores.
 
-`export_player_rest.py` checks current/upcoming-season inputs before writing its artifact.
-The read-only guard requires the internal season-availability condition for all expected
-franchises and blocks early career pooling as well as early season rows. A blocked export
-leaves the existing published file intact. No provider source, generated artifact, automatic
-refresh cadence or successful in-season collection is implied by this preparation.
+Current-season observations no longer wait for every team to complete ten games. The
+historical exporter validates scored finals and preserves historical identity/provenance.
+Current ESPN observations use a separate verified fixture/player-ID namespace; do not infer
+NBA person IDs or re-key the database to publish them. The daily content-addressed snapshot
+workflow and source-specific coverage rules are in [publication policy](EARLY_SEASON_PUBLICATION.md).
+The live hoopR release filename year must be checked against GAME_ID and dates; the October
+23 probe found 2026 files describing 2025–26, while 2027 files were not yet published.

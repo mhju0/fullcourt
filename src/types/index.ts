@@ -434,7 +434,7 @@ export interface ShotQualityCell {
 
 export interface ShotQualityResponse {
   season: string;
-  /** Newest season with league cells and both published model surfaces. */
+  /** Newest season with a published raw league grid; models have separate coverage. */
   latestPublishedSeason: string;
   /** Newest usable publication strictly before the latest; absent in older cached responses. */
   previousPublishedSeason?: string | null;
@@ -444,7 +444,43 @@ export interface ShotQualityResponse {
   meta: {
     cellCount: number;
     totalFga: number;
+    publication?: ShotQualityPublication;
   };
+}
+
+export interface ShotQualityPublication {
+  checkedAt?: string | null;
+  updateStatus?: "published" | "unavailable" | "failed" | "bundled";
+  source: "database" | "nba-stats-snapshot";
+  generatedAt: string | null;
+  firstGameDate: string | null;
+  lastGameDate: string | null;
+  gameCount: number | null;
+  sourceShotCount: number | null;
+  droppedShotCount: number | null;
+  models: Record<ShotQualityModelVersion, {
+    coveredCells: number;
+    totalCells: number;
+    ready: boolean;
+    trainingPeriod: string | null;
+  }>;
+}
+
+export interface CurrentShotQualitySnapshot {
+  season: string;
+  generatedAt: string;
+  source: {
+    provider: "NBA Stats ShotChartDetail";
+    url: string;
+    fetchedAt: string;
+    firstGameDate: string;
+    lastGameDate: string;
+    gameIds: string[];
+    shotCount: number;
+    droppedNoLocation: number;
+    droppedOutsideHalfCourt: number;
+  };
+  cells: ShotQualityCell[];
 }
 
 

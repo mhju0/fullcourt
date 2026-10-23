@@ -1,8 +1,12 @@
 import { NextRequest } from "next/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { GET } from "../officiating/[season]/route";
 import { CACHE } from "@/lib/api-route";
 import data from "@/data/officiating.json";
+vi.mock("@/lib/daily-publication-server", () => ({
+  readDailyDataset: async () => ({ data: null, hash: null, checkedAt: null, publishedAt: null, status: "bundled" }),
+  readDailyDatasetHistory: async () => [{ data: null, hash: null, checkedAt: null, publishedAt: null, status: "bundled" }],
+}));
 
 const req = () => new NextRequest("http://localhost/api/officiating/x");
 
@@ -12,7 +16,7 @@ describe("GET /api/officiating/[season]", () => {
     const res = await GET(req(), { params: Promise.resolve({ season: season.season }) });
 
     expect(res.status).toBe(200);
-    expect(res.headers.get("cache-control")).toBe(CACHE.historical);
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
     expect((await res.json()).data).toEqual(season.games);
   });
 

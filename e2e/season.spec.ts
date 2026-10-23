@@ -35,6 +35,9 @@ test.describe("Season Report", () => {
   test("without a chosen season, keeps the prior report until current results are released", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-10-19T12:00:00Z"));
     let currentReportReads = 0;
+    await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+      data: { seasons: ["2024-25", "2025-26"] }, error: null,
+    } }));
     await page.route("**/api/season-readiness?season=2026-27", route => route.fulfill({ json: {
       data: { season: "2026-27", ready: false, expectedAfterDate: "2026-11-11" }, error: null,
     } }));
@@ -53,6 +56,9 @@ test.describe("Season Report", () => {
 
   test("an explicitly selected upcoming season has one guide with usable links", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-09-08T12:00:00Z"));
+    await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+      data: { seasons: ["2024-25", "2025-26"] }, error: null,
+    } }));
     await page.route("**/api/season-readiness?season=2026-27", route => route.fulfill({ json: {
       data: { season: "2026-27", ready: false, expectedAfterDate: "2026-11-11" }, error: null,
     } }));
@@ -65,7 +71,7 @@ test.describe("Season Report", () => {
     await expect(page.getByTestId("season-data-guide")).not.toContainText(/10 games|30 teams/);
   });
 
-  test("released current results retain the separate inference threshold", async ({ page }) => {
+  test("published current results show descriptive rates below the old inference threshold", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-11-12T12:00:00Z"));
     await page.route("**/api/season-readiness?season=2026-27", route => route.fulfill({ json: {
       data: { season: "2026-27", ready: true, expectedAfterDate: "2026-11-11" }, error: null,
@@ -75,17 +81,16 @@ test.describe("Season Report", () => {
     } }));
     await page.goto("/season");
     await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2026-27");
-    await expect(page.getByTestId("season-rest-win-rate")).toHaveText("Too early");
+    await expect(page.getByTestId("season-rest-win-rate")).toHaveText("61.1%");
+    await expect(page.getByText(/95% Wilson interval/)).toBeVisible();
+    await expect(page.getByText(/does not test the difference/)).toBeVisible();
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2026-27 vs history");
     await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
   });
 
-  test("a delayed readiness response respects selection and Back", async ({ page }) => {
-    let release!: () => void;
-    const pending = new Promise<void>(resolve => { release = resolve; });
+  test("a failed readiness endpoint does not hold published results or change Back behavior", async ({ page }) => {
     await page.route("**/api/season-readiness?season=2026-27", async route => {
-      await pending;
-      await route.fulfill({ json: { data: { season: "2026-27", ready: false, expectedAfterDate: "2026-11-11" }, error: null } });
+      await route.fulfill({ status: 503, json: { data: null, error: "Unavailable" } });
     });
     await page.route("**/api/season-report?*", route => {
       const season = new URL(route.request().url()).searchParams.get("season")!;
@@ -94,38 +99,39 @@ test.describe("Season Report", () => {
     await page.goto("/season?season=2024-25");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2024-25 vs history");
     await page.getByLabel("SEASON", { exact: true }).selectOption("2026-27");
-    await expect(page.getByText("Checking season data…", { exact: true })).toBeVisible();
-    await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
+    await expect(page.getByTestId("season-rest-win-rate")).toHaveText("61.1%");
     await page.getByLabel("SEASON", { exact: true }).selectOption("2025-26");
-    release();
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2025-26 vs history");
     await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
     await page.goBack();
     await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2026-27");
-    await expect(page.getByTestId("season-data-guide")).toBeVisible();
-    await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
+    await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
+    await expect(page.getByTestId("season-rest-win-rate")).toHaveText("61.1%");
   });
 
-  test("readiness failures show a retryable error and never unlock current results", async ({ page }) => {
+  test("publication failures show a retryable error and never invent current publication", async ({ page }) => {
     let fail = true;
-    await page.route("**/api/season-readiness?season=2026-27", route => route.fulfill({
+    await page.route("**/api/season-report-publication", route => route.fulfill({
       status: fail ? 500 : 200,
       json: fail ? { data: null, error: "Data status unavailable" } : {
-        data: { season: "2026-27", ready: false, expectedAfterDate: "2026-11-11" }, error: null,
+        data: { seasons: ["2025-26"] }, error: null,
       },
     }));
     await page.goto("/season?season=2026-27");
-    await expect(page.locator("main").getByRole("alert")).toContainText("COULD NOT CHECK SEASON DATA");
+    await expect(page.locator("main").getByRole("alert")).toContainText("COULD NOT CHECK PUBLISHED REPORTS");
     await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
     await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
     fail = false;
-    await page.getByRole("button", { name: "Retry data status" }).click();
+    await page.getByRole("button", { name: "Retry published reports" }).click();
     await expect(page.getByTestId("season-data-guide")).toBeVisible();
     await expect(page.locator("main").getByRole("alert")).toHaveCount(0);
   });
 
   test("an overdue estimate does not promise a future release", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-11-12T12:00:00Z"));
+    await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+      data: { seasons: ["2025-26"] }, error: null,
+    } }));
     await page.route("**/api/season-readiness?season=2026-27", route => route.fulfill({ json: {
       data: { season: "2026-27", ready: false, expectedAfterDate: "2026-11-11" }, error: null,
     } }));

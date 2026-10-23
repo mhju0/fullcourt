@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { signedNumber } from "../signed-number";
 import {
   buildRows,
+  defaultPlayerVolume,
   careerTotals,
   effectSe,
   franchiseOptions,
@@ -80,10 +81,10 @@ describe("restEffect", () => {
 
 describe("effectSe", () => {
   it("shrinks as either arm grows", () => {
-    const few = effectSe(100, 100)!;
-    const many = effectSe(1000, 1000)!;
+    const few = effectSe(100, 100, 100, 100, 200, 200)!;
+    const many = effectSe(1000, 1000, 1000, 1000, 2000, 2000)!;
     expect(many).toBeLessThan(few);
-    expect(few).toBeCloseTo(7.07, 2);
+    expect(few).toBeCloseTo(7.107, 2);
   });
 
   it("is null when an arm is empty, since no difference exists to bound", () => {
@@ -141,7 +142,7 @@ describe("exact shooting numerators", () => {
     const player = shipped.names.indexOf("Sarunas Marciulionis");
     const seasons = index.seasonsByPlayer.get(player)!;
     expect(seasons).toHaveLength(1);
-    expect(seasons[0].slice(11)).toEqual([87, 11, 7]);
+    expect(seasons[0].slice(11, 14)).toEqual([87, 11, 7]);
     expect(signedNumber(seasonRow(index, seasons[0]).effect!, 1)).toBe("+24.0");
     expect(signedNumber(careerTotals(seasons).effect!, 1)).toBe("+24.0");
     expect(index.career.has(player)).toBe(false);
@@ -179,7 +180,7 @@ describe("exact shooting numerators", () => {
     const [row] = buildRows(index, { year: "career", minFga: 0, query: "", sort: "fga", dir: -1 });
     expect(row.effect).toBe(careerTotals([qualified]).effect);
     expect(row.effect).not.toBe(23.96);
-    expect(row.se).toBe(23.959);
+    expect(row.se).toBeNull();
     expect(row.underEvidenced).toBe(true);
     expect(index.career.get(0)?.shrunk).toBe(1.25);
   });
@@ -239,14 +240,14 @@ describe("buildRows — career view", () => {
   const index = indexPayload(PAYLOAD);
   const base = { year: "career" as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
 
-  it("drops players with no career estimate rather than ranking a number it does not have", () => {
-    expect(buildRows(index, base).map((r) => r.name)).toEqual(["Nikola Jokić", "Al-Farouq Aminu"]);
+  it("keeps raw career rows even without a model estimate", () => {
+    expect(buildRows(index, base).map((r) => r.name)).toEqual(["Nikola Jokić", "Al-Farouq Aminu", "Fringe Player"]);
   });
 
   it("uses the shipped career delta, not a re-derivation, so the shrunk pair stays consistent", () => {
     const jokic = buildRows(index, base).find((r) => r.name === "Nikola Jokić")!;
     expect(jokic.effect).toBe(-1.71);
-    expect(jokic.se).toBe(1.5);
+    expect(jokic.se).toBeNull();
   });
 
   it("shows the career span in place of a team", () => {
@@ -262,13 +263,13 @@ describe("underEvidenced", () => {
   it("flags a difference smaller than its own standard error", () => {
     const row = seasonRow(index, season(0, 2025, { noRestFga: 100, noRestEfg: 50, restedFga: 100, restedEfg: 51 }));
     expect(row.effect).toBeCloseTo(1, 6);
-    expect(row.se!).toBeGreaterThan(1);
+    expect(row.se).toBeNull();
     expect(row.underEvidenced).toBe(true);
   });
 
-  it("does not flag a difference the sample can actually support", () => {
+  it("keeps legacy rows uncertain when exact second moments are absent", () => {
     const row = seasonRow(index, season(0, 2025, { noRestFga: 2000, noRestEfg: 45, restedFga: 2000, restedEfg: 55 }));
-    expect(row.underEvidenced).toBe(false);
+    expect(row.underEvidenced).toBe(true);
   });
 });
 
@@ -377,7 +378,7 @@ describe("buildRows — evidencedOnly", () => {
 
   it("drops exactly the rows rendered dim", () => {
     // Jokić 2025: effect −2.8 vs SE ≈ 4.39 → dim. Fringe: no effect → dim. Aminu: +10 vs 6.45 → kept.
-    expect(buildRows(index, { ...base, evidencedOnly: true }).map((r) => r.name)).toEqual(["Al-Farouq Aminu"]);
+    expect(buildRows(index, { ...base, evidencedOnly: true })).toEqual([]);
     expect(buildRows(index, base)).toHaveLength(3);
   });
 
@@ -388,6 +389,29 @@ describe("buildRows — evidencedOnly", () => {
     const idx = indexPayload({ ...PAYLOAD, shrunk: [[0, -1.71, 1.5, -1.06], [1, 1.0, 2.2, 0.9]] });
     expect(
       buildRows(idx, { ...base, year: "career", evidencedOnly: true }).map((r) => r.name)
-    ).toEqual(["Nikola Jokić"]);
+    ).toEqual([]);
+  });
+});
+
+
+describe("early-season observations", () => {
+  it("defaults current season to Everyone while retaining an explicit attempt filter", () => {
+    expect(defaultPlayerVolume(2026, 2026, null)).toBe(0);
+    expect(defaultPlayerVolume(2026, 2026, "600")).toBe(600);
+    expect(defaultPlayerVolume(2025, 2026, null)).toBe(300);
+  });
+  it("keeps a one-attempt 150% outlier, with unavailable sampling error", () => {
+    const row = [0, 2026, 0, 20, 2, 2, 75, 1, 0, 1, 150, 3, 0, 3, 9, 0, 9];
+    const result = seasonRow(indexPayload({ ...PAYLOAD, seasons: [row] }), row);
+    expect(result.restedEfg).toBe(150);
+    expect(result.effect).toBe(150);
+    expect(result.se).toBeNull();
+    expect(result.underEvidenced).toBe(true);
+  });
+  it("computes variance from misses and three-point makes rather than Bernoulli means", () => {
+    // Each arm contains a miss and a made three: mean .75, sample variance 1.125.
+    expect(effectSe(2, 2, 3, 3, 9, 9)).toBeCloseTo(100 * Math.sqrt(1.125));
+    expect(effectSe(1, 2, 3, 3, 9, 9)).toBeNull();
+    expect(effectSe(0, 2, 0, 3, 0, 9)).toBeNull();
   });
 });

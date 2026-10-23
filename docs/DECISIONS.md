@@ -2112,3 +2112,21 @@ slate와 동일한 deadline lifecycle을 사용한다. 팀 일정의 갱신 실�
 원본 해시를 본문 해시로 간주한 immutable 캐시, maintenance 즉시 차단을 약화하는
 브라우저 TTL, Vercel 함수 경계를 넘는 효과가 확인되지 않은 raw-row 캐시 공유는 채택하지
 않는다. 재현과 측정은 [전체 리뷰](reports/2026-10-22-comprehensive-review.md)에 남긴다.
+
+## D-137 — 모듈별 최초 관측 공개와 일일 데이터 발행 (2026-10-23)
+
+Owner는 모든 페이지의 조기 공개와 다섯 가지 해석·갱신 문제 수정을 승인했다.
+D-133의 공통 all-teams-ten-finals 조건과 Season Report/Home Court의 100경기 원시 비율 숨김을 대체한다.
+분모가 있으면 관측값·분자/분모·실제 기준일을 공개하고, 0건·한쪽 비교군 없음·미수집·모델 없음은 구분한다.
+Wilson 구간과 정확한 eFG 제곱합을 사용하되, 관측 차이를 인과 효과나 안정된 발견으로 선언하지 않는다.
+
+현재 ESPN 선수 ID는 과거 NBA ID와 이름으로 합치지 않는다. 수정된 eFG 분산으로 career 추정의
+잔여 분산이 0으로 제한된 사실은 해당 방법의 결과이며 선수들의 실제 효과가 같다는 증거가 아니다.
+기존 피로 계수·DB 스키마·과거 원시 슈팅 집계와 연구 모집단은 유지한다.
+
+매일 데이터 PR을 자동 merge하는 대신, 검증된 JSON만 `data-publications` 브랜치에 별도로 발행한다.
+read-only 수집과 write-only 발행 job을 나누고, source 검증·내용 해시·모듈별 이전 hash CAS·원자적
+manifest commit으로 부분 실패와 동시 갱신을 다룬다. 실패한 모듈은 이전 공개본 또는 bundled fallback을
+실제 날짜와 함께 표시한다. 앱 코드·검증기 변경에는 기존 preview/CI와 frozen 독립 검토를 적용한다.
+데이터 발행은 앱 버전 릴리스와 별개다. 자세한 페이지별 조건과 운영은
+[공개 정책](EARLY_SEASON_PUBLICATION.md)에 기록한다.
