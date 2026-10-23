@@ -101,7 +101,7 @@ function playerColumns(
       label: "No rest attempts",
       sortKey: "noRestFga",
       numeric: true,
-      width: "190px",
+      width: "var(--shooting-attempt-width)",
       className: styles.boundary,
       cell: (row) => row.noRestFga.toLocaleString(),
     },

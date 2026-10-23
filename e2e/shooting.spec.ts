@@ -223,6 +223,8 @@ for (const width of [320, 390, 430, 1440]) {
     expect(await headers.allTextContents()).toEqual([
       "Player", "No rest attempts", "No rest eFG%", "2+ days rest attempts", "2+ days rest eFG%", "Gap (pp)",
     ]);
+    await page.getByRole("columnheader", { name: "No rest attempts", exact: true }).click();
+    await expect(page.getByRole("columnheader", { name: /No rest attempts/ })).toHaveAttribute("aria-sort", "descending");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     const sizes = await headers.evaluateAll(nodes => nodes.map(node => {
       const button = node.querySelector("button")!;
@@ -231,6 +233,16 @@ for (const width of [320, 390, 430, 1440]) {
     expect(sizes.every(size => size.nowrap === "nowrap" && size.fontSize === "12px" && size.textTransform === "none" && size.fits)).toBe(true);
     const scroll = page.locator(".fc-rest-table");
     await expect(scroll).toHaveCSS("mask-image", "none");
+    expect(await scroll.evaluate(node => node.scrollLeft)).toBe(0);
+    const firstCountVisible = await page.getByTestId("player-row").first().locator("td").nth(1).evaluate(cell => {
+      const range = document.createRange();
+      range.selectNodeContents(cell);
+      const text = range.getBoundingClientRect();
+      const wrapper = cell.closest(".fc-rest-table")!;
+      const viewport = wrapper.getBoundingClientRect();
+      return text.left >= viewport.left && text.right <= viewport.left + wrapper.clientWidth;
+    });
+    expect(firstCountVisible).toBe(true);
     const pinned = page.getByTestId("player-row").first().locator("td").first();
     const before = (await pinned.boundingBox())!;
     if (width <= 430) expect(before.width).toBeLessThanOrEqual(160);

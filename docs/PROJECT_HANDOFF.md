@@ -223,3 +223,6 @@ Owner가 선택한 B 구분에 단일 헤더를 적용했다(D-138). 각 rest ar
 물리 iPhone/Safari/VoiceOver는 미검증. 다음 단계: root의 정확한 candidate 검토와 PR preview 확인 후 릴리스.
 Root 최종 폰 검토 후 이 표의 양쪽 scroll fade를 제거했다. 끝쪽 숫자도 완전히 보이며,
 기존 내부 스크롤과 안내는 유지한다. build·변경 ESLint와 해당 네 viewport 검증을 재통과했다.
+추가 폰 검토로 첫 attempts 열은 145px, 선수 열은 320px 화면에서 120px·390px부터
+150px로 조정했다. 초기 가로 이동 없이 첫 숫자의 textRange 전체가 내부 viewport에
+들어오는지 320/390/430px에서 확인했고, 정렬 화살표를 포함한 단일 헤더·전체 열 정렬도 재통과했다.
