@@ -31,7 +31,6 @@ export const GET = jsonRoute(
   }),
   async ({ season, model }): Promise<ShotQualityResponse> => {
     const history = await readDailyDatasetHistory("shotQuality");
-    const daily = history.at(-1);
     const currentSeason = currentDisplaySeason();
     const parsePublication = (item: DailyDatasetResult) => {
       const snapshot = parseCurrentShotQualityArtifact(item.data);
@@ -49,6 +48,14 @@ export const GET = jsonRoute(
       throw new PublicApiError("Expected shot value data is not available yet.", 503);
     }
     const selectedSeason = season ?? latestPublishedSeason;
+    const selectedCheck = history.findLast(item => item.season === selectedSeason
+      || (!item.season && parsePublication(item)?.season === selectedSeason));
+    // A seasonless failure describes the module fetch; empty provider checks apply only to the active season.
+    const moduleCheck = history.findLast(item => !item.season && !parsePublication(item)
+      && (item.status === "failed" || item.data !== null || selectedSeason === currentSeason));
+    const selectedPublication = selectedCheck ?? moduleCheck;
+    const updateStatus = selectedPublication && ((selectedPublication.data !== null || selectedPublication.status === "published")
+      && !parsePublication(selectedPublication)) ? "failed" : selectedPublication?.status ?? "bundled";
     let selectedSnapshot = snapshots.get(selectedSeason) ?? null;
     // Historical models take precedence only as a complete, unmixed database publication.
     let cells = selectedSnapshot?.cells ?? [];
@@ -73,7 +80,7 @@ export const GET = jsonRoute(
       meta: {
         cellCount: cells.length,
         totalFga: cells.reduce((sum, c) => sum + c.fga, 0),
-        publication: { ...shotQualityPublication(cells, selectedSnapshot), checkedAt: daily?.checkedAt ?? null, updateStatus: daily?.data != null && !parsePublication(daily) ? "failed" : daily?.status ?? "bundled" },
+        publication: { ...shotQualityPublication(cells, selectedSnapshot), checkedAt: selectedPublication?.checkedAt ?? null, updateStatus },
       },
     };
   },

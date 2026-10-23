@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { S, type PlayerRestPayload } from "../src/lib/player-rest";
+import { mergeHistoricalAndCurrent, parseCurrentShooting } from "../src/lib/player-rest-publication";
 
 async function currentSnapshot(page: Page) {
   const response = await page.request.get("/api/player-rest");
@@ -64,4 +65,41 @@ test("an explicit volume filter is retained and historical career rows remain av
   await page.getByTestId("player-row").first().getByRole("button").click();
   await expect(page.getByTestId("career-row")).toBeVisible();
   await expect(page.getByTestId("season-row").first()).not.toContainText(payload.publication!.season!);
+});
+
+
+test("selecting an older observed season shows its own coverage while an archive refresh is incomplete", async ({ page }, info) => {
+  info.annotations.push({ type: "fixture", description: "Two synthetic ESPN-format seasons validated by the production parser; failed archive refresh" });
+  const now = Date.parse("2026-10-23T12:00:00Z");
+  await page.clock.setFixedTime(new Date(now));
+  const artifact = (year: number) => ({
+    version: "current-shooting-1", generated: year === 2025 ? "2026-04-21T12:00:00Z" : "2026-10-23T11:00:00Z",
+    names: ["Observed Player"], playerIds: ["espn:1111"], teams: ["BOS"], pos: ["G"], shrunk: [],
+    seasons: [year === 2025 ? [0,2025,0,25,2,4,50,2,50,2,50,4,2,2,8,4,4] : [0,2026,0,26,1,1,150,0,0,0,0,3,0,0,9,0,0]],
+    publication: {
+      season: year === 2025 ? "2025-26" : "2026-27", source: "ESPN event summaries",
+      generatedAt: year === 2025 ? "2026-04-21T12:00:00Z" : "2026-10-23T11:00:00Z",
+      through: year === 2025 ? "2026-04-20" : "2026-10-22", expectedGames: year === 2025 ? 2 : 1,
+      observedGames: year === 2025 ? 2 : 1, historyGames: year === 2025 ? 2 : 1, missingGameIds: [],
+      fixtureIds: year === 2025 ? ["espn-700000001", "espn-700000002"] : ["espn-700000003"], fixtureIdentitySha256: "a".repeat(64),
+    },
+  });
+  const previous = parseCurrentShooting(artifact(2025), now);
+  const current = parseCurrentShooting(artifact(2026), now);
+  expect(previous).not.toBeNull();
+  expect(current).not.toBeNull();
+  const fixture = { ...mergeHistoricalAndCurrent({ ...previous!, seasonOnlyPlayers: [0] }, current!),
+    refresh: { status: "failed", checkedAt: "2026-10-23T11:30:00Z", publishedAt: "2026-10-23T11:00:00Z" } };
+  await page.route("**/api/player-rest", route => route.fulfill({ json: fixture }));
+  await page.goto("/shooting?volume=0");
+  const metadata = page.getByRole("status").filter({ hasText: "Observed through" });
+  await expect(metadata).toContainText("2026-27 · Observed through 2026-10-22 · 1/1 completed games covered");
+  await page.locator("#pr-season").selectOption("2025");
+  await expect(metadata).toContainText("2025-26 · Observed through 2026-04-20 · 2/2 completed games covered");
+  await expect(metadata).toContainText("Snapshot generated 2026-04-21T12:00:00Z");
+  await expect(metadata).not.toContainText("Observed through 2026-10-22");
+  await expect(metadata).not.toContainText("Snapshot generated 2026-10-23T11:00:00Z");
+  await expect(metadata).toContainText("Some season data could not be refreshed. Showing available verified records.");
+  await expect(metadata).toContainText("Latest daily update check 2026-10-23T11:30:00Z");
+  await expect(page.getByTestId("player-row")).toHaveCount(1);
 });

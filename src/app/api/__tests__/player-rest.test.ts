@@ -55,6 +55,8 @@ describe("GET /api/player-rest season history", () => {
     const index = indexPayload(body);
     expect(index.years.slice(0, 3)).toEqual([2027, 2026, 2025]);
     expect(body.seasonOnlyPlayers).toHaveLength(660);
+    expect(body.publications?.["2026-27"]).toMatchObject({ through: "2027-04-20", observedGames: 1000, generatedAt: "2027-04-21T12:00:00Z" });
+    expect(body.publications?.["2027-28"]).toMatchObject({ through: "2027-10-22", observedGames: 16, generatedAt: "2027-10-23T12:00:00Z" });
     expect(body.seasons.filter(row => row[1] === 2026)).toHaveLength(330);
     expect(body.seasons.filter(row => row[1] === 2027)).toHaveLength(330);
     const options = { year: "career" as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
@@ -69,6 +71,14 @@ describe("GET /api/player-rest season history", () => {
     expect(body.publication!.observedGames).toBe(1000);
     expect(body.seasons.filter(row => row[1] === 2027)).toHaveLength(0);
     expect(body.refresh!.status).toBe("failed");
+  });
+  it("surfaces a failed archived season even when the newest season loads successfully", async () => {
+    state.history = [{ data: null, season: "2026-27", status: "failed", hash: null, checkedAt: null, publishedAt: "2027-04-21T12:00:00Z" }, entry(artifact(2027))];
+    const body = await response();
+    expect(body.publication!.season).toBe("2027-28");
+    expect(body.refresh!.status).toBe("failed");
+    expect(body.publications?.["2026-27"]).toMatchObject({ through: "2026-10-22", observedGames: 16 });
+    expect(body.publications?.["2027-28"]).toMatchObject({ through: "2027-10-22", observedGames: 16 });
   });
   it("keeps the dated bundled season available when the history source cannot be read", async () => {
     state.failure = true;

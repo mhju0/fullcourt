@@ -23,7 +23,7 @@ export async function loadPlayerRestPublication(): Promise<PlayerRestPayload> {
   for (const publication of selected.publications) payload = mergeHistoricalAndCurrent(payload, publication);
   return { ...payload, refresh: {
     checkedAt: latest?.checkedAt ?? null,
-    status: selected.rejected || rejectedReference ? "failed" : latest?.status ?? "bundled",
+    status: selected.rejected || rejectedReference || history.some(entry => entry.status === "failed") ? "failed" : latest?.status ?? "bundled",
     publishedAt: latest?.publishedAt ?? null,
   } };
 }

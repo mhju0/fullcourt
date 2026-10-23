@@ -133,6 +133,39 @@ describe("GET /api/shot-quality", () => {
     expect(body.data.meta.publication.updateStatus).toBe("failed");
   });
 
+  it("keeps a failed selected archive distinct from a healthy current publication", async () => {
+    history.push({ ...daily, season: "2025-26", data: null, status: "failed", checkedAt: "2026-10-20T12:00:00Z" });
+    history.push({ ...daily, season: "2026-27", data: snapshotArtifact("2026-27", "2026-10-22"), status: "published", checkedAt: "2026-10-23T12:00:00Z" });
+    const older = await (await GET(request("?season=2025-26"))).json();
+    expect(older.data.cells).toEqual([]);
+    expect(older.data.meta.publication).toMatchObject({ updateStatus: "failed", checkedAt: "2026-10-20T12:00:00Z" });
+    const current = await (await GET(request())).json();
+    expect(current.data.meta.publication).toMatchObject({ updateStatus: "published", checkedAt: "2026-10-23T12:00:00Z" });
+  });
+
+  it("retains verified historical database data while warning about its failed archive", async () => {
+    history.push({ ...daily, season: "2025-26", data: null, status: "failed", checkedAt: "2026-10-20T12:00:00Z" });
+    history.push({ ...daily, season: "2026-27", data: snapshotArtifact("2026-27", "2026-10-22"), status: "published", checkedAt: "2026-10-23T12:00:00Z" });
+    const model = { pMake: .5, expectedEfg: .5, xpps: 1 };
+    grid.mockResolvedValue([{ ...snapshotArtifact("2025-26", "2025-10-22").snapshot.cells[0], fga: 999, baseline: model, gbm: model }]);
+    const older = await (await GET(request("?season=2025-26"))).json();
+    expect(older.data.meta).toMatchObject({ totalFga: 999, publication: { source: "database", updateStatus: "failed", checkedAt: "2026-10-20T12:00:00Z" } });
+  });
+
+  it("does not attach another season's successful check to an untracked database season", async () => {
+    history.push({ ...daily, season: "2026-27", data: snapshotArtifact("2026-27", "2026-10-22"), status: "published", checkedAt: "2026-10-23T12:00:00Z" });
+    const older = await (await GET(request("?season=2025-26"))).json();
+    expect(older.data.meta.publication).toMatchObject({ updateStatus: "bundled", checkedAt: null });
+  });
+
+  it("keeps an empty provider check on the active season without attaching it to historical results", async () => {
+    history.push({ ...daily, data: null, status: "unavailable", checkedAt: "2026-10-23T12:00:00Z" });
+    const current = await (await GET(request("?season=2026-27"))).json();
+    expect(current.data.meta.publication).toMatchObject({ updateStatus: "unavailable", checkedAt: "2026-10-23T12:00:00Z" });
+    const older = await (await GET(request("?season=2025-26"))).json();
+    expect(older.data.meta.publication).toMatchObject({ updateStatus: "bundled", checkedAt: null });
+  });
+
   it("returns a safe unavailable response when publication discovery is empty", async () => {
     latest.mockResolvedValueOnce(null);
 

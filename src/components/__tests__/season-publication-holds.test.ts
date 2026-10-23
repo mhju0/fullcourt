@@ -108,6 +108,28 @@ describe("observed player publications", () => {
     expect(renderPlayer()).toContain("Historical career gap (2025-26 through 2025-26)");
   });
 
+  it("shows the selected season's observation date and counts rather than the newest season's metadata", () => {
+    const previous = { season: "2025-26", through: "2026-04-20", observedGames: 1000, expectedGames: 1000, missingGameIds: [], generatedAt: "2026-04-21T12:00:00Z" };
+    const current = { season: "2026-27", through: "2026-10-22", observedGames: 16, expectedGames: 16, missingGameIds: [], generatedAt: "2026-10-23T12:00:00Z" };
+    state.data["/api/player-rest"] = { ...playerPayload, publication: current, publications: { "2025-26": previous, "2026-27": current } };
+    state.search = "year=2025";
+    const prior = renderPlayer();
+    expect(prior).toContain("2025-26 · Observed through 2026-04-20 · 1000/1000 completed games covered");
+    expect(prior).toContain("Snapshot generated 2026-04-21T12:00:00Z");
+    expect(prior).not.toContain("Observed through 2026-10-22");
+    state.search = "year=2026";
+    expect(renderPlayer()).toContain("2026-27 · Observed through 2026-10-22 · 16/16 completed games covered");
+  });
+
+  it("shows incomplete history refreshes even in a historical career view with no current-season metadata", () => {
+    state.data["/api/player-rest"] = { ...playerPayload, refresh: { status: "failed", checkedAt: null, publishedAt: null } };
+    state.search = "year=career&volume=0";
+    const html = renderPlayer();
+    expect(html).toContain("Some season data could not be refreshed. Showing available verified records.");
+    expect(html).toContain('data-testid="player-row"');
+    expect(html).not.toContain("Observed through");
+  });
+
   it("keeps historical careers visible while current coverage is unavailable", () => {
     state.search = "year=career&player=Test+Player";
     state.failure = true;

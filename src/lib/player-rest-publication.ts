@@ -107,6 +107,11 @@ export function mergeHistoricalAndCurrent(historical: PlayerRestPayload, current
     ...historical,
     generated: current.generated,
     publication: current.publication,
+    publications: {
+      ...(historical.publications ?? {}),
+      ...(historical.publication?.season ? { [historical.publication.season]: historical.publication } : {}),
+      [current.publication!.season!]: current.publication!,
+    },
     names: [...historical.names, ...current.names],
     playerIds: historical.playerIds && current.playerIds ? [...historical.playerIds, ...current.playerIds] : undefined,
     teams: [...historical.teams, ...current.teams],

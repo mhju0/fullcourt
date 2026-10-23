@@ -344,6 +344,11 @@ export function PlayerRestContent() {
     );
   }
 
+  const selectedSeason = activeYear === "career" ? null : seasonLabel(activeYear);
+  const publication = selectedSeason ? index.publications?.[selectedSeason] ??
+    (index.publication?.season === selectedSeason ? index.publication : undefined) : undefined;
+  const refreshUnavailable = index.refresh?.status === "failed" || index.refresh?.status === "unavailable";
+
   return (
     <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
       {error ? (
@@ -460,12 +465,14 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      {index.publication ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
-        {index.publication.season ? `${index.publication.season} · ` : ""}Observed through {index.publication.through ?? "no completed games"} · {index.publication.observedGames}/{index.publication.expectedGames} completed games covered.
-        {index.publication.missingGameIds.length ? ` ${index.publication.missingGameIds.length} games missing; the last verified results are retained.` : ""}
-        {" "}Snapshot generated {index.generated}.
-        {index.refresh?.status === "failed" || index.refresh?.status === "unavailable" ? " Latest refresh unavailable; these are the last verified observations." : ""}
-        {index.refresh?.checkedAt ? ` Last refresh checked ${index.refresh.checkedAt}.` : ""}
+      {publication ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
+        {publication.season ? `${publication.season} · ` : ""}Observed through {publication.through ?? "no completed games"} · {publication.observedGames}/{publication.expectedGames} completed games covered.
+        {publication.missingGameIds.length ? ` ${publication.missingGameIds.length} games missing; the last verified results are retained.` : ""}
+        {" "}Snapshot generated {publication.generatedAt ?? index.generated}.
+        {refreshUnavailable ? " Some season data could not be refreshed. Showing available verified records." : ""}
+        {index.refresh?.checkedAt ? ` Latest daily update check ${index.refresh.checkedAt}.` : ""}
+      </p> : refreshUnavailable ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
+        Some season data could not be refreshed. Showing available verified records.
       </p> : null}
       <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
 

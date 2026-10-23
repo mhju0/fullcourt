@@ -15,7 +15,7 @@ export default async function OfficiatingPage() {
     <Suspense fallback={<p role="status">Loading officiating reports…</p>}>
       <div>
         {publication.status === "failed" && <p role="status">The latest refresh could not be confirmed. Showing the last published reports with their original dates.</p>}
-        {publication.checkedAt && <p className="text-xs text-[var(--term-text-muted)]">Source checked {new Date(publication.checkedAt).toISOString().slice(0, 16).replace("T", " ")} UTC.</p>}
+        {publication.checkedAt && <p className="text-xs text-[var(--term-text-muted)]">Latest daily update check {new Date(publication.checkedAt).toISOString().slice(0, 16).replace("T", " ")} UTC.</p>}
         <OfficiatingContent seasons={summarizeSeasons(seasons as ReviewSeason[])} />
       </div>
     </Suspense>

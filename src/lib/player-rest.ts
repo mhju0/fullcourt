@@ -37,6 +37,7 @@ export interface PlayerRestPayload {
   playerIds?: string[]
   seasonOnlyPlayers?: number[]
   publication?: { through: string | null; expectedGames: number; observedGames: number; missingGameIds: string[]; season?: string; source?: string; generatedAt?: string; emptyArms?: number; historyGames?: number; fixtureIds?: string[]; fixtureIdentitySha256?: string }
+  publications?: Record<string, NonNullable<PlayerRestPayload["publication"]>>
   names: string[]
   teams: string[]
   /** Original 11 columns, optionally followed by whole/no-rest/rested integer 2*FGM+3PM numerators. */
@@ -57,6 +58,7 @@ export interface PlayerRestIndex {
   generated: string
   refresh?: PlayerRestPayload["refresh"]
   publication?: PlayerRestPayload["publication"]
+  publications?: PlayerRestPayload["publications"]
   names: string[]
   teams: string[]
   pos: string[]
@@ -174,6 +176,7 @@ export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
     generated: payload.generated,
     refresh: payload.refresh,
     publication: payload.publication,
+    publications: payload.publications,
     names: payload.names,
     teams: payload.teams,
     pos: payload.pos ?? [],

@@ -6,8 +6,8 @@ rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
 Production: https://fullcourt.fyi. Git, CHANGELOG.md and dated reviews retain releases. D-69/D-70 define publication-aware
-defaults and venue baselines; D-79 defines Games navigation. Ordinary rested-home rates keep
-the 100-game gate; Officiating archive limits remain documented.
+defaults and venue baselines; D-79 defines Games navigation. D-137 publishes descriptive rates from the first eligible game; per-page publication rules
+are in EARLY_SEASON_PUBLICATION.md. Officiating archive limits remain documented.
 ## Architecture and safeguards
 - Next.js serves pages and API routes. Database reads use Drizzle/node-postgres against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
@@ -31,7 +31,7 @@ the 100-game gate; Officiating archive limits remain documented.
 Officiating's first manual Actions run, `34179954451`, passed collection, source retention,
 and publication contracts. Repository policy prevented the bot from opening a PR; the workflow
 successfully left a review branch and comparison link. A human-authorized PR published that update.
-Future refreshes still require preview verification before merging.
+This remains the historical/manual archive path. D-137 uses the separate validated daily data branch; application changes still require preview verification.
 
 ## Remaining verification and future scope
 
@@ -98,46 +98,17 @@ The [opening-quarter](research/2026-10-20-opening-quarter-travel-review.md),
 D-120 keeps Mileage wording; D-121/ADR 0011 and D-122 prepared v1.0.3. Actual airports/home
 stops, Cup assignments and physical-device/opening-night observation remain unresolved.
 
-## Condensed v1.0.3–v1.0.9 acceptance — 2026-10-21
+## Condensed v1.0.3–v1.0.11 record — 2026-10-23
 
-v1.0.3–v1.0.8 corrected inputs, pooling and publications (D-123–D-132; #182, #184–#189),
-preserving coefficients and graded/playoff history. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
-retains exact acceptance and V11 remediation. Writers/SSO were restored; ten non-home/four-logo checks remained same-source.
-
-v1.0.9 (#190, `c5e504e`, `dpl_HbmiLvRZLNtmcU33FzwVrvLTtmc6`) verified seven live requests
-(3,440 values), homepage 390/1440 and real-API headline E2E. Local research inputs validated,
-old/private evidence was preserved and PostgreSQL stopped. Receipt:
-`docs/audit/repository-cleanup-20261020/release/release-acceptance.json`, SHA256
-`f5c3843930f8e8583395a75ba72dc931343d91e24662a09fe2ec5ecb66d9621a`.
-Private worktree evidence is archived outside the repo at `../fullcourt-local-archive`.
-Carried forward: Section 7 report-only/2026-27 grading deferred; actual airports, Cup assignments,
-physical devices and real-slate observation remained open. Later entries close the font-download,
-secret-alert and documentation follow-ups; no further production-data change occurred here.
-
-## Post-v1.0.9 accuracy audit and local cleanup — 2026-10-20
-
-The independent audit found no wrong published figure; docs/copy/provenance fixes shipped
-separately. Removed worktrees and unique evidence are retained in the local archive above.
-
-Outcome: docs #191, copy #192 (OG card printed 42 seasons from `NBA_SEASONS` after the
-October rollover; now `BACKTEST_SEASON_COUNT`), provenance #193 (Availability input hash only;
-the time-zone snapshot reproduced byte for byte). Not changed on purpose: no projected mark on
-the board (owner, 2026-10-16) and Shooting's empty 2026-27 default (pinned). Open: secret
-alert #1, unverified agent-reported terminology drift (TRAVEL MILES, JET-LAGGED, Home/rest
-gap), and the kept local branches listed in the archive README.
-
-## Post-v1.0.10 follow-up checks — 2026-10-20
-
-Closed the open items above. Secret alert #1 (a third-party public Maps Embed key in a
-research capture) was resolved as won't-fix: it is redacted on `main` and survives only in
-closed PR #188's ref, which only GitHub Support can purge. PR #195 fixes the agent-reported
-drift that held up (MILEAGE per D-120, TIME ZONES, "swept 4–0", Season Report's
-other-seasons rate now beside its home baseline, Schedule Edge tile units, the referee
-foul-share chance count, zero-rest GAMES as a season total); "Home/rest gap" and the other
-reported items were checked and are accurate. The local archive now lives at
-`../fullcourt-local-archive` and was slimmed to 2.7 GB (README lists what went). Open:
-confirm the first live slate per docs/LAUNCH_DAY.md once finals land (after about 04:00 UTC
-on 2026-10-21); a release bump if #195 merges.
+D-123–D-132 and PRs #182–#196 retain input, pooling, publication, copy and provenance corrections.
+Coefficients and graded/playoff history were preserved. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
+retains exact acceptance. v1.0.9 verified seven live requests (3,440 values), mobile/desktop homepage and real-API headline.
+Local private evidence remains in `../fullcourt-local-archive`; its README retains kept branches and the 2.7 GB archive inventory.
+PRs #191–#195 resolved docs, copy and provenance follow-ups. Secret alert #1 was closed as won't-fix:
+a third-party public Maps Embed key is redacted on main but remains in closed #188's ref, which only GitHub Support can purge.
+No projected board mark remains an owner decision. The prior empty current Shooting default was later superseded by D-137.
+Carried forward: Section 7 report-only/2026-27 grading, actual airports/home stops, Cup assignments,
+physical-device checks and first live-slate observation. Later entries govern any closures.
 
 Later the same day: v1.0.11 released (#195, #196). The full e2e suite had 19 deterministic
 failures on `main`. They were stale specs (an empty 2026-27 Shooting default, copy replaced in
