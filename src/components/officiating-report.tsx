@@ -44,6 +44,18 @@ export function OfficiatingReport({
   shareHref: string;
 }) {
   const [all, setAll] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+  const [fallbackLink, setFallbackLink] = useState("");
+  async function copyReportLink() {
+    const link = new URL(shareHref, window.location.origin).href;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopyStatus("copied");
+    } catch {
+      setFallbackLink(link);
+      setCopyStatus("error");
+    }
+  }
   const { data, error, mutate, isValidating } = useSWR(
     game.detailUrl ?? `/data/officiating/${season}/${game.id}-${game.sha256.slice(0, 16)}.json`,
     fetchReport,
@@ -81,8 +93,26 @@ export function OfficiatingReport({
             ? "Show identified errors"
             : `Show all assessed plays (${data.events.length})`}
         </button>
-        <a href={shareHref}>Link to game ↗</a>
+        <button type="button" onClick={() => void copyReportLink()}>
+          Copy report link
+        </button>
       </div>
+      <p role="status" className={styles.muted}>
+        {copyStatus === "copied"
+          ? "Report link copied"
+          : copyStatus === "error"
+            ? "Copy unavailable. Select the report link below."
+            : ""}
+      </p>
+      {copyStatus === "error" && (
+        <textarea
+          aria-label="Report link"
+          readOnly
+          value={fallbackLink}
+          onFocus={(event) => event.currentTarget.select()}
+          className="w-full border border-[var(--term-border)] bg-[var(--term-surface)] p-2 text-xs text-[var(--term-text)]"
+        />
+      )}
       {events.length === 0 && (
         <p className={styles.muted}>
           No errors identified in this report. You can still inspect all

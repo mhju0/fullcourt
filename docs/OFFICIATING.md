@@ -47,7 +47,7 @@ First remote verification: [run 34179954451](https://github.com/mhju0/fullcourt/
 
 ## UI behavior
 
-Latest published season is the default; regular season is the only phase. The hero and chip counts stay league-wide when browser filters change. Game-row counts always describe all errors in that game; an active category filter states this explicitly. Category-filtered games include a matching identified error; team-only results retain clean games. Share links preserve season, team, category and game. Back/forward restores that context. Opening details changes the URL without scrolling; later rows naturally reflow.
+Latest published season is the default; regular season is the only phase. The hero and chip counts stay league-wide when browser filters change. Game-row counts always describe all errors in that game; an active category filter states this explicitly. Category-filtered games include a matching identified error; team-only results retain clean games. “Copy report link” copies an absolute URL preserving season, team, category and game. Success is announced; clipboard failure exposes a selectable URL. Back/forward restores that context. Opening details changes the URL without scrolling; later rows naturally reflow.
 
 Report files load only when opened. Failure preserves the game row and provides retry and the original NBA report. The errors-only view can expand to all assessments, including ungraded rows. Text is rendered as text after HTML decoding, never injected as markup. Video links follow the NBA report's own URL pattern, but the video endpoint returned 403 during verification; playback is not guaranteed. The UI labels them NBA video page.
 
