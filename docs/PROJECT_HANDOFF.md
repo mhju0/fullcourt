@@ -208,3 +208,11 @@ ADR 0016: 모호한 매칭 거절, 기존 결과 불변, 과거 시더의 잠금
 
 Owner 요청: 폰 날짜 화살표가 일주일이 아니라 하루씩 이동. `DAY_SHIFTED`로 바꾸고 `WEEK_SHIFTED` 제거, 주간 스트립(일–토)은 선택 날짜를 따라간다(D-78 amendment).
 검증: unit 1,522, e2e season-navigation·motion-accessibility·release-smoke 해당 케이스 통과. 다음 단계: PR preview를 폰에서 확인 후 merge.
+
+## 2026-10-23 — Officiating refresh 검증 복구
+
+실패 run `39872249993`은 2026-27 원본 2건 수집·생성 후 테스트에서 중단됐다.
+테스트의 상대 시즌 위치와 고정 stale 기준일이 새 시즌 추가로 깨졌다. fixture는 시즌명을 지정하고
+stale 비교일은 입력보다 하루 뒤로 계산한다. 시즌 추가·재정렬 회귀 검증을 추가했다.
+발행 코드·공개 JSON·모델은 변경하지 않았다. 실제 실패 원본을 임시 출력에 재생해 검증하며,
+새 데이터의 공개는 기존대로 별도 데이터 PR의 preview 검토·merge 이후에만 진행한다.
