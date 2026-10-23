@@ -1,5 +1,10 @@
 # Release history
 
+## 1.2.2 — 2026-10-23
+
+- Give Shooting separate sortable attempt and eFG% columns for each rest group, one header row, and pinned player names while the table scrolls on phones. Show zero attempts explicitly and keep unavailable rates as dashes.
+- Label the rested group “2+ days rest” and keep its exact interval and long-absence filter in Methods. The underlying groups, observations and career estimates are unchanged.
+
 ## 1.2.1 — 2026-10-23
 
 - Replace the Officiating report’s self-navigation link with “Copy report link”. Copy the full filtered report URL, announce success, and offer selectable text when clipboard access fails.

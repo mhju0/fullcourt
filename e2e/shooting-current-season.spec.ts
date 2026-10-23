@@ -61,9 +61,8 @@ test("current observations bypass game-count readiness and keep missing comparis
   const row = page.getByTestId("player-row");
   await expect(row).toHaveCount(1);
   await expect(row).toContainText("150.0% eFG");
-  await expect(row.locator("td").nth(1)).toHaveText("—");
-  await expect(row.locator("td").nth(2)).toHaveText("—");
-  await expect(row.locator("td").nth(3)).toHaveText("—");
+  for (const column of [1, 3]) await expect(row.locator("td").nth(column)).toHaveText("0");
+  for (const column of [2, 4, 5]) await expect(row.locator("td").nth(column)).toHaveText("—");
   expect(readinessReads).toBe(0);
   await page.getByText(/^Advanced filters/).click();
   await page.locator("#pr-volume").selectOption("300");

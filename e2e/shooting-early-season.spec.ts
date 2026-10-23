@@ -33,8 +33,9 @@ for (const width of [1440, 390]) {
     await expect(rendered).toContainText(`${first[S.GAMES]} games`);
     await expect(rendered).toContainText(`${first[S.FGA].toLocaleString()} att.`);
     await expect(rendered).toContainText(`${(50 * first[S.EFG_NUMERATOR] / first[S.FGA]).toFixed(1)}% eFG`);
-    for (const [column, arm] of [[1, S.NO_REST_FGA], [2, S.RESTED_FGA]]) {
-      if (first[arm] === 0) await expect(rendered.locator("td").nth(column)).toHaveText("—");
+    for (const [column, arm] of [[1, S.NO_REST_FGA], [3, S.RESTED_FGA]]) {
+      await expect(rendered.locator("td").nth(column)).toHaveText(first[arm].toLocaleString());
+      if (first[arm] === 0) await expect(rendered.locator("td").nth(column + 1)).toHaveText("—");
     }
     const expectedMissing = rows.filter(row => !row[S.NO_REST_FGA] || !row[S.RESTED_FGA]).length;
     await expect(page.getByTestId("player-row").locator("td:last-child").filter({ hasText: /^—$/ })).toHaveCount(expectedMissing);

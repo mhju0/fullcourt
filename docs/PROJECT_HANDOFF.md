@@ -211,3 +211,20 @@ typecheck, 변경 파일 ESLint, build와 Officiating browser 16개 통과. v1.2
 동일 보고서를 연 채 팀 필터를 바꾸면 기존 복사 성공/실패 안내가 남는 검토 지적을 보완했다.
 복사 결과를 당시 URL과 묶고 현재 URL과 일치할 때만 안내·대체 URL을 표시한다.
 390/1440px 실제 복사 후 같은 문서의 URL 팀 변경·재복사, 실패 대체 URL 갱신, 늦은 복사 완료를 browser 회귀 검증에 추가했다. 변경 검증 5개와 rebuild·typecheck·변경 ESLint 통과.
+
+## 2026-10-23 — Shooting 여섯 열 비교표, v1.2.2 준비
+
+Owner가 선택한 B 구분에 단일 헤더를 적용했다(D-138). 각 rest arm의 attempts/eFG%를
+분리하고 count 정렬, 0 시도 표시, 시즌·career 공통 열과 폰 sticky 선수명을 제공한다.
+메인은 “2+ days rest”, 정확한 범위와 gap 기반 장기 결장 제외는 Methods에 둔다.
+산식·모집단·현재 ESPN/과거 NBA identity·career 추정 범위는 유지한다.
+검증: unit 1,629개, targeted 60개, typecheck·변경 ESLint·build와 Shooting browser 28개 통과.
+320/390/430/1440px 단일 줄 헤더·열 정렬·내부 스크롤·페이지 overflow 없음과 150px 폰 선수 열을 확인했다.
+물리 iPhone/Safari/VoiceOver는 미검증. 다음 단계: root의 정확한 candidate 검토와 PR preview 확인 후 릴리스.
+Root 최종 폰 검토 후 이 표의 양쪽 scroll fade를 제거했다. 끝쪽 숫자도 완전히 보이며,
+기존 내부 스크롤과 안내는 유지한다. build·변경 ESLint와 해당 네 viewport 검증을 재통과했다.
+추가 폰 검토로 첫 attempts 열은 145px, 선수 열은 320px 화면에서 120px·390px부터
+150px로 조정했다. 초기 가로 이동 없이 첫 숫자의 textRange 전체가 내부 viewport에
+들어오는지 320/390/430px에서 확인했고, 정렬 화살표를 포함한 단일 헤더·전체 열 정렬도 재통과했다.
+CI의 design-scale 계약은 헤더의 inline letterSpacing:0 한 건을 거절했다. 시각적 간격이
+동일한 표준값 normal로 교체했으며 page-contract·design-scale 110개를 테스트 변경 없이 재통과했다.

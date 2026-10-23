@@ -226,6 +226,19 @@ describe("buildRows — season view", () => {
     expect(buildRows(index, { ...base, query: "jokic" }).map((r) => r.name)).toEqual(["Nikola Jokić"]);
   });
 
+  it("sorts each rest-arm attempt count independently, including zero", () => {
+    const idx = indexPayload({ ...PAYLOAD, seasons: [
+      season(0, 2025, { noRestFga: 0, restedFga: 500 }),
+      season(1, 2025, { noRestFga: 300, restedFga: 0 }),
+      season(2, 2025, { noRestFga: 100, restedFga: 200 }),
+    ] });
+    for (const year of [2025, "career"] as const) {
+      expect(buildRows(idx, { ...base, year, sort: "noRestFga", dir: 1 }).map(r => r.player)).toEqual([0, 2, 1]);
+      expect(buildRows(idx, { ...base, year, sort: "restedFga", dir: -1 }).map(r => r.player)).toEqual([0, 2, 1]);
+      expect(buildRows(idx, { ...base, year, sort: "restedFga", dir: 1 }).map(r => r.player)).toEqual([1, 2, 0]);
+    }
+  });
+
   it("sorts by effect in both directions, keeping unformable effects last either way", () => {
     const desc = buildRows(index, { ...base, sort: "effect", dir: -1 });
     const asc = buildRows(index, { ...base, sort: "effect", dir: 1 });

@@ -36,12 +36,15 @@ rest effect = eFG% rested
             − eFG% no rest`}
         </Formula>
         <Prose>
+          The table labels the rested group “2+ days rest”; its exact range is two to 29
+          full days off (three to 30 days since the previous appearance).
           An appearance counts even with no shot attempt. NBA Cup games count toward rest; the
           shooting numbers use regular-season shots only.
         </Prose>
         <Note>
-          Left out: games after exactly one day off, and games after 30 or more days off, such
-          as season openers and returns from long absences. Orlando bubble shots are left out
+          Left out: games after exactly one day off, and games after 30 or more days off, including season openers and returns from long absences. This is a long-absence
+          filter based on the gap between appearances, not an injury flag. Shorter injury
+          absences can remain in the rested group. Orlando bubble shots are left out
           too, though bubble games still count toward rest.
         </Note>
       </Section>

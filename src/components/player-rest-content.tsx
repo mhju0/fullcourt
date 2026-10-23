@@ -67,11 +67,11 @@ function playerColumns(
   toggle: (player: number) => void,
   isOpen: (row: BrowseRow) => boolean,
 ): DataColumn<BrowseRow, SortKey>[] {
-  return [
+  const columns: DataColumn<BrowseRow, SortKey>[] = [
     {
       label: "Player",
       sortKey: "name",
-      width: "37%",
+      width: "var(--shooting-player-width)",
       style: { fontWeight: 500 },
       cell: (row) => (
         <button
@@ -98,30 +98,48 @@ function playerColumns(
       ),
     },
     {
-      label: "No rest",
-      unit: "eFG% · att.",
+      label: "No rest attempts",
+      sortKey: "noRestFga",
+      numeric: true,
+      width: "var(--shooting-attempt-width)",
+      className: styles.boundary,
+      cell: (row) => row.noRestFga.toLocaleString(),
+    },
+    {
+      label: "No rest eFG%",
       sortKey: "noRestEfg",
       numeric: true,
-      width: "21%",
-      cell: (row) => <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />,
+      width: "170px",
+      cell: (row) => <RateValue efg={row.noRestEfg} />,
     },
     {
-      label: "2–29 off",
-      unit: "eFG% · att.",
+      label: "2+ days rest attempts",
+      sortKey: "restedFga",
+      numeric: true,
+      width: "240px",
+      className: styles.boundary,
+      cell: (row) => row.restedFga.toLocaleString(),
+    },
+    {
+      label: "2+ days rest eFG%",
       sortKey: "restedEfg",
       numeric: true,
-      width: "24%",
-      cell: (row) => <ArmValue efg={row.restedEfg} fga={row.restedFga} />,
+      width: "210px",
+      cell: (row) => <RateValue efg={row.restedEfg} />,
     },
     {
-      label: "Gap",
-      unit: "pp",
+      label: "Gap (pp)",
       sortKey: "effect",
       numeric: true,
-      width: "18%",
+      width: "110px",
+      className: styles.boundary,
       cell: (row) => <EffectValue value={row.effect} quiet={row.underEvidenced} />,
     },
   ];
+  return columns.map(column => ({
+    ...column,
+    headStyle: { fontSize: 12, letterSpacing: "normal", textTransform: "none" },
+  }));
 }
 
 function fmt(v: number | null | undefined, digits = 1): string {
@@ -168,26 +186,25 @@ function EffectValue({
   );
 }
 
-function ArmValue({ efg, fga }: { efg: number | null; fga: number }) {
-  if (efg === null || !fga)
-    return <span style={{ color: "var(--term-text-muted)" }}>—</span>;
-  return (
-    <span className={styles.arm}>
-      <span>{fmt(efg)}%</span>
-      <small>
-        {fga.toLocaleString()} <span className={styles.attemptLabel}>att.</span>
-      </small>
-    </span>
-  );
+function RateValue({ efg }: { efg: number | null }) {
+  return <span>{efg === null ? "—" : `${fmt(efg)}%`}</span>;
 }
 
-/** The `<td>` the expansion rows wrap `ArmValue` in — the column model's own styling, by hand. */
 const ARM_TD: React.CSSProperties = {
   ...termTdStyle,
   textAlign: "right",
   fontFamily: MONO_FONT_STACK,
   fontVariantNumeric: "tabular-nums",
 };
+
+function RestArmCells({ values }: { values: Pick<BrowseRow, "noRestFga" | "noRestEfg" | "restedFga" | "restedEfg"> }) {
+  return <>
+    <td className={styles.boundary} style={ARM_TD}>{values.noRestFga.toLocaleString()}</td>
+    <td style={ARM_TD}><RateValue efg={values.noRestEfg} /></td>
+    <td className={styles.boundary} style={ARM_TD}>{values.restedFga.toLocaleString()}</td>
+    <td style={ARM_TD}><RateValue efg={values.restedEfg} /></td>
+  </>;
+}
 
 const FILTER_LABEL =
   "mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]";
@@ -241,7 +258,9 @@ export function PlayerRestContent() {
         "games",
         "fga",
         "efg",
+        "noRestFga",
         "noRestEfg",
+        "restedFga",
         "restedEfg",
         "effect",
       ].includes(sortKey)
@@ -474,7 +493,7 @@ export function PlayerRestContent() {
       </p> : refreshUnavailable ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
         Some season data could not be refreshed. Showing available verified records.
       </p> : null}
-      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2–29 days off minus no rest (pp). Attempts appear below rates.</KeepTogether></p>
+      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2+ days rest eFG% minus no rest eFG%, in percentage points (pp).</KeepTogether></p>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
         <DataTable
@@ -513,7 +532,7 @@ export function PlayerRestContent() {
 
       <details className="fc-disclosure">
         <summary>Rest definitions and uncertainty</summary>
-        <p>No rest means played yesterday. 2–29 days off means two to 29 full days between the player&apos;s appearances, including games the player sat out; season openers and returns from longer absences are left out. The difference is 2–29 days off minus no rest, in percentage points.</p>
+        <p>No rest means played yesterday. 2+ days rest means at least two full days off between the player&apos;s appearances, including games the player sat out. Games after exactly one full day off are not in either group. See <a className="fc-text-link" href="/behind-the-data/player-shooting">Methods</a> for the full comparison rules.</p>
         <div className={styles.legend} id="pr-color-note">
           <span style={{ color: "#991b1b" }}>− Lower with rest</span>
           <span style={{ color: "#166534" }}>+ Higher with rest</span>
@@ -596,13 +615,8 @@ function PlayerExpansion({
                 {seasonLabel(s[S.YEAR])}
                 <small className={styles.seasonContext}>{sr.context}</small>
               </td>
-              <td style={ARM_TD}>
-                <ArmValue efg={sr.noRestEfg} fga={sr.noRestFga} />
-              </td>
-              <td style={ARM_TD}>
-                <ArmValue efg={sr.restedEfg} fga={sr.restedFga} />
-              </td>
-              <td style={termTdStyle}>
+              <RestArmCells values={sr} />
+              <td className={styles.boundary} style={ARM_TD}>
                 <EffectValue value={sr.effect} quiet={sr.underEvidenced} />
               </td>
             </tr>
@@ -622,13 +636,8 @@ function PlayerExpansion({
           >
             {seasonOnly ? "Observed season" : "Career"}
           </td>
-          <td style={ARM_TD}>
-            <ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} />
-          </td>
-          <td style={ARM_TD}>
-            <ArmValue efg={totals.restedEfg} fga={totals.restedFga} />
-          </td>
-          <td style={termTdStyle}>
+          <RestArmCells values={totals} />
+          <td className={styles.boundary} style={ARM_TD}>
             <EffectValue
               value={totals.effect}
               quiet={
@@ -643,7 +652,7 @@ function PlayerExpansion({
       {estimate && (
         <tr className="fc-sub fc-groupend">
           <td
-            colSpan={4}
+            colSpan={6}
             style={{
               ...termTdStyle,
               whiteSpace: "normal",
@@ -667,7 +676,7 @@ function PlayerExpansion({
       {!estimate && (
         <tr className="fc-sub fc-groupend">
           <td
-            colSpan={4}
+            colSpan={6}
             style={{
               ...termTdStyle,
               whiteSpace: "normal",
