@@ -96,6 +96,7 @@ class GitPublicationTests(unittest.TestCase):
                 self.assertEqual(publisher.main(), 0)
                 first = self.git(remote, "rev-parse", "data-publications")
                 manifest = json.loads(self.git(remote, "show", "data-publications:manifest.json"))
+                self.assertEqual(json.loads(self.git(remote, "show", "data-publications:vercel.json")), {"git": {"deploymentEnabled": False}})
                 blob = manifest["datasets"]["shooting"]["path"]
                 self.assertEqual(self.git(remote, "show", f"data-publications:{blob}"), (stage / "shooting.json").read_text())
                 self.assertEqual(self.git(repo, "show", "main:trusted-code.txt"), "application code")

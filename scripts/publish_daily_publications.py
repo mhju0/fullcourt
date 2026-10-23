@@ -119,7 +119,7 @@ def main():
             prepare(args.stage.resolve(), checkout)
             git("config", "user.name", "github-actions[bot]", cwd=checkout)
             git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com", cwd=checkout)
-            git("add", "manifest.json", "blobs", cwd=checkout)
+            git("add", "manifest.json", "vercel.json", "blobs", cwd=checkout)
             git("commit", "-m", "Publish verified season observations", cwd=checkout)
             # No force, reset or retry/rebase: a concurrent writer must collect from the new base.
             git("push", "origin", f"HEAD:refs/heads/{BRANCH}", cwd=checkout)
