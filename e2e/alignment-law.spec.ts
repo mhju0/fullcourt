@@ -117,30 +117,25 @@ test.describe("A table's cells sit on one inset, edges included", () => {
  * three-column table still took the full 760, which ran the season report's middle column to
  * 390px to hold `+21` — 528px of nothing between a team and its own number.
  *
- * Measured on the zero-rest workload table since 2026-08-23: the worth table this check was
- * written against moved to Schedule Edge, and the league tables that followed it deliberately
- * fill the season page's wide column. The zero-rest player list is the surviving compact
- * numeric table on the page, and the regression this pins (`w-full` beside the cap) is a
+ * Measured on the officiating archive's other-players table since 2026-10-24 (D-141), when the
+ * zero-rest workload table it used before left /shooting. That table is the remaining
+ * `width="numeric"` DataTable, and the regression this pins (`w-full` beside the cap) is a
  * property of the shared table module, visible on any numeric table.
  */
 test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/shooting?year=2025", { waitUntil: "networkidle" });
+  await page.goto("/behind-the-data/referees/archive", { waitUntil: "networkidle" });
 
-  // The section is IntersectionObserver-gated: it fetches its payload only once scrolled
-  // near, so the table does not exist until the divider has been brought into view.
-  await page.getByText("Show zero-rest player workload", { exact: true }).click();
-
-  const workload = page
+  const others = page
+    .locator("section", { hasText: "OTHER PLAYERS WITH THE SAME OFFICIAL" })
     .locator("table.fc-table")
-    .filter({ has: page.locator('[data-testid="zero-rest-row"]') })
     .first();
-  await expect(workload).toBeVisible({ timeout: 15_000 });
+  await expect(others).toBeVisible({ timeout: 15_000 });
 
-  const box = await workload.boundingBox();
+  const box = await others.boundingBox();
   expect(box).not.toBeNull();
-  // Its own `minWidth` is 460 and the shared cap is 760. Landing at the cap means `w-full`
-  // came back; landing near the floor means the columns are sized by their content.
+  // The shared cap is 760. Landing at the cap means `w-full` came back; landing well below
+  // it means the columns are sized by their content.
   expect(box!.width, `the numeric table is ${box!.width}px wide`).toBeLessThan(700);
 });
 

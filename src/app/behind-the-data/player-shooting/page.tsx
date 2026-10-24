@@ -8,6 +8,7 @@ import {
   Section,
   ValueGrid,
 } from "@/components/behind-the-data-parts";
+import { GAP_BANDS, MIN_COLOUR_SHOTS } from "@/lib/player-rest";
 
 export const metadata: Metadata = {
   title: "Player Shooting by Rest · Behind the Data",
@@ -67,10 +68,17 @@ rest effect = eFG% rested
         <Formula>{`SE ≈ √( 2500 ÷ FGA no rest
        + 2500 ÷ FGA rested )`}</Formula>
         <Prose>
-          A difference smaller than one standard error is shown muted. That is a rough flag,
-          not a 95% significance test. The 2500 assumes each shot is a 50/50 make, in
+          The Shooting table can hide differences smaller than one standard error. That is a
+          rough filter, not a 95% significance test. The 2500 assumes each shot is a 50/50 make, in
           percentage points. It is an approximation: eFG% weights threes differently, and shots
           in one game are not fully independent. Fewer shots mean a larger SE.
+        </Prose>
+        <Prose>
+          The table colours a difference only when both rest groups have at least{" "}
+          {MIN_COLOUR_SHOTS} shots; below that it stays grey and the short count is marked. The
+          colour bands are the same in every season, with steps starting at{" "}
+          {GAP_BANDS.join(", ")} eFG points in either direction, so a shade means the same size
+          in a full season as in its first week.
         </Prose>
         <ValueGrid
           values={[

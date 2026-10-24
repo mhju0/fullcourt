@@ -121,7 +121,8 @@ Shooting uses the owner-selected option A: signed red/green tint on difference c
 bounded at ±10 percentage points; uncertain estimates stay muted. Full-row color and bar
 variants were rejected. Season Report initially shows six team records and five largest
 completed rest gaps including losses. Schedule Edge owns travel/workload and the completed-game
-fatigue calendar; Shooting owns the zero-rest player workload disclosure.
+fatigue calendar. Shooting dropped its zero-rest player workload disclosure on 2026-10-24
+(D-141); sorting by shots answers the same question.
 
 The final page map and source paths live in [Frontend](../FRONTEND.md). Old mockups and phased
 checkpoints were removed after delivery; Git snapshot `34b8961` preserves the exploration.

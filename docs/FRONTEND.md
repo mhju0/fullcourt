@@ -15,7 +15,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer. Two tiles (RESTED TEAM AT HOME, and its LARGE GAP slice) with the gap floor in numbers; a gap-size chart of small/medium/large against the venue baseline with 95% whiskers, where a bar opens exactly its games; an era chart reading each five-season era against its own home rate; and home court by season. The explorer defaults to the rested team at home and filters by rest gap and rested team (D-102) |
-| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
+| `/shooting` | Player Shooting by Rest: dense player comparisons with a "With rest" difference column on fixed six-step better/worse shades (D-141), no-rest/2–29 days off eFG% and shot counts, uncertainty, and expandable seasons |
 | `/shot-quality` | Expected shot value by location; one court at all widths with model selection and a shared location readout |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
@@ -99,7 +99,9 @@ The app is light; the homepage is deliberately dark. Fatigue/rest semantics reta
 palette. Better or worse than a baseline reads one shared green/red pair (D-140): `--term-better` /
 `--term-worse` for fills, the `-text` pair for small text, and the six-step `--term-better-N` /
 `--term-worse-N` cell ramp with `--term-diff-neutral`. Shooting difference cells, Model Results
-baseline bars and the Season Report gap scale all use it; uncertain Shooting estimates stay muted. Officiating uses
+baseline bars and the Season Report gap scale all use it. Shooting shades on fixed bands (1, 2.5, 4, 6, 8, 12
+eFG points) under one stripe, prints the number on a white plate, and stays grey until both rest groups
+have 50 shots (`gapShade`, D-141). Officiating uses
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
@@ -137,7 +139,7 @@ keyboard-focusable region. The header row reserves the same 3px accent edge as a
 (`slateOrder()` in `src/lib/db/slate-order.ts`). Season selectors share one labeled component across studies.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling; the other
 columns are under each row's expansion. Shooting keeps
-identity, both splits, and samples available in compact rows. Shooting keeps a short signed-value interpretation key visible; rest definitions, uncertainty
+identity, both splits, and samples available in compact rows. Shooting keeps a short "With rest" definition and the shade scale visible; rest definitions, uncertainty
 explanation and coverage expand on demand. Officiating initially offers the common call types
 plus an All call types control, and always includes a selected rare category. Its filter row centers the chips, the All call types button and the
 team select on one line, and the select fills the row on a phone. Advanced filters and secondary

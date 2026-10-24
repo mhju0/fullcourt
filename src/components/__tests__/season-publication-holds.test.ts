@@ -25,7 +25,6 @@ vi.mock("swr", () => ({ default: (key: string | null) => {
   if (key) state.reads.push(key);
   return { data: key ? state.data[key] : undefined, isLoading: false };
 } }));
-vi.mock("@/components/zero-rest-workload", () => ({ ZeroRestWorkload: () => null }));
 
 const playerPayload: PlayerRestPayload = {
   generated: "2026-11-01", names: ["Test Player"], teams: ["BOS"],
@@ -114,11 +113,10 @@ describe("observed player publications", () => {
     state.data["/api/player-rest"] = { ...playerPayload, publication: current, publications: { "2025-26": previous, "2026-27": current } };
     state.search = "year=2025";
     const prior = renderPlayer();
-    expect(prior).toContain("2025-26 · Observed through 2026-04-20 · 1000/1000 completed games covered");
-    expect(prior).toContain("Snapshot generated 2026-04-21T12:00:00Z");
-    expect(prior).not.toContain("Observed through 2026-10-22");
+    expect(prior).toContain("Through Apr 20 · 1000 of 1000 games");
+    expect(prior).not.toContain("Through Oct 22");
     state.search = "year=2026";
-    expect(renderPlayer()).toContain("2026-27 · Observed through 2026-10-22 · 16/16 completed games covered");
+    expect(renderPlayer()).toContain("Through Oct 22 · 16 of 16 games");
   });
 
   it("shows incomplete history refreshes even in a historical career view with no current-season metadata", () => {
@@ -127,7 +125,7 @@ describe("observed player publications", () => {
     const html = renderPlayer();
     expect(html).toContain("Some season data could not be refreshed. Showing available verified records.");
     expect(html).toContain('data-testid="player-row"');
-    expect(html).not.toContain("Observed through");
+    expect(html).not.toContain("Through ");
   });
 
   it("keeps historical careers visible while current coverage is unavailable", () => {

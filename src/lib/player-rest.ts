@@ -149,6 +149,28 @@ export function effectSe(
   return a === null || b === null ? null : 100 * Math.sqrt(a + b)
 }
 
+/**
+ * Fixed |difference| band edges, in eFG points, shared by every season (D-141). Measured once on
+ * the 2016-17 through 2025-26 player seasons with 300+ attempts, so each band held 13–18% of
+ * them; they are not refitted as seasons are added, so a colour means the same size every year.
+ */
+export const GAP_BANDS = [1, 2.5, 4, 6, 8, 12] as const
+
+/** Below this many attempts in either rest group a difference is printed but not coloured. */
+export const MIN_COLOUR_SHOTS = 50
+
+/**
+ * The shade step for a difference: ±1…±6 by band, 0 for neutral, null when no difference exists.
+ * Banded on the one-decimal value the table prints, so a cell never shows "+1.0" in grey.
+ */
+export function gapShade(effect: number | null, noRestFga: number, restedFga: number): number | null {
+  if (effect === null) return null
+  if (noRestFga < MIN_COLOUR_SHOTS || restedFga < MIN_COLOUR_SHOTS) return 0
+  const size = Number(Math.abs(effect).toFixed(1))
+  const step = GAP_BANDS.filter((edge) => size >= edge).length
+  return step === 0 ? 0 : Math.sign(effect) * step
+}
+
 export function defaultPlayerVolume(year: number | "career", currentYear: number, explicit: string | null): number {
   const fallback = year === currentYear ? 0 : 300
   if (explicit === null) return fallback
@@ -370,48 +392,11 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
     if (sort === "name") return dir * a.name.localeCompare(b.name)
     const x = sort === "age" ? parseInt(a.age, 10) : a[sort]
     const y = sort === "age" ? parseInt(b.age, 10) : b[sort]
-    // Missing values sort last in both directions rather than clumping at one end.
-    if (x === null || x === undefined || Number.isNaN(x)) return 1
-    if (y === null || y === undefined || Number.isNaN(y)) return -1
-    return dir * ((x as number) - (y as number))
+    const missing = (v: number | null | undefined) => v === null || v === undefined || Number.isNaN(v)
+    // Missing values sort last in both directions rather than clumping at one end. Ties and
+    // missing values fall back to volume, so early in a season the players with data lead.
+    if (missing(x) !== missing(y)) return missing(x) ? 1 : -1
+    return (missing(x) ? 0 : dir * ((x as number) - (y as number))) || b.fga - a.fga || a.name.localeCompare(b.name)
   })
   return filtered
-}
-
-/** One player's no-rest shooting volume in one season. */
-export interface ZeroRestWorkloadRow {
-  name: string
-  team: string
-  noRestFga: number
-  noRestEfg: number
-  games: number
-}
-
-/**
- * A season's players ranked by shot attempts taken on zero days' rest.
- *
- * Volume, deliberately not a rest *effect*. A single season's eFG% split is not an
- * estimate of anything — at 50 attempts per arm the extremes swing ±30pp and the top of
- * any such list is bench players with tiny samples, which is why the career `shrunk`
- * column exists. Attempts on no rest is a plain fact, and it answers the question worth
- * asking here: who is being asked to carry the back-to-backs.
- *
- * Ties break on name so the table is stable between renders.
- */
-export function zeroRestWorkload(
-  payload: PlayerRestPayload,
-  seasonStartYear: number,
-  limit: number
-): ZeroRestWorkloadRow[] {
-  return payload.seasons
-    .filter((row) => row[S.YEAR] === seasonStartYear && row[S.NO_REST_FGA] > 0)
-    .map((row) => ({
-      name: payload.names[row[S.PLAYER]],
-      team: payload.teams[row[S.TEAM]],
-      noRestFga: row[S.NO_REST_FGA],
-      noRestEfg: seasonEfg(row, S.NO_REST_FGA, S.NO_REST_EFG, S.NO_REST_NUMERATOR) ?? 0,
-      games: row[S.GAMES],
-    }))
-    .sort((a, b) => b.noRestFga - a.noRestFga || a.name.localeCompare(b.name))
-    .slice(0, limit)
 }

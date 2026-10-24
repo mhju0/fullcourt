@@ -1,17 +1,23 @@
-.page { --shooting-row-height: 60px; --shooting-player-width: 220px; --shooting-attempt-width: 190px; min-width: 0; }
+.page { --shooting-row-height: 60px; --shooting-player-width: 220px; --shooting-effect-width: 130px; --shooting-arm-width: 96px; min-width: 0; }
 .player { display: flex; flex-direction: column; justify-content: center; min-height: 44px; width: 100%; text-align: left; white-space: normal; font-family: var(--font-geist), sans-serif; font-size: 15px; cursor: pointer; }
 .player small, .seasonContext { display: block; color: var(--term-text-muted); font-family: var(--font-geist-mono), monospace; font-size: 12px; font-weight: 400; }
 .effect { display: flex; min-height: var(--shooting-row-height); align-items: center; justify-content: flex-end; padding: 8px; font-family: var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; font-size: 12px; white-space: nowrap; }
-.effect sup { font-size: 12px; align-self: center; }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; line-height: 1.5; }
-.legend > span:last-child { flex-basis: 100%; color: var(--term-text-muted); }
+.effect { justify-content: center; }
+/* One stripe on every shade, so only the colour carries the size (D-141). */
+.shaded { background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0 3px, transparent 3px 8px); }
+.plate { background: #fff; padding: 2px 4px; border-radius: 3px; font-weight: 600; }
+.lowShots { color: var(--term-caution-text); font-weight: 600; }
+.key { display: flex; flex-direction: column; gap: 8px; max-width: 75ch; }
+.scale { max-width: 520px; padding-bottom: 24px; position: relative; }
+.scaleBar { display: grid; grid-template-columns: repeat(13, 1fr); height: 16px; border-radius: 3px; overflow: hidden; }
+.scaleTicks { position: absolute; inset: 16px 0 0; }
+.scaleTicks span { position: absolute; top: 2px; transform: translateX(-50%); font-family: var(--font-geist-mono), monospace; font-size: 12px; color: var(--term-text-muted); white-space: nowrap; }
 .empty { padding: 16px; font-size: 12px; color: var(--term-text-muted); }
-.table table { width: 100%; min-width: calc(730px + var(--shooting-attempt-width) + var(--shooting-player-width)); }
+.table table { width: 100%; min-width: calc(var(--shooting-player-width) + var(--shooting-effect-width) + 4 * var(--shooting-arm-width)); }
 .table :is(td, th) { padding: 4px 8px; }
 .table th { white-space: nowrap; }
 .table th button { min-height: 44px; white-space: nowrap; flex-wrap: nowrap; justify-content: flex-end; }
 .table th:first-child button { justify-content: flex-start; }
-.table tbody tr:not(:global(.fc-groupend)) > td:last-child { padding: 0; }
 .table tbody tr > td { height: var(--shooting-row-height); }
 .table tbody tr > td:first-child { white-space: normal; }
 .table tbody tr:global(.fc-sub) > td,
@@ -20,7 +26,8 @@
 .page select, .page input { min-height: 44px; }
 .readingKey { font-size: 15px; line-height: 1.5; max-width: 75ch; color: var(--term-text-muted); }
 @media (max-width: 700px) {
-  .page { --shooting-player-width: clamp(120px, calc(100vw - 240px), 150px); --shooting-attempt-width: 145px; }
+  .page { --shooting-player-width: clamp(120px, calc(100vw - 240px), 150px); --shooting-effect-width: 96px; --shooting-arm-width: 64px; }
+  .minorTick { display: none; }
   .table :is(th, td) { padding: 4px; }
   .table th { font-size: 12px; letter-spacing: 0; }
   .table th span { white-space: nowrap; }

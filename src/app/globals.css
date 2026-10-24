@@ -204,6 +204,12 @@
   --term-worse-5: #E06D5F;
   --term-worse-6: #C8473A;
   --term-diff-neutral: #E2E8F0;
+  /* Number ink for a ramp cell: it sits on a white plate over the stripes, so the darkest
+     steps keep 12:1 (Shooting, D-141). */
+  --term-better-ink: #0F3F22;
+  --term-worse-ink: #5C1010;
+  /* A count too small to colour its comparison (Shooting shots under 50). */
+  --term-caution-text: #9A3412;
   /* radius */
   --term-radius: 8px;
   --term-radius-sm: 4px;
