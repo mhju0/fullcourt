@@ -32,7 +32,11 @@ function largeRestGapVersusHome(row: HomeCourtStudySeason) {
     : liftOverBaseline(Number(row.largeRestGap.winPct.toFixed(1)), row.homeBaselinePct);
 }
 
-function chartScale(rows: readonly HomeCourtStudySeason[], showLarge: boolean) {
+// A season to date is drawn hollow and kept out of the axis range, so a
+// three-game sample cannot stretch the scale for the completed seasons.
+function chartScale(allRows: readonly HomeCourtStudySeason[], showLarge: boolean) {
+  const complete = allRows.filter((row) => row.isComplete);
+  const rows = complete.length ? complete : allRows;
   const values = rows.flatMap((row) => [
     ...(row.homeGames > 0 ? [row.homeBaselinePct] : []),
     ...(row.games > 0 ? [row.winPct] : []),
@@ -55,7 +59,7 @@ function chartPath(
   x: (index: number) => number,
   y: (rate: number) => number
 ) {
-  return homeCourtChartSegments(rows.map(value))
+  return homeCourtChartSegments(rows.map((row) => row.isComplete ? value(row) : null))
     .map((points) => points.map(({ index, rate }) => `${x(index)},${y(rate)}`).join(" "));
 }
 
@@ -145,6 +149,7 @@ export function HomeCourtStudy() {
           <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.homeSwatch}`} aria-hidden="true" />Home win rate</span>
           <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.restSwatch}`} aria-hidden="true" />Rested at home · 0.5+</span>
           {showLarge ? <span className="inline-flex items-center gap-2"><span className={`${styles.swatch} ${styles.largeSwatch}`} aria-hidden="true" />Rested at home · 5+ (raw)</span> : null}
+          {rows.some((row) => !row.isComplete) ? <span className="inline-flex items-center gap-2"><span className={styles.partialSwatch} aria-hidden="true" />Hollow point: season to date</span> : null}
         </div>
         <HomeCourtChart rows={rows} selected={selected} onSelect={setSelectedSeason} showLarge={showLarge} />
         {selected ? <SeasonInspection row={selected} showLarge={showLarge} /> : null}
@@ -225,6 +230,8 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
   const plotHeight = VIEW.height - VIEW.top - VIEW.bottom;
   const x = (index: number) => VIEW.left + (rows.length <= 1 ? plotWidth / 2 : (index / (rows.length - 1)) * plotWidth);
   const y = (rate: number) => VIEW.top + ((maximum - rate) / (maximum - minimum)) * plotHeight;
+  const plotY = (rate: number) => Math.max(VIEW.top, Math.min(VIEW.height - VIEW.bottom, y(rate)));
+  const outside = (rate: number) => plotY(rate) !== y(rate);
   const homePaths = chartPath(rows, (row) => row.homeGames > 0 ? row.homeBaselinePct : null, x, y);
   const restPaths = chartPath(rows, (row) => row.games > 0 ? row.winPct : null, x, y);
   const largePaths = showLarge ? chartPath(rows, (row) => row.largeRestGap.winPct, x, y) : [];
@@ -255,11 +262,22 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
         {restPaths.map((points, index) => <polyline key={`rest-${index}`} points={points} fill="none" stroke="var(--term-blue)" strokeWidth="2" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" aria-hidden="true" />)}
         {largePaths.map((points, index) => <polyline data-series="large-rest-gap" key={`large-${index}`} points={points} fill="none" stroke="var(--term-accent)" strokeWidth="2" vectorEffect="non-scaling-stroke" aria-hidden="true" />)}
         {selected ? <line x1={x(selectedIndex)} x2={x(selectedIndex)} y1={VIEW.top} y2={VIEW.height - VIEW.bottom} stroke="var(--term-text-muted)" strokeWidth="1" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" aria-hidden="true" /> : null}
-        {rows.map((row, index) => (
+        {rows.map((row, index) => row.isComplete ? (
           <g key={row.season} pointerEvents="none" aria-hidden="true">
             {row.homeGames > 0 ? <circle data-series="home" cx={x(index)} cy={y(row.homeBaselinePct)} r="2.5" fill="var(--term-text-dim)" /> : null}
             {row.games > 0 ? <circle data-series="rested-home" cx={x(index)} cy={y(row.winPct)} r="2.5" fill="var(--term-blue)" /> : null}
             {showLarge && row.largeRestGap.winPct !== null ? <circle data-series="large-rest-gap" cx={x(index)} cy={y(row.largeRestGap.winPct)} r="2.5" fill="var(--term-accent)" /> : null}
+          </g>
+        ) : (
+          <g key={row.season} pointerEvents="none" aria-hidden="true">
+            {row.homeGames > 0 ? <circle data-series="home" data-partial="true" cx={x(index)} cy={plotY(row.homeBaselinePct)} r="3.5" fill="none" stroke="var(--term-text-dim)" strokeWidth="1.5" /> : null}
+            {row.games > 0 ? <circle data-series="rested-home" data-partial="true" cx={x(index)} cy={plotY(row.winPct)} r="3.5" fill="none" stroke="var(--term-blue)" strokeWidth="1.5" /> : null}
+            {showLarge && row.largeRestGap.winPct !== null ? <circle data-series="large-rest-gap" data-partial="true" cx={x(index)} cy={plotY(row.largeRestGap.winPct)} r="3.5" fill="none" stroke="var(--term-accent)" strokeWidth="1.5" /> : null}
+            {row.games > 0 ? (
+              <text x={x(index) - 8} y={plotY(row.winPct) + (outside(row.winPct) && row.winPct < minimum ? -8 : 4)} textAnchor="end" fontSize="11" fill="var(--term-text-muted)" className="mono">
+                {outside(row.winPct) ? `${formatRate(row.winPct)} · ` : ""}{row.games} {row.games === 1 ? "game" : "games"}
+              </text>
+            ) : null}
           </g>
         ))}
         {selected ? (
@@ -284,15 +302,21 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
               }
             }}
           >
-            <rect className={styles.focusTarget} x={x(selectedIndex) - 22} y={y(selected.homeBaselinePct) - 22} width="44" height="44" fill="transparent" stroke="transparent" />
-            {selected.homeGames > 0 ? <circle data-selected-series="home" cx={x(selectedIndex)} cy={y(selected.homeBaselinePct)} r="4.5" fill="var(--term-text-dim)" /> : null}
-            {selected.games > 0 ? <circle data-selected-series="rested-home" cx={x(selectedIndex)} cy={y(selected.winPct)} r="4.5" fill="var(--term-blue)" /> : null}
-            {showLarge && selected.largeRestGap.winPct !== null ? <circle data-selected-series="large-rest-gap" cx={x(selectedIndex)} cy={y(selected.largeRestGap.winPct)} r="4.5" fill="var(--term-accent)" /> : null}
+            <rect className={styles.focusTarget} x={x(selectedIndex) - 22} y={plotY(selected.homeBaselinePct) - 22} width="44" height="44" fill="transparent" stroke="transparent" />
+            {selected.homeGames > 0 ? <SelectedPoint cx={x(selectedIndex)} cy={plotY(selected.homeBaselinePct)} color="var(--term-text-dim)" series="home" hollow={!selected.isComplete} /> : null}
+            {selected.games > 0 ? <SelectedPoint cx={x(selectedIndex)} cy={plotY(selected.winPct)} color="var(--term-blue)" series="rested-home" hollow={!selected.isComplete} /> : null}
+            {showLarge && selected.largeRestGap.winPct !== null ? <SelectedPoint cx={x(selectedIndex)} cy={plotY(selected.largeRestGap.winPct)} color="var(--term-accent)" series="large-rest-gap" hollow={!selected.isComplete} /> : null}
           </g>
         ) : null}
       </svg>
     </div>
   );
+}
+
+function SelectedPoint({ cx, cy, color, series, hollow }: { cx: number; cy: number; color: string; series: string; hollow: boolean }) {
+  return hollow
+    ? <circle data-selected-series={series} cx={cx} cy={cy} r="5" fill="none" stroke={color} strokeWidth="2" />
+    : <circle data-selected-series={series} cx={cx} cy={cy} r="4.5" fill={color} />;
 }
 
 function SeasonInspection({ row, showLarge }: { row: HomeCourtStudySeason; showLarge: boolean }) {

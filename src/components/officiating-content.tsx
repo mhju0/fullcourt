@@ -227,17 +227,21 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
                         </span>
                         <div className={styles.plot}>
                           <div
-                            className={
+                            data-partial={s.season === currentSeason ? "true" : undefined}
+                            className={`${
                               s.season === season.season
                                 ? styles.latestBar
                                 : styles.priorBar
-                            }
+                            }${s.season === currentSeason ? ` ${styles.partialBar}` : ""}`}
                             style={{
                               height: `${share === null ? 0 : Math.max(0, (share - 50) * 2)}%`,
                             }}
                           />
                         </div>
                         <span>{s.season}</span>
+                        {s.season === currentSeason && (
+                          <span className={styles.partialCount}>{s.gameCount} {s.gameCount === 1 ? "game" : "games"} to date</span>
+                        )}
                         {share !== null && share < 50 && (
                           <span>Below scale</span>
                         )}

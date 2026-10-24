@@ -161,7 +161,8 @@ test('large gaps are opt-in, preserve selection, and expose filled markers with 
   await expect(inspection).toContainText('22 wins / 42 games');
   await expect(inspection).not.toContainText('Small sample');
   await expect(chart.locator('circle[data-series="large-rest-gap"]')).toHaveCount(11);
-  await expect(chart.locator('circle[fill="none"], circle[fill="transparent"], circle[fill="var(--term-surface)"]')).toHaveCount(0);
+  // D-139: only the season to date is hollow; completed seasons stay filled.
+  await expect(chart.locator('circle:not([data-partial])[fill="none"], circle:not([data-partial])[fill="transparent"], circle:not([data-partial])[fill="var(--term-surface)"]')).toHaveCount(0);
   await expect(chart.locator('g[aria-hidden="true"] > rect')).toHaveCount(0);
   await expect(chart.getByRole('button')).toHaveAccessibleName(/5\+ gap: 22 wins of 42, 52.4%, −2.6 percentage points versus the home rate/);
   await expect(page.getByText('Seasonal sample sizes vary; these are observed records, not precise estimates. Groups overlap, and the records do not establish that rest caused the difference.', { exact: true })).toBeVisible();
