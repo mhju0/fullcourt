@@ -57,6 +57,12 @@
 .homeSwatch { color: var(--term-text-dim); }
 .restSwatch { color: var(--term-blue); border-top-style: dashed; }
 .largeSwatch { color: var(--term-accent); }
+.partialSwatch {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--term-blue);
+  border-radius: 50%;
+}
 
 .chart {
   display: block;

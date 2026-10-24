@@ -1,5 +1,10 @@
 # Release history
 
+## 1.2.3 — 2026-10-24
+
+- Draw the season-to-date point hollow on Home Court, with its game count, and keep it out of the axis range and the season lines so a few games cannot stretch the scale. Officiating outlines its season-to-date bar and prints the reviewed-game count.
+- Sign the Availability effects by direction: home court is positive and green, and the conditions that lower the margin are negative. The estimates are unchanged (D-139).
+
 ## 1.2.2 — 2026-10-23
 
 - Give Shooting separate sortable attempt and eFG% columns for each rest group, one header row, and pinned player names while the table scrolls on phones. Show zero attempts explicitly and keep unavailable rates as dashes.
