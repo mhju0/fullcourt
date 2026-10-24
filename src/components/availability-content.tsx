@@ -9,6 +9,7 @@ import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import { StatFigure } from "@/components/ui/stat-tile"
 import { AvailabilityTrend } from "@/components/availability-trend"
+import { signedNumber } from "@/lib/signed-number"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -40,19 +41,25 @@ const SCALE_MAX_POINTS = Math.max(
   ...Object.values(AVAILABILITY_EFFECTS).map((e) => e.points)
 )
 
+/** Stored effects are magnitudes; the direction says which way each moves the final margin. */
 function EffectBar({
+  effect,
   label,
   points,
+  direction,
   lit,
   note,
 }: {
+  effect: keyof typeof AVAILABILITY_EFFECTS
   label: string
   points: number
+  direction: "helps" | "hurts"
   lit?: boolean
   note?: string
 }) {
+  const helps = direction === "helps"
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-effect={effect} data-direction={direction}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <span
           style={{
@@ -69,10 +76,10 @@ function EffectBar({
             fontSize: TYPE.stat,
             fontWeight: 700,
             lineHeight: LEAD.figure,
-            color: lit ? "var(--term-blue)" : "var(--term-text)",
+            color: helps ? "var(--term-pos)" : lit ? "var(--term-blue)" : "var(--term-text)",
           }}
         >
-          {points.toFixed(2)}
+          {signedNumber(helps ? points : -points, 2)}
         </span>
       </div>
       <div
@@ -87,7 +94,7 @@ function EffectBar({
           style={{
             width: `${(points / SCALE_MAX_POINTS) * 100}%`,
             height: "100%",
-            background: lit ? "var(--term-blue)" : "var(--term-neutral)",
+            background: helps ? "var(--term-pos)" : lit ? "var(--term-blue)" : "var(--term-neutral)",
           }}
         />
       </div>
@@ -116,16 +123,16 @@ function ScaleSection() {
         />
 
         <div className="mt-6 flex flex-col gap-4">
-          <EffectBar label="Best player out" points={e.bestPlayerOut.points} lit />
-          <EffectBar label="Playing at home" points={e.homeCourt.points} />
-          <EffectBar label="On a back-to-back" points={e.backToBack.points} />
-          <EffectBar label="Visiting altitude" points={e.visitingAltitude.points} />
-          <EffectBar label="Off an overtime" points={e.priorOvertime.points} />
+          <EffectBar effect="bestPlayerOut" label="Best player out" points={e.bestPlayerOut.points} direction="hurts" lit />
+          <EffectBar effect="homeCourt" label="Playing at home" points={e.homeCourt.points} direction="helps" />
+          <EffectBar effect="backToBack" label="On a back-to-back" points={e.backToBack.points} direction="hurts" />
+          <EffectBar effect="visitingAltitude" label="Visiting altitude" points={e.visitingAltitude.points} direction="hurts" />
+          <EffectBar effect="priorOvertime" label="Off an overtime" points={e.priorOvertime.points} direction="hurts" />
         </div>
 
         <p className="mt-4" style={BODY}>
           <span style={LEAD_IN}>The best-player-out estimate is similar in size to the home-court estimate.</span>{" "}
-          Bars compare the size of associations, not their direction: home court is associated with a higher margin, while the other conditions are associated with a lower margin. All are measured in points across{" "}
+          Bar length shows the size of each association and the sign shows its direction: home court is associated with a higher margin (green), while the other conditions are associated with a lower margin. All are measured in points across{" "}
           {AVAILABILITY_SAMPLE.games.toLocaleString()}{" "}
           games, controlling for both teams&apos; prior records. These are regression
           associations, not isolated causal effects.

@@ -183,6 +183,15 @@
   background: #b5c8e9;
   border-color: #6b86ad;
 }
+/* Season to date: outlined, so a few reviews do not read as a full season. */
+.partialBar {
+  background: transparent;
+  border-style: dashed;
+  border-width: 2px;
+}
+.partialCount {
+  display: block;
+}
 .caveat {
   font-size: var(--text-data);
   color: var(--term-text-muted);
