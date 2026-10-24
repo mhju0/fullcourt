@@ -105,6 +105,11 @@ describe("early officiating publication", () => {
     renderToStaticMarkup(createElement(OfficiatingContent, { seasons: [summary("2026-27", { publicationHash: "abc123" })] }));
     expect(state.reads).toContain("/api/officiating/2026-27?publication=abc123");
   });
+  it("draws the season-to-date bar hollow with its reviewed-game count", () => {
+    const html = renderToStaticMarkup(createElement(OfficiatingContent, { seasons: [summary("2025-26", { missed: 3, gameCount: 10 }), summary("2026-27", { gameCount: 3 })] }));
+    expect(html.match(/data-partial="true"/g)).toHaveLength(1);
+    expect(html).toContain("3 games to date");
+  });
   it("supports a completely unpublished archive with an honest guide", () => {
     const html = renderToStaticMarkup(createElement(OfficiatingContent, { seasons: [] }));
     expect(html).toContain("Awaiting results");
@@ -123,5 +128,20 @@ describe("early home-court observations", () => {
     expect(html).toContain("Season to date");
     expect(html).not.toContain("Too early");
     expect(html).toContain("0.0%");
+  });
+  it("keeps a season-to-date point out of the axis and the lines and draws it hollow", () => {
+    const complete = (season: string, homeBaselinePct: number, winPct: number) => ({ season, homeGames: 1230,
+      homeWins: Math.round(12.3 * homeBaselinePct), homeBaselinePct, games: 200, restedTeamWins: 2 * winPct,
+      winPct, isComplete: true, latestEvidenceDate: "2026-04-12", largeRestGap: { games: 0, restedTeamWins: 0, winPct: null } });
+    state.data["/api/home-court"] = { seasonWinRates: [complete("2024-25", 55, 60), complete("2025-26", 56, 62),
+      { season: "2026-27", homeGames: 28, homeWins: 13, homeBaselinePct: 46.4, games: 3, restedTeamWins: 0, winPct: 0,
+        isComplete: false, latestEvidenceDate: "2026-10-23", largeRestGap: { games: 0, restedTeamWins: 0, winPct: null } }] };
+    const html = renderToStaticMarkup(createElement(HomeCourtStudy));
+    const ticks = [...html.matchAll(/>(\d+)%<\/text>/g)].map((m) => Number(m[1]));
+    expect(Math.min(...ticks)).toBeGreaterThanOrEqual(50);
+    expect(html.match(/<circle data-series="rested-home" data-partial="true"[^>]*fill="none"/g)).toHaveLength(1);
+    expect(html.match(/<circle data-series="home" data-partial="true"[^>]*fill="none"/g)).toHaveLength(1);
+    expect(html).toContain("3 games");
+    for (const points of html.matchAll(/<polyline[^>]*points="([^"]*)"/g)) expect(points[1].split(" ")).toHaveLength(2);
   });
 });
