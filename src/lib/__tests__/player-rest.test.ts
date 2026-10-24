@@ -8,13 +8,14 @@ import {
   careerTotals,
   effectSe,
   franchiseOptions,
+  gapShade,
+  MIN_COLOUR_SHOTS,
   indexPayload,
   restEffect,
   S,
   searchKey,
   seasonLabel,
   seasonRow,
-  zeroRestWorkload,
   type PlayerRestPayload,
 } from "../player-rest";
 
@@ -239,6 +240,17 @@ describe("buildRows — season view", () => {
     }
   });
 
+  it("breaks ties and orders missing differences by total attempts, so players with data lead", () => {
+    const idx = indexPayload({ ...PAYLOAD, seasons: [
+      season(0, 2025, { fga: 10, restedFga: 0 }),
+      season(1, 2025, { fga: 30, restedFga: 0 }),
+      season(2, 2025, { fga: 20, noRestEfg: 50, restedEfg: 52 }),
+    ] });
+    for (const dir of [-1, 1] as const) {
+      expect(buildRows(idx, { ...base, sort: "effect", dir }).map(r => r.player)).toEqual([2, 1, 0]);
+    }
+  });
+
   it("sorts by effect in both directions, keeping unformable effects last either way", () => {
     const desc = buildRows(index, { ...base, sort: "effect", dir: -1 });
     const asc = buildRows(index, { ...base, sort: "effect", dir: 1 });
@@ -334,33 +346,26 @@ describe("buildRows — team filter", () => {
   });
 });
 
-describe("zeroRestWorkload", () => {
-  const payload = {
-    generated: "2026-07-30",
-    names: ["Alpha", "Beta", "Gamma"],
-    teams: ["AAA", "BBB"],
-    seasons: [
-      // [player, year, team, age, games, fga, efg, noRestFga, noRestEfg, restedFga, restedEfg]
-      [0, 2025, 0, 27, 70, 900, 55.0, 240, 52.1, 660, 56.4],
-      [1, 2025, 1, 24, 68, 700, 51.0, 310, 49.8, 390, 52.0],
-      [2, 2024, 0, 31, 60, 800, 54.0, 400, 53.0, 400, 55.0], // wrong season
-    ],
-    shrunk: [],
-  };
-
-  it("ranks a season's players by attempts taken on no rest", () => {
-    expect(zeroRestWorkload(payload, 2025, 10)).toEqual([
-      { name: "Beta", team: "BBB", noRestFga: 310, noRestEfg: 49.8, games: 68 },
-      { name: "Alpha", team: "AAA", noRestFga: 240, noRestEfg: 52.1, games: 70 },
-    ]);
+describe("gapShade", () => {
+  it("places a difference in its fixed band by the value the table prints", () => {
+    expect(gapShade(0.94, 200, 200)).toBe(0);
+    expect(gapShade(0.96, 200, 200)).toBe(1);   // prints +1.0
+    expect(gapShade(2.5, 200, 200)).toBe(2);
+    expect(gapShade(-3.99, 200, 200)).toBe(-3); // prints −4.0
+    expect(gapShade(7.9, 200, 200)).toBe(4);
+    expect(gapShade(-11.9, 200, 200)).toBe(-5);
+    expect(gapShade(12, 200, 200)).toBe(6);
+    expect(gapShade(-40, 200, 200)).toBe(-6);
   });
 
-  it("honours the limit", () => {
-    expect(zeroRestWorkload(payload, 2025, 1).map((r) => r.name)).toEqual(["Beta"]);
+  it("stays neutral until both rest groups reach the shot floor", () => {
+    expect(gapShade(15, MIN_COLOUR_SHOTS - 1, 400)).toBe(0);
+    expect(gapShade(-15, 400, MIN_COLOUR_SHOTS - 1)).toBe(0);
+    expect(gapShade(-15, MIN_COLOUR_SHOTS, MIN_COLOUR_SHOTS)).toBe(-6);
   });
 
-  it("returns nothing for a season absent from the payload", () => {
-    expect(zeroRestWorkload(payload, 1999, 10)).toEqual([]);
+  it("has no shade when no difference can be formed", () => {
+    expect(gapShade(null, 400, 0)).toBeNull();
   });
 });
 

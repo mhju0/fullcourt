@@ -6,8 +6,8 @@ import { SeasonDataGuide } from "@/components/season-data-guide";
 import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
-import { ZeroRestWorkload } from "@/components/zero-rest-workload";
 import useSWR from "swr";
 import { KeepTogether } from "@/components/ui/keep-together";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,6 +16,9 @@ import {
   careerTotals,
   defaultPlayerVolume,
   franchiseOptions,
+  gapShade,
+  GAP_BANDS,
+  MIN_COLOUR_SHOTS,
   indexPayload,
   S,
   searchKey,
@@ -98,42 +101,47 @@ function playerColumns(
       ),
     },
     {
-      label: "No rest attempts",
-      sortKey: "noRestFga",
+      label: "With rest",
+      unit: "eFG pts",
+      sortKey: "effect",
       numeric: true,
-      width: "var(--shooting-attempt-width)",
-      className: styles.boundary,
-      cell: (row) => row.noRestFga.toLocaleString(),
+      width: "var(--shooting-effect-width)",
+      style: { padding: 0 },
+      cell: (row) => <EffectValue row={row} />,
     },
     {
-      label: "No rest eFG%",
+      label: "eFG%",
+      group: "No rest",
       sortKey: "noRestEfg",
       numeric: true,
-      width: "170px",
+      width: "var(--shooting-arm-width)",
+      className: styles.boundary,
       cell: (row) => <RateValue efg={row.noRestEfg} />,
     },
     {
-      label: "2+ days rest attempts",
-      sortKey: "restedFga",
+      label: "Shots",
+      group: "No rest",
+      sortKey: "noRestFga",
       numeric: true,
-      width: "240px",
-      className: styles.boundary,
-      cell: (row) => row.restedFga.toLocaleString(),
+      width: "var(--shooting-arm-width)",
+      cell: (row) => <ShotCount value={row.noRestFga} />,
     },
     {
-      label: "2+ days rest eFG%",
+      label: "eFG%",
+      group: "2+ days rest",
       sortKey: "restedEfg",
       numeric: true,
-      width: "210px",
+      width: "var(--shooting-arm-width)",
+      className: styles.boundary,
       cell: (row) => <RateValue efg={row.restedEfg} />,
     },
     {
-      label: "Gap (pp)",
-      sortKey: "effect",
+      label: "Shots",
+      group: "2+ days rest",
+      sortKey: "restedFga",
       numeric: true,
-      width: "110px",
-      className: styles.boundary,
-      cell: (row) => <EffectValue value={row.effect} quiet={row.underEvidenced} />,
+      width: "var(--shooting-arm-width)",
+      cell: (row) => <ShotCount value={row.restedFga} />,
     },
   ];
   return columns.map(column => ({
@@ -150,40 +158,75 @@ function signed(v: number | null): string {
   return v === null ? "—" : signedNumber(v, 2);
 }
 
-function EffectValue({
-  value,
-  quiet = false,
-}: {
-  value: number | null;
-  quiet?: boolean;
-}) {
-  if (value === null)
+/**
+ * The rested-minus-no-rest difference on its shade (D-141): fixed bands, the same stripes on
+ * every cell so only the colour varies, and the number on a white plate so it reads on the
+ * darkest steps. Grey until both rest groups have the shot floor.
+ */
+function EffectValue({ row }: { row: Pick<BrowseRow, "effect" | "noRestFga" | "restedFga"> }) {
+  const shade = gapShade(row.effect, row.noRestFga, row.restedFga);
+  if (row.effect === null || shade === null)
     return (
       <span className={styles.effect} aria-label="Difference unavailable">
         —
       </span>
     );
-  const strength = Math.min(Math.abs(value) / 10, 1);
-  const positive = value > 0;
-  const share = quiet || value === 0 ? 0 : Math.round(5 + 20 * strength);
+  const side = shade > 0 ? "better" : "worse";
   return (
     <span
-      className={styles.effect}
-      aria-describedby="pr-color-note"
-      style={{
-        background: share === 0 ? "transparent"
-          : `color-mix(in srgb, var(${positive ? "--term-better" : "--term-worse"}) ${share}%, transparent)`,
-        color:
-          quiet || value === 0 ? "#59616c" : positive ? "var(--term-better-text)" : "var(--term-worse-text)",
-      }}
+      className={`${styles.effect} ${styles.shaded}`}
+      data-shade={shade}
+      style={{ backgroundColor: shadeFill(shade) }}
     >
-      {signedNumber(value, 1)}
-      {quiet && (
-        <sup aria-label="difference uncertain or sampling variation unavailable">
-          †
-        </sup>
-      )}
+      <span
+        className={styles.plate}
+        style={{ color: shade === 0 ? "var(--term-text-muted)" : `var(--term-${side}-ink)` }}
+      >
+        {signedNumber(row.effect, 1)}
+      </span>
     </span>
+  );
+}
+
+function ShotCount({ value }: { value: number }) {
+  return <span className={value < MIN_COLOUR_SHOTS ? styles.lowShots : undefined}>{value.toLocaleString()}</span>;
+}
+
+/** "2026-10-22" → "Oct 22". */
+function throughLabel(dateKey: string): string {
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  return Number.isNaN(date.getTime()) ? dateKey
+    : date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+}
+
+/** The 13 legend swatches, worst to best: −6 … −1, 0, +1 … +6. */
+const LEGEND_STEPS = Array.from({ length: GAP_BANDS.length * 2 + 1 }, (_, i) => i - GAP_BANDS.length);
+
+function shadeFill(shade: number): string {
+  return shade === 0 ? "var(--term-diff-neutral)"
+    : `var(--term-${shade > 0 ? "better" : "worse"}-${Math.abs(shade)})`;
+}
+
+/** Each band edge sits on the swatch boundary nearer the centre. */
+function ShadeLegend() {
+  const left = (boundary: number) => `${(boundary / LEGEND_STEPS.length) * 100}%`;
+  return (
+    <div className={styles.scale} aria-hidden="true">
+      <div className={styles.scaleBar}>
+        {LEGEND_STEPS.map((shade) => (
+          <span key={shade} className={styles.shaded} style={{ backgroundColor: shadeFill(shade) }} />
+        ))}
+      </div>
+      <div className={styles.scaleTicks}>
+        {GAP_BANDS.flatMap((edge, i) => {
+          const minor = i % 2 === 1 ? styles.minorTick : undefined;
+          return [
+            <span key={-edge} className={minor} style={{ left: left(GAP_BANDS.length - i) }}>{signedNumber(-edge)}</span>,
+            <span key={edge} className={minor} style={{ left: left(GAP_BANDS.length + 1 + i) }}>{signedNumber(edge)}</span>,
+          ];
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -198,12 +241,15 @@ const ARM_TD: React.CSSProperties = {
   fontVariantNumeric: "tabular-nums",
 };
 
-function RestArmCells({ values }: { values: Pick<BrowseRow, "noRestFga" | "noRestEfg" | "restedFga" | "restedEfg"> }) {
+
+/** The cells after a nested row's label, in the column order of the browse table. */
+function ComparisonCells({ values }: { values: Pick<BrowseRow, "effect" | "noRestFga" | "noRestEfg" | "restedFga" | "restedEfg"> }) {
   return <>
-    <td className={styles.boundary} style={ARM_TD}>{values.noRestFga.toLocaleString()}</td>
-    <td style={ARM_TD}><RateValue efg={values.noRestEfg} /></td>
-    <td className={styles.boundary} style={ARM_TD}>{values.restedFga.toLocaleString()}</td>
-    <td style={ARM_TD}><RateValue efg={values.restedEfg} /></td>
+    <td style={{ ...ARM_TD, padding: 0 }}><EffectValue row={values} /></td>
+    <td className={styles.boundary} style={ARM_TD}><RateValue efg={values.noRestEfg} /></td>
+    <td style={ARM_TD}><ShotCount value={values.noRestFga} /></td>
+    <td className={styles.boundary} style={ARM_TD}><RateValue efg={values.restedEfg} /></td>
+    <td style={ARM_TD}><ShotCount value={values.restedFga} /></td>
   </>;
 }
 
@@ -266,7 +312,7 @@ export function PlayerRestContent() {
         "effect",
       ].includes(sortKey)
         ? sortKey
-        : ("fga" as SortKey),
+        : ("effect" as SortKey),
     dir: params.get("dir") === "asc" ? (1 as const) : (-1 as const),
   };
   const linkedIndex = index && linkedName ? index.searchKeys.findIndex((key, player) =>
@@ -486,15 +532,23 @@ export function PlayerRestContent() {
       </div>
 
       {publication ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
-        {publication.season ? `${publication.season} · ` : ""}Observed through {publication.through ?? "no completed games"} · {publication.observedGames}/{publication.expectedGames} completed games covered.
-        {publication.missingGameIds.length ? ` ${publication.missingGameIds.length} games missing; the last verified results are retained.` : ""}
-        {" "}Snapshot generated {publication.generatedAt ?? index.generated}.
-        {refreshUnavailable ? " Some season data could not be refreshed. Showing available verified records." : ""}
-        {index.refresh?.checkedAt ? ` Latest daily update check ${index.refresh.checkedAt}.` : ""}
+        {publication.through ? `Through ${throughLabel(publication.through)}` : "No completed games yet"}
+        {` · ${publication.observedGames} of ${publication.expectedGames} games`}
+        {publication.missingGameIds.length ? ` · ${publication.missingGameIds.length} missing` : ""}
+        {refreshUnavailable ? " · Latest refresh incomplete" : ""}
+        {" · "}<Link className="fc-text-link" href="/data-status">Data status</Link>
       </p> : refreshUnavailable ? <p role="status" className="text-[12px] text-[var(--term-text-muted)]">
         Some season data could not be refreshed. Showing available verified records.
       </p> : null}
-      <p className={styles.readingKey}><KeepTogether>eFG% gives threes extra weight. Gap = 2+ days rest eFG% minus no rest eFG%, in percentage points (pp).</KeepTogether></p>
+      <div className={styles.key} id="pr-color-note">
+        <p className={styles.readingKey}><KeepTogether>With rest = 2+ days rest eFG% minus no rest eFG%, in eFG points. eFG% gives threes extra weight.</KeepTogether></p>
+        <ShadeLegend />
+        <p className={styles.readingKey}>
+          <span style={{ color: "var(--term-worse-text)" }}>Red: lower with rest.</span>{" "}
+          <span style={{ color: "var(--term-better-text)" }}>Green: higher with rest.</span>{" "}
+          Grey: within 1 point, or fewer than {MIN_COLOUR_SHOTS} shots in a rest group (shown in <span className={styles.lowShots}>orange</span>).
+        </p>
+      </div>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
         <DataTable
@@ -534,13 +588,8 @@ export function PlayerRestContent() {
       <details className="fc-disclosure">
         <summary>Rest definitions and uncertainty</summary>
         <p>No rest means played yesterday. 2+ days rest means at least two full days off between the player&apos;s appearances, including games the player sat out. Games after exactly one full day off are not in either group. See <a className="fc-text-link" href="/behind-the-data/player-shooting">Methods</a> for the full comparison rules.</p>
-        <div className={styles.legend} id="pr-color-note">
-          <span style={{ color: "var(--term-worse-text)" }}>− Lower with rest</span>
-          <span style={{ color: "var(--term-better-text)" }}>+ Higher with rest</span>
-          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Sampling variation is unavailable, zero in the observed sample, or larger than the gap. Available errors use the observed mix of misses, twos and threes; tiny samples remain unstable. This is not a 95% significance threshold.</span>
-        </div>
+        <p>The colour bands are fixed across seasons, so a shade means the same size every year. A difference built on fewer than {MIN_COLOUR_SHOTS} shots in either group stays grey: at that size one game can move it by several points.</p>
       </details>
-
 
       <details className="fc-disclosure"><summary>Coverage and how to read small samples</summary>
       <p
@@ -561,12 +610,6 @@ export function PlayerRestContent() {
         still do not isolate a causal effect of rest.
       </p>
       </details>
-      {activeYear !== "career" ? (
-        <details className="fc-disclosure">
-          <summary>Show zero-rest player workload</summary>
-          <ZeroRestWorkload season={seasonLabel(activeYear)} />
-        </details>
-      ) : null}
     </div>
   );
 }
@@ -616,10 +659,7 @@ function PlayerExpansion({
                 {seasonLabel(s[S.YEAR])}
                 <small className={styles.seasonContext}>{sr.context}</small>
               </td>
-              <RestArmCells values={sr} />
-              <td className={styles.boundary} style={ARM_TD}>
-                <EffectValue value={sr.effect} quiet={sr.underEvidenced} />
-              </td>
+              <ComparisonCells values={sr} />
             </tr>
           </Fragment>
         );
@@ -637,16 +677,7 @@ function PlayerExpansion({
           >
             {seasonOnly ? "Observed season" : "Career"}
           </td>
-          <RestArmCells values={totals} />
-          <td className={styles.boundary} style={ARM_TD}>
-            <EffectValue
-              value={totals.effect}
-              quiet={
-                totals.se === null || totals.se === 0 ||
-                (totals.effect !== null && Math.abs(totals.effect) < totals.se)
-              }
-            />
-          </td>
+          <ComparisonCells values={totals} />
         </tr>
       )}
 

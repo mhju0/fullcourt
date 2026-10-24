@@ -2155,3 +2155,23 @@ Model Results의 홈 baseline 편차 막대와 문장 수치, Season Report의 �
 색 척도, Shooting 차이 셀과 범례가 이 토큰을 쓴다. Rose/teal은 피로/휴식 팀을 가리키는 극으로만
 남는다. Season Report 색은 계속 차이의 크기와 방향만 나타내며 평가나 통계적 유의성을 뜻하지 않는다.
 수치·모집단·계수는 바뀌지 않는다.
+
+## D-141 — Shooting 차이 열과 고정 6단계 색 (2026-10-24)
+
+Owner는 Shooting revamp에서 layout A를 선택했다. D-138의 한 줄 헤더를 대체해, 차이를 선수
+바로 옆 "With rest" 열(2+ days rest eFG% − no rest eFG%, eFG points)에 두고 No rest와
+2+ days rest를 각각 eFG%·Shots 두 열의 그룹 헤더 아래에 둔다. ± 범위 표기는 넣지 않는다.
+기본 정렬은 차이 내림차순이며 표본이 작은 선수도 값 순서대로 섞인다. 차이가 없는 행은 항상
+뒤로 가고, 같은 값은 시도 수·이름 순으로 정한다.
+
+색은 시즌과 무관한 고정 구간이다. |차이| 1, 2.5, 4, 6, 8, 12 eFG points에서 한 단계씩
+진해지는 쪽당 6단계이며, 1 미만은 회색이다. 두 비교군 중 하나라도 50 shots 미만이면 크기와
+무관하게 회색이고 해당 Shots 수는 주황(`--term-caution-text`)으로 표시한다. 모든 셀에 같은
+사선 줄무늬를 깔고 숫자는 흰 plate 위에 쓴다(`--term-better-ink` / `--term-worse-ink`).
+구간은 `GAP_BANDS`, 하한은 `MIN_COLOUR_SHOTS`(src/lib/player-rest.ts) 한 곳에 두고
+Methods 문장도 이 상수로 렌더링한다. 1 SE 미만을 흐리게 하던 † 표시는 없애고, 1 SE 필터는
+Advanced filters에 남긴다.
+
+Zero-rest workload 표는 별도 disclosure에서 빠지고, 같은 질문은 Shots 열 정렬로 대신한다.
+현재 시즌 coverage는 "Through Oct 22 · N of M games" 한 줄과 Data status 링크로 줄인다
+(graphics review d3). 산식·모집단·career 추정은 바뀌지 않는다.

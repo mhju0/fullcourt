@@ -24,21 +24,25 @@ for (const width of [1440, 390]) {
     await expect(page.locator("#pr-season")).toHaveValue(String(year));
     await expect(page.locator("#pr-volume")).toHaveValue("0");
     await expect(page.getByTestId("player-row")).toHaveCount(rows.length);
-    await expect(page.locator("main")).toContainText(`Observed through ${payload.publication!.through}`);
-    await expect(page.locator("main")).toContainText(`${payload.publication!.observedGames}/${payload.publication!.expectedGames} completed games covered`);
+    const through = new Date(`${payload.publication!.through}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+    await expect(page.locator("main")).toContainText(`Through ${through} · ${payload.publication!.observedGames} of ${payload.publication!.expectedGames} games`);
 
+    // The default order is by the rest difference (D-141); the busiest shooter is found by name.
     const first = [...rows].sort((a, b) => b[S.FGA] - a[S.FGA])[0];
-    const rendered = page.getByTestId("player-row").first();
+    const rendered = page.getByTestId("player-row").filter({ hasText: payload.names[first[S.PLAYER]] }).first();
     await expect(rendered).toContainText(payload.names[first[S.PLAYER]]);
     await expect(rendered).toContainText(`${first[S.GAMES]} games`);
     await expect(rendered).toContainText(`${first[S.FGA].toLocaleString()} att.`);
     await expect(rendered).toContainText(`${(50 * first[S.EFG_NUMERATOR] / first[S.FGA]).toFixed(1)}% eFG`);
-    for (const [column, arm] of [[1, S.NO_REST_FGA], [3, S.RESTED_FGA]]) {
+    for (const [column, arm] of [[3, S.NO_REST_FGA], [5, S.RESTED_FGA]]) {
       await expect(rendered.locator("td").nth(column)).toHaveText(first[arm].toLocaleString());
-      if (first[arm] === 0) await expect(rendered.locator("td").nth(column + 1)).toHaveText("—");
+      if (first[arm] === 0) await expect(rendered.locator("td").nth(column - 1)).toHaveText("—");
     }
     const expectedMissing = rows.filter(row => !row[S.NO_REST_FGA] || !row[S.RESTED_FGA]).length;
-    await expect(page.getByTestId("player-row").locator("td:last-child").filter({ hasText: /^—$/ })).toHaveCount(expectedMissing);
+    await expect(page.getByTestId("player-row").locator("td:nth-child(2)").filter({ hasText: /^—$/ })).toHaveCount(expectedMissing);
+    // Rows without a difference sort after every row that has one.
+    const effects = await page.getByTestId("player-row").locator("td:nth-child(2)").allTextContents();
+    expect(effects.findIndex(text => text === "—") === -1 || effects.slice(effects.findIndex(text => text === "—")).every(text => text === "—")).toBe(true);
     await rendered.getByRole("button").focus();
     await page.keyboard.press("Enter");
     await expect(page.getByTestId("career-row")).toContainText("Observed season");
@@ -93,14 +97,12 @@ test("selecting an older observed season shows its own coverage while an archive
     refresh: { status: "failed", checkedAt: "2026-10-23T11:30:00Z", publishedAt: "2026-10-23T11:00:00Z" } };
   await page.route("**/api/player-rest", route => route.fulfill({ json: fixture }));
   await page.goto("/shooting?volume=0");
-  const metadata = page.getByRole("status").filter({ hasText: "Observed through" });
-  await expect(metadata).toContainText("2026-27 · Observed through 2026-10-22 · 1/1 completed games covered");
+  const metadata = page.getByRole("status").filter({ hasText: "Through " });
+  await expect(metadata).toContainText("Through Oct 22 · 1 of 1 games");
   await page.locator("#pr-season").selectOption("2025");
-  await expect(metadata).toContainText("2025-26 · Observed through 2026-04-20 · 2/2 completed games covered");
-  await expect(metadata).toContainText("Snapshot generated 2026-04-21T12:00:00Z");
-  await expect(metadata).not.toContainText("Observed through 2026-10-22");
-  await expect(metadata).not.toContainText("Snapshot generated 2026-10-23T11:00:00Z");
-  await expect(metadata).toContainText("Some season data could not be refreshed. Showing available verified records.");
-  await expect(metadata).toContainText("Latest daily update check 2026-10-23T11:30:00Z");
+  await expect(metadata).toContainText("Through Apr 20 · 2 of 2 games");
+  await expect(metadata).not.toContainText("Through Oct 22");
+  await expect(metadata).toContainText("Latest refresh incomplete");
+  await expect(metadata.getByRole("link", { name: "Data status" })).toHaveAttribute("href", "/data-status");
   await expect(page.getByTestId("player-row")).toHaveCount(1);
 });

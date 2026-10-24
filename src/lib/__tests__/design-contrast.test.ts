@@ -64,6 +64,14 @@ describe("design contrast — the pinned bars", () => {
     }
   });
 
+  it("keeps the plate inks and the caution count at AA on white and the open-row ground", () => {
+    for (const name of ["--term-better-ink", "--term-worse-ink", "--term-caution-text"]) {
+      for (const bg of ["#ffffff", token("--term-surface-2")]) {
+        expect(contrast(token(name), bg), `${name} on ${bg}`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  });
+
   it("keeps body text at AA on every step of the better/worse cell ramp", () => {
     // Steps 5 and 6 carry their number on a white plate, so only steps 1-4 hold text directly.
     for (const side of ["better", "worse"]) {

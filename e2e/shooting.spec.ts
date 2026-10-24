@@ -85,7 +85,7 @@ test.describe("Player Shooting by Rest", () => {
 
     // Expanded records share the browse table header and its column geometry.
     await expect(page.locator("thead")).toHaveCount(1);
-    const headerCells = await page.locator("thead th").count();
+    const headerCells = await page.locator("thead th:not([colspan])").count();
     const seasonCells = await page.getByTestId("season-row").first().locator("td").count();
     expect(seasonCells).toBe(headerCells);
   });
@@ -96,10 +96,10 @@ test.describe("Player Shooting by Rest", () => {
 
     const sum = await page.getByTestId("season-row").evaluateAll(rows => {
       const attempts = (row: Element, column: number) => Number(row.children[column].textContent?.replace(/[^0-9]/g, "") ?? 0);
-      return [1, 3].map(column => rows.reduce((total, row) => total + attempts(row, column), 0));
+      return [3, 5].map(column => rows.reduce((total, row) => total + attempts(row, column), 0));
     });
     const career = page.getByTestId("career-row");
-    for (const [index, column] of [2, 4].entries()) {
+    for (const [index, column] of [4, 6].entries()) {
       const attempts = await career.locator(`td:nth-child(${column})`).textContent();
       expect(Number(attempts!.replace(/[^0-9]/g, ""))).toBe(sum[index]);
     }
@@ -116,8 +116,8 @@ test.describe("Player Shooting by Rest", () => {
     await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
-    const header = page.getByRole("columnheader", { name: /Gap/ });
-    await header.click();
+    // The difference is the default sort (D-141), so the first press flips it.
+    const header = page.getByRole("columnheader", { name: /^With rest/ });
     await expect(header).toHaveAttribute("aria-sort", "descending");
     const top = await page.getByTestId("player-row").first().textContent();
 
@@ -171,15 +171,25 @@ test.describe("Player Shooting by Rest", () => {
   await page.goto("/shooting?year=2025");
   const row = page.getByTestId("player-row").first();
   await row.waitFor(READY);
-  await expect(page.locator("thead th")).toHaveCount(6);
+  await expect(page.locator("thead th:not([colspan])")).toHaveCount(6);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
-  const uncertain = page.getByTestId("player-row").locator("td:last-child > span").filter({ has: page.locator("sup") }).first();
-  await expect(uncertain).toBeVisible();
-  expect(await uncertain.evaluate(el => getComputedStyle(el).backgroundColor)).toMatch(/, 0\)$/);
+  // D-141: every shaded difference sits on a white plate, and a group under 50 shots keeps it grey.
+  const cells = await page.getByTestId("player-row").evaluateAll(rows => rows.map(row => {
+    const shade = row.children[1].querySelector("[data-shade]");
+    const shots = [3, 5].map(column => Number(row.children[column].textContent!.replaceAll(",", "")));
+    return { shade: shade?.getAttribute("data-shade") ?? null, plate: shade ? getComputedStyle(shade.firstElementChild!).backgroundColor : null, shots };
+  }));
+  expect(cells.some(cell => cell.shade !== null && cell.shade !== "0")).toBe(true);
+  for (const cell of cells) {
+    if (cell.shade === null) continue;
+    expect(cell.plate).toBe("rgb(255, 255, 255)");
+    expect(Math.abs(Number(cell.shade))).toBeLessThanOrEqual(6);
+    if (Math.min(...cell.shots) < 50) expect(cell.shade).toBe("0");
+  }
   for (const column of [1, 2, 3, 4, 5, 6]) {
     await expect(row.locator(`td:nth-child(${column})`)).toBeVisible();
   }
-  for (const column of [2, 4]) await expect(row.locator(`td:nth-child(${column})`)).toHaveText(/^[\d,]+$/);
+  for (const column of [4, 6]) await expect(row.locator(`td:nth-child(${column})`)).toHaveText(/^[\d,]+$/);
   const control = row.getByRole("button");
   await expect(control).toHaveAccessibleName(/^Expand .+ shooting details$/);
   await expect(control.locator("svg")).toBeVisible();
@@ -218,19 +228,25 @@ for (const width of [320, 390, 430, 1440]) {
   test(`six single-line columns scroll internally at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await open(page, "lebron");
-    await expect(page.locator("thead tr")).toHaveCount(1);
-    const headers = page.getByRole("columnheader");
-    expect(await headers.allTextContents()).toEqual([
-      "Player", "No rest attempts", "No rest eFG%", "2+ days rest attempts", "2+ days rest eFG%", "Gap (pp)",
+    await expect(page.locator("thead tr")).toHaveCount(2);
+    expect(await page.locator("thead tr").first().locator("th").allTextContents()).toEqual(
+      ["Player", "With rest ↓eFG pts", "No rest", "2+ days rest"]);
+    // The sub-headings carry their group for assistive tech; the leaf header per column.
+    // In DOM order these are already column order: Player and With rest from the first row, then the four below.
+    const headers = page.locator("thead th:not([colspan])");
+    expect(await page.locator("thead tr").nth(1).locator("th").evaluateAll(nodes => nodes.map(node => node.querySelector("button")!.textContent))).toEqual([
+      "No rest eFG%", "No rest Shots", "2+ days rest eFG%", "2+ days rest Shots",
     ]);
-    await page.getByRole("columnheader", { name: "No rest attempts", exact: true }).click();
-    await expect(page.getByRole("columnheader", { name: /No rest attempts/ })).toHaveAttribute("aria-sort", "descending");
+    await page.getByRole("columnheader", { name: "No rest eFG%", exact: true }).click();
+    await expect(page.getByRole("columnheader", { name: /^No rest eFG%/ })).toHaveAttribute("aria-sort", "descending");
+    await expect(page).toHaveURL(/sort=noRestEfg/);
+    await page.waitForLoadState("networkidle");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-    const sizes = await headers.evaluateAll(nodes => nodes.map(node => {
+    const sizes = await page.getByRole("columnheader").filter({ has: page.locator("button") }).evaluateAll(nodes => nodes.map(node => {
       const button = node.querySelector("button")!;
       return { nowrap: getComputedStyle(button).whiteSpace, fontSize: getComputedStyle(button).fontSize, textTransform: getComputedStyle(button).textTransform, fits: button.scrollWidth <= button.clientWidth + 1 };
     }));
-    expect(sizes.every(size => size.nowrap === "nowrap" && size.fontSize === "12px" && size.textTransform === "none" && size.fits)).toBe(true);
+    expect(sizes.every(size => size.nowrap === "nowrap" && size.fontSize === "12px" && size.textTransform === "none" && size.fits), JSON.stringify(sizes)).toBe(true);
     const scroll = page.locator(".fc-rest-table");
     await expect(scroll).toHaveCSS("mask-image", "none");
     expect(await scroll.evaluate(node => node.scrollLeft)).toBe(0);
@@ -259,7 +275,8 @@ for (const width of [320, 390, 430, 1440]) {
     for (const id of ["player-row", "season-row", "career-row"]) {
       const row = page.getByTestId(id).first();
       await expect(row.locator("td")).toHaveCount(6);
-      const backgrounds = await row.locator("td").evaluateAll(nodes => nodes.slice(0, 2).map(node => getComputedStyle(node).backgroundColor));
+      const backgrounds = await row.locator("td").evaluateAll(nodes => [nodes[0], nodes[2]].map(node => getComputedStyle(node).backgroundColor));
+      // The pinned cell matches the row; the With rest cell carries its own shade.
       expect(backgrounds[0]).toBe(backgrounds[1]);
       const edges = await row.locator("td").evaluateAll(nodes => nodes.map(node => Math.round(node.getBoundingClientRect().right)));
       const headerEdges = await headers.evaluateAll(nodes => nodes.map(node => Math.round(node.getBoundingClientRect().right)));
@@ -274,12 +291,12 @@ test("attempt columns sort independently and retain zero attempts without rates"
   await page.goto("/shooting?year=2025&volume=0&sort=restedFga&dir=asc");
   await page.getByTestId("player-row").first().waitFor(READY);
   const row = page.getByTestId("player-row").first();
-  await expect(row.locator("td").nth(3)).toHaveText("0");
+  await expect(row.locator("td").nth(5)).toHaveText("0");
   await expect(row.locator("td").nth(4)).toHaveText("—");
-  await expect(row.locator("td").nth(5)).toHaveText("—");
+  await expect(row.locator("td").nth(1)).toHaveText("—");
   await row.getByRole("button").click();
-  await expect(page.getByTestId("career-row").locator("td").nth(3)).toHaveText(/^[\d,]+$/);
-  for (const [label, key, column] of [["No rest attempts", "noRestFga", 1], ["2+ days rest attempts", "restedFga", 3]] as const) {
+  await expect(page.getByTestId("career-row").locator("td").nth(5)).toHaveText(/^[\d,]+$/);
+  for (const [label, key, column] of [["No rest Shots", "noRestFga", 3], ["2+ days rest Shots", "restedFga", 5]] as const) {
     const header = page.getByRole("columnheader", { name: new RegExp(`^${label.replace("+", "\\+")}`) });
     await header.click();
     await expect(page).toHaveURL(new RegExp(`sort=${key}`));

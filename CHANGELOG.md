@@ -1,5 +1,11 @@
 # Release history
 
+## 1.2.5 — 2026-10-24
+
+- Put Shooting's rested-minus-no-rest difference beside the player as "With rest", with eFG% and shots grouped under each rest state. Sort by the difference by default.
+- Shade differences on fixed bands that mean the same size in every season. A difference stays grey until both rest groups have 50 shots, and the short count is marked.
+- Fold the zero-rest workload table into the shots sort and shorten the current-season coverage note to one line. Figures, groups and career estimates are unchanged (D-141).
+
 ## 1.2.4 — 2026-10-24
 
 - Use one green/red pair for better or worse than a baseline on Shooting, Model Results and Season Report. Rose and teal stay reserved for fatigued and rested teams. Figures are unchanged (D-140).

@@ -204,6 +204,9 @@ export function DataTable<Row, K extends string = string>({
 
     const content = (
       <>
+        {/* Grouped sub-headings repeat ("eFG%" under each group), so the group is read with
+            them; `relative` keeps the sr-only box inside the scroller (see rank-badge.tsx). */}
+        {col.group && <span className="relative"><span className="sr-only">{`${col.group} `}</span></span>}
         {keepTogether(col.label)}
         {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
         {col.unit && <span style={termThUnitStyle}>{keepTogether(col.unit)}</span>}

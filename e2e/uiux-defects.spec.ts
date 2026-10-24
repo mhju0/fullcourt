@@ -9,7 +9,7 @@ test("mobile player identity has room and does not overlap its team", async ({ p
   const split = await row.locator("td").nth(1).boundingBox();
   expect(name!.width).toBeGreaterThanOrEqual(120);
   expect(name!.x + name!.width).toBeLessThanOrEqual(split!.x + 1);
-  await expect(row.getByRole("button").locator("small")).toBeVisible();
+  await expect(row.getByRole("button").locator("small").first()).toBeVisible();
 });
 
 for (const route of ["games", "playoffs"]) {
