@@ -2155,3 +2155,15 @@ Home Court 연도별 차트에서 진행 중인 시즌은 속 빈 점으로 그�
 Availability 효과 막대는 방향 부호를 붙인다. 저장된 값은 크기이며, 방향은 기존 본문과 같다:
 홈 경기는 +, 나머지 조건은 −. 득점 차를 높이는 홈 경기 막대만 `--term-pos` 색을 쓴다.
 배치와 막대 길이(크기 비교)는 바꾸지 않고, 회귀 계수와 산출 스크립트도 바꾸지 않는다.
+
+## D-140 — baseline 대비 better/worse 공통 색 (2026-10-24)
+
+Owner는 graphics review d5에서 baseline보다 나음/못함을 한 쌍의 색으로 통일하도록 선택했고,
+그 쌍으로 Shooting에서 승인된 green/red를 택했다. `--term-better` / `--term-worse`(채움, 3:1)와
+`--term-better-text` / `--term-worse-text`(작은 글자, 4.5:1), 셀용 6단계 ramp와
+`--term-diff-neutral`을 globals.css에 두고 design-contrast.test.ts로 고정한다.
+
+Model Results의 홈 baseline 편차 막대와 문장 수치, Season Report의 리그 대비 home/rest gap
+색 척도, Shooting 차이 셀과 범례가 이 토큰을 쓴다. Rose/teal은 피로/휴식 팀을 가리키는 극으로만
+남는다. Season Report 색은 계속 차이의 크기와 방향만 나타내며 평가나 통계적 유의성을 뜻하지 않는다.
+수치·모집단·계수는 바뀌지 않는다.

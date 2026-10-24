@@ -24,9 +24,9 @@ Indigo and the existing semantic data colors retain their roles. D-111 records o
 
 ## Color and evidence
 
-Indigo is the interface accent. Fatigue/rest values retain rose/teal semantics. Shooting has an
-explicit owner-approved exception: green/red tint only in signed difference cells, with uncertain
-values muted. Officiating uses blue for missed calls and gray for incorrect whistles. Every value
+Indigo is the interface accent. Fatigue/rest values retain rose/teal semantics. Better or worse
+than a baseline uses one green/red pair everywhere (`--term-better` / `--term-worse`, D-140):
+Shooting difference cells, Model Results baseline bars and the Season Report gap scale. Officiating uses blue for missed calls and gray for incorrect whistles. Every value
 keeps a direct number, sign, or label; color alone never explains a finding.
 
 Every headline needs its denominator, baseline where applicable, and a visible limitation.

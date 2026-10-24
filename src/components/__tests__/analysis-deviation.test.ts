@@ -65,8 +65,8 @@ describe("toDeviation", () => {
 
 describe("deviationFill", () => {
   it("uses a diverging pair with a neutral midpoint", () => {
-    expect(deviationFill(13.4)).toBe("var(--term-blue)")
-    expect(deviationFill(-11)).toBe("var(--term-red)")
+    expect(deviationFill(13.4)).toBe("var(--term-better)")
+    expect(deviationFill(-11)).toBe("var(--term-worse)")
     expect(deviationFill(0)).toBe("var(--term-neutral)")
   })
 })

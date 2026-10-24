@@ -96,8 +96,10 @@ a caveat that must be read with a table sits in `.fc-report-note`. `--term-borde
 `--term-hairline` are dark enough to show on the page ground; do not lighten them.
 
 The app is light; the homepage is deliberately dark. Fatigue/rest semantics retain their existing
-palette. Shooting's approved option A colors only signed difference cells: green positive, red
-negative, bounded at ±10 percentage points; uncertain estimates stay muted. Officiating uses
+palette. Better or worse than a baseline reads one shared green/red pair (D-140): `--term-better` /
+`--term-worse` for fills, the `-text` pair for small text, and the six-step `--term-better-N` /
+`--term-worse-N` cell ramp with `--term-diff-neutral`. Shooting difference cells, Model Results
+baseline bars and the Season Report gap scale all use it; uncertain Shooting estimates stay muted. Officiating uses
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 

@@ -165,15 +165,16 @@ function EffectValue({
     );
   const strength = Math.min(Math.abs(value) / 10, 1);
   const positive = value > 0;
-  const alpha = quiet || value === 0 ? 0 : 0.05 + 0.2 * strength;
+  const share = quiet || value === 0 ? 0 : Math.round(5 + 20 * strength);
   return (
     <span
       className={styles.effect}
       aria-describedby="pr-color-note"
       style={{
-        background: `rgba(${positive ? "22,101,52" : "180,35,24"},${alpha})`,
+        background: share === 0 ? "transparent"
+          : `color-mix(in srgb, var(${positive ? "--term-better" : "--term-worse"}) ${share}%, transparent)`,
         color:
-          quiet || value === 0 ? "#59616c" : positive ? "#166534" : "#991b1b",
+          quiet || value === 0 ? "#59616c" : positive ? "var(--term-better-text)" : "var(--term-worse-text)",
       }}
     >
       {signedNumber(value, 1)}
@@ -534,8 +535,8 @@ export function PlayerRestContent() {
         <summary>Rest definitions and uncertainty</summary>
         <p>No rest means played yesterday. 2+ days rest means at least two full days off between the player&apos;s appearances, including games the player sat out. Games after exactly one full day off are not in either group. See <a className="fc-text-link" href="/behind-the-data/player-shooting">Methods</a> for the full comparison rules.</p>
         <div className={styles.legend} id="pr-color-note">
-          <span style={{ color: "#991b1b" }}>− Lower with rest</span>
-          <span style={{ color: "#166534" }}>+ Higher with rest</span>
+          <span style={{ color: "var(--term-worse-text)" }}>− Lower with rest</span>
+          <span style={{ color: "var(--term-better-text)" }}>+ Higher with rest</span>
           <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Sampling variation is unavailable, zero in the observed sample, or larger than the gap. Available errors use the observed mix of misses, twos and threes; tiny samples remain unstable. This is not a 95% significance threshold.</span>
         </div>
       </details>

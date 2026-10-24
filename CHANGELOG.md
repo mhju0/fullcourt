@@ -1,5 +1,9 @@
 # Release history
 
+## 1.2.4 — 2026-10-24
+
+- Use one green/red pair for better or worse than a baseline on Shooting, Model Results and Season Report. Rose and teal stay reserved for fatigued and rested teams. Figures are unchanged (D-140).
+
 ## 1.2.3 — 2026-10-24
 
 - Draw the season-to-date point hollow on Home Court, with its game count, and keep it out of the axis range and the season lines so a few games cannot stretch the scale. Officiating outlines its season-to-date bar and prints the reviewed-game count.

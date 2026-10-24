@@ -183,6 +183,27 @@
   /* semantic */
   --term-pos: #15803D;
   --term-neutral: #6B7280;
+  /* Better / worse than a baseline (D-140): one green/red pair on Shooting, Model Results
+     and Season Report. The rest poles above stay for rested and fatigued teams. Fills meet
+     the 3:1 graphics bar, the -text pair AA; pinned by design-contrast.test.ts. The six
+     steps per side are the cell ramp, lightest first, and carry dark text. */
+  --term-better: #2A9155;
+  --term-worse: #C8473A;
+  --term-better-text: #166534;
+  --term-worse-text: #A8322A;
+  --term-better-1: #E3F4E8;
+  --term-better-2: #C6EAD1;
+  --term-better-3: #A3DCB5;
+  --term-better-4: #7FCB98;
+  --term-better-5: #52B275;
+  --term-better-6: #2A9155;
+  --term-worse-1: #FCE6E2;
+  --term-worse-2: #F8CCC5;
+  --term-worse-3: #F3AEA4;
+  --term-worse-4: #EE978C;
+  --term-worse-5: #E06D5F;
+  --term-worse-6: #C8473A;
+  --term-diff-neutral: #E2E8F0;
   /* radius */
   --term-radius: 8px;
   --term-radius-sm: 4px;
