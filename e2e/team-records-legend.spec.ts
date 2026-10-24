@@ -56,7 +56,7 @@ for (const width of [1280, 390]) {
     await expect(gaps.nth(5)).toContainText("Smaller home/rest gap than league");
     expect(await gaps.nth(1).evaluate(el => getComputedStyle(el).backgroundColor))
       .not.toBe(await gaps.nth(0).evaluate(el => getComputedStyle(el).backgroundColor));
-    await expect(gaps.nth(2)).toHaveCSS("background-color", "rgb(237, 241, 243)");
+    await expect(gaps.nth(2)).toHaveCSS("background-color", "rgb(226, 232, 240)");
     await expect(section).toContainText("do not measure the effect of rest alone");
     await expect(section).toContainText("statistical significance");
     await section.getByText("Show the other 24 teams", { exact: true }).focus();

@@ -252,7 +252,7 @@ export function SeasonReportContent() {
                 <>
                   <p className="font-medium text-[var(--term-text)]">How this home/rest gap compares with the league</p>
                   <div className="my-2 h-2 rounded-sm" aria-hidden="true"
-                    style={{ background: "linear-gradient(90deg, #E6D3B6 0%, #EDF1F3 50%, #BEE0E6 100%)" }} />
+                    style={{ background: "linear-gradient(90deg, var(--term-worse-3) 0%, var(--term-diff-neutral) 50%, var(--term-better-3) 100%)" }} />
                   <div className="grid grid-cols-3 gap-3 text-xs sm:text-[15px]">
                     <span>Smaller home/rest gap</span>
                     <span className="text-center">League gap<br /><strong className="mono text-[var(--term-text)]">{signedNumber(data.swingBaseline, 1)} pp</strong></span>
@@ -343,14 +343,14 @@ function gapComparison(swing: number | null, baseline: number | null) {
   if (swing === null) return { label: "Gap unavailable", shortLabel: "Unavailable", backgroundColor: undefined };
   if (baseline === null) return { label: "League comparison unavailable", shortLabel: "No league gap", backgroundColor: undefined };
   const difference = Math.round((swing - baseline) * 10) / 10;
-  const neutral = [237, 241, 243];
-  const endpoint = difference < 0 ? [230, 211, 182] : [190, 224, 230];
-  const intensity = Math.min(Math.abs(difference) / 40, 1);
+  const endpoint = difference < 0 ? "var(--term-worse-3)" : "var(--term-better-3)";
+  const intensity = Math.round(Math.min(Math.abs(difference) / 40, 1) * 100);
   return {
     label: difference === 0 ? "At the league home/rest gap"
       : `${difference > 0 ? "Larger" : "Smaller"} home/rest gap than league`,
     shortLabel: difference === 0 ? "League gap" : `${difference > 0 ? "Larger" : "Smaller"} gap`,
-    backgroundColor: `rgb(${neutral.map((channel, index) => Math.round(channel + (endpoint[index] - channel) * intensity)).join(", ")})`,
+    backgroundColor: difference === 0 ? "var(--term-diff-neutral)"
+      : `color-mix(in srgb, ${endpoint} ${intensity}%, var(--term-diff-neutral))`,
   };
 }
 

@@ -1,5 +1,9 @@
 # Release history
 
+## 1.2.4 — 2026-10-24
+
+- Use one green/red pair for better or worse than a baseline on Shooting, Model Results and Season Report. Rose and teal stay reserved for fatigued and rested teams. Figures are unchanged (D-140).
+
 ## 1.2.2 — 2026-10-23
 
 - Give Shooting separate sortable attempt and eFG% columns for each rest group, one header row, and pinned player names while the table scrolls on phones. Show zero attempts explicitly and keep unavailable rates as dashes.

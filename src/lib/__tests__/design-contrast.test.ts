@@ -49,7 +49,7 @@ describe("design contrast — the pinned bars", () => {
   };
 
   it("keeps the text-grade poles at AA (4.5:1) on every validated ground", () => {
-    for (const name of ["--term-red-text", "--term-blue-text"]) {
+    for (const name of ["--term-red-text", "--term-blue-text", "--term-better-text", "--term-worse-text"]) {
       const fg = token(name);
       for (const [ground, bg] of Object.entries(grounds)) {
         expect(contrast(fg, bg), `${name} on ${ground}`).toBeGreaterThanOrEqual(4.5);
@@ -59,8 +59,18 @@ describe("design contrast — the pinned bars", () => {
 
   it("keeps the graphics poles at the 3:1 graphics bar on the panel surface", () => {
     // Fills, bars, borders and >=24px figures read these; they were never asked to pass 4.5.
-    for (const name of ["--term-red", "--term-blue"]) {
+    for (const name of ["--term-red", "--term-blue", "--term-better", "--term-worse"]) {
       expect(contrast(token(name), token("--term-surface")), name).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("keeps body text at AA on every step of the better/worse cell ramp", () => {
+    // Steps 5 and 6 carry their number on a white plate, so only steps 1-4 hold text directly.
+    for (const side of ["better", "worse"]) {
+      for (let step = 1; step <= 4; step++) {
+        const name = `--term-${side}-${step}`;
+        expect(contrast(token("--term-text"), token(name)), name).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 

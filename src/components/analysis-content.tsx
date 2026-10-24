@@ -93,11 +93,11 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
       style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}
     >
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)" }} />
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-better)" }} />
         RESTED TEAM BEAT THE HOME BASELINE
       </span>
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-red)" }} />
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-worse)" }} />
         RESTED TEAM FELL SHORT OF IT
       </span>
       <span>{zeroLabel}</span>
@@ -135,18 +135,18 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
  */
 
 /**
- * Blue above the baseline, red below — the two poles of a diverging scale, with
+ * Green above the baseline, red below — the shared better/worse pair (D-140), with
  * a neutral midpoint. A rate exactly at the baseline is a real result, not missing data.
  */
 export function deviationFill(deviation: number): string {
   if (deviation === 0) return "var(--term-neutral)"
-  return deviation < 0 ? "var(--term-red)" : "var(--term-blue)"
+  return deviation < 0 ? "var(--term-worse)" : "var(--term-better)"
 }
 
-/** The same poles at text grade — tooltip prose is small text and needs 4.5:1, chart fills do not. */
+/** The same pair at text grade — tooltip prose is small text and needs 4.5:1, chart fills do not. */
 export function deviationText(deviation: number): string {
   if (deviation === 0) return "var(--term-neutral)"
-  return deviation < 0 ? "var(--term-red-text)" : "var(--term-blue-text)"
+  return deviation < 0 ? "var(--term-worse-text)" : "var(--term-better-text)"
 }
 
 /**
@@ -399,7 +399,7 @@ function RangeKey() {
     >
       {GAP_RANGES.map((range) => (
         <span key={range.key} className="inline-flex items-center gap-2">
-          <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)", opacity: RANGE_OPACITY[range.key] }} />
+          <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-better)", opacity: RANGE_OPACITY[range.key] }} />
           {range.label.toUpperCase()} {gapRangeSpan(range)}
         </span>
       ))}
@@ -529,20 +529,14 @@ function HeadlineDotPlot({
     {
       label: calledLabel,
       value: calledPct,
-      tone: toDeviation(calledPct, baselinePct) >= 0 ? "var(--term-blue)" : "var(--term-red)",
-      text:
-        toDeviation(calledPct, baselinePct) >= 0
-          ? "var(--term-blue-text)"
-          : "var(--term-red-text)",
+      tone: deviationFill(toDeviation(calledPct, baselinePct)),
+      text: deviationText(toDeviation(calledPct, baselinePct)),
     },
     {
       label: "RESTED VISITOR · HOME STILL WON",
       value: declinedPct,
-      tone: toDeviation(declinedPct, baselinePct) >= 0 ? "var(--term-blue)" : "var(--term-red)",
-      text:
-        toDeviation(declinedPct, baselinePct) >= 0
-          ? "var(--term-blue-text)"
-          : "var(--term-red-text)",
+      tone: deviationFill(toDeviation(declinedPct, baselinePct)),
+      text: deviationText(toDeviation(declinedPct, baselinePct)),
     },
   ]
 
@@ -1113,7 +1107,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           the home team won{" "}
           <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.declinedHalf.homeWinPct}%</span>.
           These games are excluded from the headline. Their home win rate differs by{" "}
-          <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
+          <span className="mono font-bold" style={{ color: deviationText(claims.declinedHalf.lift) }}>
             {signedNumber(claims.declinedHalf.lift)}
           </span>{" "}
           points against the{" "}

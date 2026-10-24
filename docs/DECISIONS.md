@@ -2143,3 +2143,15 @@ Gap (pp)의 여섯 열을 사용한다. 시도 수는 독립 정렬하며 0을 �
 정확한 범위·장기 결장·시즌 첫 경기 제외는 Methods에 둔다. gap 기반 장기 결장 필터는
 부상 여부를 판별하지 않으며 짧은 부상 복귀는 남을 수 있다. 산식·모집단·공급자별
 identity와 career 추정 범위는 변경하지 않는다.
+
+## D-140 — baseline 대비 better/worse 공통 색 (2026-10-24)
+
+Owner는 graphics review d5에서 baseline보다 나음/못함을 한 쌍의 색으로 통일하도록 선택했고,
+그 쌍으로 Shooting에서 승인된 green/red를 택했다. `--term-better` / `--term-worse`(채움, 3:1)와
+`--term-better-text` / `--term-worse-text`(작은 글자, 4.5:1), 셀용 6단계 ramp와
+`--term-diff-neutral`을 globals.css에 두고 design-contrast.test.ts로 고정한다.
+
+Model Results의 홈 baseline 편차 막대와 문장 수치, Season Report의 리그 대비 home/rest gap
+색 척도, Shooting 차이 셀과 범례가 이 토큰을 쓴다. Rose/teal은 피로/휴식 팀을 가리키는 극으로만
+남는다. Season Report 색은 계속 차이의 크기와 방향만 나타내며 평가나 통계적 유의성을 뜻하지 않는다.
+수치·모집단·계수는 바뀌지 않는다.
