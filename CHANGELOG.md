@@ -1,5 +1,10 @@
 # Release history
 
+## 1.2.6 — 2026-10-25
+
+- Inspect charts on the chart itself, with values in a fixed panel beside it instead of a floating tooltip. Model Results' gap-size, era and home-win charts, Availability and Schedule's weekly fatigue now take hover, tap, ← → and Home/End on the chart.
+- Move across Shot Quality courts with the arrow keys in place of the location slider. Figures are unchanged (D-142).
+
 ## 1.2.5 — 2026-10-24
 
 - Put Shooting's rested-minus-no-rest difference beside the player as "With rest", with eFG% and shots grouped under each rest state. Sort by the difference by default.
