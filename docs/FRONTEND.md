@@ -261,6 +261,20 @@ beside it. No chart uses a floating tooltip. Each inspectable chart is one focus
 Charts are allowed to differ beyond this contract. The default selection is per chart: the
 latest plotted season, the peak week, the latest era, or no selection on the gap-size chart.
 
+### Counts and rates in tables (D-143, v1.2.7)
+
+A table that pairs a rate with its count writes the rate first and the count as
+"wins / games", with spaces around the slash and thousands separators (`679 / 1,225`).
+
+- Where readers sort by either number (Shooting), the rate and the count get separate
+  columns under one group header.
+- Elsewhere (Season Report team records, Home Court season data) they share one cell: the rate
+  on top, the count under it in muted type. The header reads "win % · W / G".
+- A rate with no games is a dash, never a word in the cell. One muted line under the table
+  says what the dash means, and it appears only when a dash does.
+- Header case follows the table: `DataTable` stays uppercase, and the hand-built Season Report
+  and Home Court tables stay in sentence case.
+
 ### Readable comparisons (D-119, v1.0.2)
 
 Home-court history inspects seasons directly through hover, tap or keyboard, with an

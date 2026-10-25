@@ -1,5 +1,10 @@
 # Release history
 
+## 1.2.7 — 2026-10-25
+
+- Write rates first and counts as "wins / games" in Season Report's team records and Home Court's season data, with the count under the rate in one cell. Home Court's table drops from six columns to four.
+- Show a dash for a group with no games, with one line under the table explaining it, instead of words in the cell. Figures are unchanged (D-143).
+
 ## 1.2.6 — 2026-10-25
 
 - Inspect charts on the chart itself, with values in a fixed panel beside it instead of a floating tooltip. Model Results' gap-size, era and home-win charts, Availability and Schedule's weekly fatigue now take hover, tap, ← → and Home/End on the chart.
