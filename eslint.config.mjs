@@ -23,6 +23,8 @@ const eslintConfig = defineConfig([
     "ml/.venv/**",
     // Local audit output, gitignored: saved page bundles that are not source.
     "docs/audit/**",
+    // Committed reports: capture scripts that produced their screenshots, kept as a record.
+    "docs/reports/**",
   ]),
 ]);
 

@@ -1,0 +1,160 @@
+{
+  "at": "2026-10-24T05:41:53.880Z",
+  "counts": {
+    "inventory": 95,
+    "findings": 8,
+    "captures": 121,
+    "commentArticles": 103,
+    "responseValues": 206,
+    "routes": 35
+  },
+  "downloadedFiles": [
+    "/var/folders/gx/b87001cd1733tqmz9s5c4ct00000gn/T/fullcourt-review-MVzyYV/saved-first.html",
+    "/var/folders/gx/b87001cd1733tqmz9s5c4ct00000gn/T/fullcourt-review-MVzyYV/saved-second.html"
+  ],
+  "checks": [
+    {
+      "name": "95 inventory responses and 8 tailored finding responses",
+      "pass": true
+    },
+    {
+      "name": "no disclosures, report filters, hidden sections or preselected answers",
+      "pass": true
+    },
+    {
+      "name": "all annotated captures displayed immediately with embedded images",
+      "pass": true
+    },
+    {
+      "name": "103 comment articles each own visible screenshot evidence and response controls",
+      "pass": true
+    },
+    {
+      "name": "no detached screenshot galleries",
+      "pass": true
+    },
+    {
+      "name": "every screenshot matches its assigned file, route, label and capture kind",
+      "pass": true
+    },
+    {
+      "name": "all embedded captures decode",
+      "pass": true
+    },
+    {
+      "name": "image beside its own comment on desktop, directly before on phones at 1440",
+      "pass": true
+    },
+    {
+      "name": "page reflow and visible report at 1440",
+      "pass": true
+    },
+    {
+      "name": "image beside its own comment on desktop, directly before on phones at 390",
+      "pass": true
+    },
+    {
+      "name": "page reflow and visible report at 390",
+      "pass": true
+    },
+    {
+      "name": "image beside its own comment on desktop, directly before on phones at 320",
+      "pass": true
+    },
+    {
+      "name": "page reflow and visible report at 320",
+      "pass": true
+    },
+    {
+      "name": "200% text reflow at 320px",
+      "pass": true
+    },
+    {
+      "name": "optional zoom opens",
+      "pass": true
+    },
+    {
+      "name": "Escape closes zoom",
+      "pass": true
+    },
+    {
+      "name": "finding radio supports keyboard",
+      "pass": true
+    },
+    {
+      "name": "all 103 response groups populated across 206 values",
+      "pass": true
+    },
+    {
+      "name": "download completed saved-first.html",
+      "pass": true
+    },
+    {
+      "name": "save status asks user to confirm download",
+      "pass": true
+    },
+    {
+      "name": "script-like notes remain inert text",
+      "pass": true
+    },
+    {
+      "name": "fresh context has no localStorage",
+      "pass": true
+    },
+    {
+      "name": "standalone first reopen restores all 206 responses exactly",
+      "pass": true
+    },
+    {
+      "name": "saved report keeps all embedded images outside report directory",
+      "pass": true
+    },
+    {
+      "name": "saved HTML edits restore matching snapshot draft after reload",
+      "pass": true
+    },
+    {
+      "name": "download completed saved-second.html",
+      "pass": true
+    },
+    {
+      "name": "second save and reopen preserves responses; embedded state takes precedence",
+      "pass": true
+    },
+    {
+      "name": "blocked storage and failed save preserve unsaved responses",
+      "pass": true
+    },
+    {
+      "name": "failed save preserves dirty state",
+      "pass": true
+    },
+    {
+      "name": "base report local draft restores after reload",
+      "pass": true
+    },
+    {
+      "name": "local reference links exist in original report",
+      "pass": true
+    },
+    {
+      "name": "all 95 source pointers resolve",
+      "pass": true
+    },
+    {
+      "name": "35 authentic route captures retain successful evidence",
+      "pass": true
+    },
+    {
+      "name": "no JavaScript errors across original, saved and failure flows",
+      "pass": true,
+      "evidence": []
+    }
+  ],
+  "errors": [],
+  "gaps": [
+    "실제 iPhone/Safari/VoiceOver는 미검증",
+    "서비스 데이터·기능 전수 감사는 이번 보고서 검증 범위 밖",
+    "다른 위치로 옮긴 저장 HTML의 상대 소스/JSON 참조는 원본 폴더가 필요함; 이미지·입력·재저장은 독립 동작"
+  ]
+}

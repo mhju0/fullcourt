@@ -228,3 +228,43 @@ Root 최종 폰 검토 후 이 표의 양쪽 scroll fade를 제거했다. 끝쪽
 들어오는지 320/390/430px에서 확인했고, 정렬 화살표를 포함한 단일 헤더·전체 열 정렬도 재통과했다.
 CI의 design-scale 계약은 헤더의 inline letterSpacing:0 한 건을 거절했다. 시각적 간격이
 동일한 표준값 normal로 교체했으며 page-contract·design-scale 110개를 테스트 변경 없이 재통과했다.
+
+## 2026-10-24 — 전체 시각 요소 HTML 목록, 개선 논의 준비
+
+Owner 요청으로 차트·표·그래픽을 소스와 실제 화면에서 조사했다. 서비스 코드는 변경하지 않았다.
+[HTML 보고서](reports/2026-10-24-graphics-inventory/index.html)에 95개 시각 요소·구성군,
+35개 경로·쿼리 조합의 캡처, 소스 위치·조건부 상태·검토 후보를 기록했다.
+antislop은 owner 선택에 따라 사후 감사 기준으로 사용한다. Shooting의 폰 정보 순서와 행 밀도가
+첫 논의 대상이며, 기존 D-138을 대체하는 설계는 아직 선택하지 않았다.
+보고서 검증: 검색·종류 필터·이미지 확대/Escape·로컬 링크·소스 위치와 320/390/1440px overflow 확인 통과.
+다음 단계: 보고서 검토 후 개선 방향·대상 승인. 실제 iPhone/Safari와 전수 접근성·수치 감사는 미수행.
+
+## 2026-10-24 — 보고서 간소화와 전체 응답 저장
+
+Owner 요청으로 같은 HTML 보고서의 접기/펼치기·숨김 필터를 제거하고 문구·상단 목차를 줄였다.
+핵심 관찰 8건과 목록 95개 항목에 선택·메모를 추가했다. 전체 저장은 이미지와 응답을
+하나의 HTML로 내려받으며 재열기·재저장이 가능하다. 임시 입력은 HTML snapshot에 묶어
+이전 초안의 덮어쓰기를 막고, 저장 파일에서 수정한 최신 초안도 재열기 시 복원한다.
+서비스 UI 개선안은 아직 선택 전이다. 실제 다운로드·한글/줄바꿈/특수문자·저장 실패·반응형을 검증했다.
+다음 단계: owner가 보고서에 의견을 작성하고 전체 저장한 결과를 바탕으로 개선 범위를 결정한다.
+
+## 2026-10-24 — 모든 의견 바로 옆에 대상 캡처
+
+Owner 재요청으로 8개 논의점·95개 항목 각각에 관련 캡처를 직접 배치했다.
+표·차트·수식·펼친 경기/선수 상태와 아이콘을 실제 서비스에서 102개 영역으로 새로 캡처했다.
+여러 화면의 공통 의견에는 비교 캡처를 함께 붙였고, 공통 부품은 실제 사용 예로 표시한다.
+데스크톱은 화면과 의견을 나란히, 폰은 캡처 바로 다음에 의견·응답칸을 배치한다.
+분리 갤러리와 접기는 없으며 기존 선택·메모 키와 전체 HTML 저장·재열기·초안 복원은 유지한다.
+검증: 103개 블록의 개별 캡처 연결·320/390/1440px 배치와 206개 응답의 저장·재열기 통과.
+서비스 코드·모델·배포는 변경하지 않았다. 개선안 결정은 owner가 작성한 응답을 바탕으로 진행한다.
+
+## 2026-10-25 — Chart interaction rollback baseline
+
+Owner requested a recoverable baseline before chart navigation changes and cautioned against uniform controls across unlike charts. Saved current tracked + nonignored untracked files, including the October 24 graphics inventory/screenshots and existing dirty notes, at snapshot commit `cdcd1d5c75d6e54edb5fdbf772c52d4ede8b0d61` on `backup/chart-mechanics-2026-10-25_143428_KST`. Independent source archive, hashes and restore guide: `/Users/michaelju/Backups/fullcourt/charts/2026-10-25_143428_KST/`. Extracted and SHA-256 checked all 6,039 files. No interaction changes or deployment. Secrets, dependencies and live DB are excluded. Restore affected chart files selectively; preserve unrelated later work.
+
+Owner direction: season jump menu only for charts with many seasons; tentative spatial arrow-key movement on shot maps; assess each chart individually. The preceding control in the dictated request was unclear, so confirmation was requested before implementing it. Next: resolve that control and review chart-specific changes against the saved mechanics.
+
+## 2026-10-25 — d6 chart inspection shipped (v1.2.6, D-142)
+
+The owner picked pattern A from the d6 bench: pick on the chart, show values in a fixed readout, and use ← → Home End on the focused chart. A season menu appears only on long series (Home Court, Availability), and shot maps use arrow keys in place of the slider. Per the owner, charts may differ beyond that, so the Schedule ‹ › buttons, the gap-size group buttons and Browse, and the model comparison panel stay. PR #221 squash-merged as `77bbb074`; tag/release v1.2.6; production checked. Each chart was its own commit on the branch, so one chart can be restored from v1.2.5 alone. The contract is in FRONTEND.md "Chart inspection".
+Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Data, after product pages).
