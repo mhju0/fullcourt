@@ -1,7 +1,7 @@
 "use client"
 
 import { SeasonSelector } from "@/components/season-selector";
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import {
   BarChart,
   Bar,
@@ -12,17 +12,18 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
+  ReferenceArea,
+  ReferenceDot,
   ReferenceLine,
 } from "recharts"
-import type { TooltipContentProps } from "recharts"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { AnalysisHeader, AnalysisLoading } from "@/components/analysis-loading"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBacktest } from "@/hooks/useBacktest"
+import { plotIndexAt, useChartInspection } from "@/hooks/useChartInspection"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { NBA_SEASONS } from "@/lib/nba-season"
@@ -37,25 +38,17 @@ import {
 } from "@/lib/analysis-claims"
 import { ERA_LENGTH, GAP_RANGES, gapRangeByKey, gapRangeSpan, type ExploreSide, type GapRangeKey } from "@/lib/rest-advantage-evidence"
 import type { DataAsOf } from "@/lib/data-as-of"
+import { SERIES_INSPECTION_HELP } from "@/lib/chart-inspection"
 import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse, EraRates } from "@/types"
-import { buildHomeWinTrend, type HomeWinTrendPoint } from "@/lib/home-win-trend"
+import { buildHomeWinTrend } from "@/lib/home-win-trend"
 import { signedNumber } from "@/lib/signed-number"
 import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
 import { StatTile } from "@/components/ui/stat-tile"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
-
-const termTooltip: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: "8px 12px",
-  fontFamily: MONO_FONT_STACK,
-  fontSize: 12,
-}
 
 const exploreSelectStyle = termSelectStyle
 const EXPLORE_SELECT_CLASS = termSelectClass
@@ -198,27 +191,6 @@ type WinRateDatum = {
 
 // ─── Custom tooltips ──────────────────────────────────────────────
 
-function WinRateTooltip({ active, payload }: TooltipContentProps) {
-  if (!active || !payload?.length) return null
-  const d = payload[0].payload as WinRateDatum
-  return (
-    <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label.toUpperCase()} GAP · {d.span}</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>RESTED TEAM AT HOME</p>
-      {/* The bar plots the deviation, so the tooltip leads with it and carries the
-          absolute win rate underneath — the axis no longer shows it anywhere. The
-          baseline is named on the same line so the two can never be read apart. */}
-      <p style={{ marginTop: SPACE.xs, color: deviationText(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
-      </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>±{d.error.toFixed(1)} PP, 95% RANGE</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.games.toLocaleString()} GAMES</p>
-      <p style={{ marginTop: SPACE.sm, fontSize: TYPE.label, color: "var(--term-accent)" }}>CLICK TO SEE THESE GAMES ↓</p>
-    </div>
-  )
-}
-
 /** 95% half-width, in points: the whisker on every gap-size bar. */
 function interval95(range: { games: number; restedTeamWins: number }): number {
   return Math.round(1.96 * rangeStandardErrorPp(range) * 10) / 10
@@ -268,26 +240,29 @@ type EraDatum = {
   era: EraRates
 } & Partial<Record<GapRangeKey | `${GapRangeKey}Error`, number>>
 
-function EraTooltip({ active, payload }: TooltipContentProps) {
-  if (!active || !payload?.length) return null
-  const d = payload[0].payload as EraDatum
+function EraReadout({ era }: { era: EraRates }) {
   return (
-    <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>
-        {d.era.firstSeason} TO {d.era.lastSeason} · {d.era.seasonCount} SEASONS
-      </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAMS WON {d.era.homeWinPct}%</p>
-      {GAP_RANGES.map((range) => {
-        const value = d[range.key]
-        const bucket = d.era.ranges.find((r) => r.key === range.key)
-        if (value === undefined || !bucket) return null
-        return (
-          <p key={range.key} style={{ marginTop: SPACE.xs, color: deviationText(value) }}>
-            <span style={{ fontWeight: 700 }}>{range.label.toUpperCase()} {signedNumber(value)} PP</span>{" "}
-            <span style={{ color: "var(--term-text-muted)" }}>· {bucket.winPct}% OF {bucket.games.toLocaleString()}</span>
-          </p>
-        )
-      })}
+    <div className="border border-[var(--term-border)] p-4" role="status" aria-live="polite" data-testid="era-readout">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h3 className="mono text-lg font-semibold">{era.firstSeason} to {era.lastSeason}</h3>
+        <p className="text-[15px] text-[var(--term-text-muted)]">{era.seasonCount} seasons · home teams won {era.homeWinPct}%</p>
+      </div>
+      <ul className="mt-3 flex flex-col gap-2">
+        {GAP_RANGES.map((range) => {
+          const lift = eraLift(era, range.key)
+          const bucket = era.ranges.find((r) => r.key === range.key)
+          if (lift === null || !bucket) return null
+          return (
+            <li key={range.key} className="flex flex-wrap items-baseline justify-between gap-x-3 text-[15px]">
+              <span>{range.label} gap · {gapRangeSpan(range)}</span>
+              <span>
+                <span className="mono font-semibold" style={{ color: deviationText(lift) }}>{signedNumber(lift)} pp</span>{" "}
+                <span className="text-[var(--term-text-muted)]">· {bucket.winPct}% of {bucket.games.toLocaleString()} games</span>
+              </span>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
@@ -325,17 +300,23 @@ function EraChart({
     })
   )
   const { domain, ticks } = deviationScale(values)
+  const inspection = useChartInspection(chartData.length, chartData.length - 1, "band")
+  const selected = chartData[inspection.index]
 
   return (
     <div className="mt-4 min-w-0">
-      <div className="h-72 min-w-0">
+      {chartData.length > 0 ? <p id="era-chart-help" className="mb-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>Hover or tap to inspect an era. With the chart focused, use ← or → for adjacent eras, or Home or End for the first or latest era.</p> : null}
+      <div
+        className="h-72 min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
+        {...(chartData.length > 0 ? { ...inspection.frameProps, "aria-label": "Rest-gap win rate against each era's home rate, by five-season era", "aria-describedby": "era-chart-help" } : {})}
+      >
         {chartData.length === 0 ? (
           <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
             NO COMPLETE ERA YET: AN ERA NEEDS FIVE FINISHED SEASONS
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }} barGap={2}>
+            <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }} barGap={2} {...inspection.chartProps}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
               <XAxis
                 dataKey="label"
@@ -354,11 +335,7 @@ function EraChart({
                 axisLine={false}
                 width={40}
               />
-              <Tooltip
-                isAnimationActive={false}
-                cursor={{ fill: "rgba(23,64,139,0.06)" }}
-                content={(props: TooltipContentProps) => <EraTooltip {...props} />}
-              />
+              {selected ? <ReferenceArea x1={selected.label} x2={selected.label} fill="var(--term-surface-2)" fillOpacity={1} stroke="none" /> : null}
               {GAP_RANGES.map((range) => (
                 <Bar key={range.key} dataKey={range.key} maxBarSize={20} minPointSize={minBarSize} isAnimationActive={false}>
                   {chartData.map((d) => (
@@ -366,6 +343,8 @@ function EraChart({
                       key={d.label}
                       fill={deviationFill(d[range.key] ?? 0)}
                       fillOpacity={RANGE_OPACITY[range.key]}
+                      stroke={d.label === selected?.label ? "var(--term-text)" : "none"}
+                      strokeWidth={1.5}
                     />
                   ))}
                   <ErrorBar dataKey={`${range.key}Error`} isAnimationActive={false} pointerEvents="none" width={3} stroke="var(--term-text)" strokeWidth={1} />
@@ -376,6 +355,7 @@ function EraChart({
           </ResponsiveContainer>
         )}
       </div>
+      {selected ? <div className="mt-3"><EraReadout era={selected.era} /></div> : null}
       <RangeKey />
       <BaselineLegend zeroLabel={zeroLabel} />
       {summary && (
@@ -413,49 +393,37 @@ function HomeCourtBySeasonChart({
 }: {
   seasonWinRates: AnalysisResponse["seasonWinRates"]
 }) {
-  const chartRef = useRef<HTMLDivElement>(null)
-  const lastSize = useRef({ width: 0, height: 0 })
-  const restoreFocus = useRef(false)
-  const [plotSize, setPlotSize] = useState({ width: 0, height: 0 })
-  const resizePlot = useCallback((width: number, height: number) => {
-    const next = { width: Math.round(width), height: Math.round(height) }
-    if (next.width <= 0 || next.height <= 0 ||
-      (next.width === lastSize.current.width && next.height === lastSize.current.height)) return
-    restoreFocus.current = chartRef.current?.contains(document.activeElement) ?? false
-    lastSize.current = next
-    setPlotSize(next)
-  }, [])
-  const restoreChartFocus = useCallback((node: SVGSVGElement | null) => {
-    if (!node || !restoreFocus.current) return
-    restoreFocus.current = false
-    const active = document.activeElement
-    if (active && active !== document.body && !chartRef.current?.contains(active)) return
-    node.focus({ preventScroll: true })
-  }, [])
-  useLayoutEffect(() => {
-    const cancelFocusRestore = (event: FocusEvent) => {
-      if (!chartRef.current?.contains(event.target as Node)) restoreFocus.current = false
-    }
-    document.addEventListener("focusin", cancelFocusRestore)
-    return () => document.removeEventListener("focusin", cancelFocusRestore)
-  }, [])
   const chartData = buildHomeWinTrend(seasonWinRates)
+  const latestPlotted = chartData.findLastIndex((row) => row.homeWinPct !== null)
+  const inspection = useChartInspection(chartData.length, latestPlotted, "point")
+  const selected = chartData[inspection.index]
   const values = chartData.flatMap((row) => [row.homeWinPct, row.rollingHomeWinPct].filter((value): value is number => value !== null))
   const min = values.length ? Math.floor(Math.min(...values) / 5) * 5 : 50
   const max = values.length ? Math.ceil(Math.max(...values) / 5) * 5 : 70
   const ticks: number[] = []
   for (let v = min; v <= max; v += 5) ticks.push(v)
 
-  return (
-    <div ref={chartRef} className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
-      {values.length === 0 ? (
+  if (values.length === 0) {
+    return (
+      <div className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
         <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
           NO COMPLETE SEASON YET
         </div>
-      ) : (
-        <ResponsiveContainer width="100%" height="100%" onResize={resizePlot}>
-          {/* Recharts retains keyboard coordinates across resize; reset only the transient chart inspection. */}
-          <LineChart key={`${plotSize.width}:${plotSize.height}`} ref={restoreChartFocus} data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
+      </div>
+    )
+  }
+  return (
+    <div className="mt-4 flex min-w-0 flex-col gap-3">
+      <p id="home-win-trend-help" className="text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>{SERIES_INSPECTION_HELP}</p>
+      <div
+        className="h-72 min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
+        data-testid="home-win-trend"
+        aria-label="Home teams’ win rate by season, with the five-season average"
+        aria-describedby="home-win-trend-help"
+        {...inspection.frameProps}
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }} {...inspection.chartProps}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
             <XAxis
               dataKey="season"
@@ -475,26 +443,28 @@ function HomeCourtBySeasonChart({
               axisLine={false}
               width={44}
             />
-            <Tooltip
-              isAnimationActive={false}
-              content={({ active, payload }: TooltipContentProps) => {
-                if (!active || !payload?.length) return null
-                const d = payload[0].payload as HomeWinTrendPoint
-                return (
-                  <div style={termTooltip}>
-                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.season}</p>
-                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>Home teams won {d.homeWinPct?.toFixed(1)}%</p>
-                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.homeWins.toLocaleString()} wins / {d.homeGames.toLocaleString()} games</p>
-                    {d.rollingHomeWinPct !== null && <p style={{ marginTop: SPACE.xs }}>Five-season average: {d.rollingHomeWinPct.toFixed(1)}%</p>}
-                  </div>
-                )
-              }}
-            />
+            {selected ? <ReferenceLine x={selected.season} stroke="var(--term-text-muted)" strokeDasharray="3 4" /> : null}
             <Line name="Each season" dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} connectNulls={false} isAnimationActive={false} />
             <Line name="Five-season average" dataKey="rollingHomeWinPct" stroke="var(--term-accent)" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
+            {selected?.homeWinPct != null ? <ReferenceDot x={selected.season} y={selected.homeWinPct} r={4.5} fill="var(--term-text)" stroke="none" /> : null}
+            {selected?.rollingHomeWinPct != null ? <ReferenceDot x={selected.season} y={selected.rollingHomeWinPct} r={4.5} fill="var(--term-accent)" stroke="none" /> : null}
           </LineChart>
         </ResponsiveContainer>
-      )}
+      </div>
+      {selected ? (
+        <div className="border border-[var(--term-border)] p-4" role="status" aria-live="polite" data-testid="home-win-trend-readout">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h3 className="mono text-lg font-semibold">{selected.season}</h3>
+            <p className="mono text-[32px] font-semibold">{selected.homeWinPct === null ? "—" : `${selected.homeWinPct.toFixed(1)}%`}</p>
+          </div>
+          <p className="mt-2 text-[15px] text-[var(--term-text-muted)]">
+            {selected.homeWinPct !== null
+              ? `Home teams won · ${selected.homeWins.toLocaleString()} wins / ${selected.homeGames.toLocaleString()} games`
+              : selected.homeGames > 0 ? "Season in progress · plotted once it is complete" : "No eligible games this season"}
+          </p>
+          <p className="mt-1 text-[15px] text-[var(--term-text-muted)]">Five-season average: {selected.rollingHomeWinPct === null ? "no complete five-season window" : `${selected.rollingHomeWinPct.toFixed(1)}%`}</p>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -1036,10 +1006,6 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   const selectedGapData = barData.find((row) => row.range === selectedGap)
   const rangeScale = deviationScale(barData.flatMap((d) => [d.deviation - d.error, d.deviation + d.error]))
 
-  const winRateTooltipRenderer = (props: TooltipContentProps) => (
-    <WinRateTooltip {...props} />
-  )
-
   return (
     <div className="flex flex-col gap-12">
       <AnalysisHeader description={claims.headerDescription} asOf={asOf} />
@@ -1121,9 +1087,18 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           label="DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME"
           descriptor="TAP A BAR OR CHOOSE A GROUP TO INSPECT"
         />
-        <div className="mt-2 h-72">
+        {/* A tap anywhere in a bar's column picks it, so a bar drawn near zero is still easy to hit. */}
+        <div
+          className="mt-2 h-72"
+          style={{ cursor: "pointer", touchAction: "manipulation" }}
+          onPointerDown={(event) => {
+            const row = barData[plotIndexAt(event, barData.length, "band") ?? -1]
+            if (row) setSelectedGap(row.range)
+          }}
+        >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 24, right: 24, left: 0, bottom: 0 }}>
+            {/* The group buttons below are the keyboard path, so Recharts' own tooltip keyboard layer is off. */}
+            <BarChart data={barData} margin={{ top: 24, right: 24, left: 0, bottom: 0 }} accessibilityLayer={false}>
               <CartesianGrid
                 vertical={false}
                 strokeDasharray="3 3"
@@ -1153,21 +1128,14 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 axisLine={false}
                 width={40}
               />
-              <Tooltip
-                isAnimationActive={false}
-                cursor={{ fill: "rgba(23,64,139,0.06)" }}
-                content={winRateTooltipRenderer}
-              />
               <Bar
                 dataKey="deviation"
                 maxBarSize={72}
                 minPointSize={minBarSize}
-                style={{ cursor: "pointer" }}
-                onClick={(datum: unknown) => setSelectedGap((datum as WinRateDatum).range)}
                 isAnimationActive={false}
               >
                 {barData.map((d) => (
-                  <Cell key={d.label} fill={deviationFill(d.deviation)} />
+                  <Cell key={d.label} fill={deviationFill(d.deviation)} stroke={d.range === selectedGap ? "var(--term-text)" : "none"} strokeWidth={2} />
                 ))}
                 {/* Keep whiskers transparent to the bar selection beneath them. */}
                 <ErrorBar dataKey="error" isAnimationActive={false} pointerEvents="none" width={8} stroke="var(--term-text)" strokeWidth={1.5} />

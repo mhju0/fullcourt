@@ -165,7 +165,7 @@ Repeated controls and record expansions are immediate. Keyboard navigation and s
 navigation bypass the route cross-fade. Reduced motion suppresses movement while retaining
 static feedback. The homepage has one 450ms CSS hero entrance and one 500ms draw on the two
 finding bars; the remaining content is visible without scroll reveals. Figures never count up.
-No GSAP runtime or animation library is used. Analysis chart tooltips and fatigue fills update
+No GSAP runtime or animation library is used. Chart readouts and fatigue fills update
 immediately. Threshold drills scroll smoothly in normal mode and instantly under reduced
 motion. Games date chips and day/week arrows reuse the shared button feedback below; the
 Schedule column-guide chevron retains its 200ms rotation only in normal mode.
@@ -241,10 +241,30 @@ strip under “Upcoming large rest edges,” with readable title/body tokens and
 5+ chronological selection (D-115/D-116).
 
 
+### Chart inspection (D-142, v1.2.6)
+
+Charts are inspected on the chart itself, and the values print in a fixed readout panel
+beside it. No chart uses a floating tooltip. Each inspectable chart is one focusable
+`role="group"` frame with a visible help line (`aria-describedby`). Recharts'
+`accessibilityLayer` is turned off so the frame owns the keyboard.
+
+- Series (Home Court, Model Results trend and eras, Availability, Schedule weekly fatigue):
+  hover with a mouse or tap to pick; with the frame focused, ← → move one item and Home/End
+  jump to the ends (`inspectionStep`, src/lib/chart-inspection.ts). A pointer pick is
+  computed from `.recharts-cartesian-grid` geometry (`plotIndexAt`, src/hooks/useChartInspection.ts),
+  because Recharts' own active index trails the click by one frame.
+- A season menu appears only on long season series (Home Court, Availability). Schedule keeps
+  its ‹ › week buttons; the gap-size chart keeps its three group buttons and Browse.
+- Shot maps: hover or tap picks the nearest location; the four arrow keys move to the nearest
+  location on that side of the court (`courtNeighbour`). There is no location slider.
+
+Charts are allowed to differ beyond this contract. The default selection is per chart: the
+latest plotted season, the peak week, the latest era, or no selection on the gap-size chart.
+
 ### Readable comparisons (D-119, v1.0.2)
 
-Home-court history inspects seasons directly through hover, tap or keyboard; there
-is no duplicate season dropdown. The optional large-gap series and stacked
+Home-court history inspects seasons directly through hover, tap or keyboard, with an
+"Inspect season" menu beside it (D-133). The optional large-gap series and stacked
 same-season readout stay. Model Results plots annual home rates beside a dashed,
 game-weighted five-completed-consecutive-season average. Its short caption links
 to a native calculation disclosure; missing and incomplete windows are not joined.

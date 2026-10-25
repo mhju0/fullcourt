@@ -2187,3 +2187,20 @@ Advanced filters에 남긴다.
 Zero-rest workload 표는 별도 disclosure에서 빠지고, 같은 질문은 Shots 열 정렬로 대신한다.
 현재 시즌 coverage는 "Through Oct 22 · N of M games" 한 줄과 Data status 링크로 줄인다
 (graphics review d3). 산식·모집단·career 추정은 바뀌지 않는다.
+
+## D-142 — 차트 inspection을 차트 위 선택 + 고정 readout으로 (2026-10-25)
+
+Owner는 graphics review d6(차트마다 inspection 방식이 다름)에서 bench 후보 A를 선택했다
+(https://claude.ai/artifact/4Ev1VBoTySC6zZ6sxdPCzb, db `picks/owner`). 차트 위에서 hover·tap으로
+고르고, 값은 차트 옆 고정 패널에 쓰며, 차트에 focus가 있으면 ← → Home End로 움직인다.
+Floating tooltip은 쓰지 않는다. 시즌 메뉴는 시즌이 많은 차트(Home Court, Availability)에만
+둔다. Shot map은 slider 대신 방향키로 코트 위 가장 가까운 위치로 이동한다.
+
+Owner는 차트마다 동작이 같을 필요는 없다고 했다. 그래서 Schedule의 ‹ › 버튼, gap-size 차트의
+세 그룹 버튼과 Browse, shot map의 모델 비교 패널은 남기고, 기본 선택도 차트별로 둔다.
+Recharts `accessibilityLayer`(role="application" + tooltip 이동)는 끄고 frame이 키보드를 맡는다.
+Recharts의 active index는 클릭보다 한 프레임 늦어서, pointer 선택은 grid 좌표로 계산한다.
+
+차트별로 commit을 나눴고, v1.2.5 시점 화면과 동작은 로컬 archive
+`../fullcourt-local-archive/d6-chart-baseline-2026-10-25/`에 남겼다. 차트 하나를 되돌릴 때는 그
+commit을 revert한다. 수치·모집단·계수는 바뀌지 않는다.

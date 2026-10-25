@@ -32,30 +32,32 @@ for (const width of [390, 1440]) {
         expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(reduced);
       });
 
-      test("Analysis tooltips follow bars immediately with mouse and keyboard", async ({ page }) => {
+      test("Analysis charts are inspected on the chart, with a fixed readout", async ({ page }) => {
         await page.goto("/analysis");
         await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({ timeout: 60_000 });
-        // Gap size, eras, and home court by season; only the two bar charts have bars to hover.
+        // Gap size, eras, and home court by season. None keeps a floating tooltip or Recharts' own keyboard layer.
         await expect(page.locator(".recharts-wrapper")).toHaveCount(3);
-        const charts = page.locator(".recharts-wrapper").filter({ has: page.locator(".recharts-bar-rectangle") });
-        await expect(charts).toHaveCount(2);
-        for (const chart of await charts.all()) {
-          const bars = chart.locator(".recharts-bar-rectangle path");
-          await expect(bars.first()).toBeAttached();
-          for (const bar of [bars.first(), bars.nth(1)]) {
-            // A lift near zero draws a bar about 1px tall, which Playwright calls covered by the grid or
-            // zero line. The tooltip is triggered by the bar's column, so the pointer only has to get there.
-            await bar.hover({ force: true });
-            const tooltip = chart.locator(".recharts-tooltip-wrapper");
-            await expect(tooltip).toBeVisible();
-            expect(await tooltip.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
-            await expect(tooltip).toContainText(/%|PP/i);
-          }
-          const application = chart.getByRole("application");
-          await application.focus();
-          await page.keyboard.press("ArrowRight");
-          await expect(chart.locator(".recharts-tooltip-wrapper")).toBeVisible();
-          expect(await chart.locator(".recharts-tooltip-wrapper").evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
+        await expect(page.locator(".recharts-tooltip-wrapper")).toHaveCount(0);
+        await expect(page.getByRole("application")).toHaveCount(0);
+
+        const era = page.locator('[aria-describedby="era-chart-help"]');
+        const eraReadout = page.getByTestId("era-readout");
+        await era.scrollIntoViewIfNeeded();
+        const eraGrid = await era.locator(".recharts-cartesian-grid").boundingBox();
+        await page.mouse.click(eraGrid!.x + 2, eraGrid!.y + eraGrid!.height / 2);
+        await expect(eraReadout).toContainText("1985-86 to");
+        await era.focus();
+        await page.keyboard.press("End");
+        await expect(eraReadout).not.toContainText("1985-86 to");
+        await page.keyboard.press("Home");
+        await expect(eraReadout).toContainText("1985-86 to");
+
+        const gap = page.locator(".recharts-wrapper").first();
+        await gap.scrollIntoViewIfNeeded();
+        const gapGrid = await gap.locator(".recharts-cartesian-grid").boundingBox();
+        for (const [fraction, label] of [[0.15, "Small"], [0.5, "Medium"], [0.85, "Large"]] as const) {
+          await page.mouse.click(gapGrid!.x + gapGrid!.width * fraction, gapGrid!.y + gapGrid!.height / 2);
+          await expect(page.getByText(/gap selected ·/)).toContainText(label);
         }
       });
 
