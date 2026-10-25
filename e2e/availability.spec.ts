@@ -100,3 +100,25 @@ test("annual selection shows the chosen rate and denominator next to the control
   await expect(readout).toContainText(last.season);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+test("the absence chart itself selects a season by tap and by keyboard", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/availability");
+  const section = page.getByRole("region", { name: "Best-player absences over time" });
+  const chart = section.getByRole("group", { name: /Best-player absence rate/ });
+  const select = section.getByRole("combobox", { name: "Measured season" });
+  const readout = section.getByRole("status");
+  const first = AVAILABILITY_TREND_SEASONS[0]!;
+  const last = AVAILABILITY_TREND_SEASONS.at(-1)!;
+  const box = (await chart.boundingBox())!;
+  await page.mouse.click(box.x + 2, box.y + box.height - 4);
+  await expect(select).toHaveValue(first.season);
+  await expect(readout).toContainText(first.season);
+  await chart.focus();
+  await page.keyboard.press("End");
+  await expect(select).toHaveValue(last.season);
+  await page.keyboard.press("ArrowLeft");
+  await expect(select).toHaveValue(AVAILABILITY_TREND_SEASONS.at(-2)!.season);
+  await page.keyboard.press("Home");
+  await expect(readout).toContainText(first.season);
+});
