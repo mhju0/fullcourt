@@ -268,3 +268,8 @@ Owner direction: season jump menu only for charts with many seasons; tentative s
 
 The owner picked pattern A from the d6 bench: pick on the chart, show values in a fixed readout, and use ← → Home End on the focused chart. A season menu appears only on long series (Home Court, Availability), and shot maps use arrow keys in place of the slider. Per the owner, charts may differ beyond that, so the Schedule ‹ › buttons, the gap-size group buttons and Browse, and the model comparison panel stay. PR #221 squash-merged as `77bbb074`; tag/release v1.2.6; production checked. Each chart was its own commit on the branch, so one chart can be restored from v1.2.5 alone. The contract is in FRONTEND.md "Chart inspection".
 Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Data, after product pages).
+
+## 2026-10-25 — d7 table counts (PR #223, v1.2.7, D-143)
+
+- Owner took the bench recommendations (https://claude.ai/artifact/2gXKv6kdfbRbqB1TNwyGpH): rate first, counts as `W / G`; Season Report and Home Court stack rate over count in one cell, Shooting keeps separate sortable columns; dashes plus a note line under the table; header case per table. Rule in FRONTEND.md "Counts and rates in tables".
+- Open: merge #223, then tag and release v1.2.7. d8 (Behind the Data) is next.
