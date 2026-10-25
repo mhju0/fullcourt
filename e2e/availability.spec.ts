@@ -36,17 +36,13 @@ test.describe("Availability Cost page", () => {
   test("draws one column per season, on a track that starts at zero", async ({ page }) => {
     await page.goto("/availability");
 
-    const trend = page.getByRole("img", { name: /Best-player absence rate/ });
+    const trend = page.getByRole("group", { name: /Best-player absence rate/ });
     await expect(trend).toBeVisible();
     await expect(trend.locator("> div")).toHaveCount(AVAILABILITY_TREND_SEASONS.length);
 
     // The tallest column is the most recent season and fills the track. A truncated axis would
     // turn a real threefold rise into a dramatic one, so the full-height column is load-bearing.
-    const last = AVAILABILITY_TREND_SEASONS.at(-1)!;
-    await expect(trend.locator("> div").last()).toHaveAttribute(
-      "title",
-      new RegExp(`^${last.season} `)
-    );
+    await expect(trend.locator("> div").last()).toHaveAttribute("style", /height: ?100%/);
   });
 
   test("offers the method at the moment a reader doubts the number", async ({ page }) => {
@@ -110,6 +106,7 @@ test("the absence chart itself selects a season by tap and by keyboard", async (
   const readout = section.getByRole("status");
   const first = AVAILABILITY_TREND_SEASONS[0]!;
   const last = AVAILABILITY_TREND_SEASONS.at(-1)!;
+  await chart.scrollIntoViewIfNeeded();
   const box = (await chart.boundingBox())!;
   await page.mouse.click(box.x + 2, box.y + box.height - 4);
   await expect(select).toHaveValue(first.season);
