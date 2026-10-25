@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-24T05:41:52.160Z",
+  "candidateSha256": "9259a5a47dac1c5bfa0d0a1e6d74e72a74ae3c0e334e186482db05abe21b1c7d",
+  "checks": [
+    {
+      "name": "every displayed evidence file matches recorded screenshot crop",
+      "pass": true
+    },
+    {
+      "name": "all 206 answers survive downloaded HTML offline",
+      "pass": true
+    },
+    {
+      "name": "103 comments each own image, without disclosures",
+      "pass": true
+    },
+    {
+      "name": "121 adjacent screenshot placements decode offline",
+      "pass": true
+    },
+    {
+      "name": "every image directly beside or before its comment 1440",
+      "pass": true
+    },
+    {
+      "name": "every image directly beside or before its comment 390",
+      "pass": true
+    },
+    {
+      "name": "every image directly beside or before its comment 320",
+      "pass": true
+    },
+    {
+      "name": "notes remain inert and no JS errors",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

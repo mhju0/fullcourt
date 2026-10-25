@@ -1,0 +1,2606 @@
+{
+  "items": {
+    "home_rest_gap_rate_bars": [
+      {
+        "file": "assets/focused/home_rest_gap_rate_bars.jpg",
+        "label": "역사적 rest-gap 결과 막대",
+        "width": 1124,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:27.734Z",
+        "kind": "focused",
+        "target": "section[aria-labelledby=\"rest-finding\"]",
+        "targetText": "Large rest gaps\n·\n\nfor the rested team at home\n\n+5.2 pp\n\nPercentage-point difference from the home baseline in 3,899 games with a large rest gap (5+ fatigue-score points).\n\nAll completed regular seasons · 1985-86 to 2025-26\n\nRest evidence through 2026-04-12\n\nHome teams overall\n59.9%\nRested team at home · large gap\n65.1%\n\nBars run from 0–100%. Baseline: 47,094 games. Both rates cover the same completed seasons. The difference uses unrounded rates. These historical groups differ in more than rest;",
+        "crop": {
+          "left": 78,
+          "top": 100,
+          "width": 1124,
+          "height": 469
+        },
+        "excerpt": false
+      }
+    ],
+    "home_key_finding_stat": [
+      {
+        "file": "assets/focused/home_key_finding_stat.jpg",
+        "label": "큰 rest-gap 핵심 차이 통계",
+        "width": 1124,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:28.007Z",
+        "kind": "focused",
+        "target": "section[aria-labelledby=\"rest-finding\"]",
+        "targetText": "Large rest gaps\n·\n\nfor the rested team at home\n\n+5.2 pp\n\nPercentage-point difference from the home baseline in 3,899 games with a large rest gap (5+ fatigue-score points).\n\nAll completed regular seasons · 1985-86 to 2025-26\n\nRest evidence through 2026-04-12\n\nHome teams overall\n59.9%\nRested team at home · large gap\n65.1%\n\nBars run from 0–100%. Baseline: 47,094 games. Both rates cover the same completed seasons. The difference uses unrounded rates. These historical groups differ in more than rest;",
+        "crop": {
+          "left": 78,
+          "top": 100,
+          "width": 1124,
+          "height": 469
+        },
+        "excerpt": false
+      }
+    ],
+    "home_schedule_extremes": [
+      {
+        "file": "assets/focused/home_schedule_extremes.jpg",
+        "label": "팀별 net edge 극값",
+        "width": 540,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:28.298Z",
+        "kind": "focused",
+        "target": "section[aria-label=\"Schedule and player findings\"] article:first-child",
+        "targetText": "THE SCHEDULE · 2026-27\n\nCompare the rest gaps teams face\nPistons\nHighest\n+16 net edge games\nSpurs\nJoint lowest\n−12 net edge games\n\nFavorable minus unfavorable games. 1,184 of 1,200 games compared, 1,172 on projected fatigue from the published schedule. This is a schedule comparison, not a prediction of wins.\n\nResults through 2026-10-22 · Season in progress\n\nCompare team schedules\n→",
+        "crop": {
+          "left": 78,
+          "top": 417,
+          "width": 540,
+          "height": 443
+        },
+        "excerpt": false
+      }
+    ],
+    "home_season_to_date": [
+      {
+        "file": "assets/focused/home_season_to_date.jpg",
+        "label": "시즌 현재 누계 요약",
+        "width": 1124,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:28.576Z",
+        "kind": "focused",
+        "target": {
+          "text": "2026-27 · Season to date",
+          "ancestor": "section"
+        },
+        "targetText": "2026-27 · Season to date\n\n13 home wins / 28 eligible games · 46.4%. Results through 2026-10-23 (ET).\n\n0 wins / 3 games with the more-rested team at home. Counts change as games are played and results are updated.\n\nOpen this season’s report\n→",
+        "crop": {
+          "left": 78,
+          "top": 99,
+          "width": 1124,
+          "height": 180
+        },
+        "excerpt": false
+      }
+    ],
+    "shared-court-mark": [
+      {
+        "file": "assets/focused/shared-court-mark.jpg",
+        "label": "CourtMark navigation brand mark · 실제 사용 예",
+        "width": 369,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:28.940Z",
+        "kind": "representative",
+        "target": "header nav",
+        "targetText": "GAMES\nSEASON REPORT\nSCHEDULE EDGE\nEXPLORE",
+        "crop": {
+          "left": 220,
+          "top": 0,
+          "width": 369,
+          "height": 95
+        },
+        "excerpt": false
+      }
+    ],
+    "about-link-grids": [
+      {
+        "file": "assets/focused/about-link-grids.jpg",
+        "label": "제품 소개 링크 카드 그리드",
+        "width": 1252,
+        "route": "/about",
+        "capturedAt": "2026-10-24T05:37:29.645Z",
+        "kind": "focused",
+        "target": "main section[aria-labelledby=\"about-purpose\"] ul",
+        "targetText": "START WITH A GAME\nGames\n\nWhich team comes in with more rest, travel or workload?\n\nFind a game\nSTART WITH A PLAYER\nPlayer Shooting by Rest\n\nDo players shoot differently with more rest?\n\nLook up a player",
+        "crop": {
+          "left": 14,
+          "top": 232,
+          "width": 1252,
+          "height": 255
+        },
+        "excerpt": false
+      }
+    ],
+    "analysis_baseline_distance_graphic": [
+      {
+        "file": "assets/focused/analysis_baseline_distance_graphic.jpg",
+        "label": "홈 baseline 기준 승률 차이 그래픽",
+        "width": 1218,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:33.460Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "RESTED TEAM AT HOME · WON\n61.1%\nRESTED VISITOR · HOME STILL WON\n57.6%\n59.9% · HOME COURT ALONE",
+        "crop": {
+          "left": 31,
+          "top": 100,
+          "width": 1218,
+          "height": 142
+        },
+        "excerpt": false
+      }
+    ],
+    "analysis_game_explorer_table": [
+      {
+        "file": "assets/focused/analysis_game_explorer_table.jpg",
+        "label": "경기 탐색 표 · 상단 발췌",
+        "width": 1218,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:33.733Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "DATE\tMATCHUP\tHOME FAT.\nfatigue score\n\tAWAY FAT.\nfatigue score\n\tRA\nfatigue gap\n\tSCORE\tRESULT\n2026-10-23\t\nMIN@ORL\nDetails\n\t0.9\t2.5\tORL +1.6\t115–93\tLOST\n2026-10-23\t\nDET@MIA\nDetails\n\t0.8\t1.9\tMIA +1.0\t128–111\tLOST\n2026-10-23\t\nMEM@GSW\nDetails\n\t1.7\t3.4\tGSW +1.6\t111–108\tLOST\n2026-04-12\t\nPHX@OKC\nDetails\n\t3.8\t5.7\tOKC +1.9\t135–103\tLOST\n2026-04-12\t\nORL@BOS\nDetails\n\t3.4\t4.2\tBOS +0.8\t108–113\tWON\n2026-04-12\t\nCHA@NYK\nDetails\n\t3.4\t4.0\tNYK +0.6\t110–96\tLOST\n2026-04-10\t\nDET@CHA\nDetails\n\t3.4\t3.9\tCHA +0.5\t118–100\tLOS",
+        "crop": {
+          "left": 31,
+          "top": 99,
+          "width": 1218,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "analysis_gap_size_chart": [
+      {
+        "file": "assets/focused/analysis_gap_size_chart.jpg",
+        "label": "Rest-gap 크기별 승률 편차 차트",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:38:21.310Z",
+        "kind": "focused",
+        "target": {
+          "text": "DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME",
+          "ancestor": "div",
+          "parentLevels": 2
+        },
+        "targetText": "DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME\nTAP A BAR OR CHOOSE A GROUP TO INSPECT\nSMALL 0.5–3n=17,355\nMEDIUM 3–5n=6,866\nLARGE 5+n=3,899\n−2\n0\n+2\n+4\n+6\n+8\nRESTED TEAM BEAT THE HOME BASELINE\nRESTED TEAM FELL SHORT OF IT\nPERCENTAGE POINTS · 0 = 59.9%, HOW OFTEN THE HOME TEAM WINS ANYWAY\nSmall gap · 0.5–3\n59.9% · 17,355 games\n0.0 pp vs home baseline\nMedium gap · 3–5\n61.9% · 6,866 games\n+2.0 pp vs home baseline\nLarge gap · 5+\n65.1% · 3,899 games\n+5.2 pp vs home baseline",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 550
+        },
+        "excerpt": false
+      }
+    ],
+    "analysis_era_chart": [
+      {
+        "file": "assets/focused/analysis_era_chart.jpg",
+        "label": "5시즌 시대별 rest-gap 차트",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:38:21.559Z",
+        "kind": "focused",
+        "target": {
+          "text": "DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?",
+          "ancestor": "div",
+          "parentLevels": 2
+        },
+        "targetText": "DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?\n5 SEASONS PER GROUP, THE OLDEST 6\n1986–91\n1992–96\n1997–01\n2002–06\n2007–11\n2012–16\n2017–21\n2022–26\n−5\n0\n+5\n+10\n+15\nSMALL 0.5–3\nMEDIUM 3–5\nLARGE 5+\nWHISKERS: 95% RANGE\nRESTED TEAM BEAT THE HOME BASELINE\nRESTED TEAM FELL SHORT OF IT\nPERCENTAGE POINTS · 0 = THAT ERA'S OWN HOME WIN RATE\n\nLARGE GAPS BEAT THEIR ERA'S HOME RATE IN 8 OF 8 ERAS. SMALL GAPS STAYED BETWEEN −1.7 AND +2.7 PP OF IT. ONE ERA ALONE IS TOO FEW GAMES TO SETTLE IT, AS THE WHISKERS SHOW; TH",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 509
+        },
+        "excerpt": false
+      }
+    ],
+    "analysis_home_win_trend": [
+      {
+        "file": "assets/focused/analysis_home_win_trend.jpg",
+        "label": "시즌별 홈 승률 추이",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:34.536Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Home teams’ win rate over time",
+          "ancestor": "div"
+        },
+        "targetText": "Home teams’ win rate over time\n\nCompleted seasons · Eligible regular-season games · Orlando bubble excluded\n\n1985-86\n1996-97\n2007-08\n2018-19\n2026-27\n50%\n55%\n60%\n65%\n70%\nEach season\nFive-season average\n\nThe dashed line combines games from each five-season window.\n\nHow the line is calculated\n\nEach dashed point pools home wins and games from that season and its four preceding completed consecutive seasons. The first four seasons have no rolling value; missing or incomplete seasons break the window.",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 653
+        },
+        "excerpt": false
+      }
+    ],
+    "analysis_stat_tiles": [
+      {
+        "file": "assets/focused/analysis_stat_tiles.jpg",
+        "label": "답변 요약 통계 타일",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:34.790Z",
+        "kind": "focused",
+        "target": "#answer > div.grid",
+        "targetText": "RESTED TEAM AT HOME\n61.1%\n+1.2 VS 59.9% VENUE BASELINE\nGAP 0.5 OR MORE · 28,120 GAMES\nRESTED TEAM AT HOME · LARGE GAP\n65.1%\n+5.2 VS VENUE BASELINE\nGAP 5 OR MORE · 3,899 GAMES",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 174
+        },
+        "excerpt": false
+      }
+    ],
+    "game-detail-modal": [
+      {
+        "file": "assets/focused/game-detail-modal.jpg",
+        "label": "경기 상세 모달",
+        "width": 692,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:35.445Z",
+        "kind": "focused",
+        "target": {
+          "role": "dialog"
+        },
+        "targetText": "GAME DETAILS\nFINAL\n115 – 93\n\nMIN@ORL\n\nFRIDAY, OCTOBER 23, 2026 · 2026-27\n\nORL 1.6 RA\n\nFATIGUE BREAKDOWN\n\nAWAY · MIN\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×2\nMILEAGE, LAST 7 DAYS\n1,717\nDAYS REST\n1 day\n\nHOME · ORL\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n0\nDAYS REST\n1 day\n\nRECENT GAMES · SELECT A GAME TO OPEN IT\n\nAWAY · MIN\n\nOct 21 @ MIA\nW 131–106\nApr 12 vs NOP\nW 132–126\nApr 10 @ HOU\nW 136–132\nApr 8 @ O",
+        "crop": {
+          "left": 294,
+          "top": 170,
+          "width": 692,
+          "height": 720
+        },
+        "excerpt": false
+      }
+    ],
+    "shared-stat-tile-primitives": [
+      {
+        "file": "assets/focused/shared-stat-tile-primitives.jpg",
+        "label": "StatTile / StatFigure 수치 타일 · 실제 사용 예",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:35:35.709Z",
+        "kind": "representative",
+        "target": "#answer > div.grid",
+        "targetText": "RESTED TEAM AT HOME\n61.1%\n+1.2 VS 59.9% VENUE BASELINE\nGAP 0.5 OR MORE · 28,120 GAMES\nRESTED TEAM AT HOME · LARGE GAP\n65.1%\n+5.2 VS VENUE BASELINE\nGAP 5 OR MORE · 3,899 GAMES",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 174
+        },
+        "excerpt": false
+      }
+    ],
+    "apple-icon": [
+      {
+        "file": "assets/focused/apple-icon.jpg",
+        "label": "Apple touch icon",
+        "width": 200,
+        "route": "/apple-icon",
+        "capturedAt": "2026-10-24T05:35:36.662Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 540,
+          "top": 440,
+          "width": 200,
+          "height": 220
+        },
+        "excerpt": false
+      }
+    ],
+    "availability_effect_bars": [
+      {
+        "file": "assets/focused/availability_effect_bars.jpg",
+        "label": "Absence 및 일정 효과 크기 막대",
+        "width": 1060,
+        "route": "/availability",
+        "capturedAt": "2026-10-24T05:35:38.690Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Missing the best player",
+          "ancestor": "section"
+        },
+        "targetText": "Missing the best player\n3.03 points\nLOWER FINAL MARGIN WITH THE BEST PLAYER ABSENT · ASSOCIATION\nBest player out\n3.03\nPlaying at home\n2.70\nOn a back-to-back\n1.86\nVisiting altitude\n1.73\nOff an overtime\n0.54\n\nThe best-player-out estimate is similar in size to the home-court estimate. Bars compare the size of associations, not their direction: home court is associated with a higher margin, while the other conditions are associated with a lower margin. All are measured in points across 25,435 games,",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1060,
+          "height": 647
+        },
+        "excerpt": false
+      }
+    ],
+    "availability_frequency_tiles": [
+      {
+        "file": "assets/focused/availability_frequency_tiles.jpg",
+        "label": "선수 결장 빈도 타일",
+        "width": 1060,
+        "route": "/availability",
+        "capturedAt": "2026-10-24T05:35:38.957Z",
+        "kind": "focused",
+        "target": {
+          "heading": "How often players are absent",
+          "ancestor": "section"
+        },
+        "targetText": "How often players are absent\n18.5%\nOF GAMES HAVE ONE SIDE MISSING ITS BEST PLAYER\n43.7%\nOF TEAM-GAMES ARE MISSING NOBODY FROM THE ROTATION\n8.7\nPLAYERS IN A TYPICAL ROTATION",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1060,
+          "height": 187
+        },
+        "excerpt": false
+      }
+    ],
+    "availability_trend_chart": [
+      {
+        "file": "assets/focused/availability_trend_chart.jpg",
+        "label": "Best-player 결장률 연도별 막대",
+        "width": 1060,
+        "route": "/availability",
+        "capturedAt": "2026-10-24T05:35:39.229Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Best-player absences over time",
+          "ancestor": "section"
+        },
+        "targetText": "Best-player absences over time\n\nBest-player absences in the included games. Source coverage varies by season, so these rates do not establish a league-wide trend. Blank spaces mark seasons without an eligible sample.\n\n1997-98\n2025-26\nMeasured season\n1997-98\n2003-04\n2004-05\n2005-06\n2006-07\n2007-08\n2008-09\n2009-10\n2010-11\n2011-12\n2012-13\n2013-14\n2014-15\n2015-16\n2016-17\n2017-18\n2018-19\n2019-20\n2020-21\n2021-22\n2022-23\n2023-24\n2024-25\n2025-26\n2025-26\n\n19.9%\n\nBest player absent · 2,309 included team-g",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1060,
+          "height": 614
+        },
+        "excerpt": false
+      }
+    ],
+    "availability_schedule_coefficient_table": [
+      {
+        "file": "assets/focused/availability_schedule_coefficient_table.jpg",
+        "label": "결장 통제 전후 일정 계수 표",
+        "width": 1026,
+        "route": "/availability",
+        "capturedAt": "2026-10-24T05:35:39.488Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "SITUATION\tSCHEDULE ONLY\nPTS\n\tABSENCE HELD FIXED\nPTS\n\tSHIFT\n%\n\nOn a back-to-back\t1.856\t1.692\t8.8\nVisiting altitude\t1.734\t1.663\t4.1\nOff an overtime\t0.538\t0.503\t6.4\nSchedule density\t0.283\t0.262\t7.4",
+        "crop": {
+          "left": 31,
+          "top": 328,
+          "width": 1026,
+          "height": 230
+        },
+        "excerpt": false
+      }
+    ],
+    "behind-data-methods-link-grid": [
+      {
+        "file": "assets/focused/behind-data-methods-link-grid.jpg",
+        "label": "방법 페이지 링크 그리드와 null 결과 링크 카드 · 상단 발췌",
+        "width": 1280,
+        "route": "/behind-the-data",
+        "capturedAt": "2026-10-24T05:35:42.364Z",
+        "kind": "focused",
+        "target": "main",
+        "targetText": "BEHIND THE DATA\nBehind the Data\n\nSee how each finding is calculated, where the data comes from, and what it can tell you.\n\nREST AND FATIGUE\nRest Advantage\n\nWhat goes into the fatigue score?\n\nRead rest methods\nREST AND FATIGUE\nSchedule Edge\n\nHow are favorable schedules compared?\n\nRead schedule methods\nREST AND FATIGUE\nPlayoff Rest\n\nHow does prior-round workload enter the model?\n\nRead playoff methods\nREST AND FATIGUE\nPlayer Shooting by Rest\n\nHow are rest splits and uncertainty measured?\n\nRead shoo",
+        "crop": {
+          "left": 0,
+          "top": 36,
+          "width": 1280,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "method_availability_schedule_table": [
+      {
+        "file": "assets/focused/method_availability_schedule_table.jpg",
+        "label": "Absence 통제 전후 schedule 계수 표",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:44.467Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "TERM\tALONE\nCOEF.\n\tWITH ABSENCES\nCOEF.\n\tCHANGE\n%\n\nBack-to-back\t1.856\t1.692\t8.8\nAltitude, visitor\t1.734\t1.663\t4.1\nOvertime last game\t0.538\t0.503\t6.4\nSchedule density\t0.283\t0.262\t7.4",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 265
+        },
+        "excerpt": false
+      }
+    ],
+    "method_availability_rotation_formula": [
+      {
+        "file": "assets/focused/method_availability_rotation_formula.jpg",
+        "label": "Rotation·결장 판정식",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:44.730Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 0
+        },
+        "targetText": "rotation  2+ appearances with minutes\n          in the team's last 5 games\n          this season, averaging\n          15+ minutes\n\nmissing   in the rotation, but did\n          not play tonight",
+        "crop": {
+          "left": 39,
+          "top": 39,
+          "width": 1202,
+          "height": 257
+        },
+        "excerpt": false
+      }
+    ],
+    "method_availability_rotation_grid": [
+      {
+        "file": "assets/focused/method_availability_rotation_grid.jpg",
+        "label": "Rotation 기준 ValueGrid",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:45.011Z",
+        "kind": "focused",
+        "target": {
+          "css": "main .grid.gap-px",
+          "nth": 0
+        },
+        "targetText": "ROTATION WINDOW\n5 games\nearlier games this season\nROTATION THRESHOLD\n15 min\naverage per appearance\nTYPICAL ROTATION\n8.7\nplayers, measured",
+        "crop": {
+          "left": 39,
+          "top": 99,
+          "width": 1202,
+          "height": 131
+        },
+        "excerpt": false
+      }
+    ],
+    "method_availability_game_score_formula": [
+      {
+        "file": "assets/focused/method_availability_game_score_formula.jpg",
+        "label": "Game Score 기반 결장 가치식",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:45.279Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 1
+        },
+        "targetText": "GmSc  = PTS + 0.4·FGM − 0.7·FGA\n      − 0.4·(FTA − FTM)\n      + 0.7·ORB + 0.3·DRB + STL\n      + 0.7·AST + 0.7·BLK\n      − 0.4·PF − TOV\n\nvalue = max(0, GmSc average\n               − rotation median)",
+        "crop": {
+          "left": 39,
+          "top": 49,
+          "width": 1202,
+          "height": 265
+        },
+        "excerpt": false
+      }
+    ],
+    "method_availability_regression_formula": [
+      {
+        "file": "assets/focused/method_availability_regression_formula.jpg",
+        "label": "Final margin 회귀식",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:45.533Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 2
+        },
+        "targetText": "home margin ~ home court\n  + strength gap    (home − away)\n  + season position (away − home)\n  + schedule terms  (away − home)\n  + absence value   (away − home)",
+        "crop": {
+          "left": 39,
+          "top": 44,
+          "width": 1202,
+          "height": 214
+        },
+        "excerpt": false
+      }
+    ],
+    "method_availability_result_grid": [
+      {
+        "file": "assets/focused/method_availability_result_grid.jpg",
+        "label": "Availability 회귀 결과 ValueGrid",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:45.792Z",
+        "kind": "focused",
+        "target": {
+          "css": "main .grid.gap-px",
+          "nth": 1
+        },
+        "targetText": "GAMES MEASURED\n25,435\n1997-98 through 2025-26\nBEST PLAYER OUT\n3.03 pts\nt = 16.4\nPER POINT ABOVE REPLACEMENT\n0.28 pts\nt = 20.6",
+        "crop": {
+          "left": 39,
+          "top": 100,
+          "width": 1202,
+          "height": 131
+        },
+        "excerpt": false
+      }
+    ],
+    "data-limits-exclusion-rules-table": [
+      {
+        "file": "assets/focused/data-limits-exclusion-rules-table.jpg",
+        "label": "정규시즌 결과에서 제외되는 경기 규칙 표",
+        "width": 1202,
+        "route": "/behind-the-data/data-and-limits",
+        "capturedAt": "2026-10-24T05:35:47.907Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "GAMES\tRULE\nPlayoffs\tLeft out of regular-season rest win rates. Playoff Rest models series separately.\nOrlando bubble\tLeft out. The part of 2019-20 before the suspension stays in.\n2019-20 in Schedule Edge\tWhole season left out of the rankings, because teams played unequal schedules.\nPreseason\tLeft out. Rotations are not regular-season play.",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 252
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-method-verdict-definitions": [
+      {
+        "file": "assets/focused/officiating-method-verdict-definitions.jpg",
+        "label": "NBA L2M verdict 코드 정의 표",
+        "width": 1202,
+        "route": "/behind-the-data/officiating",
+        "capturedAt": "2026-10-24T05:35:50.071Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "CODE\tNBA VERDICT\tMEANING\nINC\tIncorrect non-call\tA missed call; counted as an error.\nIC\tIncorrect call\tAn incorrect whistle; counted as an error.\nCC\tCorrect call\tA correct whistle; retained in the report.\nCNC\tCorrect non-call\tCorrectly allowing play to continue; retained in the report.",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 252
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-method-freshness-table": [
+      {
+        "file": "assets/focused/officiating-method-freshness-table.jpg",
+        "label": "L2M 데이터 날짜 필드 설명 표",
+        "width": 1202,
+        "route": "/behind-the-data/officiating",
+        "capturedAt": "2026-10-24T05:35:50.322Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "DATE SHOWN\tMEANING\nData through\tThe latest reviewed game date.\nLast successful refresh\tWhen collection finished for the published snapshot.",
+        "crop": {
+          "left": 39,
+          "top": 300,
+          "width": 1202,
+          "height": 181
+        },
+        "excerpt": false
+      }
+    ],
+    "method_player_shooting_formulas": [
+      {
+        "file": "assets/focused/method_player_shooting_formulas.jpg",
+        "label": "선수 휴식 구간·eFG·SE 수식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:35:52.464Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 0
+        },
+        "targetText": "no rest     played the day before\nrested      2 to 29 full days off\n\nrest effect = eFG% rested\n            − eFG% no rest",
+        "crop": {
+          "left": 39,
+          "top": 54,
+          "width": 1202,
+          "height": 204
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/aux-shooting-efg-formula.jpg",
+        "label": "Shooting Methods · eFG% 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:38:23.537Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 1
+        },
+        "targetText": "eFG% = 100 × (FGM + 0.5 × 3PM)\n             ÷ FGA",
+        "crop": {
+          "left": 39,
+          "top": 55,
+          "width": 1202,
+          "height": 149
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/aux-shooting-uncertainty-formula.jpg",
+        "label": "Shooting Methods · 불확실성 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:38:23.820Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 2
+        },
+        "targetText": "SE ≈ √( 2500 ÷ FGA no rest\n       + 2500 ÷ FGA rested )",
+        "crop": {
+          "left": 39,
+          "top": 54,
+          "width": 1202,
+          "height": 149
+        },
+        "excerpt": false
+      }
+    ],
+    "method_player_shooting_value_grid": [
+      {
+        "file": "assets/focused/method_player_shooting_value_grid.jpg",
+        "label": "선수 shooting 기본 기준 ValueGrid",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:35:52.736Z",
+        "kind": "focused",
+        "target": "main .grid.gap-px",
+        "targetText": "DEFAULT ATTEMPT FLOOR\n300+\ntotal shots, not per group\nREST STATES COMPARED\n0 vs 2–29\ndays off between appearances\nMETRIC\neFG%\nthrees weighted 1.5×",
+        "crop": {
+          "left": 39,
+          "top": 99,
+          "width": 1202,
+          "height": 131
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_exogenous_table": [
+      {
+        "file": "assets/focused/method_playoff_exogenous_table.jpg",
+        "label": "상대 직전 라운드 길이 비교 표",
+        "width": 1202,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:54.795Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "OPPONENT'S LAST ROUND\tYOU WON\nSERIES %\n\tRECORD EDGE\nWIN % PTS\n\nOpponent closed early\n74 series\t68.9\t8.9\nOpponent went long\n90 series\t85.6\t11.0",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 231
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_entry_rest_table": [
+      {
+        "file": "assets/focused/method_playoff_entry_rest_table.jpg",
+        "label": "Round 2+ 진입 휴식 구간 표",
+        "width": 1202,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:55.045Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "HOME-COURT TEAM\nREST VS OPPONENT\n\tIT WON\nSERIES %\n\n2 or more days short\n67 series\t65.7\nwithin a day either way\n92 series\t59.8\n2 or more days rested\n121 series\t83.5",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 284
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_calibration_table": [
+      {
+        "file": "assets/focused/method_playoff_calibration_table.jpg",
+        "label": "확률 품질·정확도 비교 표",
+        "width": 1202,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:55.302Z",
+        "kind": "focused",
+        "target": {
+          "table": 2
+        },
+        "targetText": "METRIC\tMODEL\tBASE RATE\tVERDICT\nLOG LOSS\t0.4939\t0.5696\t13% BETTER\nBRIER SCORE\t0.1628\t0.1907\t15% BETTER\nACCURACY\t75.1%\t74.4%\tNO CLEAR EDGE",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 215
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_round_split_table": [
+      {
+        "file": "assets/focused/method_playoff_round_split_table.jpg",
+        "label": "라운드별 정확도 표",
+        "width": 1202,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:55.571Z",
+        "kind": "focused",
+        "target": {
+          "table": 3
+        },
+        "targetText": "ROUNDS\tMODEL\nACCURACY %\n\tHOME COURT\nACCURACY %\n\nRound 2 on\n210 series\t73.3\nlog loss 0.5658\t69.5\nlog loss 0.6148\nRound 1\n240 series\t76.7\nlog loss 0.4309\t78.8\nlog loss 0.5173",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 231
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_forecast_hindsight_table": [
+      {
+        "file": "assets/focused/method_playoff_forecast_hindsight_table.jpg",
+        "label": "Forecast와 hindsight 정의 표",
+        "width": 1202,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:55.849Z",
+        "kind": "focused",
+        "target": {
+          "table": 4
+        },
+        "targetText": "ESTIMATE\tTRAINING DATA\nForecast\tTrained only on seasons before the one predicted.\nHindsight\tFitted on every season, including the one predicted. It cannot show predictive skill.",
+        "crop": {
+          "left": 39,
+          "top": 109,
+          "width": 1202,
+          "height": 181
+        },
+        "excerpt": false
+      }
+    ],
+    "method_playoff_feature_formulas": [
+      {
+        "file": "assets/focused/method_playoff_feature_formulas.jpg",
+        "label": "Playoff model 입력 특징 계산식 · 상단 발췌",
+        "width": 1252,
+        "route": "/behind-the-data/playoff-predictions",
+        "capturedAt": "2026-10-24T05:35:56.115Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Model inputs and interpretation",
+          "ancestor": "section"
+        },
+        "targetText": "Model inputs and interpretation\n4 inputs\n\nFour inputs, signed so a positive value favors the home-court team. Win percentage and head-to-head wins use home-court minus opponent; seed and prior grind use opponent minus home-court. The number beside each input is its standardized weight, in log-odds per standard deviation.\n\nwin_pct_diff +0.72\nThe gap in regular-season win percentage. The largest weight, about 1.8 times seed_diff's.\nseed_diff +0.40\nThe opponent’s seed minus the home-court team’s se",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 800
+        },
+        "excerpt": true
+      }
+    ],
+    "referee-method-data-table": [
+      {
+        "file": "assets/focused/referee-method-data-table.jpg",
+        "label": "우연 다중비교 측정값 표",
+        "width": 1202,
+        "route": "/behind-the-data/referees",
+        "capturedAt": "2026-10-24T05:35:58.326Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "MEASURE\tVALUE\nPairs examined\t689\nMinimum shared playoff games\t10\nSmallest p expected from chance\t0.00145\nThe most famous pair\t0.0016",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 250
+        },
+        "excerpt": false
+      }
+    ],
+    "referee-method-chance-count-table": [
+      {
+        "file": "assets/focused/referee-method-chance-count-table.jpg",
+        "label": "다중비교 p 임계값별 관측/우연 예상 표",
+        "width": 1202,
+        "route": "/behind-the-data/referees",
+        "capturedAt": "2026-10-24T05:35:58.581Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "CUTOFF\tPAIRS UNDER IT\nFOUND\n\tBY CHANCE\nEXPECTED\n\np < 0.01\t7\t6.9\np < 0.05\t27\t34.5",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 195
+        },
+        "excerpt": false
+      }
+    ],
+    "referee-archive-style-table": [
+      {
+        "file": "assets/focused/referee-archive-style-table.jpg",
+        "label": "공식별 foul mix 표 · 상단 발췌",
+        "width": 1250,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:00.800Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "#\t\nOFFICIAL\n\t\nAS CHIEF\ngames since 2024-25\n\t\nG ↓\ngames\n\t\nSINCE\nin this data\n\t\nFOULS\nlast 200 vs avg\n\t\nSHOOTING\nlast 200 vs avg\n\t\nPERSONAL\nlast 200 vs avg\n\t\nLOOSE BALL\nlast 200 vs avg\n\t\nOFFENSIVE\nlast 200 vs avg\n\t\nTECHNICAL\nlast 200 vs avg\n\n1\tJosh TivenCC\t93\t630\t2015-16\t−4%\t0%\t−1%\t0%\t−4%\t−3%\n2\tBrent BarnakyCC\t88\t617\t2015-16\t−1%\t+2%\t+3%\t−17%\t−3%\t−9%\n3\tBrian ForteCC\t78\t610\t2015-16\t−3%\t0%\t+1%\t−14%\t+2%\t+17%\n4\tZach ZarbaCC\t110\t608\t2015-16\t−4%\t+1%\t+1%\t+13%\t−22%\t−26%\n5\tGediminas PetraitisCC\t12\t600\t2015-",
+        "crop": {
+          "left": 15,
+          "top": 99,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "referee-archive-quarter-verdict-tiles": [
+      {
+        "file": "assets/focused/referee-archive-quarter-verdict-tiles.jpg",
+        "label": "분기별 판정 요약 타일",
+        "width": 1252,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:01.091Z",
+        "kind": "focused",
+        "target": {
+          "text": "WHEN THE FOULS COME · QUARTER SHARES",
+          "ancestor": "section"
+        },
+        "targetText": "WHEN THE FOULS COME · QUARTER SHARES\n\nIn this sample, the league calls 20.3% of them in the first quarter and 28.1% in the fourth. Relative to the chance benchmark, more officials cross the threshold for first- and fourth-quarter shares than for second- and third-quarter shares. These counts do not isolate an official’s contribution.\n\n1ST QUARTER\n10 vs 3.4\n2.94× CHANCE · MODEST\n2ND QUARTER\n2 vs 3.4\n0.59× CHANCE · AT CHANCE\n3RD QUARTER\n5 vs 3.4\n1.47× CHANCE · AT CHANCE\n4TH QUARTER\n8 vs 3.4\n2.35× ",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 658
+        },
+        "excerpt": false
+      }
+    ],
+    "referee-archive-timing-shifters": [
+      {
+        "file": "assets/focused/referee-archive-timing-shifters.jpg",
+        "label": "후반 휘슬 시프트 공식 목록",
+        "width": 1252,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:01.360Z",
+        "kind": "focused",
+        "target": {
+          "css": "main ul",
+          "nth": 0
+        },
+        "targetText": "Zach Zarba\n+2.39 pp · 635 games\nMark Ayotte\n−1.53 pp · 323 games\nEd Malloy\n−1.46 pp · 564 games\nTyler Ford\n−1.46 pp · 607 games\nTom Washington\n−1.40 pp · 473 games",
+        "crop": {
+          "left": 14,
+          "top": 89,
+          "width": 1252,
+          "height": 229
+        },
+        "excerpt": false
+      }
+    ],
+    "referee-archive-other-pairs-table": [
+      {
+        "file": "assets/focused/referee-archive-other-pairs-table.jpg",
+        "label": "같은 공식과 함께한 다른 선수 기록 표",
+        "width": 456,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:01.619Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "PLAYER\tWITH FOSTER\nwon–played\n\tEXPECTED\nwins\n\tDIFFERENCE\nwins\n\nOG Anunoby\t11–12\t6.36\t+4.64\nMiles McBride\t10–11\t5.30\t+4.70\nJosh Hart\t10–11\t5.30\t+4.70\nMitchell Robinson\t9–10\t4.69\t+4.31\nEric Gordon\t1–10\t4.97\t−3.97",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 456,
+          "height": 265
+        },
+        "excerpt": false
+      }
+    ],
+    "referee-archive-folklore-tiles": [
+      {
+        "file": "assets/focused/referee-archive-folklore-tiles.jpg",
+        "label": "공식-선수 기록과 우연 기준 StatTile 요약",
+        "width": 1252,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:01.884Z",
+        "kind": "focused",
+        "target": {
+          "text": "THE FEATURED PLAYOFF RECORD",
+          "ancestor": "section"
+        },
+        "targetText": "THE FEATURED PLAYOFF RECORD\n1–10\nCHRIS PAUL’S PLAYOFF RECORD IN GAMES SCOTT FOSTER WORKED · 6.34 WINS EXPECTED\n\nObserved wins and model expectation. Across the 913 playoff games played since 2015-16, Chris Paul’s teams won 1 of the 11 that Scott Foster worked. Expected wins come from a model fitted to playoff team-games using both teams’ regular-season strength and home court. This adjusts for those factors but does not fully account for how officials are assigned.\n\nOpponents faced with Foster h",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 343
+        },
+        "excerpt": false
+      }
+    ],
+    "method_rest_split_table": [
+      {
+        "file": "assets/focused/method_rest_split_table.jpg",
+        "label": "전체 rested/rest-gap 인구 분할 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:04.041Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "WINDOW\nDAYS BEFORE\n\tNORMAL\nGAMES\n\tTOUGH\nGAMES\n\n30 days\t11\t18\n15 days\t6\t9\n12 days\t5\t8\n7 days\t3\t5\n6 days\t3\t4",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 303
+        },
+        "excerpt": false
+      }
+    ],
+    "method_road_gap_size_table": [
+      {
+        "file": "assets/focused/method_road_gap_size_table.jpg",
+        "label": "Rested-on-road gap size 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:04.304Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "RESTED\nGAMES\n\tWON\nWIN RATE\n\tBASE\nsame side %\n\tGAP\npp\n\nAt home\n28,117 games\t61.1%\t59.9%\t+1.2\nOn the road\n10,670 games\t42.4%\t40.1%\t+2.3\nNo gap\n8,307 games\t—\t—\t—\nAll games since 1985-86\n47,094 games\t\t59.9% home\n40.1% road",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 337
+        },
+        "excerpt": false
+      }
+    ],
+    "method_road_era_table": [
+      {
+        "file": "assets/focused/method_road_era_table.jpg",
+        "label": "시대별 rested-on-road 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:04.584Z",
+        "kind": "focused",
+        "target": {
+          "table": 2
+        },
+        "targetText": "REST GAP\nSIZE\n\tWON\nWIN RATE\n\tVS 40.1%\nPCT POINTS\n\nAll gaps (0.5+)\n10,670 games\t42.4%\t+2.3\nSmall 0.5–3\n8,926 games\t42.0%\t+1.9\nMedium 3–5\n1,496 games\t44.1%\t+4.0\nLarge 5+\n248 games\t46.4%\t+6.3",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 337
+        },
+        "excerpt": false
+      }
+    ],
+    "method_density_windows_table": [
+      {
+        "file": "assets/focused/method_density_windows_table.jpg",
+        "label": "일정 밀도 기준 window 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:04.853Z",
+        "kind": "focused",
+        "target": {
+          "table": 3
+        },
+        "targetText": "ERA\nGAMES\n\tWON\nWIN RATE\n\tBASE\nera %\n\tGAP\npp\n\nAll seasons\n10,670 games\t42.4%\t40.1%\t+2.3\nLast 10 seasons\n2,798 games\t47.7%\t43.8%\t+3.9\nLast 5 seasons\n1,490 games\t49.6%\t44.7%\t+4.9",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 284
+        },
+        "excerpt": false
+      }
+    ],
+    "method_ablation_table": [
+      {
+        "file": "assets/focused/method_ablation_table.jpg",
+        "label": "Fatigue term ablation 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:05.108Z",
+        "kind": "focused",
+        "target": {
+          "table": 4
+        },
+        "targetText": "TERM\tFOUND ALONE\nGAMES\n\tTHEY WON\nWIN RATE\n\tIF REMOVED\nHEADLINE, PP\n\nTravel\t5,928\t59.1%\t+0.31pp\nRecent workload (decay)\t3,239\t63.0%\t−0.64pp\nRoad segment\t3,130\t58.2%\t+0.36pp\nBack-to-back\t1,572\t63.5%\t−0.32pp\nAltitude\t571\t63.8%\t−0.06pp\nSchedule density\t680\t59.3%\t−0.05pp\nOvertime\t246\t61.4%\t−0.05pp\nFreshness\t142\t54.9%\t+0.04pp",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 405
+        },
+        "excerpt": false
+      }
+    ],
+    "method_rest_advantage_formula_terms": [
+      {
+        "file": "assets/focused/method_rest_advantage_formula_terms.jpg",
+        "label": "Rest advantage 및 fatigue 계산 블록 · 상단 발췌",
+        "width": 1252,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:05.387Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Each term and its formula",
+          "ancestor": "section"
+        },
+        "targetText": "Each term and its formula\nLOADS: ADDED TOGETHER\n\nWorkload. Each game in the last 30 days adds load that fades quickly, so last night counts far more than last week. A blowout costs less, because starters usually sit late. The model uses the final margin for this; it does not see who actually played.\n\nworkload = sum of cost, games in\n           the last 30 days\ncost     = 2.65 × e^(−0.52 × d)\n           × blowout\nd        = days since that game\nblowout  = 1 up to a 15-point margin,\n           dow",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 800
+        },
+        "excerpt": true
+      }
+    ],
+    "schedule-method-market-buckets": [
+      {
+        "file": "assets/focused/schedule-method-market-buckets.jpg",
+        "label": "순 edge 구간별 라인 초과 비율 표",
+        "width": 254,
+        "route": "/behind-the-data/schedule-edge",
+        "capturedAt": "2026-10-24T05:36:07.465Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "NET EDGE\ngames\n\tWENT OVER\nshare of teams\n\n+10 or better\n110 team-seasons\t50.0%\n+5 to +9\n141 team-seasons\t46.1%\n−4 to +4\n374 team-seasons\t49.5%\n−9 to −5\n163 team-seasons\t46.0%\n−10 or worse\n93 team-seasons\t45.2%",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 254,
+          "height": 390
+        },
+        "excerpt": false
+      }
+    ],
+    "schedule-edge-method-threshold-value-grid": [
+      {
+        "file": "assets/focused/schedule-edge-method-threshold-value-grid.jpg",
+        "label": "순 edge 계산 threshold 요약",
+        "width": 1202,
+        "route": "/behind-the-data/schedule-edge",
+        "capturedAt": "2026-10-24T05:36:07.735Z",
+        "kind": "focused",
+        "target": "main .grid.gap-px",
+        "targetText": "FRESHER SIDE, AT HOME\n+1.18\npoints vs the home baseline\nMORE TIRED SIDE, AT HOME\n−2.36\npoints vs the home baseline\nREST GAP VS HOME COURT\n18%\n3.5 points against 19.9",
+        "crop": {
+          "left": 39,
+          "top": 99,
+          "width": 1202,
+          "height": 131
+        },
+        "excerpt": false
+      }
+    ],
+    "method_shot_value_formula": [
+      {
+        "file": "assets/focused/method_shot_value_formula.jpg",
+        "label": "기대 shot value 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/shot-value",
+        "capturedAt": "2026-10-24T05:36:10.090Z",
+        "kind": "focused",
+        "target": "main pre",
+        "targetText": "r3    = threes ÷ all shots in the cell\n\nxeFG% = 100 × [ (1 − r3) × P(two)\n              + r3 × 1.5 × P(three) ]",
+        "crop": {
+          "left": 39,
+          "top": 29,
+          "width": 1202,
+          "height": 211
+        },
+        "excerpt": false
+      }
+    ],
+    "method_shot_value_models_grid": [
+      {
+        "file": "assets/focused/method_shot_value_models_grid.jpg",
+        "label": "Shot value 모델 비교 ValueGrid",
+        "width": 1202,
+        "route": "/behind-the-data/shot-value",
+        "capturedAt": "2026-10-24T05:36:10.352Z",
+        "kind": "focused",
+        "target": "main .grid.gap-px",
+        "targetText": "LOCATION MODEL\ngbm-v1\ngradient boosting\nBASELINE\nbaseline-zone-v1\nofficial zone averages\nMODEL'S EDGE\n~1%\nlog-loss / Brier",
+        "crop": {
+          "left": 39,
+          "top": 99,
+          "width": 1202,
+          "height": 131
+        },
+        "excerpt": false
+      }
+    ],
+    "time-zones-raw-split-table": [
+      {
+        "file": "assets/focused/time-zones-raw-split-table.jpg",
+        "label": "동/서 장거리 시간대 이동과 기준 승률 표",
+        "width": 1202,
+        "route": "/behind-the-data/time-zones",
+        "capturedAt": "2026-10-24T05:36:12.426Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "VISITOR'S SHIFT\nFROM HOME BASE\n\tHOME WON\n%\n\nAll games in the era\n28,876 games\t58.39\nEast 3h+\n1,634 games\t54.41\nEast 3h+, short rest\n455 games\t53.63\nWest 3h+\n1,633 games\t61.91\nWest 3h+, short rest\n428 games\t66.59\nNo long shift\n25,609 games\t58.42",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 443
+        },
+        "excerpt": false
+      }
+    ],
+    "time-zones-strength-geography-table": [
+      {
+        "file": "assets/focused/time-zones-strength-geography-table.jpg",
+        "label": "시간대 그룹별 홈 팀 전력 차이 표",
+        "width": 1202,
+        "route": "/behind-the-data/time-zones",
+        "capturedAt": "2026-10-24T05:36:12.677Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "VISITOR'S SHIFT\tHOME EDGE\nSTRENGTH\n\tHOME WON\n%\n\nEast 3h+\t−0.0285\t54.41\nWest 3h+\t+0.0220\t61.91\nNo long shift\t−0.0021\t58.42",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 230
+        },
+        "excerpt": false
+      }
+    ],
+    "time-zones-held-out-model-table": [
+      {
+        "file": "assets/focused/time-zones-held-out-model-table.jpg",
+        "label": "walk-forward 모델별 log loss 표",
+        "width": 1202,
+        "route": "/behind-the-data/time-zones",
+        "capturedAt": "2026-10-24T05:36:12.951Z",
+        "kind": "focused",
+        "target": {
+          "table": 2
+        },
+        "targetText": "MODEL\tLOG LOSS\tWORTH\nStrength only\t0.62381\t—\n+ four fatigue terms\t0.62114\t+0.00268\n+ east/west × short rest\t0.62117\t−0.00003",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 215
+        },
+        "excerpt": false
+      }
+    ],
+    "time-zones-overlap-table": [
+      {
+        "file": "assets/focused/time-zones-overlap-table.jpg",
+        "label": "시간대 후보 항목과 기존 피로 항목 중복 표",
+        "width": 1202,
+        "route": "/behind-the-data/time-zones",
+        "capturedAt": "2026-10-24T05:36:13.205Z",
+        "kind": "focused",
+        "target": {
+          "table": 3
+        },
+        "targetText": "OVERLAP\tSHARE\n%\n\nVisitor on a back-to-back\t100.0\nAlready carry the back-to-back term\t86.4\nAlso visiting altitude\t0.0",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 230
+        },
+        "excerpt": false
+      }
+    ],
+    "data-status-publication-cards": [
+      {
+        "file": "assets/focused/data-status-publication-cards.jpg",
+        "label": "커버리지와 갱신 기록 상태 카드 · 상단 발췌",
+        "width": 1280,
+        "route": "/data-status",
+        "capturedAt": "2026-10-24T05:36:17.432Z",
+        "kind": "focused",
+        "target": "main",
+        "targetText": "COVERAGE · FRESHNESS · AVAILABILITY\nData Status\n\nWhat each published view currently covers. Database availability and data freshness are separate checks.\n\nDATABASE · REACHABLE\n\nThis checks whether FullCourt can read its database. It does not prove that scores or research publications are current. The machine-readable liveness endpoint remains available at /api/health.\n\n“Not recorded” means this view has no durable record of a successful refresh. Coverage dates and a reachable database do not con",
+        "crop": {
+          "left": 0,
+          "top": 36,
+          "width": 1280,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "games-upcoming-edges": [
+      {
+        "file": "assets/focused/games-upcoming-edges.jpg",
+        "label": "앞으로의 rest edge 목록",
+        "width": 1252,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:36:19.892Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Upcoming large rest edges",
+          "ancestor": "aside"
+        },
+        "targetText": "Upcoming large rest edges\n\nRested team at home · gap 5+ · 2026-27\n\nNOV 5, 2026\nMIA @ GSW\nGSW 5.1\nNOV 9, 2026\nNOP @ GSW\nGSW 6.1\nNOV 11, 2026\nBOS @ TOR\nTOR 5.8",
+        "crop": {
+          "left": 14,
+          "top": 805,
+          "width": 1252,
+          "height": 188
+        },
+        "excerpt": false
+      }
+    ],
+    "team-schedule-table": [
+      {
+        "file": "assets/focused/team-schedule-table.jpg",
+        "label": "팀별 시즌 일정 표 · 상단 발췌",
+        "width": 1252,
+        "route": "/games/team?team=BOS&season=2025-26",
+        "capturedAt": "2026-10-24T05:36:22.442Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "#\tDATE\tOPPONENT\tGAME\tREST GAP\n1\t\nWed Oct 22\n\t\nvs\nPhiladelphia 76ers\n\tL 116–117\t\nEVEN\n\n2\t\nFri Oct 24\n\t\n@\nNew York Knicks\n\tL 95–105\t\nEVEN\n\n3\t\nSun Oct 26\n\t\n@\nDetroit Pistons\n\tL 113–119\t\n+1.1\n\n4\t\nMon Oct 27\n\t\n@\nNew Orleans Pelicans\n\tW 122–90\t\nMEDIUM\n−3.4\n\n5\t\nWed Oct 29\n\t\nvs\nCleveland Cavaliers\n\tW 125–105\t\n−0.6\n\n6\t\nFri Oct 31\n\t\n@\nPhiladelphia 76ers\n\tW 109–108\t\n−1.8\n\n7\t\nSat Nov 1\n\t\nvs\nHouston Rockets\n\tL 101–128\t\n−5.0\n\n8\t\nMon Nov 3\n\t\nvs\nUtah Jazz\n\tL 103–105\t\nMEDIUM\n+3.7\n\n9\t\nWed Nov 5\n\t\nvs\nWashington Wi",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "home_court_season_chart": [
+      {
+        "file": "assets/focused/home_court_season_chart.jpg",
+        "label": "시즌별 홈 승률 및 rest 비교",
+        "width": 1026,
+        "route": "/home-court",
+        "capturedAt": "2026-10-24T05:36:25.636Z",
+        "kind": "focused",
+        "target": "svg[data-testid=\"home-court-chart\"]",
+        "targetText": "",
+        "crop": {
+          "left": 31,
+          "top": 49,
+          "width": 1026,
+          "height": 420
+        },
+        "excerpt": false
+      }
+    ],
+    "home_court_season_table": [
+      {
+        "file": "assets/focused/home_court_season_table.jpg",
+        "label": "시즌별 홈-court 데이터 표 · 상단 발췌",
+        "width": 1060,
+        "route": "/home-court",
+        "capturedAt": "2026-10-24T05:36:25.905Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Season\tHome wins / games\tHome win rate\tRested at home wins / games\tRested at home win rate\tVs baseline\n2026-27\nSeason to date\n\t13 / 28\t46.4%\t0 / 3\t0.0%\t−46.4 pp\n2025-26\t679 / 1,225\t55.4%\t350 / 636\t55.0%\t−0.4 pp\n2024-25\t667 / 1,225\t54.4%\t372 / 661\t56.3%\t+1.9 pp\n2023-24\t666 / 1,226\t54.3%\t385 / 687\t56.0%\t+1.7 pp\n2022-23\t714 / 1,228\t58.1%\t426 / 699\t60.9%\t+2.8 pp\n2021-22\t669 / 1,230\t54.4%\t401 / 694\t57.8%\t+3.4 pp\n2020-21\t587 / 1,080\t54.4%\t329 / 578\t56.9%\t+2.5 pp\n2019-20\t535 / 968\t55.3%\t309 / 544\t56.8%",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "engineering-process-cards": [
+      {
+        "file": "assets/focused/engineering-process-cards.jpg",
+        "label": "데이터 처리 흐름 및 구현/검증 카드",
+        "width": 996,
+        "route": "/how-it-was-built",
+        "capturedAt": "2026-10-24T05:36:28.067Z",
+        "kind": "focused",
+        "target": "#data-flow",
+        "targetText": "02\nHow a record reaches the screen\n01\nCollect\n\nNBA and other documented sources feed Python and TypeScript pipelines.\n\n02\nCalculate and validate\n\nPostgreSQL records, offline models and generated research artifacts.\n\n03\nInspect\n\nNext.js pages with filters, comparisons, source records and shareable views.\n\nSources and coverage →",
+        "crop": {
+          "left": 270,
+          "top": 100,
+          "width": 996,
+          "height": 414
+        },
+        "excerpt": false
+      }
+    ],
+    "maskable-icons": [
+      {
+        "file": "assets/focused/maskable-icons.jpg",
+        "label": "Android/Chromium maskable 192px·512px icons",
+        "width": 212,
+        "route": "/icon-192.png",
+        "capturedAt": "2026-10-24T05:36:29.242Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 534,
+          "top": 434,
+          "width": 212,
+          "height": 232
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/aux-maskable-512.jpg",
+        "label": "Maskable icon · 512px",
+        "width": 532,
+        "route": "/icon-512.png",
+        "capturedAt": "2026-10-24T05:37:37.451Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 374,
+          "top": 274,
+          "width": 532,
+          "height": 552
+        },
+        "excerpt": false
+      }
+    ],
+    "favicon-svg": [
+      {
+        "file": "assets/focused/favicon-svg.jpg",
+        "label": "브라우저 favicon SVG",
+        "width": 92,
+        "route": "/icon.svg",
+        "capturedAt": "2026-10-24T05:36:30.318Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 0,
+          "top": 0,
+          "width": 92,
+          "height": 112
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-error-split": [
+      {
+        "file": "assets/focused/officiating-error-split.jpg",
+        "label": "식별 오류 중 missed/wrong whistle 비율",
+        "width": 1252,
+        "route": "/officiating?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:32.612Z",
+        "kind": "focused",
+        "target": "section[aria-label=\"Season finding\"]",
+        "targetText": "Jump to game reviews ↓\n82%\nof identified errors\nwere missed calls\nMissed 308\nWrong whistle 68\n\n376 identified errors, 386 reviewed games\n\nMissed share of identified errors · regular season\n100%\n50%\n89.8%\n2014-15\n84.8%\n2015-16\n92.9%\n2016-17\n89.9%\n2017-18\n90.0%\n2018-19\n87.7%\n2019-20\n81.8%\n2020-21\n85.6%\n2021-22\n87.2%\n2022-23\n84.6%\n2023-24\n80.0%\n2024-25\n81.9%\n2025-26\n60.0%\n2026-27\n\nCovers only the close-game endings the NBA chose to review. The missed-call share describes identified errors, not whol",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 431
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-season-strip": [
+      {
+        "file": "assets/focused/officiating-season-strip.jpg",
+        "label": "시즌별 missed-call share 비교 막대",
+        "width": 884,
+        "route": "/officiating?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:32.870Z",
+        "kind": "focused",
+        "target": "[aria-label=\"Season comparison; scroll for more seasons\"]",
+        "targetText": "89.8%\n2014-15\n84.8%\n2015-16\n92.9%\n2016-17\n89.9%\n2017-18\n90.0%\n2018-19\n87.7%\n2019-20\n81.8%\n2020-21\n85.6%\n2021-22\n87.2%\n2022-23\n84.6%\n2023-24\n80.0%\n2024-25\n81.9%\n2025-26\n60.0%\n2026-27",
+        "crop": {
+          "left": 382,
+          "top": 59,
+          "width": 884,
+          "height": 209
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-recent-season-values": [
+      {
+        "file": "assets/focused/officiating-recent-season-values.jpg",
+        "label": "최근 완료 시즌별 오류/검토 경기 비율",
+        "width": 1252,
+        "route": "/officiating?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:33.131Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Errors in reviewed game endings",
+          "ancestor": "section"
+        },
+        "targetText": "Errors in reviewed game endings\n\nDifferent games get reviewed each season. These counts do not establish a trend in officiating quality. The current season is excluded from this completed-season comparison.\n\nErrors per reviewed game · latest completed seasons\n\n1.17\n2023-24\n0.76\n2024-25\n0.97\n2025-26",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 193
+        },
+        "excerpt": false
+      }
+    ],
+    "officiating-game-review-list": [
+      {
+        "file": "assets/focused/officiating-game-review-list.jpg",
+        "label": "검토 경기 목록과 펼친 L2M 보고서",
+        "width": 1252,
+        "route": "/officiating?season=2025-26",
+        "capturedAt": "2026-10-24T05:37:41.036Z",
+        "kind": "focused",
+        "target": "main details",
+        "targetText": "ORLMagic\nBOSCeltics\nApr 12, 2026\nMissed\n2\nWrong whistle\n0\n›\nShow all assessed plays (24)\nCopy report link\n\nQ4 · 01:15.5\nShooting foul\n\nIncorrect non-call\n\nBanton (BOS) wraps his hand around Wagner's (ORL) waist, which affects his shot attempt.\nSource: NBA L2M report ↗\nNBA video page ↗\nQ4 · 00:25.9\nLoose-ball foul\n\nIncorrect non-call\n\nCarter Jr. (ORL) grabs and holds Scheierman's (BOS) left arm/shoulder, which affects his ability to pursue the jump ball.\nSource: NBA L2M report ↗\nNBA video page ↗\n",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 679
+        },
+        "excerpt": false
+      }
+    ],
+    "open-graph-card": [
+      {
+        "file": "assets/focused/open-graph-card.jpg",
+        "label": "Open Graph social preview card",
+        "width": 1220,
+        "route": "/opengraph-image",
+        "capturedAt": "2026-10-24T05:36:35.071Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 30,
+          "top": 215,
+          "width": 1220,
+          "height": 670
+        },
+        "excerpt": false
+      }
+    ],
+    "playoff_grind_gap_bars": [
+      {
+        "file": "assets/focused/playoff_grind_gap_bars.jpg",
+        "label": "상대의 직전 라운드 길이별 승률 막대",
+        "width": 1060,
+        "route": "/playoffs?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:37.207Z",
+        "kind": "focused",
+        "target": {
+          "text": "Among home-court teams that finished their own prior round early:",
+          "ancestor": "div"
+        },
+        "targetText": "+16.7 points\nHOME-COURT TEAM WIN-RATE GAP · ROUNDS 2+\n\nAmong home-court teams that finished their own prior round early:\n\nOpponent finished early\n68.9%\n74 SERIES\nOpponent played a long series\n85.6%\n90 SERIES\n\nEarly means at most one game beyond a sweep; long means two or three beyond a sweep. Both bars show the home-court team. When that team also played a long series, the rates reverse: 65.9% against a fresh opponent, 59.7% against a tired one.",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 450
+        },
+        "excerpt": false
+      }
+    ],
+    "playoff_series_cards": [
+      {
+        "file": "assets/focused/playoff_series_cards.jpg",
+        "label": "시즌별 라운드·시리즈 카드 목록 · 상단 발췌",
+        "width": 1060,
+        "route": "/playoffs?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:37.498Z",
+        "kind": "focused",
+        "target": "[data-shot-anchor=\"round-group\"]",
+        "targetText": "FIRST ROUND · 8 SERIES\nCLE\nHC\nvs\nTOR\nEAST\n4-3\nActual result: CLE won\n✓ CORRECT\n\nModel pick\n\nCavaliers\n59.3%\nEstimated chance CLE wins the series\nFit using known results\n\nThis fit includes the target season’s known results and can include later observations. It shows how a model fits results it has seen; it cannot demonstrate predictive performance.\n\nCavaliers\n58.5%\nEstimated chance CLE wins the series\n\nSERIES FEATURES\n\nSEED DIFF\n+1\nWIN% DIFF, PP\n+7.3\nPRIOR GRIND DIFF\n0\nENTRY REST DIFF\n0\nH2H DIFF",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "schedule-edge-summary-tiles": [
+      {
+        "file": "assets/focused/schedule-edge-summary-tiles.jpg",
+        "label": "Season summary measures",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:39.926Z",
+        "kind": "focused",
+        "target": "main div.grid.gap-px",
+        "targetText": "MOST FAVORED\n+16\nDET · Pistons\nLEAST FAVORED\n−12\nSAS · Spurs\nSPREAD\n28\ngames, best to worst\nGAMES WITH AN EDGE\n939\n242 of them 3+ rest edges",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 150
+        },
+        "excerpt": false
+      }
+    ],
+    "schedule-edge-ranked-diverging-bars": [
+      {
+        "file": "assets/focused/schedule-edge-ranked-diverging-bars.jpg",
+        "label": "팀별 순 rest-edge 막대 · 상단 발췌",
+        "width": 1218,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.188Z",
+        "kind": "focused",
+        "target": "main ol",
+        "targetText": "1\nDET\n+16\n2\nDEN\n+14\n3\nIND\n+11\n4\nMIL\n+10\n5\nWAS\n+10\n6\nNYK\n+9\n7\nUTA\n+9\n8\nSAC\n+5\n9\nTOR\n+4\n10\nCHA\n+4\n11\nLAL\n+4\n12\nBKN\n+3\n13\nATL\n+2\n14\nPHI\n+1\n15\nMEM\n0\n16\nMIN\n−2\n17\nPOR\n−2\n18\nGSW\n−2\n19\nLAC\n−3\n20\nDAL\n−3\n21\nCHI\n−5\n22\nPHX\n−7\n23\nHOU\n−7\n24\nBOS\n−8\n25\nMIA\n−8\n26\nOKC\n−8\n27\nORL\n−11\n28\nCLE\n−12\n29\nNOP\n−12\n30\nSAS\n−12",
+        "crop": {
+          "left": 31,
+          "top": 99,
+          "width": 1218,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "schedule-edge-expanded-breakdown-table": [
+      {
+        "file": "assets/focused/schedule-edge-expanded-breakdown-table.jpg",
+        "label": "전체 팀별 세부 지표 표 · 상단 발췌",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.462Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "#\tTEAM\tEDGE GAMES\tNET\ngames\n\tREST DAYS\nnet\n\tWORTH\nwins\n\tFAV / UNFAV\ngames\n\t3+ REST EDGE\ngames\n\tB2B EDGE\ngames\n\t3-IN-4 EDGE\ngames\n\n1\t\nDET\nPistons\n\t\n\t+16\t+5\t+0.3\t39 / 23\t+2\t+2\t0\n2\t\nDEN\nNuggets\n\t\n\t+14\t−7\t+0.2\t40 / 26\t+9\t−1\t+6\n3\t\nIND\nPacers\n\t\n\t+11\t0\t+0.2\t36 / 25\t+2\t−3\t−2\n4\t\nMIL\nBucks\n\t\n\t+10\t+7\t+0.2\t38 / 28\t+4\t+4\t+7\n5\t\nWAS\nWizards\n\t\n\t+10\t+9\t+0.2\t34 / 24\t+3\t+3\t+9\n6\t\nNYK\nKnicks\n\t\n\t+9\t−2\t+0.1\t34 / 25\t−1\t−2\t−2\n7\t\nUTA\nJazz\n\t\n\t+9\t+4\t+0.2\t39 / 30\t+5\t+1\t−1\n8\t\nSAC\nKings\n\t\n\t+5\t+4\t+0.1\t35 / 30\t+2\t+3\t0\n9\t\nTOR\nRa",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "schedule-workload-tax-table": [
+      {
+        "file": "assets/focused/schedule-workload-tax-table.jpg",
+        "label": "팀별 여행 거리와 일정 부담 표 · 상단 발췌",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.734Z",
+        "kind": "focused",
+        "target": {
+          "table": 1
+        },
+        "targetText": "TEAM\tMILEAGE\nMILES · SEASON\n\tBACK-TO-BACKS\nGAMES · 1ST = MOST\n\t3-IN-4\nGAMES · 1ST = MOST\n\tTIME ZONES\nROAD GAMES · 2+ ZONES\n\nUTA\t2,497\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nMEM\t1,797\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t1\nMIN\t1,717\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nNOP\t1,433\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nIND\t1,427\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nMIL\t1,272\t01ST\nranked 1 of 30 teams\n\t01ST\nrank",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "schedule-workload-league-fatigue-chart": [
+      {
+        "file": "assets/focused/schedule-workload-league-fatigue-chart.jpg",
+        "label": "주별 리그 평균 피로도",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:37:43.174Z",
+        "kind": "focused",
+        "target": {
+          "heading": "League fatigue by week",
+          "ancestor": "div",
+          "up": 2
+        },
+        "targetText": "League fatigue by week\nCompleted games · every team · mean fatigue score\n\nEach bar is one week: the average fatigue score of every team that played. This is the whole league, not a comparison between teams. Lighter bars are weeks well below the usual level, when most teams came in rested, such as opening week or the week after a league break.\n\nPEAK: WEEK OF OCT 20, 2026 · 0.8\n\nWeek of Oct 20, 2026 · 0.8 · 28 games\n\nOCT\n0\n0.25\n0.5\n0.75\n1",
+        "crop": {
+          "left": 14,
+          "top": 295,
+          "width": 1252,
+          "height": 480
+        },
+        "excerpt": false
+      }
+    ],
+    "shared-rank-badge": [
+      {
+        "file": "assets/focused/shared-rank-badge.jpg",
+        "label": "순위 배지 · 실제 사용 예 · 상단 발췌",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:41.258Z",
+        "kind": "representative",
+        "target": {
+          "table": 1
+        },
+        "targetText": "TEAM\tMILEAGE\nMILES · SEASON\n\tBACK-TO-BACKS\nGAMES · 1ST = MOST\n\t3-IN-4\nGAMES · 1ST = MOST\n\tTIME ZONES\nROAD GAMES · 2+ ZONES\n\nUTA\t2,497\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nMEM\t1,797\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t1\nMIN\t1,717\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nNOP\t1,433\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nIND\t1,427\t01ST\nranked 1 of 30 teams\n\t01ST\nranked 1 of 30 teams\n\t0\nMIL\t1,272\t01ST\nranked 1 of 30 teams\n\t01ST\nrank",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "season-summary-band": [
+      {
+        "file": "assets/focused/season-summary-band.jpg",
+        "label": "시즌 홈/휴식 결과 요약",
+        "width": 1060,
+        "route": "/season?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:44.323Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Home court and rest",
+          "ancestor": "section"
+        },
+        "targetText": "FINAL SEASON RECORD\n\nHome court and rest\n\nHOME WIN RATE\n\n55.4%\n\n679 wins / 1,225 eligible games\n\nRESTED AT HOME WIN RATE\n\n55.0%\n\n350 wins / 636 eligible games\n\nVS HOME RATE\n\n−0.4 pp\n\nRested team at home versus all designated-home games\n\n1,230 / 1,230 published regular-season games completed with scored fatigue pairs.\n\n1,230 scored final games; 0 awaiting one or both fatigue records.\n\nSee home-court history →\nA descriptive season record\n\nThis is a record of completed games. Team strength, venue, ",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 466
+        },
+        "excerpt": false
+      }
+    ],
+    "season-team-records": [
+      {
+        "file": "assets/focused/season-team-records.jpg",
+        "label": "팀별 rested-home/tired-road 기록 표와 색상 스케일 · 상단 발췌",
+        "width": 1060,
+        "route": "/season?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:44.586Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Team results under different rest conditions",
+          "ancestor": "section"
+        },
+        "targetText": "Team results under different rest conditions\n\nCompare each team’s win rate when rested at home with its rate when tired on the road.\n\nHow this home/rest gap compares with the league\n\nSmaller home/rest gap\nLeague gap\n+10.1 pp\nLarger home/rest gap\nTeam\tRested at home\nW / G · win %\tTired road\nW / G · win %\tHome/rest gap\npp\n\nNYK\n\t18/20\n90.0%\t11/20\n55.0%\t+35.0\nLarger home/rest gap than league\n\n\nSAC\n\t11/27\n40.7%\t2/26\n7.7%\t+33.0\nLarger home/rest gap than league\n\n\nPHX\n\t13/19\n68.4%\t8/21\n38.1%\t+30.3\nLarge",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "season-largest-rest-gaps": [
+      {
+        "file": "assets/focused/season-largest-rest-gaps.jpg",
+        "label": "가장 넓은 경기별 rest gap 목록",
+        "width": 1060,
+        "route": "/season?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:44.843Z",
+        "kind": "focused",
+        "target": {
+          "heading": "When the rest gap was widest",
+          "ancestor": "section"
+        },
+        "targetText": "When the rest gap was widest\n\nFive largest completed-game rest gaps with the rested team at home, regardless of outcome. Rest advantage is a model-score difference.\n\n2026-01-30\nBKN @\nUTA\n109–99 · RA 9.9\nRESTED TEAM LOST →\n2026-01-17\nWAS @\nDEN\n115–121 · RA 9.3\nRESTED TEAM WON →\n2025-11-13\nATL @\nUTA\n132–122 · RA 8.2\nRESTED TEAM LOST →\n2026-03-01\nPOR @\nATL\n101–135 · RA 8.0\nRESTED TEAM WON →\n2025-11-23\nLAC @\nCLE\n105–120 · RA 7.5\nRESTED TEAM WON →",
+        "crop": {
+          "left": 14,
+          "top": 367,
+          "width": 1060,
+          "height": 528
+        },
+        "excerpt": false
+      }
+    ],
+    "player_shooting_main_table": [
+      {
+        "file": "assets/focused/player_shooting_main_table.jpg",
+        "label": "선수별 shooting by rest 표 · 상단 발췌",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:36:47.047Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/aux-shooting-phone-table.jpg",
+        "label": "Shooting · 폰에서 처음 보이는 열 · 390px",
+        "width": 383,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:39:49.864Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 7,
+          "top": 99,
+          "width": 383,
+          "height": 430
+        },
+        "excerpt": true
+      }
+    ],
+    "player_zero_rest_workload_table": [
+      {
+        "file": "assets/focused/player_zero_rest_workload_table.jpg",
+        "label": "무휴식 workload 상위 선수 표 · 상단 발췌",
+        "width": 1252,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:36:47.369Z",
+        "kind": "focused",
+        "target": {
+          "summary": "Show zero-rest player workload"
+        },
+        "targetText": "Show zero-rest player workload\n\nPlayers ranked by shot attempts on zero days' rest. Attempt counts measure workload; compare shooting rates with their sample sizes on Player Shooting by Rest. Career rest splits live on Player Shooting by Rest →\n\nPLAYER\tTEAM\tNO-REST FGA\nSHOT ATTEMPTS\n\tNO-REST EFG%\tGAMES\nSEASON TOTAL\n\nTyrese Maxey\tPHI\t310\t51.9\t70\nKevin Durant\tHOU\t266\t58.1\t78\nJamal Murray\tDEN\t255\t62.9\t75\nDevin Booker\tPHX\t249\t52.8\t64\nDonovan Mitchell\tCLE\t226\t56.0\t70\nJalen Brunson\tNYK\t223\t49.3\t74\nMil",
+        "crop": {
+          "left": 14,
+          "top": 205,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "shared-data-table-primitive": [
+      {
+        "file": "assets/focused/shared-data-table-primitive.jpg",
+        "label": "반응형 semantic DataTable · 실제 사용 예 · 상단 발췌",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:36:47.634Z",
+        "kind": "representative",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "shot_quality_actual_map": [
+      {
+        "file": "assets/focused/shot_quality_actual_map.jpg",
+        "label": "실제 shot attempts 위치 맵",
+        "width": 532,
+        "route": "/shot-quality?season=2025-26&mode=actual",
+        "capturedAt": "2026-10-24T05:36:50.195Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "Actual shot attempts\nOBSERVED VOLUME · REGULAR SEASON\nInspect a location · Actual shot attempts\n\nLeft Corner 3 · 2 attempts · 2 attempts · -24.5 ft across, -4.5 ft upcourt from the rim",
+        "crop": {
+          "left": 374,
+          "top": 214,
+          "width": 532,
+          "height": 704
+        },
+        "excerpt": false
+      }
+    ],
+    "shot_quality_difference_map": [
+      {
+        "file": "assets/focused/shot_quality_difference_map.jpg",
+        "label": "모델 차이 위치 맵",
+        "width": 468,
+        "route": "/shot-quality?season=2025-26&mode=diff",
+        "capturedAt": "2026-10-24T05:36:52.479Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "MODEL DIFFERENCE\nΔ EXPECTED eFG% · LOCATION MODEL MINUS ZONE AVERAGE\nInspect a location · MODEL DIFFERENCE\n\nLeft Corner 3 · 2 attempts · −1.3 pp · -24.5 ft across, -4.5 ft upcourt from the rim",
+        "crop": {
+          "left": 406,
+          "top": 273,
+          "width": 468,
+          "height": 643
+        },
+        "excerpt": false
+      }
+    ],
+    "shot_quality_expected_map": [
+      {
+        "file": "assets/focused/shot_quality_expected_map.jpg",
+        "label": "기대 eFG% 위치 맵 · 상단 발췌",
+        "width": 532,
+        "route": "/shot-quality?season=2025-26&mode=value",
+        "capturedAt": "2026-10-24T05:36:54.782Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "Left Corner 3\n\nZone average\n\n57.8% eFG\n\nLocation model\n\n56.5% eFG\n\n2 attempts at this location · -24.5 ft across, -4.5 ft upcourt from the rim\n\nZone average\nZONE-AVERAGE (STEP SURFACE)\nInspect a location · Zone average",
+        "crop": {
+          "left": 374,
+          "top": 99,
+          "width": 532,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "games-date-navigation-grid": [
+      {
+        "file": "assets/focused/games-date-navigation-grid.jpg",
+        "label": "날짜 선택기 달력 및 주간 스트립",
+        "width": 1252,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:34.827Z",
+        "kind": "focused",
+        "target": "section[aria-label=\"Choose a game date\"]",
+        "targetText": "SEASON\n2026-27\n2025-26\n2024-25\n2023-24\n2022-23\n2021-22\n2020-21\n2019-20\n2018-19\n2017-18\n2016-17\n2015-16\n2014-15\n2013-14\n2012-13\n2011-12\n2010-11\n2009-10\n2008-09\n2007-08\n2006-07\n2005-06\n2004-05\n2003-04\n2002-03\n2001-02\n2000-01\n1999-00\n1998-99\n1997-98\n1996-97\n1995-96\n1994-95\n1993-94\n1992-93\n1991-92\n1990-91\n1989-90\n1988-89\n1987-88\n1986-87\n1985-86\nMONTH\nOCT\nNOV\nDEC\nJAN\nFEB\nMAR\nAPR\nDATE\n20\n3 GMS\n21\n11 GMS\n22\n2 GMS\n23\n12 GMS\n24\n8 GMS\n25\n7 GMS\n26\n9 GMS\n27\n4 GMS\n28\n12 GMS\n29\n3 GMS\n30\n10 GMS\n31\n7 GMS",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 344
+        },
+        "excerpt": false
+      }
+    ],
+    "games-matchup-board": [
+      {
+        "file": "assets/focused/games-matchup-board.jpg",
+        "label": "하루 경기 매치업 보드",
+        "width": 1250,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:35.109Z",
+        "kind": "focused",
+        "target": "[aria-label=\"Matchups table; scroll horizontally for all columns\"]",
+        "targetText": "GAME\nMATCHUP (AWAY / HOME)\nFATIGUE SCORE\nREST ADVANTAGE\nEDGE\nFINAL\n106–114\nCavaliers\nCleveland\n76ers\nPhiladelphia\nHOME\n0.0\n1.2\nCLE\n1.2\nADVANTAGE\nA\nH\n\nSeason opener for the Cavaliers. No earlier regular-season game this season; preseason is not included.\n\nAWAY · CLE\n\nGAMES, LAST 30 / 7 DAYS\n0 / 0\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×1\nMILEAGE, LAST 7 DAYS\n359\nDAYS REST\n—\n\nHOME · PHI\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n171\nDAY",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 233
+        },
+        "excerpt": false
+      }
+    ],
+    "games-matchup-expanded-detail": [
+      {
+        "file": "assets/focused/games-matchup-expanded-detail.jpg",
+        "label": "경기 행의 피로 세부 정보",
+        "width": 1250,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:35.437Z",
+        "kind": "focused",
+        "target": {
+          "expandedGame": true
+        },
+        "targetText": "FINAL\n106–114\nCavaliers\nCleveland\n76ers\nPhiladelphia\nHOME\n0.0\n1.2\nCLE\n1.2\nADVANTAGE\nA\nH\n\nSeason opener for the Cavaliers. No earlier regular-season game this season; preseason is not included.\n\nAWAY · CLE\n\nGAMES, LAST 30 / 7 DAYS\n0 / 0\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×1\nMILEAGE, LAST 7 DAYS\n359\nDAYS REST\n—\n\nHOME · PHI\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n171\nDAYS REST\n1 day",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 414
+        },
+        "excerpt": false
+      }
+    ],
+    "shared-fatigue-bar": [
+      {
+        "file": "assets/focused/shared-fatigue-bar.jpg",
+        "label": "FatigueBar · 실제 사용 예",
+        "width": 1250,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:35.705Z",
+        "kind": "representative",
+        "target": {
+          "expandedGame": true
+        },
+        "targetText": "FINAL\n106–114\nCavaliers\nCleveland\n76ers\nPhiladelphia\nHOME\n0.0\n1.2\nCLE\n1.2\nADVANTAGE\nA\nH\n\nSeason opener for the Cavaliers. No earlier regular-season game this season; preseason is not included.\n\nAWAY · CLE\n\nGAMES, LAST 30 / 7 DAYS\n0 / 0\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×1\nMILEAGE, LAST 7 DAYS\n359\nDAYS REST\n—\n\nHOME · PHI\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n171\nDAYS REST\n1 day",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 414
+        },
+        "excerpt": false
+      }
+    ],
+    "shared-team-logo": [
+      {
+        "file": "assets/focused/shared-team-logo.jpg",
+        "label": "시대별 NBA 팀 로고와 fallback chip · 실제 사용 예 · 상단 발췌",
+        "width": 1250,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:35.974Z",
+        "kind": "representative",
+        "target": "[aria-label=\"Matchups table; scroll horizontally for all columns\"]",
+        "targetText": "GAME\nMATCHUP (AWAY / HOME)\nFATIGUE SCORE\nREST ADVANTAGE\nEDGE\nFINAL\n106–114\nCavaliers\nCleveland\n76ers\nPhiladelphia\nHOME\n0.0\n1.2\nCLE\n1.2\nADVANTAGE\nA\nH\n\nSeason opener for the Cavaliers. No earlier regular-season game this season; preseason is not included.\n\nAWAY · CLE\n\nGAMES, LAST 30 / 7 DAYS\n0 / 0\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×1\nMILEAGE, LAST 7 DAYS\n359\nDAYS REST\n—\n\nHOME · PHI\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n171\nDAY",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 320
+        },
+        "excerpt": true
+      }
+    ],
+    "shared-rest-advantage-badge": [
+      {
+        "file": "assets/focused/shared-rest-advantage-badge.jpg",
+        "label": "rest advantage badge · 실제 사용 예",
+        "width": 1250,
+        "route": "/games?date=2026-10-22",
+        "capturedAt": "2026-10-24T05:37:36.247Z",
+        "kind": "representative",
+        "target": {
+          "expandedGame": true
+        },
+        "targetText": "FINAL\n106–114\nCavaliers\nCleveland\n76ers\nPhiladelphia\nHOME\n0.0\n1.2\nCLE\n1.2\nADVANTAGE\nA\nH\n\nSeason opener for the Cavaliers. No earlier regular-season game this season; preseason is not included.\n\nAWAY · CLE\n\nGAMES, LAST 30 / 7 DAYS\n0 / 0\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n×1\nMILEAGE, LAST 7 DAYS\n359\nDAYS REST\n—\n\nHOME · PHI\n\nGAMES, LAST 30 / 7 DAYS\n1 / 1\nBACK-TO-BACK\nN\n3 IN 4\nN\n4 IN 6\nN\nROAD STREAK\n—\nMILEAGE, LAST 7 DAYS\n171\nDAYS REST\n1 day",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 414
+        },
+        "excerpt": false
+      }
+    ],
+    "schedule-market-guardrail": [
+      {
+        "file": "assets/focused/schedule-market-guardrail.jpg",
+        "label": "시즌 승수 시장 점검 문구 카드",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:37:43.446Z",
+        "kind": "focused",
+        "target": {
+          "text": "The market check · season win totals",
+          "ancestor": "div"
+        },
+        "targetText": "THE MARKET CHECK · SEASON WIN TOTALS\n\nAcross 31 seasons of archived lines, the correlation between net edge games and a team’s finish against the line is r = +0.01 across 884 team-seasons. This archive does not show a consistent relationship between net edge and beating the line. It does not establish a betting advantage from this ranking.\n\nTHE FULL MARKET CHECK, BEHIND THE DATA →",
+        "crop": {
+          "left": 14,
+          "top": 766,
+          "width": 1252,
+          "height": 226
+        },
+        "excerpt": false
+      }
+    ]
+  },
+  "findings": {
+    "finding-1": [
+      {
+        "file": "assets/focused/aux-shooting-phone-table.jpg",
+        "label": "Shooting · 폰에서 처음 보이는 열 · 390px",
+        "width": 383,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:39:49.864Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 7,
+          "top": 99,
+          "width": 383,
+          "height": 430
+        },
+        "excerpt": true
+      }
+    ],
+    "finding-2": [
+      {
+        "file": "assets/focused/aux-shooting-phone-coverage.jpg",
+        "label": "Shooting · 갱신 안내와 표 진입 · 390px",
+        "width": 378,
+        "route": "/shooting",
+        "capturedAt": "2026-10-24T05:40:21.774Z",
+        "kind": "focused",
+        "target": {
+          "textOnly": "2026-27 · Observed through"
+        },
+        "targetText": "2026-27 · Observed through 2026-10-23 · 17/17 completed games covered. Snapshot generated 2026-10-24T00:05:00.708214+00:00. Latest daily update check 2026-10-24T00:04:56.372076+00:00.",
+        "crop": {
+          "left": 6,
+          "top": 100,
+          "width": 378,
+          "height": 430
+        },
+        "excerpt": false
+      }
+    ],
+    "finding-3": [
+      {
+        "file": "assets/focused/player_shooting_main_table.jpg",
+        "label": "선수별 shooting by rest 표 · 상단 발췌",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:36:47.047Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/season-team-records.jpg",
+        "label": "팀별 rested-home/tired-road 기록 표와 색상 스케일 · 상단 발췌",
+        "width": 1060,
+        "route": "/season?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:44.586Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Team results under different rest conditions",
+          "ancestor": "section"
+        },
+        "targetText": "Team results under different rest conditions\n\nCompare each team’s win rate when rested at home with its rate when tired on the road.\n\nHow this home/rest gap compares with the league\n\nSmaller home/rest gap\nLeague gap\n+10.1 pp\nLarger home/rest gap\nTeam\tRested at home\nW / G · win %\tTired road\nW / G · win %\tHome/rest gap\npp\n\nNYK\n\t18/20\n90.0%\t11/20\n55.0%\t+35.0\nLarger home/rest gap than league\n\n\nSAC\n\t11/27\n40.7%\t2/26\n7.7%\t+33.0\nLarger home/rest gap than league\n\n\nPHX\n\t13/19\n68.4%\t8/21\n38.1%\t+30.3\nLarge",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/method_availability_schedule_table.jpg",
+        "label": "Absence 통제 전후 schedule 계수 표",
+        "width": 1202,
+        "route": "/behind-the-data/availability",
+        "capturedAt": "2026-10-24T05:35:44.467Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "TERM\tALONE\nCOEF.\n\tWITH ABSENCES\nCOEF.\n\tCHANGE\n%\n\nBack-to-back\t1.856\t1.692\t8.8\nAltitude, visitor\t1.734\t1.663\t4.1\nOvertime last game\t0.538\t0.503\t6.4\nSchedule density\t0.283\t0.262\t7.4",
+        "crop": {
+          "left": 39,
+          "top": 65,
+          "width": 1202,
+          "height": 265
+        },
+        "excerpt": false
+      }
+    ],
+    "finding-4": [
+      {
+        "file": "assets/focused/schedule-edge-ranked-diverging-bars.jpg",
+        "label": "팀별 순 rest-edge 막대 · 상단 발췌",
+        "width": 1218,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.188Z",
+        "kind": "focused",
+        "target": "main ol",
+        "targetText": "1\nDET\n+16\n2\nDEN\n+14\n3\nIND\n+11\n4\nMIL\n+10\n5\nWAS\n+10\n6\nNYK\n+9\n7\nUTA\n+9\n8\nSAC\n+5\n9\nTOR\n+4\n10\nCHA\n+4\n11\nLAL\n+4\n12\nBKN\n+3\n13\nATL\n+2\n14\nPHI\n+1\n15\nMEM\n0\n16\nMIN\n−2\n17\nPOR\n−2\n18\nGSW\n−2\n19\nLAC\n−3\n20\nDAL\n−3\n21\nCHI\n−5\n22\nPHX\n−7\n23\nHOU\n−7\n24\nBOS\n−8\n25\nMIA\n−8\n26\nOKC\n−8\n27\nORL\n−11\n28\nCLE\n−12\n29\nNOP\n−12\n30\nSAS\n−12",
+        "crop": {
+          "left": 31,
+          "top": 99,
+          "width": 1218,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/player_shooting_main_table.jpg",
+        "label": "선수별 shooting by rest 표 · 상단 발췌",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:36:47.047Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/shot_quality_difference_map.jpg",
+        "label": "모델 차이 위치 맵",
+        "width": 468,
+        "route": "/shot-quality?season=2025-26&mode=diff",
+        "capturedAt": "2026-10-24T05:36:52.479Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "MODEL DIFFERENCE\nΔ EXPECTED eFG% · LOCATION MODEL MINUS ZONE AVERAGE\nInspect a location · MODEL DIFFERENCE\n\nLeft Corner 3 · 2 attempts · −1.3 pp · -24.5 ft across, -4.5 ft upcourt from the rim",
+        "crop": {
+          "left": 406,
+          "top": 273,
+          "width": 468,
+          "height": 643
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/officiating-error-split.jpg",
+        "label": "식별 오류 중 missed/wrong whistle 비율",
+        "width": 1252,
+        "route": "/officiating?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:32.612Z",
+        "kind": "focused",
+        "target": "section[aria-label=\"Season finding\"]",
+        "targetText": "Jump to game reviews ↓\n82%\nof identified errors\nwere missed calls\nMissed 308\nWrong whistle 68\n\n376 identified errors, 386 reviewed games\n\nMissed share of identified errors · regular season\n100%\n50%\n89.8%\n2014-15\n84.8%\n2015-16\n92.9%\n2016-17\n89.9%\n2017-18\n90.0%\n2018-19\n87.7%\n2019-20\n81.8%\n2020-21\n85.6%\n2021-22\n87.2%\n2022-23\n84.6%\n2023-24\n80.0%\n2024-25\n81.9%\n2025-26\n60.0%\n2026-27\n\nCovers only the close-game endings the NBA chose to review. The missed-call share describes identified errors, not whol",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1252,
+          "height": 431
+        },
+        "excerpt": false
+      }
+    ],
+    "finding-5": [
+      {
+        "file": "assets/focused/analysis_gap_size_chart.jpg",
+        "label": "Rest-gap 크기별 승률 편차 차트",
+        "width": 1252,
+        "route": "/analysis",
+        "capturedAt": "2026-10-24T05:38:21.310Z",
+        "kind": "focused",
+        "target": {
+          "text": "DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME",
+          "ancestor": "div",
+          "parentLevels": 2
+        },
+        "targetText": "DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME\nTAP A BAR OR CHOOSE A GROUP TO INSPECT\nSMALL 0.5–3n=17,355\nMEDIUM 3–5n=6,866\nLARGE 5+n=3,899\n−2\n0\n+2\n+4\n+6\n+8\nRESTED TEAM BEAT THE HOME BASELINE\nRESTED TEAM FELL SHORT OF IT\nPERCENTAGE POINTS · 0 = 59.9%, HOW OFTEN THE HOME TEAM WINS ANYWAY\nSmall gap · 0.5–3\n59.9% · 17,355 games\n0.0 pp vs home baseline\nMedium gap · 3–5\n61.9% · 6,866 games\n+2.0 pp vs home baseline\nLarge gap · 5+\n65.1% · 3,899 games\n+5.2 pp vs home baseline",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 550
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/home_court_season_chart.jpg",
+        "label": "시즌별 홈 승률 및 rest 비교",
+        "width": 1026,
+        "route": "/home-court",
+        "capturedAt": "2026-10-24T05:36:25.636Z",
+        "kind": "focused",
+        "target": "svg[data-testid=\"home-court-chart\"]",
+        "targetText": "",
+        "crop": {
+          "left": 31,
+          "top": 49,
+          "width": 1026,
+          "height": 420
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/shot_quality_expected_map.jpg",
+        "label": "기대 eFG% 위치 맵 · 상단 발췌",
+        "width": 532,
+        "route": "/shot-quality?season=2025-26&mode=value",
+        "capturedAt": "2026-10-24T05:36:54.782Z",
+        "kind": "focused",
+        "target": "main figure",
+        "targetText": "Left Corner 3\n\nZone average\n\n57.8% eFG\n\nLocation model\n\n56.5% eFG\n\n2 attempts at this location · -24.5 ft across, -4.5 ft upcourt from the rim\n\nZone average\nZONE-AVERAGE (STEP SURFACE)\nInspect a location · Zone average",
+        "crop": {
+          "left": 374,
+          "top": 99,
+          "width": 532,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ],
+    "finding-6": [
+      {
+        "file": "assets/focused/aux-shooting-current-zero.jpg",
+        "label": "Shooting · 현재 시즌의 0회와 미측정 값",
+        "width": 1250,
+        "route": "/shooting",
+        "capturedAt": "2026-10-24T05:37:46.000Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nShai Gilgeous-Alexander\nOKC\n2 games · 46 att. · 47.8% eFG\n\t0\t—\t0\t—\t\n—\n\n\nTyler Herro\nMIL\n2 games · 45 att. · 56.7% eFG\n\t0\t—\t0\t—\t\n—\n\n\nTyrese Maxey\nPHI\n2 games · 42 att. · 54.8% eFG\n\t0\t—\t0\t—\t\n—\n\n\nCaleb Wilson\nCHI\n2 games · 35 att. · 44.3% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJaylen Brown\nPHI\n2 games · 34 att. · 54.4% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJoel Embiid\nPHI\n2 games · 31 att. · 43.5% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJalen Williams\nOKC\n2 games ",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 420
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/aux-shooting-uncertainty-formula.jpg",
+        "label": "Shooting Methods · 불확실성 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:38:23.820Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 2
+        },
+        "targetText": "SE ≈ √( 2500 ÷ FGA no rest\n       + 2500 ÷ FGA rested )",
+        "crop": {
+          "left": 39,
+          "top": 54,
+          "width": 1202,
+          "height": 149
+        },
+        "excerpt": false
+      }
+    ],
+    "finding-7": [
+      {
+        "file": "assets/focused/availability_effect_bars.jpg",
+        "label": "Absence 및 일정 효과 크기 막대",
+        "width": 1060,
+        "route": "/availability",
+        "capturedAt": "2026-10-24T05:35:38.690Z",
+        "kind": "focused",
+        "target": {
+          "heading": "Missing the best player",
+          "ancestor": "section"
+        },
+        "targetText": "Missing the best player\n3.03 points\nLOWER FINAL MARGIN WITH THE BEST PLAYER ABSENT · ASSOCIATION\nBest player out\n3.03\nPlaying at home\n2.70\nOn a back-to-back\n1.86\nVisiting altitude\n1.73\nOff an overtime\n0.54\n\nThe best-player-out estimate is similar in size to the home-court estimate. Bars compare the size of associations, not their direction: home court is associated with a higher margin, while the other conditions are associated with a lower margin. All are measured in points across 25,435 games,",
+        "crop": {
+          "left": 14,
+          "top": 99,
+          "width": 1060,
+          "height": 647
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/schedule-edge-ranked-diverging-bars.jpg",
+        "label": "팀별 순 rest-edge 막대 · 상단 발췌",
+        "width": 1218,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.188Z",
+        "kind": "focused",
+        "target": "main ol",
+        "targetText": "1\nDET\n+16\n2\nDEN\n+14\n3\nIND\n+11\n4\nMIL\n+10\n5\nWAS\n+10\n6\nNYK\n+9\n7\nUTA\n+9\n8\nSAC\n+5\n9\nTOR\n+4\n10\nCHA\n+4\n11\nLAL\n+4\n12\nBKN\n+3\n13\nATL\n+2\n14\nPHI\n+1\n15\nMEM\n0\n16\nMIN\n−2\n17\nPOR\n−2\n18\nGSW\n−2\n19\nLAC\n−3\n20\nDAL\n−3\n21\nCHI\n−5\n22\nPHX\n−7\n23\nHOU\n−7\n24\nBOS\n−8\n25\nMIA\n−8\n26\nOKC\n−8\n27\nORL\n−11\n28\nCLE\n−12\n29\nNOP\n−12\n30\nSAS\n−12",
+        "crop": {
+          "left": 31,
+          "top": 99,
+          "width": 1218,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/home_rest_gap_rate_bars.jpg",
+        "label": "역사적 rest-gap 결과 막대",
+        "width": 1124,
+        "route": "/",
+        "capturedAt": "2026-10-24T05:35:27.734Z",
+        "kind": "focused",
+        "target": "section[aria-labelledby=\"rest-finding\"]",
+        "targetText": "Large rest gaps\n·\n\nfor the rested team at home\n\n+5.2 pp\n\nPercentage-point difference from the home baseline in 3,899 games with a large rest gap (5+ fatigue-score points).\n\nAll completed regular seasons · 1985-86 to 2025-26\n\nRest evidence through 2026-04-12\n\nHome teams overall\n59.9%\nRested team at home · large gap\n65.1%\n\nBars run from 0–100%. Baseline: 47,094 games. Both rates cover the same completed seasons. The difference uses unrounded rates. These historical groups differ in more than rest;",
+        "crop": {
+          "left": 78,
+          "top": 100,
+          "width": 1124,
+          "height": 469
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/playoff_grind_gap_bars.jpg",
+        "label": "상대의 직전 라운드 길이별 승률 막대",
+        "width": 1060,
+        "route": "/playoffs?season=2025-26",
+        "capturedAt": "2026-10-24T05:36:37.207Z",
+        "kind": "focused",
+        "target": {
+          "text": "Among home-court teams that finished their own prior round early:",
+          "ancestor": "div"
+        },
+        "targetText": "+16.7 points\nHOME-COURT TEAM WIN-RATE GAP · ROUNDS 2+\n\nAmong home-court teams that finished their own prior round early:\n\nOpponent finished early\n68.9%\n74 SERIES\nOpponent played a long series\n85.6%\n90 SERIES\n\nEarly means at most one game beyond a sweep; long means two or three beyond a sweep. Both bars show the home-court team. When that team also played a long series, the rates reverse: 65.9% against a fresh opponent, 59.7% against a tired one.",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1060,
+          "height": 450
+        },
+        "excerpt": false
+      }
+    ],
+    "finding-8": [
+      {
+        "file": "assets/focused/aux-shooting-expanded.jpg",
+        "label": "Shooting · 선수 상세 행",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:37:48.636Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n2025-26\nBOS\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n2024-25\nBOS\n\t90\t51.1%\t363\t48.3%\t\n−2.8\n†\n\n2023-24\nBOS\n\t144\t54.9%\t381\t61.9%\t\n+7.1\n\n2022-23\nBOS\n\t142\t47.2%\t398\t52.6%\t\n+5.5\n†\n\n2021-22\nBOS\n\t164\t54.6%\t324\t52.6%\t\n−1.9\n†\n\n2020-21\nBOS\n\t255\t53.1%\t200\t55.8%\t\n+2.6\n†\n\n2019-20\nBOS\n\t92\t46.7%\t207\t58.2%\t\n+11.5\n\n2018-19\nBOS\n\t111\t38.7%\t201\t53.0%",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 650
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/schedule-edge-expanded-breakdown-table.jpg",
+        "label": "전체 팀별 세부 지표 표 · 상단 발췌",
+        "width": 1252,
+        "route": "/schedule",
+        "capturedAt": "2026-10-24T05:36:40.462Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "#\tTEAM\tEDGE GAMES\tNET\ngames\n\tREST DAYS\nnet\n\tWORTH\nwins\n\tFAV / UNFAV\ngames\n\t3+ REST EDGE\ngames\n\tB2B EDGE\ngames\n\t3-IN-4 EDGE\ngames\n\n1\t\nDET\nPistons\n\t\n\t+16\t+5\t+0.3\t39 / 23\t+2\t+2\t0\n2\t\nDEN\nNuggets\n\t\n\t+14\t−7\t+0.2\t40 / 26\t+9\t−1\t+6\n3\t\nIND\nPacers\n\t\n\t+11\t0\t+0.2\t36 / 25\t+2\t−3\t−2\n4\t\nMIL\nBucks\n\t\n\t+10\t+7\t+0.2\t38 / 28\t+4\t+4\t+7\n5\t\nWAS\nWizards\n\t\n\t+10\t+9\t+0.2\t34 / 24\t+3\t+3\t+9\n6\t\nNYK\nKnicks\n\t\n\t+9\t−2\t+0.1\t34 / 25\t−1\t−2\t−2\n7\t\nUTA\nJazz\n\t\n\t+9\t+4\t+0.2\t39 / 30\t+5\t+1\t−1\n8\t\nSAC\nKings\n\t\n\t+5\t+4\t+0.1\t35 / 30\t+2\t+3\t0\n9\t\nTOR\nRa",
+        "crop": {
+          "left": 14,
+          "top": 100,
+          "width": 1252,
+          "height": 720
+        },
+        "excerpt": true
+      },
+      {
+        "file": "assets/focused/method_rest_split_table.jpg",
+        "label": "전체 rested/rest-gap 인구 분할 표",
+        "width": 1202,
+        "route": "/behind-the-data/rest-advantage",
+        "capturedAt": "2026-10-24T05:36:04.041Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "WINDOW\nDAYS BEFORE\n\tNORMAL\nGAMES\n\tTOUGH\nGAMES\n\n30 days\t11\t18\n15 days\t6\t9\n12 days\t5\t8\n7 days\t3\t5\n6 days\t3\t4",
+        "crop": {
+          "left": 39,
+          "top": 64,
+          "width": 1202,
+          "height": 303
+        },
+        "excerpt": false
+      },
+      {
+        "file": "assets/focused/referee-archive-style-table.jpg",
+        "label": "공식별 foul mix 표 · 상단 발췌",
+        "width": 1250,
+        "route": "/behind-the-data/referees/archive",
+        "capturedAt": "2026-10-24T05:36:00.800Z",
+        "kind": "focused",
+        "target": {
+          "table": 0
+        },
+        "targetText": "#\t\nOFFICIAL\n\t\nAS CHIEF\ngames since 2024-25\n\t\nG ↓\ngames\n\t\nSINCE\nin this data\n\t\nFOULS\nlast 200 vs avg\n\t\nSHOOTING\nlast 200 vs avg\n\t\nPERSONAL\nlast 200 vs avg\n\t\nLOOSE BALL\nlast 200 vs avg\n\t\nOFFENSIVE\nlast 200 vs avg\n\t\nTECHNICAL\nlast 200 vs avg\n\n1\tJosh TivenCC\t93\t630\t2015-16\t−4%\t0%\t−1%\t0%\t−4%\t−3%\n2\tBrent BarnakyCC\t88\t617\t2015-16\t−1%\t+2%\t+3%\t−17%\t−3%\t−9%\n3\tBrian ForteCC\t78\t610\t2015-16\t−3%\t0%\t+1%\t−14%\t+2%\t+17%\n4\tZach ZarbaCC\t110\t608\t2015-16\t−4%\t+1%\t+1%\t+13%\t−22%\t−26%\n5\tGediminas PetraitisCC\t12\t600\t2015-",
+        "crop": {
+          "left": 15,
+          "top": 99,
+          "width": 1250,
+          "height": 720
+        },
+        "excerpt": true
+      }
+    ]
+  },
+  "failures": [],
+  "extras": {
+    "aux-maskable-512": [
+      {
+        "file": "assets/focused/aux-maskable-512.jpg",
+        "label": "Maskable icon · 512px",
+        "width": 532,
+        "route": "/icon-512.png",
+        "capturedAt": "2026-10-24T05:37:37.451Z",
+        "kind": "focused",
+        "target": {
+          "asset": true
+        },
+        "targetText": "",
+        "crop": {
+          "left": 374,
+          "top": 274,
+          "width": 532,
+          "height": 552
+        },
+        "excerpt": false
+      }
+    ],
+    "aux-shooting-phone-coverage": [
+      {
+        "file": "assets/focused/aux-shooting-phone-coverage.jpg",
+        "label": "Shooting · 갱신 안내와 표 진입 · 390px",
+        "width": 378,
+        "route": "/shooting",
+        "capturedAt": "2026-10-24T05:40:21.774Z",
+        "kind": "focused",
+        "target": {
+          "textOnly": "2026-27 · Observed through"
+        },
+        "targetText": "2026-27 · Observed through 2026-10-23 · 17/17 completed games covered. Snapshot generated 2026-10-24T00:05:00.708214+00:00. Latest daily update check 2026-10-24T00:04:56.372076+00:00.",
+        "crop": {
+          "left": 6,
+          "top": 100,
+          "width": 378,
+          "height": 430
+        },
+        "excerpt": false
+      }
+    ],
+    "aux-shooting-current-zero": [
+      {
+        "file": "assets/focused/aux-shooting-current-zero.jpg",
+        "label": "Shooting · 현재 시즌의 0회와 미측정 값",
+        "width": 1250,
+        "route": "/shooting",
+        "capturedAt": "2026-10-24T05:37:46.000Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nShai Gilgeous-Alexander\nOKC\n2 games · 46 att. · 47.8% eFG\n\t0\t—\t0\t—\t\n—\n\n\nTyler Herro\nMIL\n2 games · 45 att. · 56.7% eFG\n\t0\t—\t0\t—\t\n—\n\n\nTyrese Maxey\nPHI\n2 games · 42 att. · 54.8% eFG\n\t0\t—\t0\t—\t\n—\n\n\nCaleb Wilson\nCHI\n2 games · 35 att. · 44.3% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJaylen Brown\nPHI\n2 games · 34 att. · 54.4% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJoel Embiid\nPHI\n2 games · 31 att. · 43.5% eFG\n\t0\t—\t0\t—\t\n—\n\n\nJalen Williams\nOKC\n2 games ",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 420
+        },
+        "excerpt": true
+      }
+    ],
+    "aux-shooting-phone-table": [
+      {
+        "file": "assets/focused/aux-shooting-phone-table.jpg",
+        "label": "Shooting · 폰에서 처음 보이는 열 · 390px",
+        "width": 383,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:39:49.864Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n\nTyrese Maxey\nPHI\n70 games · 1,501 att. · 53.6% eFG\n\t310\t51.9%\t360\t51.0%\t\n−1.0\n†\n\n\nJalen Brunson\nNYK\n74 games · 1,475 att. · 53.3% eFG\n\t223\t49.3%\t339\t56.6%\t\n+7.3\n\n\nLuka Dončić\nLAL\n64 games · 1,457 att. · 56.3% eFG\n\t158\t65.5%\t416\t54.4%\t\n−11.1\n\n\nDonovan Mitchell\nCLE\n70 games · 1,403 att. · 56.3% eFG\n\t226\t56.0%\t380\t61.8%\t\n",
+        "crop": {
+          "left": 7,
+          "top": 99,
+          "width": 383,
+          "height": 430
+        },
+        "excerpt": true
+      }
+    ],
+    "aux-shooting-expanded": [
+      {
+        "file": "assets/focused/aux-shooting-expanded.jpg",
+        "label": "Shooting · 선수 상세 행",
+        "width": 1250,
+        "route": "/shooting?year=2025",
+        "capturedAt": "2026-10-24T05:37:48.636Z",
+        "kind": "focused",
+        "target": "main table",
+        "targetText": "Player\n\t\nNo rest attempts\n\t\nNo rest eFG%\n\t\n2+ days rest attempts\n\t\n2+ days rest eFG%\n\t\nGap (pp)\n\n\nJaylen Brown\nBOS\n71 games · 1,543 att. · 52.2% eFG\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n2025-26\nBOS\n\t108\t48.6%\t476\t50.3%\t\n+1.7\n†\n\n2024-25\nBOS\n\t90\t51.1%\t363\t48.3%\t\n−2.8\n†\n\n2023-24\nBOS\n\t144\t54.9%\t381\t61.9%\t\n+7.1\n\n2022-23\nBOS\n\t142\t47.2%\t398\t52.6%\t\n+5.5\n†\n\n2021-22\nBOS\n\t164\t54.6%\t324\t52.6%\t\n−1.9\n†\n\n2020-21\nBOS\n\t255\t53.1%\t200\t55.8%\t\n+2.6\n†\n\n2019-20\nBOS\n\t92\t46.7%\t207\t58.2%\t\n+11.5\n\n2018-19\nBOS\n\t111\t38.7%\t201\t53.0%",
+        "crop": {
+          "left": 15,
+          "top": 100,
+          "width": 1250,
+          "height": 650
+        },
+        "excerpt": true
+      }
+    ],
+    "aux-shooting-efg-formula": [
+      {
+        "file": "assets/focused/aux-shooting-efg-formula.jpg",
+        "label": "Shooting Methods · eFG% 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:38:23.537Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 1
+        },
+        "targetText": "eFG% = 100 × (FGM + 0.5 × 3PM)\n             ÷ FGA",
+        "crop": {
+          "left": 39,
+          "top": 55,
+          "width": 1202,
+          "height": 149
+        },
+        "excerpt": false
+      }
+    ],
+    "aux-shooting-uncertainty-formula": [
+      {
+        "file": "assets/focused/aux-shooting-uncertainty-formula.jpg",
+        "label": "Shooting Methods · 불확실성 계산식",
+        "width": 1202,
+        "route": "/behind-the-data/player-shooting",
+        "capturedAt": "2026-10-24T05:38:23.820Z",
+        "kind": "focused",
+        "target": {
+          "css": "main pre",
+          "nth": 2
+        },
+        "targetText": "SE ≈ √( 2500 ÷ FGA no rest\n       + 2500 ÷ FGA rested )",
+        "crop": {
+          "left": 39,
+          "top": 54,
+          "width": 1202,
+          "height": 149
+        },
+        "excerpt": false
+      }
+    ]
+  },
+  "summary": {
+    "items": 95,
+    "findings": 8,
+    "uniqueImages": 102,
+    "inlinePlacements": 121
+  }
+}

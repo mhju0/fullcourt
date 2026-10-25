@@ -1,0 +1,128 @@
+const { chromium } = require('@playwright/test');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { pathToFileURL } = require('node:url');
+const root = __dirname;
+const annotations = JSON.parse(fs.readFileSync(path.join(root,'annotations.json')));
+const expectedCaptureCount = [...Object.values(annotations.items),...Object.values(annotations.findings)].reduce((total,captures) => total+captures.length,0);
+(async () => {
+ const browser = await chromium.launch();
+ const checks = [], errors = [];
+ const downloads = fs.mkdtempSync(path.join(os.tmpdir(), 'fullcourt-review-'));
+ const check = (name, pass, evidence) => checks.push({name, pass, ...(evidence ? {evidence} : {})});
+ const open = async (file, init) => {
+  const context = await browser.newContext({acceptDownloads:true});
+  if (init) await context.addInitScript(init);
+  const page = await context.newPage();
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(pathToFileURL(file).href);
+  return {context,page};
+ };
+ const sourceFile = path.join(root,'index.html');
+ const {page,context} = await open(sourceFile);
+ check('95 inventory responses and 8 tailored finding responses', await page.locator('.item').count() === 95 && await page.locator('.item select').count() === 95 && await page.locator('.finding-response').count() === 8 && await page.locator('textarea').count() === 103);
+ check('no disclosures, report filters, hidden sections or preselected answers', await page.locator('details,summary,input[type=search]').count() === 0 && await page.locator('input:checked').count() === 0 && await page.locator('select').evaluateAll(elements => elements.every(el => el.value === '')) && await page.locator('.group,.finding,.item').evaluateAll(elements => elements.every(el => getComputedStyle(el).display !== 'none')));
+ const captureCount = await page.locator('img[data-capture]').count();
+ check('all annotated captures displayed immediately with embedded images', captureCount === expectedCaptureCount && await page.locator('img[data-capture]').evaluateAll(elements => elements.every(el => el.src.startsWith('data:image/jpeg;base64,') && el.getBoundingClientRect().width > 0 && el.closest('.preview').clientHeight > 0)));
+ check('103 comment articles each own visible screenshot evidence and response controls', await page.locator('article.finding,article.item').evaluateAll(elements => elements.length===103 && elements.every(el => {
+  const image=el.querySelector('.evidence-images img[data-capture]'),comment=el.querySelector('.comment');
+  return image && comment && comment.querySelector('[data-response]') && image.getBoundingClientRect().width>0 && image.compareDocumentPosition(comment)&Node.DOCUMENT_POSITION_FOLLOWING;
+ })));
+ check('no detached screenshot galleries', await page.locator('.gallery,.capture').count()===0 && await page.locator('img[data-capture]').evaluateAll(elements => elements.every(el => el.closest('article.finding,article.item'))));
+ check('every screenshot matches its assigned file, route, label and capture kind', await page.locator('article.finding,article.item').evaluateAll((elements,annotations) => elements.every(el => {
+  const expected=el.dataset.item ? annotations.items[el.dataset.item] : annotations.findings[el.dataset.finding];
+  const figures=[...el.querySelectorAll('figure')];
+  return figures.length===expected.length && figures.every((figure,i) => figure.dataset.evidenceId===expected[i].file && figure.dataset.route===expected[i].route && figure.dataset.kind===expected[i].kind && figure.textContent.includes(expected[i].label) && figure.textContent.includes(expected[i].capturedAt));
+ }),annotations));
+ await page.locator('img[data-capture]').evaluateAll(async elements => { await Promise.all(elements.map(el => {el.loading = 'eager'; return el.decode();})); });
+ check('all embedded captures decode', await page.locator('img[data-capture]').evaluateAll(elements => elements.every(el => el.complete && el.naturalWidth > 0)));
+ for (const width of [1440,390,320]) {
+  await page.setViewportSize({width,height:900});
+  check('image beside its own comment on desktop, directly before on phones at '+width, await page.locator('article.finding,article.item').evaluateAll((elements,width) => elements.every(el => {
+   const image=el.querySelector('.evidence-images').getBoundingClientRect(),comment=el.querySelector('.comment').getBoundingClientRect();
+   return width>700 ? image.right<=comment.left && Math.abs(image.top-comment.top)<2 : image.bottom<=comment.top && Math.abs(image.left-comment.left)<2;
+  }),width));
+  check('page reflow and visible report at '+width, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('.group,.finding,.item')].every(el => el.getBoundingClientRect().width > 0)));
+ }
+ check('200% text reflow at 320px', await page.evaluate(() => {document.documentElement.style.fontSize='200%';const pass = document.documentElement.scrollWidth <= innerWidth;document.documentElement.style.fontSize='';return pass;}));
+ await page.locator('[data-zoom]').first().click();
+ await page.locator('#zoom-image').evaluate(image => image.decode());
+ check('optional zoom opens', await page.locator('#zoom').isVisible());
+ await page.keyboard.press('Escape');
+ check('Escape closes zoom', !await page.locator('#zoom').isVisible());
+ await page.locator('input[name=finding-1]').first().focus();
+ await page.keyboard.press('Space');
+ check('finding radio supports keyboard', await page.locator('input[name=finding-1]').first().isChecked());
+ const firstItem = await page.locator('.item').first().getAttribute('data-item');
+ const special = '한글 여러 줄\n둘째 줄 </script> & "큰따옴표" \'작은따옴표\' <메모> 😀 <script>window.reportNoteExecuted=true</script>';
+ await page.locator('[data-response="finding-1-note"]').fill(special);
+ await page.locator(`select[data-response="item-${firstItem}-decision"]`).selectOption('simplify');
+ await page.locator(`textarea[data-response="item-${firstItem}-note"]`).fill('항목 메모\n'+special);
+ await page.locator('article.finding,article.item').evaluateAll((articles,special) => articles.forEach((article,i) => {
+  const radio=article.querySelector('input[type=radio]');
+  const select=article.querySelector('select');
+  if(radio) {const choices=article.querySelectorAll('input[type=radio]');choices[i%choices.length].checked=true;choices[i%choices.length].dispatchEvent(new Event('input',{bubbles:true}));}
+  if(select) {select.value=['keep','review','simplify','custom'][i%4];select.dispatchEvent(new Event('input',{bubbles:true}));}
+  const note=article.querySelector('textarea');note.value=i+' · '+special;note.dispatchEvent(new Event('input',{bubbles:true}));
+ }),special);
+ const answers = await page.evaluate(() => {const values={};document.querySelectorAll('[data-response]').forEach(el => {if(el.type!=='radio'||el.checked) values[el.dataset.response]=el.value;});return values;});
+ check('all 103 response groups populated across 206 values',Object.keys(answers).length===206 && Object.values(answers).every(value=>value!==''));
+ const save = async (target,filename) => {
+  const downloadEvent = target.waitForEvent('download');
+  await target.locator('[data-save]').first().click();
+  const download = await downloadEvent;
+  const destination = path.join(downloads,filename);
+  await download.saveAs(destination);
+  check('download completed '+filename, (await download.failure()) === null && fs.statSync(destination).size > 100000);
+  return destination;
+ };
+ const firstSaved = await save(page,'saved-first.html');
+ check('save status asks user to confirm download', (await page.locator('[data-status]').first().textContent()).includes('다운로드 목록에서'));
+ const {page:reopened,context:reopenedContext} = await open(firstSaved);
+ check('script-like notes remain inert text', await reopened.evaluate(() => window.reportNoteExecuted === undefined));
+ check('fresh context has no localStorage', await reopened.evaluate(() => localStorage.length === 0));
+ const readAnswers = target => target.evaluate(() => {const values={};document.querySelectorAll('[data-response]').forEach(el => {if(el.type!=='radio'||el.checked) values[el.dataset.response]=el.value;});return values;});
+ check('standalone first reopen restores all 206 responses exactly', JSON.stringify(await readAnswers(reopened)) === JSON.stringify(answers));
+ check('saved report keeps all embedded images outside report directory', await reopened.locator('img[data-capture]').count()===expectedCaptureCount && await reopened.locator('img[data-capture]').evaluateAll(async elements => {await Promise.all(elements.map(el => {el.loading='eager';return el.decode();}));return elements.every(el => el.naturalWidth>0&&el.src.startsWith('data:'));}));
+ await reopened.locator('[data-response="finding-1-note"]').fill(special+'\n재저장');
+ reopened.on('dialog', dialog => dialog.accept());
+ await reopened.reload();
+ check('saved HTML edits restore matching snapshot draft after reload', await reopened.locator('[data-response=\"finding-1-note\"]').inputValue() === special+'\n재저장');
+ const secondAnswers = await readAnswers(reopened);
+ const secondSaved = await save(reopened,'saved-second.html');
+ const {page:second,context:secondContext} = await open(secondSaved, () => {localStorage.setItem('fullcourt-graphics-review:'+location.href,JSON.stringify({values:{'finding-1-note':'잘못된 다른 초안'},updatedAt:Date.now()+100000}));});
+ check('second save and reopen preserves responses; embedded state takes precedence', JSON.stringify(await readAnswers(second)) === JSON.stringify(secondAnswers));
+ const failure = await open(sourceFile, () => {Storage.prototype.setItem = () => {throw new DOMException('blocked','SecurityError');};Storage.prototype.getItem = () => {throw new DOMException('blocked','SecurityError');};});
+ await failure.page.locator('[data-response="finding-1-note"]').fill(special);
+ await failure.page.evaluate(() => {URL.createObjectURL = () => {throw new Error('download failure');};});
+ await failure.page.locator('[data-save]').first().click();
+ check('blocked storage and failed save preserve unsaved responses', await failure.page.locator('[data-response="finding-1-note"]').inputValue()===special && (await failure.page.locator('[data-status]').first().textContent()).includes('입력은 유지'));
+ check('failed save preserves dirty state', await failure.page.evaluate(() => {const event=new Event('beforeunload',{cancelable:true});dispatchEvent(event);return event.defaultPrevented;}));
+ await failure.context.close();
+ const draft = await open(sourceFile);
+ await draft.page.locator('[data-response="finding-2-note"]').fill('임시 복원\n테스트');
+ draft.page.on('dialog', dialog => dialog.accept());
+ await draft.page.reload();
+ check('base report local draft restores after reload', await draft.page.locator('[data-response="finding-2-note"]').inputValue()==='임시 복원\n테스트');
+ await draft.context.close();
+ const clean = await open(sourceFile);
+ await clean.page.setViewportSize({width:390,height:844});
+ await clean.page.screenshot({path:path.join(root,'report-mobile.jpg')});
+ await clean.page.setViewportSize({width:1440,height:1000});
+ await clean.page.screenshot({path:path.join(root,'report-desktop.jpg')});
+ await clean.context.close();
+ const links = await page.locator('a[href]').evaluateAll(elements => elements.map(el=>el.getAttribute('href')).filter(href=>!href.startsWith('#')&&!href.startsWith('http')));
+ check('local reference links exist in original report',links.every(href=>fs.existsSync(path.resolve(root,href))));
+ const inventory = JSON.parse(fs.readFileSync(path.join(root,'inventory.json')));
+ const evidence = JSON.parse(fs.readFileSync(path.join(root,'evidence.json')));
+ const repo = path.resolve(root,'../../..');
+ check('all 95 source pointers resolve',inventory.length===95&&inventory.every(item=>{const file=path.join(repo,item.source);return fs.existsSync(file)&&item.line>0&&item.line<=fs.readFileSync(file,'utf8').split('\n').length;}));
+ check('35 authentic route captures retain successful evidence',evidence.length===35&&evidence.every(item=>item.status===200&&!item.error&&!item.enrichError));
+ check('no JavaScript errors across original, saved and failure flows',errors.length===0,errors);
+ await context.close();await reopenedContext.close();await secondContext.close();await browser.close();
+ const result = {at:new Date().toISOString(),counts:{inventory:inventory.length,findings:8,captures:captureCount,commentArticles:103,responseValues:Object.keys(answers).length,routes:evidence.length},downloadedFiles:[firstSaved,secondSaved],checks,errors,gaps:['실제 iPhone/Safari/VoiceOver는 미검증','서비스 데이터·기능 전수 감사는 이번 보고서 검증 범위 밖','다른 위치로 옮긴 저장 HTML의 상대 소스/JSON 참조는 원본 폴더가 필요함; 이미지·입력·재저장은 독립 동작']};
+ fs.writeFileSync(path.join(root,'verification.json'),JSON.stringify(result,null,2));
+ console.log(JSON.stringify(result,null,2));
+ if(checks.some(result=>!result.pass))process.exit(1);
+})().catch(error=>{console.error(error);process.exit(1);});
