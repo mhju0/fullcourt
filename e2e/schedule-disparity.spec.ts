@@ -159,6 +159,16 @@ test("schedule owns workload and offers exact weekly values", async ({ page }) =
   const before = await readout.textContent();
   await page.getByRole("button", { name: "Previous week" }).click();
   await expect(readout).not.toHaveText(before ?? "");
+  // The chart itself steps too: Home and End jump to the ends, arrows move one week.
+  const chart = page.getByRole("group", { name: "League average fatigue by week" });
+  await chart.focus();
+  await page.keyboard.press("Home");
+  await expect(page.getByRole("button", { name: "Previous week" })).toBeDisabled();
+  const first = await readout.textContent();
+  await page.keyboard.press("ArrowRight");
+  await expect(readout).not.toHaveText(first ?? "");
+  await page.keyboard.press("End");
+  await expect(page.getByRole("button", { name: "Next week" })).toBeDisabled();
 });
 
 // D-78: a table wider than its box has to say so. On a phone the breakdown drops the two

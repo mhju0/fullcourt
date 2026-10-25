@@ -8,6 +8,7 @@ import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts
 import { DataTable } from "@/components/ui/data-table";
 import { RankBadge } from "@/components/ui/rank-badge";
 import { competitionRanks } from "@/lib/rank";
+import { inspectionStep } from "@/lib/chart-inspection";
 import { apiFetcher } from "@/lib/fetcher";
 import { formatFatigueScore } from "@/lib/rest-advantage-display";
 import { LEAD, TYPE, WIDTH, termCardStyle } from "@/lib/terminal-styles";
@@ -252,14 +253,33 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
           <ChevronRight className="size-4" aria-hidden />
         </button>
       </div>
+      <p
+        id="fatigue-calendar-help"
+        style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}
+      >
+        Tap a bar to inspect its week. With the chart focused, use ← or → for
+        adjacent weeks, or Home or End for the first or latest week.
+      </p>
       <div
         data-testid="fatigue-calendar"
+        className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         style={{ ...termCardStyle, height: 220, padding: 12 }}
+        role="group"
+        tabIndex={0}
+        aria-label="League average fatigue by week"
+        aria-describedby="fatigue-calendar-help"
+        onKeyDown={(event) => {
+          const next = inspectionStep(event.key, index, weeks.length);
+          if (next === null) return;
+          event.preventDefault();
+          setPicked(next);
+        }}
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={weeks}
             margin={{ top: 8, right: 8, left: 0, bottom: 4 }}
+            accessibilityLayer={false}
           >
             <XAxis
               dataKey="startDate"
