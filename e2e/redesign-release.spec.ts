@@ -14,13 +14,13 @@ test("mobile Games exposes the complete rest comparison without sideways scrolli
 test("mobile shot comparison switches one court with the keyboard", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/shot-quality");
-  await expect(page.getByRole("slider", { name: "Inspect location on Zone average court", exact: true })).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByRole("slider")).toHaveCount(1);
+  await expect(page.getByRole("group", { name: /^Zone average: half-court/ })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole("group", { name: /half-court/ })).toHaveCount(1);
   const models = page.getByRole("group", { name: "Shot value model", exact: true });
   await models.getByRole("button", { name: "Location model", exact: true }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("slider", { name: "Inspect location on Location model court", exact: true })).toBeVisible();
-  await expect(page.getByRole("slider")).toHaveCount(1);
+  await expect(page.getByRole("group", { name: /^Location model: half-court/ })).toBeVisible();
+  await expect(page.getByRole("group", { name: /half-court/ })).toHaveCount(1);
 });
 
 test("availability keeps coefficient detail behind a native disclosure", async ({ page }) => {

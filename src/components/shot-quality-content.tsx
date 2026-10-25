@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState, type PointerEvent as ReactPointerEvent } from "react"
 import useSWR from "swr"
 import { SeasonDataGuide } from "@/components/season-data-guide"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
+import { COURT_STEPS, courtNeighbour } from "@/lib/chart-inspection"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
@@ -338,6 +339,7 @@ function ShotCourt({
   }, [cells, scaleFga])
 
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const helpId = useId()
   const locations = useMemo(() => markers.filter((m) => compareModels ? m.c.baseline !== null || m.c.gbm !== null : getValue(m.c) !== null)
     .sort((a, b) => a.c.cellY - b.c.cellY || a.c.cellX - b.c.cellX), [markers, getValue, compareModels])
   const activeIndex = Math.min(selectedIndex, Math.max(0, locations.length - 1))
@@ -346,9 +348,18 @@ function ShotCourt({
   const description = selected
     ? `${selected.c.zoneBasic ?? "Unclassified zone"} · ${selected.c.fga.toLocaleString()} attempts · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
     : "No measured locations for this view."
-  const comparisonDescription = selected && compareModels
-    ? `Zone average: ${selected.c.baseline ? formatValue(selected.c.baseline.expectedEfg) : "Unavailable"}; Location model: ${selected.c.gbm ? formatValue(selected.c.gbm.expectedEfg) : "Unavailable"}. ${description}`
-    : description
+  const pick = (event: ReactPointerEvent<SVGSVGElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) * VB_W / bounds.width
+    const y = (event.clientY - bounds.top) * VB_H / bounds.height
+    let nearest = 0
+    let distance = Infinity
+    locations.forEach((m, i) => {
+      const d = (m.cx - x) ** 2 + (m.cy - y) ** 2
+      if (d < distance) { distance = d; nearest = i }
+    })
+    setSelectedIndex(nearest)
+  }
 
   return (
     <figure className="flex flex-col gap-2">
@@ -368,24 +379,26 @@ function ShotCourt({
           {subtitle}
         </span>
       </figcaption>
+      <p id={helpId} style={{ margin: 0, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+        Hover or tap a location to inspect it. With the court focused, the arrow keys move to the nearest location in that direction.
+      </p>
       <svg
-        onPointerDown={(event) => {
-          const bounds = event.currentTarget.getBoundingClientRect()
-          const x = (event.clientX - bounds.left) * VB_W / bounds.width
-          const y = (event.clientY - bounds.top) * VB_H / bounds.height
-          let nearest = 0
-          let distance = Infinity
-          locations.forEach((m, i) => {
-            const d = (m.cx - x) ** 2 + (m.cy - y) ** 2
-            if (d < distance) { distance = d; nearest = i }
-          })
-          setSelectedIndex(nearest)
+        onPointerMove={(event) => { if (event.pointerType === "mouse") pick(event) }}
+        onPointerDown={pick}
+        onKeyDown={(event) => {
+          if (!(event.key in COURT_STEPS)) return
+          event.preventDefault()
+          const next = courtNeighbour(locations, activeIndex, event.key)
+          if (next !== null) setSelectedIndex(next)
         }}
+        tabIndex={locations.length ? 0 : undefined}
+        className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         width="100%"
-        role="img"
+        role="group"
         aria-label={`${title}: half-court expected-shot-value map, ${cells.length} cells`}
-        style={{ display: "block", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+        aria-describedby={helpId}
+        style={{ display: "block", cursor: "pointer", touchAction: "manipulation", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         <g>
           {markers.map((m) => {
@@ -401,30 +414,13 @@ function ShotCourt({
                 rx={1}
                 fill={getColor(v)}
                 opacity={0.92}
-              >
-                <title>{`${m.c.zoneBasic ?? "—"} · ${m.c.fga.toLocaleString()} FGA · ${formatValue(v)}`}</title>
-              </rect>
+              />
             )
           })}
         </g>
         <CourtLines />
         {selected && <circle cx={selected.cx} cy={selected.cy} r={9} fill="none" stroke="var(--term-text)" strokeWidth={3} pointerEvents="none" />}
       </svg>
-      <label className="flex flex-col gap-2" style={{ fontSize: TYPE.body }}>
-        Inspect a location · {title}
-        <input
-          type="range"
-          min={0}
-          max={Math.max(0, locations.length - 1)}
-          step={1}
-          value={activeIndex}
-          disabled={!locations.length}
-          aria-label={`Inspect location on ${title} court`}
-          aria-valuetext={comparisonDescription}
-          onChange={(event) => setSelectedIndex(Number(event.target.value))}
-          style={{ width: "100%", minHeight: 44, accentColor: "var(--term-accent)" }}
-        />
-      </label>
       {!compareModels ? <p role="status" style={{ margin: 0, fontSize: TYPE.body, minHeight: "3em" }}>{description}</p> : null}
     </figure>
   )
@@ -646,7 +642,7 @@ export function ShotQualityContent() {
           )}
 
           <p className="mt-3" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
-            Marker size shows shot attempts. Tap the court to inspect the nearest measured location, or use the location slider and arrow keys. Locations run left to right from the baseline upcourt.
+            Marker size shows shot attempts.
           </p>
         </div>
       )}

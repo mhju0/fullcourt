@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { inspectionStep, nearestIndex } from "../chart-inspection";
+import { courtNeighbour, inspectionStep, nearestIndex } from "../chart-inspection";
 
 describe("inspectionStep", () => {
   it("moves one item with the arrow keys and stops at the ends", () => {
@@ -33,5 +33,30 @@ describe("nearestIndex", () => {
     expect(nearestIndex(-20, 0, 100, 5)).toBe(0);
     expect(nearestIndex(140, 0, 100, 5)).toBe(4);
     expect(nearestIndex(50, 0, 100, 1)).toBe(0);
+  });
+});
+
+describe("courtNeighbour", () => {
+  // A plus sign with one off-axis location: centre 0, right 1, left 2, up 3, down 4, far diagonal 5.
+  const court = [
+    { cx: 50, cy: 50 },
+    { cx: 60, cy: 50 },
+    { cx: 40, cy: 50 },
+    { cx: 50, cy: 40 },
+    { cx: 50, cy: 60 },
+    { cx: 58, cy: 42 },
+  ];
+
+  it("moves to the nearest location on the pressed side, preferring a straight line", () => {
+    expect(courtNeighbour(court, 0, "ArrowRight")).toBe(1);
+    expect(courtNeighbour(court, 0, "ArrowLeft")).toBe(2);
+    expect(courtNeighbour(court, 0, "ArrowUp")).toBe(3);
+    expect(courtNeighbour(court, 0, "ArrowDown")).toBe(4);
+  });
+
+  it("stays put at the edge of the court and ignores other keys", () => {
+    expect(courtNeighbour(court, 1, "ArrowRight")).toBeNull();
+    expect(courtNeighbour(court, 0, "Home")).toBeNull();
+    expect(courtNeighbour([], 0, "ArrowRight")).toBeNull();
   });
 });

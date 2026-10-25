@@ -22,3 +22,33 @@ export function nearestIndex(clientX: number, left: number, width: number, count
 
 export const SERIES_INSPECTION_HELP =
   "Hover or tap to inspect a season. With the chart focused, use ← or → for adjacent seasons, or Home or End for the first or latest season.";
+
+export const COURT_STEPS: Record<string, [number, number]> = {
+  ArrowLeft: [-1, 0],
+  ArrowRight: [1, 0],
+  ArrowUp: [0, -1],
+  ArrowDown: [0, 1],
+};
+
+/**
+ * The location an arrow key moves to: the nearest one on that side of the court, with
+ * sideways drift costing double so a straight line beats a diagonal. Null at the edge.
+ */
+export function courtNeighbour(locations: { cx: number; cy: number }[], from: number, key: string): number | null {
+  const step = COURT_STEPS[key];
+  const origin = locations[from];
+  if (!step || !origin) return null;
+  let best: number | null = null;
+  let bestCost = Infinity;
+  locations.forEach((m, i) => {
+    const along = (m.cx - origin.cx) * step[0] + (m.cy - origin.cy) * step[1];
+    if (along <= 0) return;
+    const across = Math.abs((m.cx - origin.cx) * step[1] + (m.cy - origin.cy) * step[0]);
+    const cost = along + 2 * across;
+    if (cost < bestCost) {
+      bestCost = cost;
+      best = i;
+    }
+  });
+  return best;
+}
