@@ -357,7 +357,9 @@ function gapComparison(swing: number | null, baseline: number | null) {
 function TeamRecords({ teams, season, baseline }: {
   teams: SeasonReportResponse["teams"]; season: string; baseline: number | null;
 }) {
+  const hasDash = teams.some((team) => team.restedWinPct === null || team.tiredWinPct === null);
   return (
+    <>
     <div
       className="overflow-x-auto"
       role="region"
@@ -380,12 +382,12 @@ function TeamRecords({ teams, season, baseline }: {
               {/* Wraps on a phone, where one line runs into the next column. */}
               <span>Rested at home</span>
               <br />
-              <span className="whitespace-nowrap">W / G · win %</span>
+              <span className="whitespace-nowrap">win % · W / G</span>
             </th>
             <th className="px-2 text-right" scope="col">
               <span className="whitespace-nowrap">Tired road</span>
               <br />
-              <span className="whitespace-nowrap">W / G · win %</span>
+              <span className="whitespace-nowrap">win % · W / G</span>
             </th>
             <th className="px-2 text-right" scope="col">
               Home/rest gap
@@ -411,22 +413,14 @@ function TeamRecords({ teams, season, baseline }: {
                 </span>
               </th>
               <td className="mono px-2 text-right tabular-nums">
-                {team.restedWins}/{team.restedGames}
+                {team.restedWinPct === null ? "—" : `${team.restedWinPct.toFixed(1)}%`}
                 <br />
-                <span className={muted}>
-                  {team.restedWinPct === null
-                    ? "—"
-                    : `${team.restedWinPct.toFixed(1)}%`}
-                </span>
+                <span className={muted}>{team.restedWins}&nbsp;/&nbsp;{team.restedGames}</span>
               </td>
               <td className="mono px-2 text-right tabular-nums">
-                {team.tiredWins}/{team.tiredGames}
+                {team.tiredWinPct === null ? "—" : `${team.tiredWinPct.toFixed(1)}%`}
                 <br />
-                <span className={muted}>
-                  {team.tiredWinPct === null
-                    ? "—"
-                    : `${team.tiredWinPct.toFixed(1)}%`}
-                </span>
+                <span className={muted}>{team.tiredWins}&nbsp;/&nbsp;{team.tiredGames}</span>
               </td>
               <td className="px-2 py-3 text-right" data-testid="team-home-rest-gap"
                 style={{ backgroundColor: comparison.backgroundColor }}>
@@ -442,5 +436,7 @@ function TeamRecords({ teams, season, baseline }: {
         </tbody>
       </table>
     </div>
+    {hasDash ? <p className={`text-xs ${muted}`} data-testid="team-records-dash-note">— no games in that situation.</p> : null}
+    </>
   );
 }
