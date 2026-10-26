@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { releaseGame } from "./fixtures/release-data";
 
-const NOTE = "Rest and travel estimates pending NBA Cup schedule updates.";
+import { CUP_FATIGUE_PENDING_NOTE as NOTE } from "../src/lib/cup-schedule-copy";
 
 for (const width of [320, 390, 1440]) {
   test(`Cup estimates stay pending with results and records intact at ${width}px`, async ({ page }) => {
@@ -25,7 +25,7 @@ for (const width of [320, 390, 1440]) {
     await expect(row).toContainText("100–110");
     await expect(row).toContainText("(12–13)");
     await expect(row).toContainText("(13–12)");
-    await expect(row).toHaveAccessibleName(/Rest and travel estimates pending NBA Cup schedule updates/);
+    await expect(row).toHaveAccessibleName(new RegExp(NOTE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
     await expect(row.locator(".fc-game-edge")).toContainText("TBD");
     await expect(row).not.toContainText("REST EDGE");
     await expect(row).not.toContainText("B2B");
