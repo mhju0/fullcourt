@@ -248,30 +248,10 @@ test.describe("Games page", () => {
     await expect(page.getByRole("button", { name: /^DEC$/ })).toHaveAttribute("aria-pressed", "false");
   });
 
-  test("previous day from an early season date can reach a day with no games", async ({ page }) => {
-    await page.goto("/games");
-
-    await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
-
-    await page.getByRole("button", { name: /^OCT$/ }).click();
-
-    const firstDayWithGames = page.getByRole("group", { name: "Date", exact: true }).locator('button[aria-label*="games"]').first();
-    await expect(firstDayWithGames).toBeVisible({ timeout: 60_000 });
-    await firstDayWithGames.click();
-
-    const prev = page.getByRole("button", { name: "Previous day" });
-    const empty = page.getByText("NO GAMES SCHEDULED");
-    for (let i = 0; i < 45; i++) {
-      await prev.click();
-      try {
-        await expect(empty).toBeVisible({ timeout: 1_000 });
-        return;
-      } catch {
-        // still on a day with games — keep stepping back
-      }
-    }
-
-    throw new Error("Expected to reach a date with no games within 45 previous-day steps");
+  test("previous day stops at the exact season opener", async ({ page }) => {
+    await page.goto("/games?season=2024-25&date=2024-10-22");
+    await expect(page.getByRole("group", { name: "Date", exact: true }).getByRole("button").first()).toHaveAccessibleName(/October 22, 2024/);
+    await expect(page.getByRole("button", { name: "Previous day", exact: true })).toBeDisabled();
   });
 });
 
@@ -330,10 +310,10 @@ test("shared Games links restore season, date and browser history", async ({ pag
   await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
   await page.getByRole("button", { name: "Previous day" }).click();
   await expect(page).toHaveURL(/date=2024-12-24/);
-  await expect(page.getByText("NO GAMES SCHEDULED")).toBeVisible();
+  await expect(page.getByText("Christmas Eve. No games scheduled.", { exact: true })).toBeVisible();
   await page.reload();
   await expect(display).toContainText("DECEMBER 24, 2024");
-  await expect(page.getByText("NO GAMES SCHEDULED")).toBeVisible();
+  await expect(page.getByText("Christmas Eve. No games scheduled.", { exact: true })).toBeVisible();
   await page.goBack();
   await expect(display).toContainText("DECEMBER 25, 2024");
   await expect(page.getByRole("button", { name: /^Expand .* game details$/ }).first()).toBeVisible();
@@ -341,7 +321,7 @@ test("shared Games links restore season, date and browser history", async ({ pag
   await expect(display).toContainText("DECEMBER 24, 2024");
     await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
   await expect(page).toHaveURL(/season=2023-24/);
-  await expect(display).toContainText("2024");
+  await expect(display).toContainText("APRIL 14, 2024");
   await page.goBack();
   await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
   await expect(display).toContainText("DECEMBER 24, 2024");

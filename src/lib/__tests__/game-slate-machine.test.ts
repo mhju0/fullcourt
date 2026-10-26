@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   calendarView,
+  seasonCalendarDays,
+  canShiftDay,
   daysInMonth,
   initSlate,
   monthCalendar,
@@ -90,7 +92,7 @@ describe("MONTH_SELECTED — resolves from memory, so nothing can revert it", ()
 
   it("ignores a month the season never played", () => {
     const state = ready();
-    expect(slateReducer(state, { type: "MONTH_SELECTED", month: 11 })).toBe(state);
+    expect(slateReducer(state, { type: "MONTH_SELECTED", month: 9 })).toBe(state);
   });
 
   it("ignores a click on the month already showing", () => {
@@ -147,12 +149,12 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
     expect(slateMonth(next)).toBe(12);
   });
 
-  it("picks the nearest day when today has none", () => {
+  it("picks today even when it has no games", () => {
     const next = slateReducer(base({ todayKey: "2024-12-28" }), {
       type: "DAYS_RESOLVED", season: "2024-25", generation: 0,
       days: DAYS,
     });
-    expect(next.selectedDate).toBe("2024-12-31");
+    expect(next.selectedDate).toBe("2024-12-28");
   });
 
   it("reports a season with no games rather than selecting nothing silently", () => {
@@ -220,11 +222,11 @@ describe("monthTabs", () => {
   it("counts days per month and marks months the season never played", () => {
     const tabs = monthTabs(ready());
     const byValue = Object.fromEntries(tabs.map((t) => [t.value, t]));
-    expect(byValue[12].dayCount).toBe(2);
-    expect(byValue[1].dayCount).toBe(2);
-    expect(byValue[10].dayCount).toBe(1);
-    // November is absent from DAYS, so its tab is knowably empty and can disable.
-    expect(byValue[11].dayCount).toBe(0);
+    expect(byValue[12].dayCount).toBe(31);
+    expect(byValue[1].dayCount).toBe(15);
+    expect(byValue[10].dayCount).toBe(10);
+    // Internal empty dates remain selectable.
+    expect(byValue[11].dayCount).toBe(30);
   });
 
   // 2020-21 ran to 16 May and 2019-20 to 11 October 2020. Both were unreachable through this
@@ -236,7 +238,7 @@ describe("monthTabs", () => {
     );
     const overrun = tabs.find((t) => t.value === 5);
     expect(overrun?.label).toBe("May");
-    expect(overrun?.dayCount).toBe(1);
+    expect(overrun?.dayCount).toBe(16);
     // Last, not filed before January the way a numeric sort would put it.
     expect(tabs.at(-1)?.value).toBe(5);
     expect(tabs.map((t) => t.value).indexOf(5)).toBeGreaterThan(
@@ -245,7 +247,7 @@ describe("monthTabs", () => {
   });
 
   it("shows no month outside Oct-Apr when the season stayed inside it", () => {
-    expect(monthTabs(ready()).map((t) => t.value)).toEqual([10, 11, 12, 1, 2, 3, 4]);
+    expect(monthTabs(ready()).map((t) => t.value)).toEqual([10, 11, 12, 1]);
   });
 
   it("marks exactly one tab selected", () => {
@@ -255,7 +257,10 @@ describe("monthTabs", () => {
 
 describe("daysInMonth", () => {
   it("returns only the derived month's days", () => {
-    expect(daysInMonth(ready()).map((d) => d.date)).toEqual(["2024-12-25", "2024-12-31"]);
+    const days = daysInMonth(ready());
+    expect(days).toHaveLength(31);
+    expect(days[0]).toEqual(day("2024-12-01", 0));
+    expect(days[24]).toEqual(day("2024-12-25", 11));
   });
 });
 
@@ -291,7 +296,7 @@ describe("calendarView is total — the region can never render nothing", () => 
 
   it("reports empty for a loaded month that holds no days", () => {
     // Reachable by shifting off the end of a month's games, e.g. into November.
-    expect(calendarView(ready({ selectedDate: "2024-11-05" })).kind).toBe("empty");
+    expect(calendarView(ready({ selectedDate: "2025-02-05" })).kind).toBe("empty");
   });
 });
 
@@ -374,7 +379,7 @@ describe("the phone week strip and month grid", () => {
 
     const january = monthCalendar(ready({ selectedDate: "2025-01-15" }));
     expect(january.leadingBlanks).toBe(3);
-    expect(january.days).toHaveLength(31);
+    expect(january.days).toHaveLength(15);
   });
 
   it("a day step from Saturday moves the strip to the next Sunday-to-Saturday week", () => {
@@ -438,7 +443,7 @@ describe("independent calendar request lifecycle", () => {
     expect(next.games).toBe(loaded.games);
     expect(next.generation).toBe(loaded.generation);
     expect(next.checkedAt).toBe(100);
-    expect(weekDays(next).find(day => day.date === "2024-12-25")?.gameCount).toBe(11);
+    expect(weekDays(next).find(day => day.date === "2024-12-25")?.gameCount).toBe(1);
   });
 
   it("keeps a same-season pending calendar through Back/Forward date changes", () => {
@@ -533,5 +538,99 @@ describe("independent calendar request lifecycle", () => {
     expect(retry.generation).toBe(failed.generation + 1);
     expect(retry.daysGeneration).toBe(failed.daysGeneration + 1);
     expect(calendarView(dates(loadedSlate(retry))).kind).toBe("days");
+  });
+});
+
+
+describe("bounded season calendar", () => {
+  it("starts at the exact opener and ends at the finale", () => {
+    const state = ready({ days: [day("2026-10-20", 2), day("2027-04-11", 15)] });
+    const dates = seasonCalendarDays(state);
+    expect(dates[0]).toEqual(day("2026-10-20", 2));
+    expect(dates.at(-1)).toEqual(day("2027-04-11", 15));
+    expect(dates).toHaveLength(174);
+    for (const [date, delta] of [["2026-10-20", -1], ["2027-04-11", 1]] as const) {
+      const edge = { ...state, selectedDate: date };
+      expect(canShiftDay(edge, delta)).toBe(false);
+      expect(slateReducer(edge, { type: "DAY_SHIFTED", delta })).toBe(edge);
+    }
+  });
+
+  it("keeps opening-week Tuesday aligned after two disabled cells", () => {
+    const state = ready({ selectedDate: "2026-10-20", days: [day("2026-10-20"), day("2027-04-11")] });
+    expect(monthCalendar(state).leadingBlanks).toBe(2);
+    expect(monthCalendar(state).days[0].date).toBe("2026-10-20");
+    const week = weekDays(state);
+    expect(week).toHaveLength(7);
+    expect(week.slice(0, 2).every(day => day.disabled)).toBe(true);
+    expect(week[2]).toEqual(day("2026-10-20"));
+  });
+
+  it("includes leap day and crosses month/year without DST arithmetic", () => {
+    const state = ready({ days: [day("2023-12-31"), day("2024-03-01")] });
+    expect(seasonCalendarDays(state)).toContainEqual(day("2024-02-29", 0));
+    expect(seasonCalendarDays(state)).toContainEqual(day("2024-01-01", 0));
+  });
+
+  it("preserves exceptional months without filling the 2019-20 suspension", () => {
+    const state = ready({ season: "2019-20", days: [day("2019-10-22"), day("2020-03-11"), day("2020-07-30"), day("2020-08-14")] });
+    const dates = seasonCalendarDays(state).map(day => day.date);
+    expect(dates).toContain("2020-07-30");
+    expect(dates).not.toContain("2020-03-12");
+    expect(dates).not.toContain("2020-07-29");
+    expect(monthTabs(state).map(tab => tab.value)).toEqual([10, 11, 12, 1, 2, 3, 7, 8]);
+    expect(slateReducer({ ...state, selectedDate: "2020-03-11" }, { type: "DAY_SHIFTED", delta: 1 }).selectedDate).toBe("2020-07-30");
+  });
+});
+
+
+describe("observed slate counts", () => {
+  const observe = (state: SlateState, count = 1) => slateReducer(state, {
+    type: "SLATE_RESOLVED", date: state.selectedDate!, generation: state.generation,
+    games: Array.from({ length: count }, (_, i) => game(i)),
+  });
+
+  it("preserves an actual count after navigating away and a late stale calendar response", () => {
+    const pending = base({ season: "2026-27", selectedDate: "2026-12-04", status: "loadingSlate" });
+    const observed = observe(pending);
+    const away = slateReducer(observed, { type: "DATE_SELECTED", date: "2026-12-05" });
+    const indexed = slateReducer(away, { type: "DAYS_RESOLVED", season: away.season, generation: away.daysGeneration,
+      days: [day("2026-10-20"), day("2027-04-11")] });
+    expect(daysInMonth(indexed).find(day => day.date === "2026-12-04")?.gameCount).toBe(1);
+    expect(indexed.selectedDate).toBe("2026-12-05");
+    expect(indexed.observedCounts).toEqual({ "2026-12-04": 1 });
+    const restored = slateReducer(indexed, { type: "LOCATION_RESTORED", season: indexed.season, date: "2026-12-04" });
+    expect(restored.observedCounts).toBe(indexed.observedCounts);
+  });
+
+  it("updates counts on successful refresh including zero, but retains them on errors", () => {
+    const observed = observe(ready());
+    const failed = slateReducer(observed, { type: "SLATE_REJECTED", date: observed.selectedDate!, generation: observed.generation,
+      background: true, message: "Refresh failed" });
+    expect(failed.observedCounts["2024-12-25"]).toBe(1);
+    const empty = observe(failed, 0);
+    expect(daysInMonth(empty).find(day => day.date === "2024-12-25")?.gameCount).toBe(0);
+  });
+
+  it("resets across season switches and ignores obsolete A to B to A responses", () => {
+    const observed = observe(ready());
+    for (const event of [
+      { type: "SEASON_SELECTED", season: "2023-24" },
+      { type: "LOCATION_RESTORED", season: "2023-24", date: "2023-12-25" },
+    ] as const) {
+      const next = slateReducer(observed, event);
+      expect(next.observedCounts).toEqual({});
+      const back = slateReducer(next, { type: "LOCATION_RESTORED", season: "2024-25", date: observed.selectedDate });
+      expect(slateReducer(back, { type: "SLATE_RESOLVED", date: observed.selectedDate!, generation: observed.generation, games: [game(1)] })).toBe(back);
+      expect(back.observedCounts).toEqual({});
+    }
+  });
+
+  it("never expands calendar bounds with a successful out-of-season empty URL", () => {
+    const state = observe(ready({ selectedDate: "2024-09-01" }), 0);
+    const days = seasonCalendarDays(state);
+    expect(days[0].date).toBe("2024-10-22");
+    expect(days.at(-1)?.date).toBe("2025-01-15");
+    expect(days.some(day => day.date === "2024-09-01")).toBe(false);
   });
 });

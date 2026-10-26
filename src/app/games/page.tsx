@@ -54,7 +54,7 @@ function SlateSummaryLine({
   markedEdgeGames,
   className,
 }: {
-  gamesToday: number | null
+  gamesToday: number | "TBD" | "—" | null
   avgRestAdv: string
   markedEdgeGames: string
   className?: string
@@ -107,7 +107,7 @@ function SectionDivider({
   detail,
 }: {
   label: string
-  count: number | null
+  count: number | "TBD" | "—" | null
   detail?: React.ReactNode
 }) {
   return (
@@ -158,18 +158,18 @@ function SkeletonList() {
 
 // ─── Empty / error states ─────────────────────────────────────────
 
-function EmptyState({ label }: { label: string }) {
+function EmptyState({ label, message }: { label?: string; message?: string }) {
   return (
     <div
       className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p style={{ fontSize: 12, letterSpacing: TRACK.label, color: "var(--term-text)", fontWeight: 700 }}>
-        NO GAMES SCHEDULED
+        {message ?? "No games scheduled for this day."}
       </p>
       {/* The preposition lives in the label so this reads correctly for a single
           date ("on December 25, 2024") and for a whole season alike. */}
-      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>NO NBA GAMES {label.toUpperCase()}</p>
+      {label ? <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>NO NBA GAMES {label.toUpperCase()}</p> : null}
     </div>
   )
 }
@@ -210,7 +210,7 @@ function DateChip({
   ariaLabel,
 }: {
   day: string
-  count: number | null
+  count: number | "TBD" | "—" | null
   selected: boolean
   onClick: () => void
   ariaLabel: string
@@ -242,7 +242,7 @@ function DateChip({
       </span>
       {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
       <span className="tabular-nums" style={{ fontSize: 10, color: selected ? "#B7BBC6" : "var(--term-text-muted)" }}>
-        {count} {count === 1 ? "GM" : "GMS"}
+        {count === null ? "—" : count === "TBD" ? "TBD" : `${count} ${count === 1 ? "GM" : "GMS"}`}
       </span>
     </button>
   )
@@ -262,6 +262,7 @@ function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; o
     <button
       type="button"
       onClick={onClick}
+      disabled={day.disabled}
       aria-label={day.ariaLabel}
       aria-current={day.isSelected ? "date" : undefined}
       className={cn(
@@ -275,10 +276,10 @@ function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; o
     >
       {weekday ? <span aria-hidden="true" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>{weekday}</span> : null}
       <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
-        {day.dayOfMonth}
+        {day.disabled ? "—" : day.dayOfMonth}
       </span>
       <span className="tabular-nums" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>
-        {day.gameCount}
+        {day.disabled ? "" : day.gameCount}
       </span>
     </button>
   )
@@ -323,10 +324,10 @@ function Matchups({
       )
 
     case "noDays":
-      return <EmptyState label={`in the ${slate.season} season`} />
+      return <EmptyState label={`in the ${slate.season} season`} message="No games scheduled for this season." />
 
     case "slateEmpty":
-      return <EmptyState label={`on ${slate.selectedLabel?.short ?? "this date"}`} />
+      return <EmptyState message={slate.emptyContext?.message} />
 
     case "slateReady":
       // The Front Office table spine: one continuous grid-table for the whole slate
@@ -529,7 +530,7 @@ export default function GamesPage() {
                   variant="outline"
                   size="icon-sm"
                   onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
-                  disabled={!slate.selectedDate}
+                  disabled={!slate.canPreviousDay}
                   aria-label="Previous day"
                   className="fc-control-button bg-[var(--term-surface)]"
                   style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -540,7 +541,7 @@ export default function GamesPage() {
                   variant="outline"
                   size="icon-sm"
                   onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
-                  disabled={!slate.selectedDate}
+                  disabled={!slate.canNextDay}
                   aria-label="Next day"
                   className="fc-control-button bg-[var(--term-surface)]"
                   style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -631,7 +632,7 @@ export default function GamesPage() {
             variant="outline"
             size="icon-sm"
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
-            disabled={!slate.selectedDate}
+            disabled={!slate.canPreviousDay}
             aria-label="Previous day"
             className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -648,7 +649,7 @@ export default function GamesPage() {
             variant="outline"
             size="icon-sm"
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
-            disabled={!slate.selectedDate}
+            disabled={!slate.canNextDay}
             aria-label="Next day"
             className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -666,7 +667,7 @@ export default function GamesPage() {
       </section>
 
       <SlateSummaryLine
-        gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+        gamesToday={slate.emptyContext ? slate.emptyContext.count : slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
         avgRestAdv={avgRestAdv}
         markedEdgeGames={markedEdgeGames}
         className="order-2 grid sm:order-none"
@@ -677,7 +678,7 @@ export default function GamesPage() {
         <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3 border-b border-[var(--term-border)]">
           <SectionDivider
             label="Matchups"
-            count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+            count={slate.emptyContext ? slate.emptyContext.count : slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
             detail={
               // Hidden on a phone, whose week row above already names the day; tests read it at
               // every width, so it is one node either way.

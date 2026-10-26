@@ -1,4 +1,4 @@
-import { NBA_REGULAR_MONTHS, pickDefaultGamesDate, seasonMonthOrder } from "@/lib/nba-season";
+import { pickDefaultGamesDate } from "@/lib/nba-season";
 import type { GameDateCount, GameResponse } from "@/types";
 
 /**
@@ -35,7 +35,8 @@ export interface SlateDay {
   date: string;
   /** "25" */
   dayOfMonth: string;
-  gameCount: number;
+  gameCount: number | "TBD" | "—";
+  disabled?: boolean;
   /** "December 25, 2024" */
   label: string;
   /** "December 25, 2024, 11 games" */
@@ -69,6 +70,8 @@ export interface SlateState {
   season: string;
   /** Every day with games in `season`, all months, ascending. */
   days: readonly GameDateCount[];
+  /** Successful slate counts in this season; never expand the indexed season bounds. */
+  observedCounts: Readonly<Record<string, number>>;
   daysStatus: "loading" | "ready" | "error";
   daysMessage: string | null;
   /** Changes only when the calendar request is replaced, including A → B → A. */
@@ -128,6 +131,7 @@ export function initSlate(args: {
     status: "loadingDays",
     season: args.season,
     days: [],
+    observedCounts: {},
     daysStatus: "loading",
     daysMessage: null,
     daysGeneration: 0,
@@ -207,6 +211,7 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         refreshMessage: null,
         checkedAt: null,
         days: [],
+        observedCounts: {},
         daysStatus: "loading",
         daysMessage: null,
         daysGeneration: state.daysGeneration + 1,
@@ -218,7 +223,8 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
 
     case "MONTH_SELECTED": {
       // Resolves from memory: no fetch, so nothing can arrive later and revert it.
-      const first = state.days.find((d) => monthOf(d.date) === event.month);
+      if (event.month === slateMonth(state)) return state;
+      const first = seasonCalendarDays(state).find((d) => monthOf(d.date) === event.month);
       if (!first) return state; // months with no games are disabled in the UI
       if (first.date === state.selectedDate) return state;
       return selectDate(state, first.date);
@@ -233,7 +239,10 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       if (!state.selectedDate) return state;
       // Crossing a month boundary needs no special handling: the month is derived
       // from this date, so the tab strip follows on the next render by definition.
-      return selectDate(state, shiftDateKey(state.selectedDate, event.delta));
+      const dates = seasonCalendarDays(state);
+      const next = dates.find((d) => event.delta === 1 ? d.date > state.selectedDate! : false)
+        ?? (event.delta === -1 ? dates.findLast((d) => d.date < state.selectedDate!) : undefined);
+      return next ? selectDate(state, next.date) : state;
     }
 
     case "RETRY_REQUESTED": {
@@ -257,7 +266,7 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       const nextState: SlateState = { ...state, daysStatus: "ready", daysMessage: null, days: event.days };
       // Explicit selections include no-game days and survive late calendar responses.
       if (state.selectedDate) return nextState;
-      const next = pickDefaultGamesDate(state.todayKey, event.days);
+      const next = pickDefaultGamesDate(state.todayKey, seasonCalendarDays(nextState));
       if (!next) {
         return { ...nextState, status: "noDays", selectedDate: null, games: [], message: null };
       }
@@ -289,6 +298,7 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         ...state,
         status: event.games.length > 0 ? "slateReady" : "slateEmpty",
         games: event.games,
+        observedCounts: { ...state.observedCounts, [event.date]: event.games.length },
         message: null,
         refreshStatus: "idle",
         refreshMessage: null,
@@ -314,7 +324,7 @@ export function slateMonth(state: SlateState): number {
 /** Days belonging to the derived month. */
 export function daysInMonth(state: SlateState): readonly GameDateCount[] {
   const month = slateMonth(state);
-  return state.days.filter((d) => monthOf(d.date) === month);
+  return seasonCalendarDays(state).filter((d) => monthOf(d.date) === month);
 }
 
 /** The Sunday-to-Saturday week holding `dateKey`, as seven date keys. */
@@ -323,55 +333,47 @@ function weekDateKeys(dateKey: string): string[] {
   return Array.from({ length: 7 }, (_, i) => shiftDateKey(dateKey, i - weekday));
 }
 
-function withCounts(state: SlateState, dates: readonly string[]): GameDateCount[] {
-  const counts = new Map(state.days.map((d) => [d.date, d.gameCount]));
-  return dates.map((date) => ({ date, gameCount: counts.get(date) ?? 0 }));
+/** Fill only the indexed season span; retain explicitly indexed exceptional dates. */
+export function seasonCalendarDays(state: SlateState): GameDateCount[] {
+  if (state.daysStatus !== "ready" || state.days.length === 0) return [];
+  const counts = new Map(state.days.map((day) => [day.date, day.gameCount]));
+  const dates = [...counts.keys()].sort();
+  const result: GameDateCount[] = [];
+  for (let date = dates[0]; date <= dates[dates.length - 1]; date = shiftDateKey(date, 1)) {
+    // NBA suspended play after March 11 and resumed July 30, 2020:
+    // https://www.nba.com/news/nba-suspends-season-following-tonights-games
+    const suspended = state.season === "2019-20" && date >= "2020-03-12" && date < "2020-07-30";
+    if (!suspended || counts.has(date)) result.push({ date, gameCount: state.observedCounts[date] ?? counts.get(date) ?? 0 });
+  }
+  return result;
 }
 
-/**
- * The week strip a phone shows instead of the full date row: seven days around the selected
- * date. Unlike {@link daysInMonth} it includes days with no games, at a count of 0, because a
- * week with holes in it cannot be read as a week.
- */
-export function weekDays(state: SlateState): readonly GameDateCount[] {
-  return state.daysStatus === "ready" && state.selectedDate ? withCounts(state, weekDateKeys(state.selectedDate)) : [];
+export function canShiftDay(state: SlateState, delta: -1 | 1): boolean {
+  return Boolean(state.selectedDate && seasonCalendarDays(state).some(day =>
+    delta === -1 ? day.date < state.selectedDate! : day.date > state.selectedDate!));
 }
 
-/**
- * Every calendar day of the selected date's month, for the phone's month grid. `leadingBlanks`
- * is how many cells precede the 1st in a Sunday-first grid.
- */
+/** Seven fixed positions preserve Sunday alignment at partial season boundaries. */
+export function weekDays(state: SlateState): readonly (GameDateCount & { disabled?: boolean })[] {
+  if (state.daysStatus !== "ready" || !state.selectedDate) return [];
+  const days = new Map(seasonCalendarDays(state).map(day => [day.date, day]));
+  return weekDateKeys(state.selectedDate).map(date => days.get(date) ?? { date, gameCount: 0, disabled: true });
+}
+
+/** Only in-season dates, offset to their actual weekday in the month grid. */
 export function monthCalendar(state: SlateState): { leadingBlanks: number; days: readonly GameDateCount[] } {
   if (state.daysStatus !== "ready" || !state.selectedDate) return { leadingBlanks: 0, days: [] };
-  const prefix = state.selectedDate.slice(0, 8);
-  const first = `${prefix}01`;
-  const dates: string[] = [];
-  for (let date = first; date.startsWith(prefix); date = shiftDateKey(date, 1)) dates.push(date);
-  return { leadingBlanks: new Date(`${first}T12:00:00Z`).getUTCDay(), days: withCounts(state, dates) };
+  const days = daysInMonth(state);
+  return { leadingBlanks: days.length ? new Date(`${days[0].date}T12:00:00Z`).getUTCDay() : 0, days };
 }
 
-/**
- * Month tabs with their day counts. A season-wide day list means we know which
- * months were never played (1998-99, 2011-12 lockouts), so those tabs disable
- * instead of round-tripping to an empty result.
- *
- * Months outside the ordinary Oct-Apr span appear only when that season played in them, which
- * is why they are read off the days rather than listed as constants: 2020-21 needs a May tab
- * for its 135 games and 2019-20 needs Jul through Oct, while the other 38 seasons would show
- * five permanently-empty tabs if the union were hardcoded.
- */
 export function monthTabs(state: SlateState): MonthTab[] {
   const selected = slateMonth(state);
-  const core = new Set(NBA_REGULAR_MONTHS.map((m) => m.value));
-  const extra = [...new Set(state.days.map((d) => monthOf(d.date)))]
-    .filter((m) => !core.has(m))
-    .sort((a, b) => seasonMonthOrder(a) - seasonMonthOrder(b))
-    .map((value) => ({ value, label: MONTH_LABELS[value - 1] }));
-
-  return [...NBA_REGULAR_MONTHS, ...extra].map(({ value, label }) => ({
+  const days = seasonCalendarDays(state);
+  return [...new Set(days.map(day => monthOf(day.date)))].map(value => ({
     value,
-    label,
-    dayCount: state.days.filter((d) => monthOf(d.date) === value).length,
+    label: MONTH_LABELS[value - 1],
+    dayCount: days.filter(day => monthOf(day.date) === value).length,
     isSelected: value === selected,
   }));
 }

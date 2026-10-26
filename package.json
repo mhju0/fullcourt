@@ -1,6 +1,6 @@
 {
   "name": "fullcourt",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "private": true,
   "license": "UNLICENSED",
   "packageManager": "pnpm@11.8.0",
