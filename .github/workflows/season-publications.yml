@@ -11,7 +11,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -72,4 +72,4 @@ jobs:
           name: season-publications-${{ github.run_id }}
           path: /tmp/season-publications
       - name: Publish validated data without changing application code
-        run: python scripts/publish_daily_publications.py --stage /tmp/season-publications
+        run: python scripts/publish_daily_publications.py --stage /tmp/season-publications --require-shooting

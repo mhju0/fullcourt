@@ -246,3 +246,14 @@ DNP를 추정하지 않는다(ADR 0013 amendment). 양수 시도는 시간 미�
 no-rest 119선수/1,125 FGA, rested 85선수/676 FGA가 복구된다. DB·계수·휴식군·career 자료 변경 없음.
 다음 단계: 고정 후보 독립 검토, PR preview·CI, 코드 merge 후 별도 일일 데이터 workflow 실행,
 실서비스 두 휴식군·desktop/mobile 확인과 v1.3.1 tag/release. 기존 운영 미해결은 유지한다.
+
+## 2026-10-26 — Shooting 자동 갱신 보호, v1.3.2 준비
+
+v1.3.1은 PR #230과 실제 일일 발행 run 40303043794로 복구·배포를 완료했다.
+Owner 후속 요청은 매일 자동 계산과 실패 재발 방지다. 기존 하루 두 번 schedule을 유지하고
+Shooting만 전체 900초 안에서 수집·검증을 재시도한다. 부분 발행 뒤 이번 후보의 실제 remote
+manifest/blob을 확인하는 필수 gate로, Shooting 실패인데 workflow가 green이던 문제를 막는다.
+정상본·다른 모듈의 독립 발행·CAS·immutable blob 규칙은 유지한다. 0경기 예외는 명시적
+시즌 증거와 이미 게시된 coverage를 대조한다. 예약 실행 누락·상위 DB ingest 감시와 실제
+기기 확인은 별도 범위다. 다음 단계: 실패/복구 계약·실제 Actions 경로·고정 후보 독립 검토,
+PR preview와 production 확인 후 v1.3.2 릴리스. 기존 운영 미해결은 유지한다.
