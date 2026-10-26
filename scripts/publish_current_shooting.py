@@ -125,12 +125,15 @@ def parse_summary(summary: dict, fixture: dict, event_id: str, end_year: int) ->
             if not (fg3m <= fgm and fg3a <= fga and pts == 2 * fgm + fg3m + ftm):
                 raise ValueError("Inconsistent ESPN athlete scoring totals")
             minutes = stats["MIN"]
-            if not re.fullmatch(r"\d+(?::\d{1,2})?", minutes):
-                raise ValueError("Unknown ESPN participation minutes")
-            minute_value = sum(float(part) / (60 ** i) for i, part in enumerate(minutes.split(":")))
-            if ":" in minutes and int(minutes.split(":")[1]) >= 60:
-                raise ValueError("Invalid ESPN elapsed minutes")
-            state = "played" if minute_value > 0 or fga > 0 or fta > 0 else "unknown"
+            if minutes == "--":
+                minute_value = None
+            else:
+                if not isinstance(minutes, str) or not re.fullmatch(r"\d+(?::\d{1,2})?", minutes):
+                    raise ValueError("Unknown ESPN participation minutes")
+                minute_value = sum(float(part) / (60 ** i) for i, part in enumerate(minutes.split(":")))
+                if ":" in minutes and int(minutes.split(":")[1]) >= 60:
+                    raise ValueError("Invalid ESPN elapsed minutes")
+            state = "played" if (minute_value is not None and minute_value > 0) or fga > 0 or fta > 0 else "unknown"
             history.append({"pid": pid, "gid": fixture["gid"], "date": fixture["date"], "state": state, "min": minute_value})
             points += pts
             played_count += state == "played"

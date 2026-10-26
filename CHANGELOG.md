@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.1 — 2026-10-26
+
+- Keep current-season shooting updates running when ESPN reports unavailable player minutes as `--`. Preserve uncertain participation and missing duration instead of rejecting every game or inventing a rest classification.
+
 ## 1.3.0 — 2026-10-26
 
 - Show regular-season records entering each matchup beside the team names. Future games use completed results available now; historical games keep their own cutoff.

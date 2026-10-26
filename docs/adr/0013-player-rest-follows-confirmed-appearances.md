@@ -57,3 +57,20 @@ bubble history and unaltered target shot totals. Bind generated player files and
 outputs to the repaired producers. Independently review the frozen candidate and verify its
 published player splits before deployment. Record unresolved source cases and held-out
 classifications explicitly. No fatigue coefficient or production database mutation is implied.
+
+## 2026-10-26 amendment: ESPN unavailable minutes
+
+The current-season importer rejected event `401909095` because Pacome Dadiet
+(`espn:5211983`) had `MIN=--`, zero shooting attempts and `didNotPlay=false`.
+That held every later Shooting publication at the previous 17-game snapshot.
+The reason field is not absence evidence: the same source reports
+`COACH'S DECISION` on players with positive minutes and shots.
+
+Normalize the exact `--` sentinel to missing duration. With an observed field-goal
+or free-throw attempt, participation is confirmed and duration stays unknown.
+Without those attempts, preserve an unknown appearance in the player history so
+a later rest comparison is withheld when that uncertainty could change its group.
+Do not infer a DNP from the reason string, replace missing duration with zero, or
+remove the player from history. Explicit DNP and malformed clocks retain their
+existing validation. This changes provider normalization, not the rest groups,
+shot denominators, fatigue model or career estimation rules.

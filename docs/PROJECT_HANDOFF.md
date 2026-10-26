@@ -234,3 +234,15 @@ Cup 해제는 현재 입력과 저장/공개 tuple 비교로 확인하며, 완�
 브라우저 25개와 실제 API의 320/390/1440px 검증을 통과했다. 실제 200%에서 드러난 기존
 Matchups/Checked 헤더 겹침도 wrap으로 보완했고 관련 5개 재검증을 통과했다. 독립 재검토는
 `6e2485e3`의 두 P2와 이동 후 재연기·취소를 확인해 추가 지적 없이 종료했다. 물리 기기는 별도다.
+
+## 2026-10-26 — Shooting 일일 갱신 복구, v1.3.1 준비
+
+v1.3.0은 PR #229로 배포·canonical 네 alias·실서비스 API와 320/390/1440px를 확인했고 tag/release를 만들었다.
+Owner가 발견한 Shooting의 양쪽 휴식군 0은 UI 필터가 아니라 17경기 공개본에 멈춘 갱신 실패였다.
+ESPN `401909095`의 Dadiet 행은 MIN `--`·0 FGA/FTA·didNotPlay=false였다. 정확한 sentinel만
+결측 시간으로 허용하고 미상 출전을 이력에 남긴다. 같은 reason·active 값이 실제 출전에도 있어
+DNP를 추정하지 않는다(ADR 0013 amendment). 양수 시도는 시간 미상이어도 확정 출전으로 보존한다.
+실제 43경기 재생은 382선수·7,656 FGA를 보존했고 독립 raw oracle과 전 선수·세 집계가 일치했다.
+no-rest 119선수/1,125 FGA, rested 85선수/676 FGA가 복구된다. DB·계수·휴식군·career 자료 변경 없음.
+다음 단계: 고정 후보 독립 검토, PR preview·CI, 코드 merge 후 별도 일일 데이터 workflow 실행,
+실서비스 두 휴식군·desktop/mobile 확인과 v1.3.1 tag/release. 기존 운영 미해결은 유지한다.
