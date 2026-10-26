@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
@@ -16,6 +17,8 @@ from daily_publications import DATASETS, MAX_BYTES, empty_manifest, load_manifes
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://raw.githubusercontent.com/mhju0/fullcourt/data-publications/"
+SHOOTING_BUDGET = 900
+SHOOTING_BACKOFF = (5, 15)
 
 
 def fetch(path, limit=MAX_BYTES):
@@ -30,6 +33,57 @@ def run(args, timeout):
     completed = subprocess.run(args, cwd=ROOT, capture_output=True, timeout=timeout, check=False)
     # Child diagnostics may contain database connection information; only verdicts leave this process.
     return completed.returncode
+
+
+def collect_shooting(stage, season):
+    deadline = time.monotonic() + SHOOTING_BUDGET
+    output = stage / "shooting.json"
+    command = [sys.executable, "scripts/publish_current_shooting.py", "--season", season, "--output", str(output)]
+    result = {"status": "failed", "attempts": []}
+    for attempt in range(3):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            result["attempts"].append("budget-exhausted")
+            break
+        reason = "source-error"
+        try:
+            output.unlink(missing_ok=True)
+            code = run(command, remaining)
+            if code == 3:
+                result.update(status="unavailable", season=season, noRegularFinals=True, expectedGames=0)
+                reason = "no-regular-finals"
+            elif code == 0:
+                reason = "validation-error"
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    reason = "budget-exhausted"
+                else:
+                    try:
+                        validation = subprocess.run(["node", "node_modules/tsx/dist/cli.mjs", "scripts/validate_daily_dataset.ts", "shooting", str(output)], cwd=ROOT, capture_output=True, timeout=min(30, remaining))
+                    except subprocess.TimeoutExpired:
+                        reason = "validation-timeout"
+                    else:
+                        if validation.returncode == 0 and time.monotonic() < deadline:
+                            identity = json.loads(validation.stdout)
+                            if identity["season"] != season:
+                                raise ValueError("Shooting season differs")
+                            result.update(status="published", generatedAt=identity["generatedAt"], season=season)
+                            reason = "published"
+        except subprocess.TimeoutExpired:
+            reason = "source-timeout"
+        except Exception:
+            pass
+        result["attempts"].append(reason)
+        logging.info("shooting attempt %s/3: %s", attempt + 1, reason)
+        if result["status"] != "failed" or attempt == 2:
+            break
+        remaining = deadline - time.monotonic()
+        backoff = SHOOTING_BACKOFF[attempt]
+        if remaining <= backoff:
+            result["attempts"].append("budget-exhausted")
+            break
+        time.sleep(backoff)
+    return result
 
 
 def collect_officiating(stage, season, previous):
@@ -85,15 +139,17 @@ def main():
         entry = {"expectedPriorHash": old["sha256"] if old else None, "checkedAt": checked, "status": "failed"}
         candidate["datasets"][name] = entry
         try:
+            if name == "shooting":
+                entry.update(collect_shooting(args.out, season))
+                continue
             if name == "officiating":
                 body = fetch(old["path"]) if old else None
                 if body is not None and (len(body) != old["bytes"] or hashlib.sha256(body).hexdigest() != old["sha256"]):
                     raise ValueError("Prior source hash differs")
                 code = collect_officiating(args.out, season, body)
             else:
-                script = "publish_current_shooting.py" if name == "shooting" else "publish_current_shot_grid.py"
-                command = [sys.executable, f"scripts/{script}", "--season", season, "--output", str(args.out / f"{name}.json")]
-                code = run(command, 900 if name == "shooting" else 90)
+                command = [sys.executable, "scripts/publish_current_shot_grid.py", "--season", season, "--output", str(args.out / f"{name}.json")]
+                code = run(command, 90)
             if code == 3:
                 entry["status"] = "unavailable"
             elif code == 0:
@@ -104,6 +160,11 @@ def main():
             entry["status"] = "failed"
         logging.info("%s: %s", name, entry["status"])
     (args.out / "candidate.json").write_text(json.dumps(candidate, indent=2) + "\n")
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        shooting = candidate["datasets"]["shooting"]
+        with open(summary, "a") as stream:
+            stream.write(f"- Shooting collection: {shooting['status']}; attempts: {', '.join(shooting.get('attempts', []))}\n")
     # A failed module is reported visibly, while successful modules remain publishable.
     return 0
 

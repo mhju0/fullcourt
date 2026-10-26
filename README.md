@@ -6,7 +6,7 @@
 
 NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
-**v1.3.1 · October 26, 2026** · [Release history](CHANGELOG.md)
+**v1.3.2 · October 26, 2026** · [Release history](CHANGELOG.md)
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)

@@ -1,5 +1,10 @@
 # Release history
 
+## 1.3.2 — 2026-10-26
+
+- Retry Shooting collection and validation within a bounded time budget. Keep the twice-daily automatic recalculation schedule.
+- Fail the data workflow when this run's Shooting update is not actually published, while preserving the last good data and allowing other datasets to advance. Verify the remote manifest and immutable blob after publication.
+
 ## 1.3.1 — 2026-10-26
 
 - Keep current-season shooting updates running when ESPN reports unavailable player minutes as `--`. Preserve uncertain participation and missing duration instead of rejecting every game or inventing a rest classification.
