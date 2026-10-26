@@ -28,6 +28,7 @@ import { GAP_RANGES, NEUTRAL_REST_ADVANTAGE_THRESHOLD, gapRangeByKey, gapRangeSp
 import { TYPE, termTdStyle } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
+import { deviationText } from "@/lib/deviation-color";
 
 export const metadata: Metadata = {
   title: "Rest Advantage · Behind the Data",
@@ -66,12 +67,14 @@ function RestRowTable() {
     {
       label: "At home",
       games: RESTED_AT_HOME.games,
+      wins: RESTED_AT_HOME.wins,
       winPct: RESTED_AT_HOME.winPct,
       baseline: REST_SPLIT_BASELINE.homeWinPct,
     },
     {
       label: "On the road",
       games: RESTED_ON_ROAD.games,
+      wins: RESTED_ON_ROAD.wins,
       winPct: RESTED_ON_ROAD.winPct,
       baseline: REST_SPLIT_BASELINE.roadWinPct,
     },
@@ -84,17 +87,12 @@ function RestRowTable() {
       rows={rows}
       rowKey={(r) => r.label}
       columns={[
-        {
-          label: "RESTED",
-          unit: "GAMES",
-          cell: (r) => <LabelWithGames label={r.label} games={r.games} />,
-        },
+        { label: "RESTED", cell: (r) => r.label },
         {
           label: "WON",
-          unit: "WIN RATE",
+          unit: WON_UNIT,
           numeric: true,
-          style: { fontWeight: 700 },
-          cell: (r) => `${r.winPct.toFixed(1)}%`,
+          cell: (r) => <RateWithCount winPct={r.winPct} wins={r.wins} games={r.games} />,
         },
         {
           label: "BASE",
@@ -107,8 +105,7 @@ function RestRowTable() {
           label: "GAP",
           unit: "pp",
           numeric: true,
-          style: { fontWeight: 700 },
-          cell: (r) => signedNumber(liftOverBaseline(r.winPct, r.baseline), 1),
+          cell: (r) => <Gap pp={liftOverBaseline(r.winPct, r.baseline)} />,
         },
       ]}
     >
@@ -138,17 +135,41 @@ function RestRowTable() {
   );
 }
 
-/** A row label with its game count beneath it, so a phone keeps the rate columns on screen. */
+/**
+ * A row label with its game count beneath it, for the two rows with no rate to put a count
+ * under. The count may wrap: the WON column's "W / G" already sets the table's width on a phone.
+ */
 function LabelWithGames({ label, games }: { label: React.ReactNode; games: number | string }) {
   return (
     <>
       {label}
       <br />
-      <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+      <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontVariantNumeric: "tabular-nums" }}>
         {games.toLocaleString()} games
       </span>
     </>
   );
+}
+
+/** The WON column's sub-label: the rate first, the count it rests on beneath it (D-143). */
+const WON_UNIT = "% · W / G";
+
+/** A win rate with its wins and games beneath, as every table with wins writes them (D-143). */
+function RateWithCount({ winPct, wins, games, color }: { winPct: number; wins: number; games: number; color?: string }) {
+  return (
+    <>
+      <span style={{ fontWeight: 700, color }}>{winPct.toFixed(1)}%</span>
+      <br />
+      <span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", whiteSpace: "nowrap" }}>
+        {wins.toLocaleString()}&nbsp;/&nbsp;{games.toLocaleString()}
+      </span>
+    </>
+  );
+}
+
+/** A gap in points, green above its baseline and red below, as Model Results colours it (D-144). */
+function Gap({ pp, color }: { pp: number; color?: string }) {
+  return <span style={{ fontWeight: 700, color: color ?? deviationText(pp) }}>{signedNumber(pp, 1)}</span>;
 }
 
 /** "Medium 3–5": a gap size as every table on the site names it. */
@@ -167,17 +188,18 @@ function gapSizeLabel(range: RestGapRange): React.ReactNode {
 function RoadGapSizeTable() {
   // The unfiltered row is every rested road game, so the sizes below it add up to it.
   const rows = [
-    { key: "all", label: <>All gaps <span style={{ whiteSpace: "nowrap" }}>({GAP_RANGES[0].min}+)</span></>, games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
+    { key: "all", label: <>All gaps <span style={{ whiteSpace: "nowrap" }}>({GAP_RANGES[0].min}+)</span></>, games: RESTED_ON_ROAD.games, wins: RESTED_ON_ROAD.wins, winPct: RESTED_ON_ROAD.winPct },
     ...RESTED_ON_ROAD.ranges.map((r) => ({
       key: r.key as string,
       label: gapSizeLabel(r),
       games: r.games,
+      wins: r.wins,
       winPct: r.winPct,
     })),
   ];
 
-  // Thin sizes are muted rather than omitted: dropping them hides the evidence, and printing
-  // them boldly would oversell a few hundred games.
+  // Thin sizes are muted rather than omitted, and their gap is not coloured: dropping them
+  // hides the evidence, and printing them boldly would oversell a few hundred games.
   const thin = (r: (typeof rows)[number]) =>
     r.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined;
 
@@ -186,23 +208,18 @@ function RoadGapSizeTable() {
       rows={rows}
       rowKey={(r) => r.key}
       columns={[
-        { label: "REST GAP", unit: "SIZE", cell: (r) => <LabelWithGames label={r.label} games={r.games} /> },
+        { label: "REST GAP", unit: "SIZE", cell: (r) => r.label },
         {
           label: "WON",
-          unit: "WIN RATE",
+          unit: WON_UNIT,
           numeric: true,
-          style: { fontWeight: 700 },
-          cell: (r) => <span style={{ color: thin(r) }}>{r.winPct.toFixed(1)}%</span>,
+          cell: (r) => <RateWithCount winPct={r.winPct} wins={r.wins} games={r.games} color={thin(r)} />,
         },
         {
           label: `VS ${REST_SPLIT_BASELINE.roadWinPct}%`,
           unit: "PCT POINTS",
           numeric: true,
-          cell: (r) => (
-            <span style={{ color: thin(r) }}>
-              {signedNumber(liftOverBaseline(r.winPct, REST_SPLIT_BASELINE.roadWinPct), 1)}
-            </span>
-          ),
+          cell: (r) => <Gap pp={liftOverBaseline(r.winPct, REST_SPLIT_BASELINE.roadWinPct)} color={thin(r)} />,
         },
       ]}
     />
@@ -232,17 +249,12 @@ function RoadEraTable() {
       rows={RESTED_ON_ROAD_BY_ERA}
       rowKey={(era) => era.label}
       columns={[
-        {
-          label: "ERA",
-          unit: "GAMES",
-          cell: (era) => <LabelWithGames label={era.label} games={era.games} />,
-        },
+        { label: "ERA", cell: (era) => era.label },
         {
           label: "WON",
-          unit: "WIN RATE",
+          unit: WON_UNIT,
           numeric: true,
-          style: { fontWeight: 700 },
-          cell: (era) => `${era.winPct.toFixed(1)}%`,
+          cell: (era) => <RateWithCount winPct={era.winPct} wins={era.wins} games={era.games} />,
         },
         {
           label: "BASE",
@@ -255,8 +267,7 @@ function RoadEraTable() {
           label: "GAP",
           unit: "pp",
           numeric: true,
-          style: { fontWeight: 700 },
-          cell: (era) => signedNumber(era.liftPp, 1),
+          cell: (era) => <Gap pp={era.liftPp} />,
         },
       ]}
     />

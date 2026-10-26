@@ -44,6 +44,7 @@ import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse, EraRates } from "@/types"
 import { buildHomeWinTrend } from "@/lib/home-win-trend"
 import { signedNumber } from "@/lib/signed-number"
+import { deviationFill, deviationText } from "@/lib/deviation-color"
 import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
 import { StatTile } from "@/components/ui/stat-tile"
@@ -124,23 +125,9 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
  *
  * `toDeviation` itself lives in `@/lib/analysis-claims`: the lift is claim vocabulary before
  * it is a plotted value, since every tile and sentence on the page states a rate through it.
- * What stays here is the drawing alone — fill, bar size and scale.
+ * The better/worse colour pair lives in `@/lib/deviation-color`, shared with the method pages.
+ * What stays here is the drawing alone — bar size and scale.
  */
-
-/**
- * Green above the baseline, red below — the shared better/worse pair (D-140), with
- * a neutral midpoint. A rate exactly at the baseline is a real result, not missing data.
- */
-export function deviationFill(deviation: number): string {
-  if (deviation === 0) return "var(--term-neutral)"
-  return deviation < 0 ? "var(--term-worse)" : "var(--term-better)"
-}
-
-/** The same pair at text grade — tooltip prose is small text and needs 4.5:1, chart fills do not. */
-export function deviationText(deviation: number): string {
-  if (deviation === 0) return "var(--term-neutral)"
-  return deviation < 0 ? "var(--term-worse-text)" : "var(--term-better-text)"
-}
 
 /**
  * A dead-even slice has zero length, so without this it draws nothing at all and

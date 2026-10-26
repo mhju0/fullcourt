@@ -287,3 +287,9 @@ Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Dat
 - Branches: all merged and stale branches deleted locally and on GitHub. Bundle in `.local/archive/branch-bundles-2026-10-26/old-branches.bundle`. `origin/data-publications` stays (workflow target).
 - Still owner-only: the GitHub Actions PR-permission tick, the Supabase downgrade around 11-17, the #188 key purge via GitHub Support, physical iPhone/VoiceOver checks, and a live-game score check. Deferred owner decisions: e2e gating, real-SQL coverage of `queries.ts`, `noUncheckedIndexedAccess`, type-aware lint.
 - Next: d8 (Behind the Data) bench.
+
+## 2026-10-26 — d8 method pages (v1.2.9, D-144)
+
+- Owner took all three bench recommendations (https://claude.ai/artifact/H9nnDoBxh3qZUs4SoDe6uJ): `W / G` under the rate where the data has wins (Rest Advantage's three tables, the Schedule Edge market check); green/red on clear comparisons (Rest Advantage gaps, the Playoff verdict and round split); referee archive left as published. Rule in FRONTEND.md "Method tables".
+- `deviationFill`/`deviationText` moved to `src/lib/deviation-color.ts` so server pages can use them. `method-table-rules.test.ts` renders the pages and checks both rules.
+- The graphics review (d1–d8) is complete once v1.2.9 is released.

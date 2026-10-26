@@ -143,13 +143,21 @@ lift  = (group win % − venue win %)
           rows={benchmark.buckets}
           rowKey={(b) => b.label}
           columns={[
-            { label: "Net edge", unit: "games", cell: (b) => <>{b.label}<br /><span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>{b.n} team-seasons</span></> },
+            { label: "Net edge", unit: "games", cell: (b) => b.label },
             {
               label: "Went over",
-              unit: "share of teams",
+              unit: "% · overs / teams",
               numeric: true,
-              style: { fontWeight: 700 },
-              cell: (b) => pct(b.overs, b.n),
+              // The rate first, the team-seasons it rests on beneath it (D-143).
+              cell: (b) => (
+                <>
+                  <span style={{ fontWeight: 700 }}>{pct(b.overs, b.n)}</span>
+                  <br />
+                  <span style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", whiteSpace: "nowrap" }}>
+                    {b.overs}&nbsp;/&nbsp;{b.n}
+                  </span>
+                </>
+              ),
             },
           ]}
         />
