@@ -1,5 +1,10 @@
 import { isHeldGame } from "@/lib/game-status";
 
+export function finalGameLabel(overtimePeriods?: number): string {
+  if (!Number.isInteger(overtimePeriods) || !overtimePeriods || overtimePeriods < 1) return "FINAL";
+  return overtimePeriods === 1 ? "FINAL/OT" : `FINAL/${overtimePeriods}OT`;
+}
+
 /**
  * Where a game is in its night, read from the stored status and the clock.
  *
@@ -51,17 +56,21 @@ export function hasNotTipped(tipOffUtc: string | Date | null, nowMs: number): bo
 export function spokenGameState(
   phase: GamePhase,
   awayScore: number | null,
-  homeScore: number | null
+  homeScore: number | null,
+  overtimePeriods?: number,
 ): string {
   switch (phase) {
     case "live":
       return ", live,";
     case "awaitingFinal":
       return ", result pending,";
-    case "final":
+    case "final": {
+      const overtime = finalGameLabel(overtimePeriods) === "FINAL" ? ""
+        : overtimePeriods === 1 ? " after overtime" : ` after ${overtimePeriods} overtimes`;
       return awayScore !== null && homeScore !== null
-        ? `, final ${awayScore} to ${homeScore},`
-        : ", final,";
+        ? `, final ${awayScore} to ${homeScore}${overtime},`
+        : `, final${overtime},`;
+    }
     case "postponed":
     case "cancelled":
       return `, ${phase},`;

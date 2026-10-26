@@ -24,6 +24,7 @@ import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import type { SlateDay } from "@/lib/game-slate-machine"
 import { LEAD, SPACE, TRACK, TYPE } from "@/lib/terminal-styles"
+import { CUP_FATIGUE_PENDING_NOTE } from "@/lib/cup-schedule-copy"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -373,12 +374,13 @@ export default function GamesPage() {
   // One pass, memoized on the slate: this used to run map + filter + reduce + a second
   // filter on every render — including renders driven by the season selector and
   // the Realtime score overlay, none of which change the answer.
+  const anyCupPending = slate.games.some(game => game.cupSchedulePending?.home || game.cupSchedulePending?.away)
   const { avgRestAdv, markedEdgeGames } = useMemo(() => {
     let sum = 0
     let markedEdges = 0
     let measured = 0
     for (const g of slate.games) {
-      if (g.restAdvantage === null) continue
+      if (g.cupSchedulePending?.home || g.cupSchedulePending?.away || g.restAdvantage === null) continue
       measured += 1
       const diff = Math.abs(g.restAdvantage.differential)
       // An exact-zero game is a measured gap of 0, so it stays in the average.
@@ -390,10 +392,10 @@ export default function GamesPage() {
     // measurement that was never taken. A slate on which every game came out exactly even is
     // different and prints 0.0.
     return {
-      avgRestAdv: measured === 0 ? "—" : formatRestAdvantageValue(sum / measured),
-      markedEdgeGames: measured === 0 ? "—" : String(markedEdges),
+      avgRestAdv: measured === 0 || anyCupPending ? "—" : formatRestAdvantageValue(sum / measured),
+      markedEdgeGames: measured === 0 || anyCupPending ? "—" : String(markedEdges),
     }
-  }, [slate.games])
+  }, [slate.games, anyCupPending])
 
   return (
     // The compact entry keeps a complete matchup above the mobile dock.
@@ -675,7 +677,7 @@ export default function GamesPage() {
 
       {/* Matchups section */}
       <div className="order-1 flex flex-col gap-2 sm:order-none">
-        <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3 border-b border-[var(--term-border)]">
+        <div data-testid="matchups-heading-controls" className="flex min-h-11 flex-wrap items-center justify-between gap-3 border-b border-[var(--term-border)]">
           <SectionDivider
             label="Matchups"
             count={slate.emptyContext ? slate.emptyContext.count : slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
@@ -693,10 +695,12 @@ export default function GamesPage() {
           />
           <GameSlateRefreshNotice slate={slate} />
         </div>
+        {anyCupPending && <p data-testid="cup-fatigue-note" className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>{CUP_FATIGUE_PENDING_NOTE}</p>}
         <GameSlateRefreshWarning message={slate.refreshMessage} />
         <Matchups slate={slate} />
         <details className="fc-disclosure">
           <summary>About rest advantage and game status</summary>
+          <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Records are regular-season wins and losses before the game. Future matchups show results available now.</p>
           <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Rest gap is a model-score difference, not a win probability. Conditions for unplayed games are projected from the schedule.</p>
           <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Scores are final-only. LIVE is estimated from scheduled tip-off. Checked is when this view was fetched, not when the source last changed.</p>
         </details>

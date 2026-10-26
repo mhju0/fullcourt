@@ -52,6 +52,18 @@ failures and an already-open client can extend observed staleness. Do not infer 
 
 ## Response semantics
 
+Games and game-detail responses include the finished game's `overtimePeriods` and `records`
+with home/away regular-season wins and losses entering that game. A future target uses only
+already completed results; the aggregate excludes Cup finals and postseason and is independent
+of fatigue publication exclusions. Older cached payloads may omit these additions.
+
+The 2026-27 Cup readiness check can return `cupSchedulePending: { home, away }`. A pending
+side's fatigue is null and either pending side makes the paired rest advantage null. A single
+snapshot supplies the physical schedule and stored fatigue used to check completeness and
+output agreement; the scorer's coefficients are unchanged. This state is separate from the
+general `projectedFatigue` flag. Team schedules include `overtimePeriods` and a paired
+`cupSchedulePending` boolean. Upcoming edge picks omit pending matchups.
+
 A failed query is an error, not an empty successful dataset. Missing fatigue stays null and must
 not rank as zero. Before completed data exists, Season Report can return schedule-based workload
 while result-derived fields remain empty; the fatigue calendar remains completed-game evidence.

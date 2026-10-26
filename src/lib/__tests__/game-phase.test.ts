@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { gamePhase, hasNotTipped, spokenGameState } from "@/lib/game-phase";
+import { finalGameLabel, gamePhase, hasNotTipped, spokenGameState } from "@/lib/game-phase";
 
 const TIP = "2026-10-20T23:00:00.000Z"; // 7:00 PM ET
 const at = (hours: number) => Date.parse(TIP) + hours * 3_600_000;
@@ -55,6 +55,20 @@ describe("hasNotTipped", () => {
 });
 
 describe("spokenGameState", () => {
+  it("keeps exact overtime counts in visual and spoken finals", () => {
+    expect(finalGameLabel()).toBe("FINAL");
+    expect(finalGameLabel(0)).toBe("FINAL");
+    expect(finalGameLabel(1)).toBe("FINAL/OT");
+    expect(finalGameLabel(2)).toBe("FINAL/2OT");
+    expect(finalGameLabel(5)).toBe("FINAL/5OT");
+    expect(spokenGameState("final", 135, 141, 1)).toBe(", final 135 to 141 after overtime,");
+    expect(spokenGameState("final", null, null, 2)).toBe(", final after 2 overtimes,");
+    expect(spokenGameState("live", 135, 141, 2)).toBe(", live,");
+  });
+
+  it.each([-1, 0.5, NaN, Infinity])("does not label invalid overtime %s", periods => {
+    expect(finalGameLabel(periods)).toBe("FINAL");
+  });
   it("says nothing for a game that has not tipped", () => {
     expect(spokenGameState("upcoming", null, null)).toBe("");
   });

@@ -1,5 +1,12 @@
 # Release history
 
+## 1.3.0 — 2026-10-26
+
+- Show regular-season records entering each matchup beside the team names. Future games use completed results available now; historical games keep their own cutoff.
+- Mark overtime results as FINAL/OT or FINAL/2OT on Games, game details and team schedules, using the finished game's stored overtime count.
+- Withhold Cup-dependent rest, travel and fatigue estimates while schedule inputs are incomplete or stored outputs disagree with complete inputs. Keep confirmed fixtures, scores and records visible, with one pending explanation.
+- Resolve the 2026 Cup final at Hinkle Fieldhouse as a neutral physical game. Published model coefficients and stored game data are unchanged (D-146).
+
 ## 1.2.10 — 2026-10-26
 
 - Show every date within the published regular season on the Games calendar, including days with no games, and stop navigation at the season boundaries.

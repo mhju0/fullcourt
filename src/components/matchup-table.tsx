@@ -20,7 +20,8 @@ import {
   teamGameFlags,
   restEdgeSize,
 } from "@/components/matchup-parts";
-import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
+import { finalGameLabel, gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
+import { CUP_FATIGUE_PENDING_NOTE } from "@/lib/cup-schedule-copy";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
 import {
@@ -32,7 +33,7 @@ import { getTeamBranding } from "@/lib/team-history";
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
 import { cn } from "@/lib/utils";
 import { ScrollCue } from "@/components/ui/scroll-cue";
-import type { GameResponse } from "@/types";
+import type { GameResponse, TeamRecord } from "@/types";
 
 /**
  * The Front Office table spine (docs/design/mocks/08-front-office.html, adopted
@@ -78,6 +79,7 @@ function StatusCell({
   tipOffEt,
   homeScore,
   awayScore,
+  overtimePeriods,
   flashing,
 }: {
   phase: GamePhase;
@@ -85,9 +87,11 @@ function StatusCell({
   tipOffEt: string | null;
   homeScore: number | null;
   awayScore: number | null;
+  overtimePeriods?: number;
   flashing: boolean;
 }) {
   const hasScore = phase === "final" && homeScore !== null && awayScore !== null;
+  const [finalLabel, overtimeLabel] = finalGameLabel(overtimePeriods).split("/");
 
   return (
     // The flash is scoped to this cell (G3, ADR 0010): the score is what changed, so the
@@ -132,7 +136,7 @@ function StatusCell({
           }}
         >
           {/* PENDING: over by the clock, and the score writer has not run yet. */}
-          {phase === "awaitingFinal" ? "PENDING" : phase.toUpperCase()}
+          {phase === "awaitingFinal" ? "PENDING" : phase === "final" ? <>{finalLabel}{overtimeLabel && <>/<wbr />{overtimeLabel}</>}</> : phase.toUpperCase()}
         </span>
       ) : null}
       {hasScore ? (
@@ -143,9 +147,10 @@ function StatusCell({
             letterSpacing: TRACK.figure,
             color: "var(--term-text)",
             lineHeight: LEAD.figure,
+            whiteSpace: "normal",
           }}
         >
-          {awayScore}–{homeScore}
+          {awayScore}–<wbr />{homeScore}
         </span>
       ) : (
         // The ET tip time when the schedule carries one — what a schedule site puts
@@ -164,7 +169,7 @@ function StatusCell({
 
 // ─── Matchup + fatigue cells (two aligned 26px lines each) ───────
 
-const TEAM_LINE_H = 26;
+const TEAM_LINE_H = "1.625em";
 
 function TeamLine({
   abbreviation,
@@ -173,6 +178,7 @@ function TeamLine({
   season,
   fallback,
   venueTag,
+  record,
 }: {
   abbreviation: string;
   name: string;
@@ -184,6 +190,7 @@ function TeamLine({
    * which reads as a verdict on the rest gap rather than a place.
    */
   venueTag: string | null;
+  record?: TeamRecord;
 }) {
   const colors = getTeamColors(abbreviation);
   return (
@@ -208,6 +215,7 @@ function TeamLine({
       >
         {name}
       </span>
+      {record && <span className="mono shrink-0 tabular-nums" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }} title="Regular-season record entering this game">({record.wins}–{record.losses})</span>}
       <span
         className="hidden truncate lg:inline"
         style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}
@@ -274,7 +282,9 @@ function FatigueLine({
   score,
   tone,
   flags,
+  pending = false,
 }: {
+  pending?: boolean;
   score: number | null;
   tone: FatigueBarTone;
   flags: string[];
@@ -298,7 +308,7 @@ function FatigueLine({
           textAlign: "left",
         }}
       >
-        {score !== null ? formatFatigueScore(score) : "—"}
+        {pending ? "TBD" : score !== null ? formatFatigueScore(score) : "—"}
       </span>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="min-w-[36px] flex-1" />
@@ -348,7 +358,9 @@ function RestAdvCell({
   restAdvantage,
   homeAbbr,
   awayAbbr,
+  pending = false,
 }: {
+  pending?: boolean;
   restAdvantage: GameResponse["restAdvantage"];
   homeAbbr: string;
   awayAbbr: string;
@@ -380,7 +392,7 @@ function RestAdvCell({
               color: "var(--term-text-muted)",
             }}
           >
-            {display.text}
+            {pending ? "TBD" : display.text}
           </span>
         ) : display.kind === "team" ? (
           <>
@@ -518,7 +530,7 @@ function RestAdvCell({
 // ─── One game: main row + schedule context + expansion ───────────
 
 function GameRow({
-  game,
+  game: sourceGame,
   index,
   isScoreFlashing,
   phase,
@@ -528,6 +540,12 @@ function GameRow({
   isScoreFlashing: boolean;
   phase: GamePhase;
 }) {
+  const game = useMemo(() => sourceGame.cupSchedulePending?.home || sourceGame.cupSchedulePending?.away
+    ? { ...sourceGame, restAdvantage: null,
+        homeFatigue: sourceGame.cupSchedulePending.home ? null : sourceGame.homeFatigue,
+        awayFatigue: sourceGame.cupSchedulePending.away ? null : sourceGame.awayFatigue }
+    : sourceGame, [sourceGame]);
+  const pending = Boolean(game.cupSchedulePending?.home || game.cupSchedulePending?.away);
   const { params, update } = usePageQuery();
   const expanded = params.get("game") === String(game.id);
   const rowRef = useRef<HTMLDivElement>(null);
@@ -561,7 +579,7 @@ function GameRow({
     game.awayFatigue?.score ?? null,
     game.homeFatigue?.score ?? null,
   );
-  const storyline = useMemo(() => buildGameStoryline(game), [game]);
+  const storyline = useMemo(() => pending ? null : buildGameStoryline(game), [game, pending]);
 
   const toggle = useCallback(
     () => update({ game: expanded ? null : String(game.id) }),
@@ -597,7 +615,7 @@ function GameRow({
         tabIndex={0}
         aria-expanded={expanded}
         // The label replaces the row's contents for a screen reader, so the edge badge is named here.
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name}${game.records ? ` (${game.records.away.wins} wins, ${game.records.away.losses} losses entering this game)` : ""} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${game.records ? ` (${game.records.home.wins} wins, ${game.records.home.losses} losses entering this game)` : ""}${pending ? `, ${CUP_FATIGUE_PENDING_NOTE}` : ""}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore, game.overtimePeriods)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
@@ -610,6 +628,7 @@ function GameRow({
             tipOffEt={game.tipOffEt}
             homeScore={game.homeScore}
             awayScore={game.awayScore}
+            overtimePeriods={game.overtimePeriods}
             flashing={isScoreFlashing}
           />
         </div>
@@ -622,6 +641,7 @@ function GameRow({
             season={game.season}
             fallback={awayFallback}
             venueTag={null}
+            record={game.records?.away}
           />
           <TeamLine
             abbreviation={homeBrand.abbreviation}
@@ -630,16 +650,19 @@ function GameRow({
             season={game.season}
             fallback={homeFallback}
             venueTag={game.neutralCity ? game.neutralCity.toUpperCase() : "HOME"}
+            record={game.records?.home}
           />
         </div>
 
         <div className="fc-game-extra flex flex-col gap-1">
             <FatigueLine
+              pending={game.cupSchedulePending?.away}
               score={game.awayFatigue?.score ?? null}
               tone={tones.away}
               flags={flags.away}
             />
             <FatigueLine
+              pending={game.cupSchedulePending?.home}
               score={game.homeFatigue?.score ?? null}
               tone={tones.home}
               flags={flags.home}
@@ -648,6 +671,7 @@ function GameRow({
 
         <div className="fc-game-edge">
           <RestAdvCell
+            pending={pending}
             restAdvantage={game.restAdvantage}
             homeAbbr={homeBrand.abbreviation}
             awayAbbr={awayBrand.abbreviation}
@@ -704,10 +728,12 @@ function GameRow({
               <FatigueDetailColumn
                 label={`AWAY · ${awayBrand.abbreviation}`}
                 fatigue={game.awayFatigue}
+                pending={game.cupSchedulePending?.away}
               />
               <FatigueDetailColumn
                 label={`${game.neutralCity ? `HOST · ${game.neutralCity.toUpperCase()}` : "HOME"} · ${homeBrand.abbreviation}`}
                 fatigue={game.homeFatigue}
+                pending={game.cupSchedulePending?.home}
               />
             </div>
           </div>

@@ -62,6 +62,9 @@ export interface TeamScheduleGame {
   /** ISO instant, so the page can mark a game LIVE or PENDING on the board's clock. */
   tipOffUtc: string | null;
   status: string;
+  overtimePeriods?: number;
+  /** Either side's rest comparison is awaiting complete Cup schedule inputs. */
+  cupSchedulePending?: boolean;
   isHome: boolean;
   neutralCity: string | null;
   opponent: TeamInfo;
@@ -77,12 +80,22 @@ export interface GameDateCount {
   gameCount: number;
 }
 
+export interface TeamRecord {
+  wins: number;
+  losses: number;
+}
+
 export interface GameResponse {
   id: number;
   externalId: string;
   date: string;
   season: string;
   status: string;
+  /** Current game's completed overtime count, independent of prior-game fatigue flags. */
+  overtimePeriods?: number;
+  cupSchedulePending?: { home: boolean; away: boolean };
+  /** Regular-season record entering this game, limited to results available at read time. */
+  records?: { home: TeamRecord; away: TeamRecord };
   /**
    * Tip-off as the ET clock string ("7:30 PM ET"), or null — `tip_off_utc` is null
    * pre-2002 and for all of 2019-20, complete otherwise (docs/DATABASE.md), and an

@@ -41,8 +41,15 @@ export const ALTITUDE_NEUTRAL_CITIES: readonly string[] = Object.entries(NEUTRAL
   .map(([city]) => city);
 
 export function neutralVenueCoordinates(
-  city: string | null | undefined
+  city: string | null | undefined,
+  date?: string
 ): NeutralVenue | null {
   if (!city) return null;
+  // ESPN venue 2032 identifies Hinkle for this final; other Indianapolis dates
+  // can use different arenas. Visit Indy's venue listing supplies these coordinates.
+  // https://www.visitindy.com/directory/hinkle-fieldhouse-at-butler-university/
+  if (city === "Indianapolis" && date === "2026-12-11") {
+    return { latitude: 39.84349, longitude: -86.167705, altitude: false };
+  }
   return NEUTRAL_VENUES[city] ?? null;
 }
