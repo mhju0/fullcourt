@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ABNORMAL_STRETCHES, isNormallyPlayed } from "@/lib/season-regime";
+import { ABNORMAL_SEASON_NOTES } from "@/lib/season-report";
 
 describe("season regime", () => {
   it("excludes the Orlando bubble", () => {
@@ -50,5 +51,13 @@ describe("the data-and-limits page", () => {
     expect(page).not.toMatch(
       /roughly \d+ games|The \d+ games played before|~\d+ ordinary games|dropped \d+ valid games|\d+ from 2020-21|\d+ from the 1998-99/
     );
+  });
+});
+
+describe("the abnormal-season notes", () => {
+  it("state no typed count of games inside or outside an exclusion", () => {
+    for (const { note } of Object.values(ABNORMAL_SEASON_NOTES)) {
+      expect(note).not.toMatch(/\d{3,} (pre-suspension|bubble) games/);
+    }
   });
 });

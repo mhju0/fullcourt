@@ -56,7 +56,7 @@ export const ABNORMAL_SEASON_NOTES: Readonly<Record<string, { label: string; not
   },
   "2019-20": {
     label: "SUSPENDED SEASON · 63–67 GAMES PER TEAM",
-    note: "COVID-19 suspended the season on 11 March 2020, with teams having played 63 to 67 games. This report covers the 971 pre-suspension games and excludes the Orlando bubble, which had no venue-to-venue travel or home crowd. Unequal game counts limit comparisons of team totals.",
+    note: "COVID-19 suspended the season on 11 March 2020, with teams having played 63 to 67 games. This report covers the games played before the suspension and excludes the Orlando bubble, which had no venue-to-venue travel or home crowd. Unequal game counts limit comparisons of team totals.",
   },
   "2020-21": {
     label: "CONDENSED SEASON · 72 GAMES PER TEAM",

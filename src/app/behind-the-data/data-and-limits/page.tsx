@@ -123,7 +123,7 @@ export default function DataAndLimitsPage() {
           involved normal travel, and they are in.
         </Prose>
         <details className="fc-disclosure"><summary>Exclusion correction: July 2026</summary><Note>
-          Until 30 July 2026, all of 2019-20 was missing, including those ordinary games. The
+          Until 30 July 2026, all of 2019-20 was missing, including the pre-suspension games. The
           rule was an October-to-April date window. It caught the bubble only by coincidence,
           and it also dropped valid games from seasons that ran on other dates: the May games
           of 2020-21, which ended 16 May, and of the 1998-99 lockout season, which ended 5 May.
