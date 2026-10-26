@@ -321,7 +321,7 @@ test("shared Games links restore season, date and browser history", async ({ pag
   await expect(display).toContainText("DECEMBER 24, 2024");
     await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
   await expect(page).toHaveURL(/season=2023-24/);
-  await expect(display).toContainText("2024");
+  await expect(display).toContainText("APRIL 14, 2024");
   await page.goBack();
   await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
   await expect(display).toContainText("DECEMBER 24, 2024");

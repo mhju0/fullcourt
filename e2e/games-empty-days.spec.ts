@@ -105,6 +105,11 @@ test("real games override a stale empty index and preserve a measured zero", asy
   await expect(page.getByTestId("slate-summary-line")).toContainText("0.0");
   await expect(page.getByRole("group", { name: "Date", exact: true }).filter({ visible: true }).locator('[aria-current="date"]')).toContainText("1 GM");
   await expect(page.getByText("NBA Cup schedule pending. Matchups to be announced.", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Next day", exact: true }).filter({ visible: true }).click();
+  await expect(page).toHaveURL(/date=2026-12-05/);
+  const priorDay = page.getByRole("group", { name: "Date", exact: true }).filter({ visible: true }).getByRole("button", { name: /December 4, 2026/ });
+  await expect(priorDay).toContainText("1 GM");
+  await expect(priorDay).not.toContainText("TBD");
 });
 
 
@@ -123,4 +128,21 @@ test("loading an empty date keeps its count unknown until the response succeeds"
   await expect(page.getByText("NBA Cup schedule pending. Matchups to be announced.", { exact: true })).toHaveCount(0);
   release();
   await expect(page.getByTestId("matchups-heading-controls")).toContainText("TBD GAMES");
+});
+
+
+test("successful empty response overrides a stale positive index for Cup coverage", async ({ page }) => {
+  await fixture(page, "2026-11-28T17:00:00Z");
+  await page.route("**/api/games/dates?*", route => route.fulfill({ json: {
+    data: [...dates, { date: "2026-12-04", gameCount: 1 }], error: null,
+  } }));
+  await page.goto("/games?season=2026-27&date=2026-12-04");
+  await expect(page.getByText("NBA Cup schedule not available.", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("matchups-heading-controls")).toContainText("TBD GAMES");
+  await expect(page.getByTestId("slate-summary-line")).toContainText("TBD");
+  const group = page.getByRole("group", { name: "Date", exact: true }).filter({ visible: true });
+  await expect(group.locator('[aria-current="date"]')).toContainText("TBD");
+  await page.getByRole("button", { name: "Next day", exact: true }).filter({ visible: true }).click();
+  await expect(page).toHaveURL(/date=2026-12-05/);
+  await expect(group.getByRole("button", { name: /December 4, 2026/ })).toContainText("TBD");
 });

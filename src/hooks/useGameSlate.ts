@@ -229,7 +229,7 @@ export function useGameSlate(): GameSlate {
   const toSlateDay = useCallback(
     ({ date, gameCount, disabled }: GameDateCount & { disabled?: boolean }): SlateDay => {
       const label = format(noon(date), "MMMM d, yyyy");
-      const actualCount = date === state.selectedDate && state.status === "slateReady" ? state.games.length : gameCount;
+      const actualCount = state.observedCounts[date] ?? gameCount;
       const context = gameDayContext({ season, date, gameCount: actualCount, today: slateDateKey() });
       const count = context?.count ?? actualCount;
       return {
@@ -242,7 +242,7 @@ export function useGameSlate(): GameSlate {
         isSelected: date === state.selectedDate,
       };
     },
-    [state.selectedDate, state.status, state.games, season]
+    [state.selectedDate, state.observedCounts, season]
   );
   const days = useMemo(() => daysInMonth(state).map(toSlateDay), [state, toSlateDay]);
   const week = useMemo(() => weekDays(state).map(toSlateDay), [state, toSlateDay]);
@@ -283,7 +283,7 @@ export function useGameSlate(): GameSlate {
     canPreviousDay: canShiftDay(state, -1),
     canNextDay: canShiftDay(state, 1),
     emptyContext: state.status === "slateEmpty" && selectedDate
-      ? gameDayContext({ season, date: selectedDate, gameCount: state.days.find(day => day.date === selectedDate)?.gameCount ?? 0, today: slateDateKey(), inSeason: seasonCalendarDays(state).some(day => day.date === selectedDate) }) : null,
+      ? gameDayContext({ season, date: selectedDate, gameCount: state.observedCounts[selectedDate] ?? state.days.find(day => day.date === selectedDate)?.gameCount ?? 0, today: slateDateKey(), inSeason: seasonCalendarDays(state).some(day => day.date === selectedDate) }) : null,
     selectedLabel,
     games,
     status: state.status,

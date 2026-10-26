@@ -443,7 +443,7 @@ describe("independent calendar request lifecycle", () => {
     expect(next.games).toBe(loaded.games);
     expect(next.generation).toBe(loaded.generation);
     expect(next.checkedAt).toBe(100);
-    expect(weekDays(next).find(day => day.date === "2024-12-25")?.gameCount).toBe(11);
+    expect(weekDays(next).find(day => day.date === "2024-12-25")?.gameCount).toBe(1);
   });
 
   it("keeps a same-season pending calendar through Back/Forward date changes", () => {
@@ -580,5 +580,57 @@ describe("bounded season calendar", () => {
     expect(dates).not.toContain("2020-07-29");
     expect(monthTabs(state).map(tab => tab.value)).toEqual([10, 11, 12, 1, 2, 3, 7, 8]);
     expect(slateReducer({ ...state, selectedDate: "2020-03-11" }, { type: "DAY_SHIFTED", delta: 1 }).selectedDate).toBe("2020-07-30");
+  });
+});
+
+
+describe("observed slate counts", () => {
+  const observe = (state: SlateState, count = 1) => slateReducer(state, {
+    type: "SLATE_RESOLVED", date: state.selectedDate!, generation: state.generation,
+    games: Array.from({ length: count }, (_, i) => game(i)),
+  });
+
+  it("preserves an actual count after navigating away and a late stale calendar response", () => {
+    const pending = base({ season: "2026-27", selectedDate: "2026-12-04", status: "loadingSlate" });
+    const observed = observe(pending);
+    const away = slateReducer(observed, { type: "DATE_SELECTED", date: "2026-12-05" });
+    const indexed = slateReducer(away, { type: "DAYS_RESOLVED", season: away.season, generation: away.daysGeneration,
+      days: [day("2026-10-20"), day("2027-04-11")] });
+    expect(daysInMonth(indexed).find(day => day.date === "2026-12-04")?.gameCount).toBe(1);
+    expect(indexed.selectedDate).toBe("2026-12-05");
+    expect(indexed.observedCounts).toEqual({ "2026-12-04": 1 });
+    const restored = slateReducer(indexed, { type: "LOCATION_RESTORED", season: indexed.season, date: "2026-12-04" });
+    expect(restored.observedCounts).toBe(indexed.observedCounts);
+  });
+
+  it("updates counts on successful refresh including zero, but retains them on errors", () => {
+    const observed = observe(ready());
+    const failed = slateReducer(observed, { type: "SLATE_REJECTED", date: observed.selectedDate!, generation: observed.generation,
+      background: true, message: "Refresh failed" });
+    expect(failed.observedCounts["2024-12-25"]).toBe(1);
+    const empty = observe(failed, 0);
+    expect(daysInMonth(empty).find(day => day.date === "2024-12-25")?.gameCount).toBe(0);
+  });
+
+  it("resets across season switches and ignores obsolete A to B to A responses", () => {
+    const observed = observe(ready());
+    for (const event of [
+      { type: "SEASON_SELECTED", season: "2023-24" },
+      { type: "LOCATION_RESTORED", season: "2023-24", date: "2023-12-25" },
+    ] as const) {
+      const next = slateReducer(observed, event);
+      expect(next.observedCounts).toEqual({});
+      const back = slateReducer(next, { type: "LOCATION_RESTORED", season: "2024-25", date: observed.selectedDate });
+      expect(slateReducer(back, { type: "SLATE_RESOLVED", date: observed.selectedDate!, generation: observed.generation, games: [game(1)] })).toBe(back);
+      expect(back.observedCounts).toEqual({});
+    }
+  });
+
+  it("never expands calendar bounds with a successful out-of-season empty URL", () => {
+    const state = observe(ready({ selectedDate: "2024-09-01" }), 0);
+    const days = seasonCalendarDays(state);
+    expect(days[0].date).toBe("2024-10-22");
+    expect(days.at(-1)?.date).toBe("2025-01-15");
+    expect(days.some(day => day.date === "2024-09-01")).toBe(false);
   });
 });

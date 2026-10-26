@@ -70,6 +70,8 @@ export interface SlateState {
   season: string;
   /** Every day with games in `season`, all months, ascending. */
   days: readonly GameDateCount[];
+  /** Successful slate counts in this season; never expand the indexed season bounds. */
+  observedCounts: Readonly<Record<string, number>>;
   daysStatus: "loading" | "ready" | "error";
   daysMessage: string | null;
   /** Changes only when the calendar request is replaced, including A → B → A. */
@@ -129,6 +131,7 @@ export function initSlate(args: {
     status: "loadingDays",
     season: args.season,
     days: [],
+    observedCounts: {},
     daysStatus: "loading",
     daysMessage: null,
     daysGeneration: 0,
@@ -208,6 +211,7 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         refreshMessage: null,
         checkedAt: null,
         days: [],
+        observedCounts: {},
         daysStatus: "loading",
         daysMessage: null,
         daysGeneration: state.daysGeneration + 1,
@@ -294,6 +298,7 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         ...state,
         status: event.games.length > 0 ? "slateReady" : "slateEmpty",
         games: event.games,
+        observedCounts: { ...state.observedCounts, [event.date]: event.games.length },
         message: null,
         refreshStatus: "idle",
         refreshMessage: null,
@@ -338,7 +343,7 @@ export function seasonCalendarDays(state: SlateState): GameDateCount[] {
     // NBA suspended play after March 11 and resumed July 30, 2020:
     // https://www.nba.com/news/nba-suspends-season-following-tonights-games
     const suspended = state.season === "2019-20" && date >= "2020-03-12" && date < "2020-07-30";
-    if (!suspended || counts.has(date)) result.push({ date, gameCount: counts.get(date) ?? 0 });
+    if (!suspended || counts.has(date)) result.push({ date, gameCount: state.observedCounts[date] ?? counts.get(date) ?? 0 });
   }
   return result;
 }
