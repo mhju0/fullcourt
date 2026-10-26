@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ABNORMAL_STRETCHES, isNormallyPlayed } from "@/lib/season-regime";
 
@@ -36,5 +38,17 @@ describe("season regime", () => {
       expect(stretch.why.length).toBeGreaterThan(20);
       expect(stretch.from <= stretch.to).toBe(true);
     }
+  });
+});
+
+describe("the data-and-limits page", () => {
+  it("describes the exclusions by their dates, with no typed game counts to age", () => {
+    const page = readFileSync(
+      join(process.cwd(), "src", "app", "behind-the-data", "data-and-limits", "page.tsx"),
+      "utf8"
+    );
+    expect(page).not.toMatch(
+      /roughly \d+ games|The \d+ games played before|~\d+ ordinary games|dropped \d+ valid games|\d+ from 2020-21|\d+ from the 1998-99/
+    );
   });
 });

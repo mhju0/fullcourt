@@ -118,15 +118,15 @@ export default function DataAndLimitsPage() {
         </Prose>
         <Prose>
           The <strong>2019-20 Orlando bubble</strong> is left out because every game was at one
-          site: no travel to measure and no home crowd. That covers roughly 88 games between 30
-          July and 11 October 2020, not the season. The 971 games played before the 11 March
-          suspension involved normal travel, and they are in.
+          site: no travel to measure and no home crowd. That covers the games between 30 July
+          and 11 October 2020, not the season. The games played before the 11 March suspension
+          involved normal travel, and they are in.
         </Prose>
         <details className="fc-disclosure"><summary>Exclusion correction: July 2026</summary><Note>
-          Until 30 July 2026, all of 2019-20 was missing, including those ~970 ordinary games.
-          The rule was an October-to-April date window. It caught the bubble only by
-          coincidence, and it also dropped 179 valid games from seasons that ran on other
-          dates: 135 from 2020-21, which ended 16 May, and 44 from the 1998-99 lockout season.
+          Until 30 July 2026, all of 2019-20 was missing, including those ordinary games. The
+          rule was an October-to-April date window. It caught the bubble only by coincidence,
+          and it also dropped valid games from seasons that ran on other dates: the May games
+          of 2020-21, which ended 16 May, and of the 1998-99 lockout season, which ended 5 May.
           The exclusion now uses the bubble dates directly.
         </Note></details>
         <Prose>
