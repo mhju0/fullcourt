@@ -449,7 +449,9 @@ freshness = 0 while d ≤ ${K.freshnessPlateauDays}, then
           {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
           points and a rested road team by{" "}
           {signedNumber(liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct))}.
-          Both are small next to the twenty points between the two baselines.
+          Both are small next to the{" "}
+          {(REST_SPLIT_BASELINE.homeWinPct - REST_SPLIT_BASELINE.roadWinPct).toFixed(1)} points
+          between the two baselines.
         </Note>
 
         <RestRowTable />

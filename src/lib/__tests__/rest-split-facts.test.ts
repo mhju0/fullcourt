@@ -209,3 +209,14 @@ describe("liftOverBaseline", () => {
     expect(liftOverBaseline(63.1, 59.9).toString()).toBe("3.2");
   });
 });
+
+describe("the method page", () => {
+  it("prints the distance between the two baselines from them, not a typed one", () => {
+    const page = readFileSync(
+      join(process.cwd(), "src", "app", "behind-the-data", "rest-advantage", "page.tsx"),
+      "utf8"
+    );
+    expect(page).toContain("REST_SPLIT_BASELINE.homeWinPct - REST_SPLIT_BASELINE.roadWinPct");
+    expect(page).not.toMatch(/(twenty|\d+) points between the two baselines/);
+  });
+});

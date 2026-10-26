@@ -1,5 +1,9 @@
 # Release history
 
+## 1.2.8 — 2026-10-26
+
+- Take the hand-typed game counts out of the Data and limits page and the 2019-20 Season Report note, describing the exclusions by their dates instead. The Rest Advantage method page now computes the gap between the home and road baselines (19.8 points) instead of saying "twenty". Figures are unchanged.
+
 ## 1.2.7 — 2026-10-26
 
 - Write rates first and counts as "wins / games" in Season Report's team records and Home Court's season data, with the count under the rate in one cell. Home Court's table drops from six columns to four.
