@@ -60,6 +60,17 @@ exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests bef
 
 ## State and data
 
+Games shows a small, muted regular-season `(W–L)` beside each team name. These are records
+entering the matchup; upcoming games use completed results available now. Missing record
+fields in older cached responses render no record. The current game's stored OT count formats
+the final status as `FINAL`, `FINAL/OT`, or `FINAL/2OT` and is included in the row's spoken name.
+
+Cup-dependent estimates render `TBD` with one quiet inline explanation, while confirmed
+fixtures, times, scores, records and a known opponent's fatigue remain visible. Pending sides
+have no flags or fatigue narrative; their paired rest comparison has no directional colour or
+edge badge. A slate containing pending estimates keeps its actual game count but withholds
+both aggregate rest metrics. These rules also cover By Team and the game detail modal (D-146).
+
 Games steps one day at a time at every width (`DAY_SHIFTED`); on a phone the Sunday-to-Saturday
 strip follows the selected date, so a step past Saturday shows the next week (D-78 amendment). Exact four-night and six-night counts use
 prior games, played or still scheduled, plus the selected game (D-82). ALT means the team is playing at a high-altitude arena away from home (the visitor, or both sides at a neutral site); the ALT TRIP carryover flag was removed with its term (D-100).

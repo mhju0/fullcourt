@@ -59,7 +59,7 @@ export function resolvePhysicalVenue(input: PhysicalVenueInput) {
   }
 
   const neutral = input.neutralSite === true;
-  const neutralVenue = neutral ? neutralVenueCoordinates(input.neutralVenueCity) : null;
+  const neutralVenue = neutral ? neutralVenueCoordinates(input.neutralVenueCity, date) : null;
   return {
     venue: neutralVenue ?? { ...homeBase, altitude: homeTeam.altitude },
     homeBase,

@@ -11,6 +11,7 @@ import {
   GameStatusRow,
   RaBadge,
 } from "@/components/matchup-parts"
+import { CUP_FATIGUE_PENDING_NOTE } from "@/lib/cup-schedule-copy"
 import { seasonLabelForDateKey } from "@/lib/nba-season"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
@@ -117,12 +118,14 @@ function ExploreGameDetailBody({
     city: game.awayTeam.city,
   })
 
+  const pending = Boolean(game.cupSchedulePending?.home || game.cupSchedulePending?.away)
   return (
     <div className="flex flex-col gap-3">
       <GameStatusRow
         status={game.status}
         homeScore={game.homeScore}
         awayScore={game.awayScore}
+        overtimePeriods={game.overtimePeriods}
       />
       <p
         className="mono text-center"
@@ -137,9 +140,11 @@ function ExploreGameDetailBody({
         {game.neutralCity ? ` · ${game.neutralCity}` : ""}
       </p>
 
+      {pending && <p className="m-0 text-center" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>{CUP_FATIGUE_PENDING_NOTE}</p>}
       <div className="flex justify-center py-1">
         <RaBadge
-          restAdvantage={game.restAdvantage}
+          pending={pending}
+          restAdvantage={pending ? null : game.restAdvantage}
           homeAbbr={homeBrand.abbreviation}
           awayAbbr={awayBrand.abbreviation}
         />
@@ -158,10 +163,12 @@ function ExploreGameDetailBody({
           <FatigueDetailColumn
             label={`Away · ${awayBrand.abbreviation}`}
             fatigue={game.awayFatigue}
+            pending={game.cupSchedulePending?.away}
           />
           <FatigueDetailColumn
             label={`${game.neutralCity ? `Host · ${game.neutralCity}` : "Home"} · ${homeBrand.abbreviation}`}
             fatigue={game.homeFatigue}
+            pending={game.cupSchedulePending?.home}
           />
         </div>
       </div>

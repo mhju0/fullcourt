@@ -22,6 +22,8 @@ import {
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import { slateOrder } from "./slate-order";
+import { gameTeamRecordsQuery } from "./game-team-records";
+import { cupPendingSides, needsCupScheduleContext, type CupFatigueContext, type CupPendingSides, type CupPhysicalGame } from "@/lib/cup-fatigue-readiness";
 import { compareUpcomingTipOff } from "@/lib/upcoming-rest-edges";
 import { hasNotTipped } from "@/lib/game-phase";
 import {
@@ -66,6 +68,7 @@ import type {
   ShotQualityModelValues,
   TeamRecentResultGame,
   TeamScheduleGame,
+  TeamRecord,
   UpcomingGameWithRA,
 } from "@/types";
 
@@ -155,6 +158,10 @@ const gameIsNormallyPlayed =
  *   Cup/play-in context that is not a published regular-season target.
  * - `getShotQualityGrid` — reads `shot_grid`, never joins `games`. Shot Value keeps the bubble on
  *   purpose (docs/SHOT_QUALITY_DESIGN.md): court geometry does not care that nobody flew there.
+ * - `getGameTeamRecords` — aggregates basketball standings, including regular-season games in
+ *   abnormal stretches. It publishes no additional game rows or fatigue evidence.
+ * - `getCupSchedulePending` — reads physical schedule context, including the Cup final, to
+ *   withhold estimates whose inputs are incomplete. These context rows are never published.
  */
 function publishableGames(...extra: (SQL | undefined)[]): SQL | undefined {
   return and(eq(games.gameType, "regular"), gameIsNormallyPlayed, ...extra);
@@ -263,6 +270,7 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       date: games.date,
       season: games.season,
       status: games.status,
+      overtimePeriods: games.overtimePeriods,
       tipOffUtc: games.tipOffUtc,
       // Schedule metadata asks for the first stored regular game, including excluded regimes.
       // It does not publish a new game row or infer an opener from a missing fatigue row.
@@ -352,6 +360,78 @@ export async function getFirstUnplayedDate(season: string): Promise<string | nul
   return row?.first ? String(row.first) : null;
 }
 
+async function getGameTeamRecords(targets: GameFatigueJoinRow[]): Promise<Map<number, { home: TeamRecord; away: TeamRecord }>> {
+  if (!targets.length) return new Map();
+  const { rows } = await db.execute<{
+    game_id: number; side: "home" | "away"; wins: number; losses: number;
+  }>(gameTeamRecordsQuery(targets));
+  const records = new Map<number, { home: TeamRecord; away: TeamRecord }>();
+  for (const row of rows) {
+    const record = records.get(Number(row.game_id)) ?? { home: { wins: 0, losses: 0 }, away: { wins: 0, losses: 0 } };
+    record[row.side] = { wins: Number(row.wins), losses: Number(row.losses) };
+    records.set(Number(row.game_id), record);
+  }
+  return records;
+}
+
+async function getCupSchedulePending(gameIds: number[], publishedFatigue: Record<string, unknown>[]): Promise<Map<number, CupPendingSides>> {
+  if (!gameIds.length) return new Map();
+  const ids = sql.join(gameIds.map(id => sql`${id}`), sql`, `);
+  const { rows: [snapshot] } = await db.execute<{
+    games: Record<string, unknown>[]; teams: Record<string, unknown>[]; fatigue: Record<string, unknown>[];
+  }>(sql`
+    select
+      coalesce((select jsonb_agg(to_jsonb(g) || jsonb_build_object(
+        'home_abbr', h.abbreviation, 'away_abbr', a.abbreviation,
+        'home_lat', h.latitude, 'home_lon', h.longitude, 'home_altitude', h.altitude_flag,
+        'away_lat', a.latitude, 'away_lon', a.longitude, 'away_altitude', a.altitude_flag
+      ) order by g.date, g.id) from games g
+        join teams h on h.id = g.home_team_id join teams a on a.id = g.away_team_id
+        where g.season = '2026-27'), '[]'::jsonb) as games,
+      coalesce((select jsonb_agg(to_jsonb(t)) from teams t), '[]'::jsonb) as teams,
+      coalesce((select jsonb_agg(to_jsonb(latest)) from (
+        select distinct on (f.game_id, f.team_id) f.* from fatigue_scores f
+        where f.game_id in (${ids}) order by f.game_id, f.team_id, f.computed_at desc, f.id desc
+      ) latest), '[]'::jsonb) as fatigue
+  `);
+  const context: CupFatigueContext = {
+    teams: snapshot.teams.map(team => ({ id: Number(team.id), abbreviation: String(team.abbreviation),
+      latitude: String(team.latitude), longitude: String(team.longitude), altitudeFlag: Boolean(team.altitude_flag) })),
+    fatigue: snapshot.fatigue,
+    publishedFatigue,
+    games: snapshot.games.map((game): CupPhysicalGame => ({
+      id: Number(game.id), date: String(game.date), season: String(game.season), gameType: String(game.game_type),
+      homeTeamId: Number(game.home_team_id), awayTeamId: Number(game.away_team_id),
+      homeAbbr: String(game.home_abbr), awayAbbr: String(game.away_abbr),
+      homeLat: String(game.home_lat), homeLon: String(game.home_lon), homeAltitude: Boolean(game.home_altitude),
+      awayLat: String(game.away_lat), awayLon: String(game.away_lon), awayAltitude: Boolean(game.away_altitude),
+      overtimePeriods: Number(game.overtime_periods), status: String(game.status),
+      tipOffUtc: game.tip_off_utc ? new Date(String(game.tip_off_utc)) : null,
+      homeScore: game.home_score == null ? null : Number(game.home_score),
+      awayScore: game.away_score == null ? null : Number(game.away_score),
+      neutralSite: Boolean(game.neutral_site), neutralVenueCity: game.neutral_venue_city as string | null,
+    })),
+  };
+  const result = new Map<number, CupPendingSides>(gameIds.map(id => [id, { home: true, away: true }]));
+  for (const game of context.games) if (result.has(game.id)) result.set(game.id, cupPendingSides(game, context));
+  return result;
+}
+
+function publishedCupFatigue(rows: GameFatigueJoinRow[]): Record<string, unknown>[] {
+  return rows.flatMap(row => (["home", "away"] as const).map(side => ({
+    game_id: row.id, team_id: side === "home" ? row.homeTeamId : row.awayTeamId,
+    score: side === "home" ? row.homeFatigueScore : row.awayFatigueScore,
+    is_back_to_back: side === "home" ? row.homeIsBackToBack : row.awayIsBackToBack,
+    games_in_last_7_days: side === "home" ? row.homeGamesInLast7Days : row.awayGamesInLast7Days,
+    days_since_last_game: side === "home" ? row.homeDaysSinceLastGame : row.awayDaysSinceLastGame,
+    travel_distance_miles: side === "home" ? row.homeTravelDistanceMiles : row.awayTravelDistanceMiles,
+    altitude_multiplier: side === "home" ? row.homeAltitudeMultiplier : row.awayAltitudeMultiplier,
+    is_overtime_penalty: side === "home" ? row.homeIsOvertimePenalty : row.awayIsOvertimePenalty,
+    road_trip_consecutive_away: side === "home" ? row.homeRoadTripConsecutiveAway : row.awayRoadTripConsecutiveAway,
+    has_time_zone_displacement: side === "home" ? row.homeHasTimeZoneDisplacement : row.awayHasTimeZoneDisplacement,
+  })));
+}
+
 async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse[]> {
   if (rows.length === 0) return [];
 
@@ -363,11 +443,19 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
   const is3In4Map = await computeScheduleDensityMap(date, teamIds, 4, 3);
   const games30Map = await getTeamGameCountsInDaysBefore(date, teamIds, 30);
   const firstUnplayed = await getFirstUnplayedDate(String(rows[0].season));
+  const records = await getGameTeamRecords(rows);
+  const published = publishedCupFatigue(rows).map(row => ({ ...row,
+    games_in_last_30_days: games30Map.get(Number(row.team_id)) ?? 0,
+    is_three_in_four: is3In4Map.get(Number(row.team_id)) ?? false,
+    is_four_in_six: is4In6Map.get(Number(row.team_id)) ?? false,
+  }));
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.id), published);
   const projectedFatigue = isProjectedFatigue(date, firstUnplayed);
 
   return rows.map((row) => ({
-    ...mapJoinedRowToGameResponse(row, is4In6Map, is3In4Map, games30Map),
+    ...mapJoinedRowToGameResponse(row, is4In6Map, is3In4Map, games30Map, cupPending.get(row.id)),
     projectedFatigue,
+    records: records.get(row.id),
   }));
 }
 
@@ -409,18 +497,23 @@ export async function getTeamSeasonSchedule(
     )
   );
   const firstUnplayed = await getFirstUnplayedDate(season);
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.id), publishedCupFatigue(rows));
 
   return rows.map((row) => {
     const isHome = row.homeTeamId === team.id;
     const home = readFatigueSide(row, "home").score;
     const away = readFatigueSide(row, "away").score;
     const date = String(row.date);
+    const pending = cupPending.get(row.id);
+    const comparisonPending = Boolean(pending?.home || pending?.away);
     return {
       id: row.id,
       date,
       tipOffEt: formatEasternTipTime(row.tipOffUtc),
       tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
       status: row.status,
+      overtimePeriods: row.overtimePeriods,
+      cupSchedulePending: comparisonPending,
       isHome,
       neutralCity: row.neutralSite ? row.neutralVenueCity : null,
       opponent: isHome
@@ -428,7 +521,7 @@ export async function getTeamSeasonSchedule(
         : { id: row.homeTeamId, name: row.homeTeamName, abbreviation: row.homeTeamAbbreviation, city: row.homeTeamCity },
       teamScore: isHome ? row.homeScore : row.awayScore,
       opponentScore: isHome ? row.awayScore : row.homeScore,
-      restAdvantage: isHeldGame(row.status) || home === null || away === null ? null : classifyRestAdvantage(home, away),
+      restAdvantage: isHeldGame(row.status) || comparisonPending || home === null || away === null ? null : classifyRestAdvantage(home, away),
       projectedFatigue: isProjectedFatigue(date, firstUnplayed),
     };
   });
@@ -443,9 +536,10 @@ function mapJoinedRowToGameResponse(
   row: GameFatigueJoinRow,
   is4In6Map: Map<number, boolean>,
   is3In4Map: Map<number, boolean>,
-  games30Map: Map<number, number>
+  games30Map: Map<number, number>,
+  cupSchedulePending: CupPendingSides = { home: false, away: false }
 ): Omit<GameResponse, "projectedFatigue"> {
-  const homeFatigueData = buildFatigueInfo(
+  const homeFatigueData = cupSchedulePending.home ? null : buildFatigueInfo(
     readFatigueSide(row, "home"),
     {
       gamesInLast30Days: games30Map.get(row.homeTeamId) ?? 0,
@@ -462,7 +556,7 @@ function mapJoinedRowToGameResponse(
     }
   );
 
-  const awayFatigueData = buildFatigueInfo(
+  const awayFatigueData = cupSchedulePending.away ? null : buildFatigueInfo(
     readFatigueSide(row, "away"),
     {
       gamesInLast30Days: games30Map.get(row.awayTeamId) ?? 0,
@@ -488,6 +582,8 @@ function mapJoinedRowToGameResponse(
     date: String(row.date),
     season: row.season,
     status: row.status,
+    overtimePeriods: row.overtimePeriods,
+    cupSchedulePending,
     seasonOpeners: { home: row.homeSeasonOpener, away: row.awaySeasonOpener },
     tipOffEt: formatEasternTipTime(row.tipOffUtc),
     tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
@@ -1081,7 +1177,13 @@ export async function getUpcomingGamesWithRA(
   // A game stays `scheduled` until its final is written, so the status alone would list a
   // game that is being played as still ahead.
   const now = Date.now();
-  const candidates = rows.filter((r) => r.homeFatigueScore !== null && r.awayFatigueScore !== null && hasNotTipped(r.tipOffUtc, now));
+  const published = rows.flatMap(row => [
+    { game_id: row.gameId, team_id: row.homeTeamId, score: row.homeFatigueScore },
+    { game_id: row.gameId, team_id: row.awayTeamId, score: row.awayFatigueScore },
+  ]);
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.gameId), published);
+  const candidates = rows.filter((r) => r.homeFatigueScore !== null && r.awayFatigueScore !== null && hasNotTipped(r.tipOffUtc, now)
+    && !cupPending.get(r.gameId)?.home && !cupPending.get(r.gameId)?.away);
   const ordered = order === "soonest"
     ? candidates.sort(compareUpcomingTipOff)
     : limit === undefined ? candidates : candidates.sort((a, b) =>

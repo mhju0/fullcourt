@@ -64,9 +64,15 @@ describe("publishableGames", () => {
       SOURCE.indexOf("* The two predicates every reader"),
       SOURCE.indexOf("function publishableGames")
     );
-    for (const name of [...DENSITY_READERS, "getShotQualityGrid"]) {
+    for (const name of [...DENSITY_READERS, "getShotQualityGrid", "getGameTeamRecords"]) {
       expect(docblock).toContain(name);
     }
+  });
+
+  it("keeps basketball records separate from publishable fatigue rows", () => {
+    expect(bodyOf("getGameTeamRecords")).not.toContain("publishableGames(");
+    expect(bodyOf("getGameTeamRecords")).toContain("gameTeamRecordsQuery(targets)");
+    expect(bodyOf("toGameResponses")).toContain("getGameTeamRecords(rows)");
   });
 
   it("keeps the public date/count cheap and separate from the cache digest", () => {

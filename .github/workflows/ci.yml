@@ -175,6 +175,11 @@ jobs:
           pnpm exec tsx scripts/tests/serverless-pool.pg.ts
           pnpm exec tsx scripts/tests/seed-season.pg.ts
 
+      - name: Check entering-game records on PostgreSQL
+        env:
+          TEAM_RECORDS_TEST_DATABASE_URL: postgresql://fullcourt_ci:fullcourt_ci@127.0.0.1:55433/fullcourt_ci_disposable
+        run: pnpm exec vitest run src/lib/__tests__/game-team-records-postgres.test.ts
+
   verify:
     needs: [checks, browser, postgres]
     if: always()

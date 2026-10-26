@@ -14,7 +14,8 @@ import { MessageCard } from "@/components/ui/message-card"
 import { useNow } from "@/hooks/useNow"
 import { usePageQuery, useSeasonUrl } from "@/hooks/useSeasonUrl"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { gamePhase } from "@/lib/game-phase"
+import { finalGameLabel, gamePhase } from "@/lib/game-phase"
+import { CUP_FATIGUE_PENDING_NOTE } from "@/lib/cup-schedule-copy"
 import { cupPlaceholders } from "@/lib/nba-cup"
 import { browsableSeasons, formatEasternDateKey } from "@/lib/nba-season"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
@@ -52,7 +53,7 @@ type Side = "team" | "opponent" | "even" | "unmeasured"
 /** Which side the rest gap favors, read from the selected team's chair. */
 function sideOf(game: TeamScheduleGame): Side {
   const ra = game.restAdvantage
-  if (ra === null) return "unmeasured"
+  if (game.cupSchedulePending || ra === null) return "unmeasured"
   if (ra.advantageTeam === "neutral") return "even"
   return ra.advantageTeam === (game.isHome ? "home" : "away") ? "team" : "opponent"
 }
@@ -102,7 +103,7 @@ function RestCell({ game }: { game: TeamScheduleGame }) {
   if (side === "unmeasured")
     return (
       <span className="inline-flex items-center justify-end gap-2">
-        <span style={{ color: "var(--term-text-muted)" }}>—</span>
+        <span style={{ color: "var(--term-text-muted)" }}>{game.cupSchedulePending ? "TBD" : "—"}</span>
         <RowArrow />
       </span>
     )
@@ -158,6 +159,7 @@ function gameState(game: TeamScheduleGame, now: number): ReactNode {
       <span>
         <span style={{ fontWeight: 700, color: won ? "var(--term-blue-text)" : "var(--term-red-text)" }}>{won ? "W" : "L"}</span>{" "}
         {game.teamScore}–{game.opponentScore}
+        {finalGameLabel(game.overtimePeriods) !== "FINAL" && <span style={{ color: "var(--term-text-muted)" }}> {finalGameLabel(game.overtimePeriods)}</span>}
       </span>
     )
   }
@@ -200,6 +202,7 @@ export function TeamScheduleContent() {
   const games = useMemo(() => data ?? [], [data])
   const today = formatEasternDateKey()
   const nextGameId = games.find((g) => (g.status === "scheduled" || g.status === "live") && g.date >= today)?.id ?? null
+  const anyCupPending = games.some(game => game.cupSchedulePending)
   const anyProjected = games.some((g) => g.projectedFatigue)
   const now = useNow()
   const cup = useMemo(() => cupPlaceholders(season, games.map((g) => g.date)), [season, games])
@@ -373,13 +376,14 @@ export function TeamScheduleContent() {
             // and the second row takes one on top.
             className="grid grid-cols-2 sm:grid-cols-4 [&>div:nth-child(3)]:border-l-0 sm:[&>div:nth-child(3)]:border-l [&>div:nth-child(n+3)]:border-t sm:[&>div:nth-child(n+3)]:border-t-0"
             items={[
-              { label: `${teamAbbr} MORE RESTED`, value: counts.measured ? String(counts.team) : "—", tone: "var(--term-blue-text)" },
-              { label: "OPPONENT MORE RESTED", value: counts.measured ? String(counts.opponent) : "—", tone: "var(--term-red-text)" },
-              { label: "EVEN", value: counts.measured ? String(counts.even) : "—" },
-              { label: "3+ REST EDGES", value: counts.measured ? String(counts.marked) : "—", note: "RESTED TEAM AT HOME" },
+              { label: `${teamAbbr} MORE RESTED`, value: counts.measured && !anyCupPending ? String(counts.team) : "—", tone: "var(--term-blue-text)" },
+              { label: "OPPONENT MORE RESTED", value: counts.measured && !anyCupPending ? String(counts.opponent) : "—", tone: "var(--term-red-text)" },
+              { label: "EVEN", value: counts.measured && !anyCupPending ? String(counts.even) : "—" },
+              { label: "3+ REST EDGES", value: counts.measured && !anyCupPending ? String(counts.marked) : "—", note: "RESTED TEAM AT HOME" },
             ]}
           />
           <section aria-label={`${teamAbbr} schedule`} className="flex flex-col gap-2">
+            {anyCupPending && <p data-testid="cup-fatigue-note" className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>{CUP_FATIGUE_PENDING_NOTE}</p>}
             <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
               {games.length} games{cup ? `, and ${cup.count} NBA Cup ${cup.count === 1 ? "game" : "games"} the league has not scheduled yet` : ""}. A plus means {teamAbbr} is the more rested side; EVEN is a gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD}.
               {anyProjected && " Games not yet played show a projected gap, from the schedule as it stands."}

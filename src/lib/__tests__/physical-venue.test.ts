@@ -30,6 +30,29 @@ const oneSide = (history: RecentGame[], isHome: boolean, lat = BOS.latitude, lon
 });
 
 describe("shared physical venue resolution", () => {
+  it("uses Hinkle for the 2026 Cup final without assigning an Indianapolis home court", () => {
+    const fixture = { date: "2026-12-11", neutralSite: true, neutralVenueCity: "Indianapolis" };
+    const venue = resolvePhysicalVenue({ ...fixture, homeTeam: UTA, awayTeam: BOS });
+    expect(venue.venueSource).toBe("neutral-city");
+    expect(venue.venue).toEqual({ latitude: 39.84349, longitude: -86.167705, altitude: false });
+    expect(venue.homeCourt).toBe(false);
+    const scored = scoreGameFatigue({ game: fixture, homeTeam: fatigueTeam(UTA, 1), awayTeam: fatigueTeam(BOS, 2), homeRecentGames: [], awayRecentGames: [] });
+    expect(scored.home.altitudeMultiplier).toBe(1);
+    expect(scored.away.altitudeMultiplier).toBe(1);
+    const priorHome = rowToRecentGame({ ...prior(fixture.date, UTA, BOS), ...fixture }, 1);
+    const priorAway = rowToRecentGame({ ...prior(fixture.date, UTA, BOS), ...fixture }, 2);
+    expect(priorHome.venueLat).toBe(venue.venue.latitude);
+    expect(priorAway.venueLon).toBe(venue.venue.longitude);
+    expect(priorHome.isHome).toBe(false);
+    expect(priorAway.isHome).toBe(false);
+  });
+
+  it("does not apply the Hinkle final lookup to another Indianapolis date", () => {
+    const venue = resolvePhysicalVenue({ date: "2024-02-18", homeTeam: UTA, awayTeam: BOS, neutralSite: true, neutralVenueCity: "Indianapolis" });
+    expect(venue.venueSource).toBe("unknown-neutral-fallback");
+    expect(venue.homeCourt).toBe(false);
+  });
+
   it("uses the sourced ordinary home arena and preserves classification", () => {
     const venue = resolvePhysicalVenue({ date: "2026-11-01", homeTeam: BOS, awayTeam: UTA });
     expect(venue.venue.latitude).toBeCloseTo(BOS.latitude, 3);

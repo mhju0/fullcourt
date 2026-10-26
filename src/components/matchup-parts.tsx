@@ -7,6 +7,7 @@ import { readableTextOn } from "@/lib/nba-team-colors"
 import { gapRangeByKey, isCalledSide, winPct } from "@/lib/rest-advantage-evidence"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { formatDaysOff } from "@/lib/days-off"
+import { finalGameLabel } from "@/lib/game-phase"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse, ThresholdBucket } from "@/types"
@@ -162,10 +163,12 @@ export function GameStatusRow({
   status,
   homeScore,
   awayScore,
+  overtimePeriods,
 }: {
   status: string
   homeScore: number | null
   awayScore: number | null
+  overtimePeriods?: number
 }) {
   if (status === "postponed" || status === "cancelled") {
     return <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>{status.toUpperCase()}</span>
@@ -182,7 +185,7 @@ export function GameStatusRow({
   if (status === "final" && awayScore !== null && homeScore !== null) {
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
-        <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.label }}>FINAL</span>
+        <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.label }}>{finalGameLabel(overtimePeriods)}</span>
         <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: TRACK.figure, color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
@@ -193,7 +196,7 @@ export function GameStatusRow({
   if (status === "final") {
     return (
       <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
-        FINAL
+        {finalGameLabel(overtimePeriods)}
       </span>
     )
   }
@@ -220,18 +223,18 @@ export function GameStatusRow({
 export function teamGameFlags(game: GameResponse): { away: string[]; home: string[] } {
   const away: string[] = []
   const home: string[] = []
-  if (game.awayFatigue?.isBackToBack) away.push("B2B")
-  if (game.awayFatigue?.is3In4) away.push("3IN4")
-  if (game.awayFatigue?.is4In6) away.push("4IN6")
-  if (game.awayFatigue?.altitudePenalty) away.push("ALT")
-  if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("TIME ZONES")
-  if (game.awayFatigue?.isOvertimePenalty) away.push("OT")
-  if (game.homeFatigue?.isBackToBack) home.push("B2B")
-  if (game.homeFatigue?.is3In4) home.push("3IN4")
-  if (game.homeFatigue?.is4In6) home.push("4IN6")
-  if (game.homeFatigue?.altitudePenalty) home.push("ALT")
-  if (game.homeFatigue?.hasTimeZoneDisplacement) home.push("TIME ZONES")
-  if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.isBackToBack) away.push("B2B")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.is3In4) away.push("3IN4")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.is4In6) away.push("4IN6")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.altitudePenalty) away.push("ALT")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.hasTimeZoneDisplacement) away.push("TIME ZONES")
+  if (!game.cupSchedulePending?.away && game.awayFatigue?.isOvertimePenalty) away.push("OT")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.isBackToBack) home.push("B2B")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.is3In4) home.push("3IN4")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.is4In6) home.push("4IN6")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.altitudePenalty) home.push("ALT")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.hasTimeZoneDisplacement) home.push("TIME ZONES")
+  if (!game.cupSchedulePending?.home && game.homeFatigue?.isOvertimePenalty) home.push("OT")
   return { away, home }
 }
 
@@ -323,17 +326,19 @@ export function inlineFlags(
 export function FatigueDetailColumn({
   label,
   fatigue,
+  pending = false,
 }: {
   label: string
   fatigue: FatigueInfo | null
+  pending?: boolean
 }) {
-  if (!fatigue) {
+  if (pending || !fatigue) {
     return (
       <div
         className="mono px-3 py-3 text-center"
         style={{ fontSize: 12, color: "var(--term-text-muted)", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
-        NO FATIGUE DATA
+        {pending ? `${label.toUpperCase()} · TBD` : "NO FATIGUE DATA"}
       </div>
     )
   }
@@ -381,15 +386,17 @@ export function RaBadge({
   restAdvantage,
   homeAbbr,
   awayAbbr,
+  pending = false,
 }: {
+  pending?: boolean
   restAdvantage: GameResponse["restAdvantage"]
   homeAbbr: string
   awayAbbr: string
 }) {
-  if (!restAdvantage) {
+  if (pending || !restAdvantage) {
     return (
       <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.label }}>
-        NO DATA
+        {pending ? "TBD" : "NO DATA"}
       </span>
     )
   }

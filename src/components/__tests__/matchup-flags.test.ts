@@ -30,3 +30,13 @@ describe("teamGameFlags", () => {
     expect(teamGameFlags(game)).toEqual({ away: ["TIME ZONES"], home: ["TIME ZONES"] });
   });
 });
+
+
+it("does not expose stale flags for a Cup-pending side, while keeping the known side", () => {
+  const game = {
+    cupSchedulePending: { home: true, away: false },
+    homeFatigue: { isBackToBack: true, is3In4: true, isOvertimePenalty: true },
+    awayFatigue: { isBackToBack: true },
+  } as unknown as GameResponse;
+  expect(teamGameFlags(game)).toEqual({ home: [], away: ["B2B"] });
+});

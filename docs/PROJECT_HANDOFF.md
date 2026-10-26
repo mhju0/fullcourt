@@ -41,139 +41,39 @@ screen-reader behavior. Observe actual completed-slate ingest; offseason skips a
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
 
-## Condensed pre-2026-10-07 history — 2026-10-20
+## Condensed history through 2026-10-22 — 2026-10-26
 
-D-64–D-78, Git and dated reviews retain the methods, shell, launch and phone deliveries.
-Keep built CSS checks (D-72) and separate full DB-backed e2e. D-117 supersedes old launch
-gating: v1.0.0 is October 19; actual completed-slate checks remain open.
+The complete dated record remains in [Git at v1.2.10](https://github.com/mhju0/fullcourt/blob/269b7effa100ace1c5d05ee67ce96adbc3546584/docs/PROJECT_HANDOFF.md).
+Source, tags, ADRs and later entries take precedence over older preparation notes.
 
-Sentry IP storage is off; UptimeRobot checks home/health every five minutes. Eight weekly
-Mac backups use `~/Backups/fullcourt/backup.sh` (Sunday 11:00, pg_dump 18); one restore
-matched counts. Edge rate limiting and credential rotation shipped. PR #171 source maps
-have verified client symbolication. Supabase Pro review remains November 5.
+- v1.0.0 released October 19. Later releases retain immutable tags and CHANGELOG entries.
+- v1.1.0–v1.1.2 shipped the approved mobile layout, method-page rewrite and Explore/Edges Ahead layouts.
+- v1.1.3–v1.1.5 shipped correction contracts, per-row score recovery, fixed date/status handling,
+  insert-only seed safety and pool/performance fixes. ADR 0016 preserves identity and transaction invariants.
+- The fatigue feature provenance guard and overtime/arena corrections are shipped; ratified coefficients
+  remain governed by ADR 0006. Owner kept module-load season calculation and the October 1 deploy check.
+- The daily season gate uses ESPN regular-season dates, with a guarded October–April fallback.
+  Real 2020-21 December–May coverage is tested. The source probe fails if it uses fallback.
+- Local archives formerly beside this checkout were moved under `.local/archive/`; later entries name
+  the current locations. Never remove unrelated branches, notes or ignored archives implicitly.
 
-Unresolved/standing dispositions retained from these entries:
+Carried-forward limits, unless a later entry explicitly closes them:
 
-- The October 3 production API 500 has no established cause. October 7 Sentry timeout
-  JAVASCRIPT-NEXTJS-4 remains monitored; issue 3 resolved. Server symbolication unobserved.
-- Phone/calendar controls, native zoom and screen-reader behavior need physical-device use.
-- Reader-picked Schedule column and broader table-width redesign remain deferred.
-- Footer notice stays 12px by owner choice; off-Mac backup and phone push were declined.
-- ADR 0006 keeps original ablation evidence plus the October 18 offline-fidelity amendment;
-  no fatigue coefficients changed. Early overtime coverage was subsequently closed by v1.0.7.
-
-## Condensed 2026-10-07 to 2026-10-19 record — 2026-10-20
-
-D-78–D-119 and Git retain Games hierarchy/lifecycle, accessibility/motion and dependency
-deliveries. Evidence: [remediation](reports/2026-10-11-remediation/index.html),
-[accessibility audit](reports/2026-10-14-accessibility-usability.html), [plans](../plans/README.md).
-D-127 restores homepage history. Antislop applies throughout; odds feeds remain excluded.
-Filter sharing, extra chart actions and configurable Schedule columns remain deferred.
-
-D-117 pins official v1.0.0 to October 19 (`114617d`); subsequent releases use incremented
-versions and immutable tags. D-118/D-119 retain publication-aware Shooting and honest
-historical comparisons. Launch no longer requires a completed slate; observation remains open.
-
-Standing limits preserved from those entries:
-
-- Observe a real slate, provider status/postponement events and the D-83 rescore in production;
-  offseason/mocked-clock checks do not establish those outcomes. Equal-tip order is deterministic;
-  ESPN equivalence remains an inference. The owner kept scheduler/monitor lateness (D-110).
-- Physical iPhone/VoiceOver/native zoom, capacity and real Supabase delivery remain unverified.
-  Previously load-sensitive Games and retracting-header cases passed targeted built checks.
-- Officiating item 24: current source/reproduction checkpoint is in ROADMAP.md. Fresh NBA source
-  reproduction and cached Legends rebuild closed prior provenance gaps. No coefficient change.
-- Vercel connector access remains limited; authenticated browser/CLI are usable. Client Sentry
-  symbolication is verified; server-event symbolication remains unobserved.
-- Re-key ESPN-seeded current-season games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
-  Future Cup/December assignments need rechecking; review Supabase Pro around November 5.
-- The nine-item accessibility audit is historical; current defect acceptance/deferred scope is
-  in ROADMAP.md. Schedule Edge net days-off subtraction remains equivalent to days-since arithmetic.
-
-## Condensed schedule and correction staging — 2026-10-20
-
-The [opening-quarter](research/2026-10-20-opening-quarter-travel-review.md),
-[full-season](research/2026-10-20-full-season-travel-review.md) and
-[all-season](research/2026-10-20-historical-audit/README.md) reports retain original findings.
-D-120 keeps Mileage wording; D-121/ADR 0011 and D-122 prepared v1.0.3. Actual airports/home
-stops, Cup assignments and physical-device/opening-night observation remain unresolved.
-
-## Condensed v1.0.3–v1.0.11 record — 2026-10-23
-
-D-123–D-132 and PRs #182–#196 retain input, pooling, publication, copy and provenance corrections.
-Coefficients and graded/playoff history were preserved. The [arena ledger](research/2026-10-20-arena-shooting/AUDIT_LEDGER.md#v108-production-acceptance-and-v11-remediation-completed--2026-10-20)
-retains exact acceptance. v1.0.9 verified seven live requests (3,440 values), mobile/desktop homepage and real-API headline.
-Local private evidence remains in `../fullcourt-local-archive`; its README retains kept branches and the 2.7 GB archive inventory.
-PRs #191–#195 resolved docs, copy and provenance follow-ups. Secret alert #1 was closed as won't-fix:
-a third-party public Maps Embed key is redacted on main but remains in closed #188's ref, which only GitHub Support can purge.
-No projected board mark remains an owner decision. The prior empty current Shooting default was later superseded by D-137.
-Carried forward: Section 7 report-only/2026-27 grading, actual airports/home stops, Cup assignments,
-physical-device checks and first live-slate observation. Later entries govern any closures.
-
-Later the same day: v1.0.11 released (#195, #196). The full e2e suite had 19 deterministic
-failures on `main`. They were stale specs (an empty 2026-27 Shooting default, copy replaced in
-v1.0.6+), macOS overlay scrollbars, and five real figure wraps; the follow-up PR fixes all of
-them except one. Open: at 390×844 the first /games card starts 57px behind the bottom dock
-(`independent-audit.spec.ts` "mobile games keep season, month and date visible"). Making it
-pass means trimming or reordering the mobile board above the slate, which is an owner design
-call. A one-time cloud routine checks the opening-night slate at 2026-10-21 05:00 UTC.
-
-## Condensed 2026-10-21 releases and full review — 2026-10-21
-
-v1.1.0 (#200) shipped the approved D01–D10 mobile UX with the Behind the Data method-page
-rewrite (ten pages, formula lines at most 40 characters, rule in FRONTEND.md). v1.1.1 (#202)
-made Explore cards fit their content on phones (D-134), and v1.1.2 (#204) made upcoming rest
-edges equal-width rows (D-135). The [release verification](reports/2026-10-21-mobile-release-security.html)
-and Git tags retain the evidence.
-
-A full-repository review shipped as v1.1.3 in three PRs:
-- #205 put the correction suites in CI, isolated per-row score-sync failures, made fatigue
-  backfill per-game and split the officiating refresh into collect and propose.
-- #206 fixed the season verdict band edge, body-clock DST (ADR 0011 amendment), blank ESPN
-  finals, the Schedule Edge average and impossible ids or dates reaching the database.
-- #207 split the `/officiating` payload, lazy-loaded supabase-js, served 72px logos and compiled
-  out unused Sentry code.
-
-A Sentry US outage failed every build at source-map upload. The guard was kept and the builds
-were retried once Sentry recovered. `drizzle/0013`
-(anon reads `games` only) and `drizzle/0014` (`games (season, date)` index: a 487 ms
-sequential scan became a 65 ms index scan) were applied through Chrome at the owner's request
-(#208). The fatigue features were re-exported from `main` with valid receipts. The officiating
-workflow ran for 2026-27 (nothing published yet) and 2025-26 (metadata-only, branch deleted).
-Merged worktrees and branches were removed. Unmerged branches, stashes and the 2026-10-21
-report drafts are in `../fullcourt-local-archive/` (`branch-archive-2026-10-21`,
-`reports-2026-10-21`). PR #199 closed as superseded by #204; #203 bumps certifi.
-
-Open from these entries:
-- Live score updates under the anon `games`-only grant are unchecked during a live game.
-- The owner must tick "Allow GitHub Actions to create and approve pull requests" for the
-  officiating workflow to open its own PRs; until then an update arrives as a branch.
-- Unpinned hand-typed figures remain in data-and-limits prose (88, 971, 179, 135, 44 games)
-  and "twenty points" on the rest-advantage method page.
-- Owner decisions deferred from the review: e2e gating, real-SQL coverage of `queries.ts`,
-  `noUncheckedIndexedAccess` (751 errors), type-aware lint. Not done in the performance pass:
-  the `/games` dates→slate waterfall, `public/data` browser caching, script-side round trips.
-- Physical iPhone/Safari/VoiceOver behavior remains unverified.
-
-## Season-list rollover note — 2026-10-21
-
-- Owner decision: `NBA_SEASONS` stays computed at module load. `docs/SEASON_ROLLOVER.md` now
-  says to deploy once on or after October 1 and check that the new season appears.
-- Owner decision: the daily season gate (`scripts/season_window.py`) now reads ESPN's
-  regular-season dates (`seasons/{year}/types/2`) instead of cdn.nba.com, which returned 403
-  for every user agent. The window runs three days either side; on any ESPN failure it falls
-  back to October through April. ESPN days start at 03:00 ET, so the 06:59Z end belongs to
-  the previous date. 2020-21 (December to May) is covered by a test.
-- The probe workflow now fails if the gate falls back, which is how runner reachability of
-  `sports.core.api.espn.com` is checked.
-
-## 2026-10-22 — 전체 코드·성능 리뷰, v1.1.5
-
-PR #210: Games URL/deadline/취소 상태, Officiating 즉시 필터, 일정 갱신 오류 복구와 시더 안전 계약 8건 수정.
-ADR 0016: 모호한 매칭 거절, 기존 결과 불변, 과거 시더의 잠금·원자적 insert-only/no-op. 운영 시더 실행 없음.
-검증: unit 1,524, browser 580, Python 152, Node 26, correction 115 통과; 실제 PostgreSQL과 독립 frozen-commit 리뷰 통과.
-[전체 보고서](reports/2026-10-22-comprehensive-review.md)는 성능 측정·반증·한계를, [릴리스](https://github.com/mhju0/fullcourt/releases/tag/v1.1.5)는 merge/deployment·운영 확인을 기록한다.
-이전 미해결 운영·물리 기기 항목은 유지한다. 다음 단계는 해당 관측과 owner가 보류한 과제이며 자동 시더 실행은 포함하지 않는다.
+- The October 3 production API 500 has no established cause. Server Sentry symbolication and
+  JAVASCRIPT-NEXTJS-4 remain separate from the verified client source maps.
+- Observe a real live score transition and provider postponement/recovery; completed finals and
+  clock/mocked tests do not prove live Realtime delivery. Keep the D-83 rescore observation separate.
+- ESPN-to-hoopR current-season game re-keying, actual airports/home stops and Cup assignments remain
+  operational follow-ups; no automatic seed or model refit is authorized by this handoff.
+- Section 7 remains report-only for 2026-27. Reader-picked Schedule columns, filter sharing,
+  extra chart actions, chart-wide redesign and configurable columns remain deferred.
+- Owner-deferred engineering: e2e gating, real-SQL query coverage, `noUncheckedIndexedAccess`,
+  type-aware lint, dates-to-slate waterfall, browser artifact caching and pipeline round trips.
+- Physical iPhone/Safari/VoiceOver, real capacity and live Supabase delivery are not established by
+  automated desktop/mobile tests. Later owner notes make physical-device checks optional.
+- Footer text stays 12px by owner choice; off-Mac backup and phone push were declined.
+- The hand-typed methodology counts, Games dock overlap, Actions PR permission, Supabase review and
+  public Maps key cleanup have newer dispositions below; do not reopen old notes as current blockers.
 
 ## 2026-10-23 — 폰 Games 화살표를 하루 단위로
 
@@ -314,3 +214,16 @@ Owner가 고른 일반 빈 날짜·Cup 미정 문구와 추가 요청한 올스�
 실제 응답의 경기 수 불일치는 시즌별 관측 count로 보완했다. `6d7f78b4` 독립 재검토에서 두 방향의
 불일치·다른 날짜로 이동 후 유지·시즌 초기화·늦은 응답 처리를 확인했고 추가 지적은 없었다.
 다음 단계: PR #228 preview와 production 확인, v1.2.10 릴리스. 기존 운영 미해결은 유지한다.
+
+## 2026-10-26 — Games OT·경기 전 전적·Cup 계산 보류 (D-146)
+
+v1.2.10은 PR #228로 배포했고 canonical/기존 alias를 실제 merge 배포에 맞춰 검증했다.
+Owner 후속 승인으로 FINAL/OT·FINAL/2OT, 작은 경기 전 전적, Cup 입력이 불완전한 팀의
+TBD 표시를 구현했다. 경기·점수·전적은 유지하고 paired RA·파생 표시와 불완전한 요약은 보류한다.
+Cup 결승은 전적에 제외하고 물리 경기로 포함한다. Hinkle 위치는 해당 결승 날짜에만 적용한다.
+기존 OT 수집·계산은 실제 43경기와 다음 경기 재계산에서 정상으로 확인했다. 계수·DB 쓰기 없음.
+전적은 실제 PostgreSQL CTE와 154팀 측 독립 oracle에서 일치했고 CI의 disposable PostgreSQL에도 연결했다.
+Cup 해제는 현재 입력과 저장/공개 tuple 비교로 확인하며, 완전 배정된 실제 시즌 자료는 아직 없어
+해제 경로는 실제 schema에 맞춘 fixture로 검증한다. 현재 실제 DB의 보류·범위 종료는 직접 확인했다.
+전체 unit 1,701개·lint·typecheck·build 통과. 다음 단계: desktop/mobile·200% browser 검증,
+독립 고정 후보 검토, PR preview·실서비스 확인과 v1.3.0 릴리스. 기존 운영 미해결 항목은 유지한다.
