@@ -273,3 +273,10 @@ Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Dat
 
 - Owner took the bench recommendations (https://claude.ai/artifact/2gXKv6kdfbRbqB1TNwyGpH): rate first, counts as `W / G`; Season Report and Home Court stack rate over count in one cell, Shooting keeps separate sortable columns; dashes plus a note line under the table; header case per table. Rule in FRONTEND.md "Counts and rates in tables".
 - Open: merge #223, then tag and release v1.2.7. d8 (Behind the Data) is next.
+
+## 2026-10-26 — everything local lives inside the repo folder
+
+- d7 merged and released: #223 → main fd9a162f, tag v1.2.7.
+- Owner rule (AGENTS.md): no folders beside `fullcourt/`. Worktrees go in `.local/worktrees/`, archives in `.local/archive/` (moved from `../fullcourt-local-archive`, 3.1 GB), scratch in `.local/`. `.local/` is gitignored and excluded from tsconfig and ESLint. Never `git clean -x`. Older entries and D-142 that say `../fullcourt-local-archive/...` now mean `.local/archive/...`.
+- Shooting prototypes removed (worktrees, local branches, origin/prototype/shooting-columns). Both branches are in `.local/archive/prototype-bundles-2026-10-26/shooting-prototypes.bundle`.
+- Next: d8 (Behind the Data).

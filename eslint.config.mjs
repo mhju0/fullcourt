@@ -25,6 +25,8 @@ const eslintConfig = defineConfig([
     "docs/audit/**",
     // Committed reports: capture scripts that produced their screenshots, kept as a record.
     "docs/reports/**",
+    // Local worktrees, archives and scratch, gitignored (AGENTS.md).
+    ".local/**",
   ]),
 ]);
 

@@ -68,3 +68,6 @@ __pycache__/
 /docs/agents/
 /design-audit/
 /docs/audit/
+
+# Local-only work kept inside the repo folder: worktrees, archives, scratch (AGENTS.md)
+/.local/
