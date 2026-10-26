@@ -309,5 +309,8 @@ Owner가 고른 일반 빈 날짜·Cup 미정 문구와 추가 요청한 올스�
 확정 빈 날짜는 0/대시/대시, Cup 미정은 TBD이며 실제 경기가 우선한다. 그룹 경기 종료 후의
 미수집과 지난 Cup 공백은 경기 없음으로 확정하지 않는다. 공식 근거와 과거 시즌 등록 범위는
 [조사 기록](research/2026-10-26-games-empty-dates.md)에 남겼다. 계수·스키마·API 변경 없음.
-검증: 전체 unit 1,667개·lint, 마지막 범위 보완 targeted 66개·ESLint, production build 통과.
-다음 단계: built browser·독립 candidate 검토·PR preview와 production 확인. 기존 운영 미해결은 유지한다.
+검증: 전체 unit 1,671개·lint·typecheck·production build, targeted 70개, built browser 신규 9개·기존 5개 통과.
+실제 API로 일곱 사유와 desktop/phone 양끝 경계를 확인했다. 독립 검토가 찾은 오래된 날짜 인덱스와
+실제 응답의 경기 수 불일치는 시즌별 관측 count로 보완했다. `6d7f78b4` 독립 재검토에서 두 방향의
+불일치·다른 날짜로 이동 후 유지·시즌 초기화·늦은 응답 처리를 확인했고 추가 지적은 없었다.
+다음 단계: PR #228 preview와 production 확인, v1.2.10 릴리스. 기존 운영 미해결은 유지한다.
