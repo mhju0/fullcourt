@@ -280,3 +280,10 @@ Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Dat
 - Owner rule (AGENTS.md): no folders beside `fullcourt/`. Worktrees go in `.local/worktrees/`, archives in `.local/archive/` (moved from `../fullcourt-local-archive`, 3.1 GB), scratch in `.local/`. `.local/` is gitignored and excluded from tsconfig and ESLint. Never `git clean -x`. Older entries and D-142 that say `../fullcourt-local-archive/...` now mean `.local/archive/...`.
 - Shooting prototypes removed (worktrees, local branches, origin/prototype/shooting-columns). Both branches are in `.local/archive/prototype-bundles-2026-10-26/shooting-prototypes.bundle`.
 - Next: d8 (Behind the Data).
+
+## 2026-10-26 — open-item sweep
+
+- Resolved: the hand-typed method figures (88, 971, 179, 135, 44, "twenty points") are derived or reworded (PR #225), and so is the 971 in the 2019-20 Season Report note. The 57px /games dock overlap no longer reproduces: `independent-audit.spec.ts` "mobile games keep season, month and date visible" passes against production. `withSentryConfig` and the 2026-10-04 data fixes were already done.
+- Branches: all merged and stale branches deleted locally and on GitHub. Bundle in `.local/archive/branch-bundles-2026-10-26/old-branches.bundle`. `origin/data-publications` stays (workflow target).
+- Still owner-only: the GitHub Actions PR-permission tick, the Supabase downgrade around 11-17, the #188 key purge via GitHub Support, physical iPhone/VoiceOver checks, and a live-game score check. Deferred owner decisions: e2e gating, real-SQL coverage of `queries.ts`, `noUncheckedIndexedAccess`, type-aware lint.
+- Next: d8 (Behind the Data) bench.
