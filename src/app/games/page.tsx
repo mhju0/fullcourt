@@ -677,7 +677,7 @@ export default function GamesPage() {
 
       {/* Matchups section */}
       <div className="order-1 flex flex-col gap-2 sm:order-none">
-        <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3 border-b border-[var(--term-border)]">
+        <div data-testid="matchups-heading-controls" className="flex min-h-11 flex-wrap items-center justify-between gap-3 border-b border-[var(--term-border)]">
           <SectionDivider
             label="Matchups"
             count={slate.emptyContext ? slate.emptyContext.count : slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}

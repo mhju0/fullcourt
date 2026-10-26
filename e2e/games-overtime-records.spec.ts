@@ -48,6 +48,12 @@ for (const width of [320, 390, 1440]) {
       }
     });
     await expect(page.getByText("FINAL/2OT", { exact: true })).toBeVisible();
+    const headingFits = await page.getByTestId("matchups-heading-controls").evaluate(el => {
+      const heading = el.querySelector("h2")!.getBoundingClientRect();
+      const checked = el.querySelector("time")!.getBoundingClientRect();
+      return heading.right <= checked.left || heading.bottom <= checked.top || checked.bottom <= heading.top;
+    });
+    expect(headingFits).toBe(true);
     await page.screenshot({ path: `.local/games-ui-ot-records-${width}-text200.png`, fullPage: true });
     const statusFits = await page.locator(".fc-game-status").evaluate(el => {
       const team = el.parentElement!.querySelector(".fc-game-teams")!.getBoundingClientRect();
