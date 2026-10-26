@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cupPendingSides, isCupFatigueWindow, type CupFatigueContext, type CupPhysicalGame } from "@/lib/cup-fatigue-readiness";
+import { cupPendingSides, cupSnapshotPendingSides, isCupFatigueWindow, type CupFatigueContext, type CupPhysicalGame } from "@/lib/cup-fatigue-readiness";
 import { scoreGameFatigue, type FatigueTeam } from "@/lib/fatigue";
 import { toFatigueScoreWrite } from "@/lib/daily-refresh";
 import { neutralizeIfUnplayed, rowToRecentGame } from "@/lib/fatigue-recent-games";
@@ -98,15 +98,73 @@ describe("Cup input readiness", () => {
     const { target, context } = fixture();
     context.games.at(-1)!.date = "2026-12-15";
     expect(cupPendingSides({ ...target, date: "2027-01-12" }, context)).toEqual({ home: true, away: true });
-    expect(cupPendingSides({ ...target, date: "2027-01-15" }, context)).toEqual({ home: false, away: false });
+    Object.assign(target, { date: "2027-01-15", tipOffUtc: new Date("2027-01-15T23:00:00Z") });
+    expect(cupPendingSides(target, context)).toEqual({ home: true, away: true });
+    refreshStored(target, context);
+    expect(cupPendingSides(target, context)).toEqual({ home: false, away: false });
   });
 
-  it("releases nonfinalists after January 9 while preserving finalist protection", () => {
+  it("requires current tuples after the nominal assignment window expires", () => {
     const { target, context } = fixture();
     context.fatigue = [];
     expect(cupPendingSides({ ...target, date: "2027-01-09" }, context)).toEqual({ home: true, away: true });
-    expect(cupPendingSides({ ...target, date: "2027-01-10" }, context)).toEqual({ home: true, away: false });
-    expect(cupPendingSides({ ...target, date: "2027-01-11" }, context)).toEqual({ home: false, away: false });
+    for (const date of ["2027-01-10", "2027-01-11"]) {
+      Object.assign(target, { date, tipOffUtc: new Date(`${date}T23:00:00Z`) });
+      context.fatigue = [];
+      expect(cupPendingSides(target, context)).toEqual({ home: true, away: true });
+      refreshStored(target, context);
+      expect(cupPendingSides(target, context)).toEqual({ home: false, away: false });
+    }
+  });
+
+  it.each(["date", "status", "teams", "tip", "neutral", "city", "season", "type", "missing"])("fails closed before helper early exits when original %s metadata changes", field => {
+    const { target, context } = fixture();
+    const original = structuredClone(target);
+    if (field === "date") target.date = "2027-01-12";
+    if (field === "status") target.status = "cancelled";
+    if (field === "teams") [target.homeTeamId, target.awayTeamId] = [target.awayTeamId, target.homeTeamId];
+    if (field === "tip") target.tipOffUtc = new Date("2026-12-13T01:00:00Z");
+    if (field === "neutral") target.neutralSite = true;
+    if (field === "city") target.neutralVenueCity = "Indianapolis";
+    if (field === "season") target.season = "2027-28";
+    if (field === "type") target.gameType = "cup_final";
+    if (field === "missing") context.games = context.games.filter(game => game.id !== target.id);
+    expect(cupSnapshotPendingSides(original, context)).toEqual({ home: true, away: true });
+  });
+
+  it.each(["2027-01-10", "2027-01-11"])("keeps a moved regular Cup game's stale nonfinalist output pending on %s", date => {
+    const { target, context } = fixture();
+    Object.assign(target, { date, tipOffUtc: new Date(`${date}T23:00:00Z`) });
+    refreshStored(target, context);
+    const cupGame = context.games.find(game => game.date === "2026-12-09")!;
+    Object.assign(cupGame, { date: "2026-12-12", tipOffUtc: new Date("2026-12-12T23:00:00Z") });
+    expect(cupPendingSides(target, context).away).toBe(true);
+    context.fatigue = [];
+    expect(cupPendingSides(target, context).away).toBe(true);
+    refreshStored(target, context);
+    expect(cupPendingSides(target, context).away).toBe(false);
+  });
+
+  it("does not infer unresolved postponed timing has expired after moving outside the original Cup dates", () => {
+    const { target, context } = fixture();
+    Object.assign(target, { date: "2027-02-01", tipOffUtc: new Date("2027-02-01T23:00:00Z") });
+    const moved = context.games.find(game => game.date === "2026-12-09")!;
+    Object.assign(moved, { date: "2026-12-20", status: "postponed", tipOffUtc: null });
+    refreshStored(target, context);
+    expect(cupPendingSides(target, context)).toEqual({ home: true, away: true });
+    moved.status = "cancelled";
+    expect(cupPendingSides(target, context)).toEqual({ home: false, away: false });
+    moved.status = "postponed";
+    target.status = "final";
+    expect(cupPendingSides(target, context)).toEqual({ home: false, away: false });
+  });
+
+  it("lets missing nominal slots expire while still verifying available physical inputs", () => {
+    const { target, context } = fixture();
+    Object.assign(target, { date: "2027-01-11", tipOffUtc: new Date("2027-01-11T23:00:00Z") });
+    context.games = context.games.filter(game => game.gameType !== "cup_final" && (game.date < "2026-12-04" || game.date > "2026-12-10"));
+    refreshStored(target, context);
+    expect(cupPendingSides(target, context)).toEqual({ home: false, away: false });
   });
 
   it("preserves held fixtures and historical seasons", () => {

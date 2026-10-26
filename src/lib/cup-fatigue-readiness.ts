@@ -17,6 +17,18 @@ export type CupFatigueContext = {
   publishedFatigue?: Record<string, unknown>[];
 };
 export type CupPendingSides = { home: boolean; away: boolean };
+export type CupTargetSnapshot = Pick<CupPhysicalGame,
+  "id" | "season" | "date" | "status" | "homeTeamId" | "awayTeamId" | "tipOffUtc" | "neutralSite" | "neutralVenueCity">;
+
+export function cupSnapshotPendingSides(candidate: CupTargetSnapshot, context: CupFatigueContext): CupPendingSides {
+  const current = context.games.find(game => game.id === candidate.id);
+  if (!current || current.gameType !== "regular" || current.season !== candidate.season || current.date !== candidate.date
+    || current.status !== candidate.status || current.homeTeamId !== candidate.homeTeamId || current.awayTeamId !== candidate.awayTeamId
+    || (current.tipOffUtc?.toISOString() ?? null) !== (candidate.tipOffUtc?.toISOString() ?? null)
+    || Boolean(current.neutralSite) !== Boolean(candidate.neutralSite)
+    || (current.neutralVenueCity ?? null) !== (candidate.neutralVenueCity ?? null)) return { home: true, away: true };
+  return cupPendingSides(current, context);
+}
 
 export function needsCupScheduleContext(season: string, date: string): boolean {
   return season === "2026-27" && date >= "2026-12-05";
@@ -58,9 +70,9 @@ const SPECIAL_COLUMNS: Record<string, string> = {
 const storedColumn = (key: string) => SPECIAL_COLUMNS[key] ?? key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 export function cupPendingSides(target: CupPhysicalGame, context: CupFatigueContext): CupPendingSides {
+  if (!needsCupScheduleContext(target.season, target.date) || isHeldGame(target.status)) return { home: false, away: false };
   const games = context.games.filter(game => game.season === target.season);
   const finalDates = games.filter(game => game.gameType === "cup_final").map(game => game.date).sort();
-  if (!isCupFatigueWindow(target.season, target.date, finalDates.at(-1)) || isHeldGame(target.status)) return { home: false, away: false };
   const finals = games.filter(game => game.gameType === "cup_final" && workload(game));
   const final = finals.length === 1 && finals[0].date === "2026-12-11" && finals[0].neutralSite === true && finals[0].neutralVenueCity === "Indianapolis" && validVenue(finals[0]) ? finals[0] : null;
   const start = new Date(`${target.date}T12:00:00Z`);
@@ -68,11 +80,15 @@ export function cupPendingSides(target: CupPhysicalGame, context: CupFatigueCont
   const priors = games.filter(game => game.date >= start.toISOString().slice(0, 10) && game.date < target.date && workload(game));
   const sidePending = (teamId: number) => {
     const finalist = final && involves(final, teamId);
-    if (final && !finalist && target.date > "2027-01-09") return false;
+    const unresolvedTiming = target.status !== "final" && games.some(game => involves(game, teamId)
+      && game.status === "postponed" && game.date < target.date);
+    if (unresolvedTiming || !validVenue(target)) return true;
+    const assignmentRisk = final && !finalist ? target.date <= "2027-01-09"
+      : isCupFatigueWindow(target.season, target.date, finalDates.at(-1));
     const regular = games.filter(game => game.gameType === "regular" && workload(game) && involves(game, teamId));
     const cup = regular.filter(game => game.date >= "2026-12-04" && game.date <= "2026-12-10");
     const identities = new Set(regular.map(game => `${game.date}:${game.homeTeamId}:${game.awayTeamId}`));
-    if (!final || regular.length !== 82 || new Set(regular.map(game => game.id)).size !== 82 || identities.size !== 82 || cup.length !== 2 || !cup.every(validVenue) || !validVenue(target)) return true;
+    if (assignmentRisk && (!final || regular.length !== 82 || new Set(regular.map(game => game.id)).size !== 82 || identities.size !== 82 || cup.length !== 2 || !cup.every(validVenue))) return true;
     return priors.filter(game => involves(game, teamId)).some(game => !validVenue(game));
   };
   const pending = { home: sidePending(target.homeTeamId), away: sidePending(target.awayTeamId) };
@@ -85,7 +101,7 @@ export function cupPendingSides(target: CupPhysicalGame, context: CupFatigueCont
     .map(neutralizeIfUnplayed).map(game => rowToRecentGame(game, teamId));
   const result = scoreGameFatigue({ game: target, homeTeam, awayTeam, homeRecentGames: recent(target.homeTeamId), awayRecentGames: recent(target.awayTeamId) });
   for (const side of ["home", "away"] as const) {
-    if (pending[side] || final && !involves(final, side === "home" ? target.homeTeamId : target.awayTeamId) && target.date > "2027-01-09") continue;
+    if (pending[side]) continue;
     const teamId = side === "home" ? target.homeTeamId : target.awayTeamId;
     const stored = context.fatigue.find(row => Number(row.game_id) === target.id && Number(row.team_id) === teamId);
     const expected = toFatigueScoreWrite(teamId, result[side]);

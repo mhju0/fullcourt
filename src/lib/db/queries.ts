@@ -23,7 +23,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import { slateOrder } from "./slate-order";
 import { gameTeamRecordsQuery } from "./game-team-records";
-import { cupPendingSides, needsCupScheduleContext, type CupFatigueContext, type CupPendingSides, type CupPhysicalGame } from "@/lib/cup-fatigue-readiness";
+import { cupSnapshotPendingSides, needsCupScheduleContext, type CupFatigueContext, type CupPendingSides, type CupPhysicalGame, type CupTargetSnapshot } from "@/lib/cup-fatigue-readiness";
 import { compareUpcomingTipOff } from "@/lib/upcoming-rest-edges";
 import { hasNotTipped } from "@/lib/game-phase";
 import {
@@ -374,9 +374,9 @@ async function getGameTeamRecords(targets: GameFatigueJoinRow[]): Promise<Map<nu
   return records;
 }
 
-async function getCupSchedulePending(gameIds: number[], publishedFatigue: Record<string, unknown>[]): Promise<Map<number, CupPendingSides>> {
-  if (!gameIds.length) return new Map();
-  const ids = sql.join(gameIds.map(id => sql`${id}`), sql`, `);
+async function getCupSchedulePending(targets: CupTargetSnapshot[], publishedFatigue: Record<string, unknown>[]): Promise<Map<number, CupPendingSides>> {
+  if (!targets.length) return new Map();
+  const ids = sql.join(targets.map(target => sql`${target.id}`), sql`, `);
   const { rows: [snapshot] } = await db.execute<{
     games: Record<string, unknown>[]; teams: Record<string, unknown>[]; fatigue: Record<string, unknown>[];
   }>(sql`
@@ -412,9 +412,7 @@ async function getCupSchedulePending(gameIds: number[], publishedFatigue: Record
       neutralSite: Boolean(game.neutral_site), neutralVenueCity: game.neutral_venue_city as string | null,
     })),
   };
-  const result = new Map<number, CupPendingSides>(gameIds.map(id => [id, { home: true, away: true }]));
-  for (const game of context.games) if (result.has(game.id)) result.set(game.id, cupPendingSides(game, context));
-  return result;
+  return new Map(targets.map(target => [target.id, cupSnapshotPendingSides(target, context)]));
 }
 
 function publishedCupFatigue(rows: GameFatigueJoinRow[]): Record<string, unknown>[] {
@@ -449,7 +447,7 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
     is_three_in_four: is3In4Map.get(Number(row.team_id)) ?? false,
     is_four_in_six: is4In6Map.get(Number(row.team_id)) ?? false,
   }));
-  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.id), published);
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))), published);
   const projectedFatigue = isProjectedFatigue(date, firstUnplayed);
 
   return rows.map((row) => ({
@@ -497,7 +495,7 @@ export async function getTeamSeasonSchedule(
     )
   );
   const firstUnplayed = await getFirstUnplayedDate(season);
-  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.id), publishedCupFatigue(rows));
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))), publishedCupFatigue(rows));
 
   return rows.map((row) => {
     const isHome = row.homeTeamId === team.id;
@@ -1157,6 +1155,9 @@ export async function getUpcomingGamesWithRA(
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
       tipOffUtc: games.tipOffUtc,
+      status: games.status,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
     })
     .from(latestOpen)
     .innerJoin(games, eq(games.id, latestOpen.gameId))
@@ -1181,7 +1182,7 @@ export async function getUpcomingGamesWithRA(
     { game_id: row.gameId, team_id: row.homeTeamId, score: row.homeFatigueScore },
     { game_id: row.gameId, team_id: row.awayTeamId, score: row.awayFatigueScore },
   ]);
-  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => row.gameId), published);
+  const cupPending = await getCupSchedulePending(rows.filter(row => needsCupScheduleContext(row.season, String(row.date))).map(row => ({ ...row, id: row.gameId })), published);
   const candidates = rows.filter((r) => r.homeFatigueScore !== null && r.awayFatigueScore !== null && hasNotTipped(r.tipOffUtc, now)
     && !cupPending.get(r.gameId)?.home && !cupPending.get(r.gameId)?.away);
   const ordered = order === "soonest"

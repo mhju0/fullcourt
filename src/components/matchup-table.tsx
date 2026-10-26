@@ -21,6 +21,7 @@ import {
   restEdgeSize,
 } from "@/components/matchup-parts";
 import { finalGameLabel, gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
+import { CUP_FATIGUE_PENDING_NOTE } from "@/lib/cup-schedule-copy";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
 import {
@@ -90,6 +91,7 @@ function StatusCell({
   flashing: boolean;
 }) {
   const hasScore = phase === "final" && homeScore !== null && awayScore !== null;
+  const [finalLabel, overtimeLabel] = finalGameLabel(overtimePeriods).split("/");
 
   return (
     // The flash is scoped to this cell (G3, ADR 0010): the score is what changed, so the
@@ -134,7 +136,7 @@ function StatusCell({
           }}
         >
           {/* PENDING: over by the clock, and the score writer has not run yet. */}
-          {phase === "awaitingFinal" ? "PENDING" : phase === "final" ? finalGameLabel(overtimePeriods) : phase.toUpperCase()}
+          {phase === "awaitingFinal" ? "PENDING" : phase === "final" ? <>{finalLabel}{overtimeLabel && <>/<wbr />{overtimeLabel}</>}</> : phase.toUpperCase()}
         </span>
       ) : null}
       {hasScore ? (
@@ -145,9 +147,10 @@ function StatusCell({
             letterSpacing: TRACK.figure,
             color: "var(--term-text)",
             lineHeight: LEAD.figure,
+            whiteSpace: "normal",
           }}
         >
-          {awayScore}–{homeScore}
+          {awayScore}–<wbr />{homeScore}
         </span>
       ) : (
         // The ET tip time when the schedule carries one — what a schedule site puts
@@ -166,7 +169,7 @@ function StatusCell({
 
 // ─── Matchup + fatigue cells (two aligned 26px lines each) ───────
 
-const TEAM_LINE_H = 26;
+const TEAM_LINE_H = "1.625em";
 
 function TeamLine({
   abbreviation,
@@ -612,7 +615,7 @@ function GameRow({
         tabIndex={0}
         aria-expanded={expanded}
         // The label replaces the row's contents for a screen reader, so the edge badge is named here.
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name}${game.records ? ` (${game.records.away.wins} wins, ${game.records.away.losses} losses entering this game)` : ""} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${game.records ? ` (${game.records.home.wins} wins, ${game.records.home.losses} losses entering this game)` : ""}${pending ? ", rest and travel estimates pending NBA Cup scheduling" : ""}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore, game.overtimePeriods)} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name}${game.records ? ` (${game.records.away.wins} wins, ${game.records.away.losses} losses entering this game)` : ""} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${game.records ? ` (${game.records.home.wins} wins, ${game.records.home.losses} losses entering this game)` : ""}${pending ? `, ${CUP_FATIGUE_PENDING_NOTE}` : ""}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore, game.overtimePeriods)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"

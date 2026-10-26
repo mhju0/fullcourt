@@ -26,9 +26,17 @@ for (const width of [320, 390, 1440]) {
       expect(await record.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
       await expect(record).toBeVisible();
     }
+    await page.screenshot({ path: `.local/games-ui-ot-records-${width}.png`, fullPage: true });
+    const labelLines = await row.getByText("FINAL/2OT", { exact: true }).evaluate(el => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return new Set([...range.getClientRects()].filter(rect => rect.width > 0).map(rect => rect.top)).size;
+    });
+    expect(labelLines).toBe(1);
     await row.focus();
     await page.keyboard.press("Enter");
     await expect(page.getByRole("button", { name: /^Collapse .* game details$/ })).toHaveAttribute("aria-expanded", "true");
+    await page.screenshot({ path: `.local/games-ui-ot-records-${width}-expanded.png`, fullPage: true });
     await page.evaluate(() => {
       const sizes = [...document.querySelectorAll<HTMLElement>("body *")].map(el => {
         const style = getComputedStyle(el);
@@ -40,6 +48,19 @@ for (const width of [320, 390, 1440]) {
       }
     });
     await expect(page.getByText("FINAL/2OT", { exact: true })).toBeVisible();
+    await page.screenshot({ path: `.local/games-ui-ot-records-${width}-text200.png`, fullPage: true });
+    const statusFits = await page.locator(".fc-game-status").evaluate(el => {
+      const team = el.parentElement!.querySelector(".fc-game-teams")!.getBoundingClientRect();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return [...range.getClientRects()].every(rect => rect.right <= team.left);
+    });
+    expect(statusFits).toBe(true);
+    const nameBoxes = await page.locator(".fc-game-teams > div > span.truncate:not(.hidden)").evaluateAll(elements => elements.map(el => {
+      const box = el.getBoundingClientRect();
+      return { top: box.top, bottom: box.bottom };
+    }));
+    expect(nameBoxes[0].bottom).toBeLessThanOrEqual(nameBoxes[1].top);
     const recordBoxes = await page.locator("[title='Regular-season record entering this game']").evaluateAll(elements => elements.map(el => {
       const box = el.getBoundingClientRect();
       return { top: box.top, bottom: box.bottom };

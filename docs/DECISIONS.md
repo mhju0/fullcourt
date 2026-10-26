@@ -2271,9 +2271,13 @@ Cup 기간 중에는 첫 가능한 직전 Cup 경기 다음 날인 12월 5일부
 수집된 결승 날짜가 이동하면 의존 범위도 그 날짜에서 계산한다.
 
 해당 팀의 피로도만 null로 보류하며, 한쪽이라도 보류하면 rest advantage도 보류한다.
-경기·시간·점수·전적은 유지하고 `Rest and travel estimates pending NBA Cup schedule updates.`을
+경기·시간·점수·전적은 유지하고 `Rest and travel estimates pending schedule updates.`을
 한 번 표시한다. 파생된 색·우위·문장·집계에 옛 값이나 0을 남기지 않는다. API 오류와는 구분한다.
 경기 수 82만으로 완전성을 확정하지 않고 실제 Cup 대진·결승·물리 경기장과 입력을 확인한다.
+원래 미배정 경기의 30일 범위가 지난 뒤에도 현재 알려진 물리 경기와 공개 tuple을 대조해,
+옮겨진 Cup 경기의 영향이나 갱신 지연을 놓치지 않는다. 미래 경기의 미해결 연기는 원래 Cup
+날짜와 무관하게 보류하며, 취소와는 구분한다. 안내 문구는 리그의 미발표와 내부 갱신 지연을
+혼동하지 않도록 원인을 단정하지 않는 `pending schedule updates`를 쓴다.
 결승은 정규시즌 집계에서 제외돼도 실제 피로도에는 포함한다. Hinkle 좌표는 공식
 [Visit Indy 경기장 정보](https://www.visitindy.com/directory/hinkle-fieldhouse-at-butler-university/)의
 39.84349, -86.167705를 사용하고 ESPN venue 2032와 대조했다. 이 좌표는 해당 결승 날짜의

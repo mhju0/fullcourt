@@ -700,6 +700,7 @@ export default function GamesPage() {
         <Matchups slate={slate} />
         <details className="fc-disclosure">
           <summary>About rest advantage and game status</summary>
+          <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Records are regular-season wins and losses before the game. Future matchups show results available now.</p>
           <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Rest gap is a model-score difference, not a win probability. Conditions for unplayed games are projected from the schedule.</p>
           <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>Scores are final-only. LIVE is estimated from scheduled tip-off. Checked is when this view was fetched, not when the source last changed.</p>
         </details>

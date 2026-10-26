@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { releaseGame } from "./fixtures/release-data";
 
-const NOTE = "Rest and travel estimates pending NBA Cup scheduling.";
+const NOTE = "Rest and travel estimates pending NBA Cup schedule updates.";
 
 for (const width of [320, 390, 1440]) {
   test(`Cup estimates stay pending with results and records intact at ${width}px`, async ({ page }) => {
@@ -25,7 +25,7 @@ for (const width of [320, 390, 1440]) {
     await expect(row).toContainText("100–110");
     await expect(row).toContainText("(12–13)");
     await expect(row).toContainText("(13–12)");
-    await expect(row).toHaveAccessibleName(/rest and travel estimates pending NBA Cup scheduling/);
+    await expect(row).toHaveAccessibleName(/Rest and travel estimates pending NBA Cup schedule updates/);
     await expect(row.locator(".fc-game-edge")).toContainText("TBD");
     await expect(row).not.toContainText("REST EDGE");
     await expect(row).not.toContainText("B2B");
@@ -40,11 +40,13 @@ for (const width of [320, 390, 1440]) {
     await expect(summary.locator("dd").nth(0)).toHaveText("1");
     await expect(summary.locator("dd").nth(1)).toHaveText("—");
     await expect(summary.locator("dd").nth(2)).toContainText("—");
+    await page.screenshot({ path: `.local/games-ui-cup-pending-${width}.png`, fullPage: true });
     await row.click();
     const detail = page.locator(`#game-${game.id}`);
     await expect(detail.getByText("HOME · BOS · TBD", { exact: true })).toBeVisible();
     await expect(detail.getByText("AWAY · POR", { exact: true })).toBeVisible();
     await expect(detail.getByText("NO FATIGUE DATA", { exact: true })).toHaveCount(0);
+    await page.screenshot({ path: `.local/games-ui-cup-pending-${width}-expanded.png`, fullPage: true });
     await page.evaluate(() => {
       const sizes = [...document.querySelectorAll<HTMLElement>("body *")].map(el => {
         const style = getComputedStyle(el);
@@ -55,6 +57,7 @@ for (const width of [320, 390, 1440]) {
         if (Number.isFinite(line)) el.style.lineHeight = `${line * 2}px`;
       }
     });
+    await page.screenshot({ path: `.local/games-ui-cup-pending-${width}-text200.png`, fullPage: true });
     await expect(page.getByText("FINAL/2OT", { exact: true })).toBeVisible();
     await expect(page.getByTestId("cup-fatigue-note")).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
