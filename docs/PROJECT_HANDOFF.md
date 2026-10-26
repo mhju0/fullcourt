@@ -293,3 +293,11 @@ Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Dat
 - Owner took all three bench recommendations (https://claude.ai/artifact/H9nnDoBxh3qZUs4SoDe6uJ): `W / G` under the rate where the data has wins (Rest Advantage's three tables, the Schedule Edge market check); green/red on clear comparisons (Rest Advantage gaps, the Playoff verdict and round split); referee archive left as published. Rule in FRONTEND.md "Method tables".
 - `deviationFill`/`deviationText` moved to `src/lib/deviation-color.ts` so server pages can use them. `method-table-rules.test.ts` renders the pages and checks both rules.
 - The graphics review (d1–d8) is complete once v1.2.9 is released.
+
+## 2026-10-26 — owner items
+
+- "Allow GitHub Actions to create and approve pull requests" was already on (`can_approve_pull_request_reviews: true`); the officiating workflow can open its own PRs. No longer open.
+- #188 key: the leaked commit is reachable only through `refs/pull/188/head` (not main, any tag, or another PR). The owner filed a GitHub Support ticket to remove the ref and its three commits. The key is a third-party public Maps Embed key, so there is nothing to rotate.
+- Supabase: the downgrade is on hold by owner decision. Egress was 4.4 GB nine days into the 10-17 → 11-17 Pro cycle, above the Free plan's 5 GB/month pace.
+- Physical iPhone/VoiceOver checks are optional per the owner; axe runs on every route at phone width in `e2e/accessibility.spec.ts`.
+- Still open: a live-game score check (first 2026-27 slate after this note: 10-26 7:00 PM ET).
