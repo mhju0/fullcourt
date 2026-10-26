@@ -1,6 +1,6 @@
 # Release history
 
-## 1.2.7 — 2026-10-25
+## 1.2.7 — 2026-10-26
 
 - Write rates first and counts as "wins / games" in Season Report's team records and Home Court's season data, with the count under the rate in one cell. Home Court's table drops from six columns to four.
 - Show a dash for a group with no games, with one line under the table explaining it, instead of words in the cell. Figures are unchanged (D-143).
