@@ -6,7 +6,7 @@
 
 NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
-**v1.1.5 · October 22, 2026** · [Release history](CHANGELOG.md)
+**v1.3.1 · October 26, 2026** · [Release history](CHANGELOG.md)
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
@@ -34,8 +34,8 @@ data flow, implementation tradeoffs and verification. About identifies the autho
 to that walkthrough in the application.
 
 [Data status](https://fullcourt.fyi/data-status) separates coverage and available
-refresh dates from database connectivity. Result studies open their latest usable published
-season; selecting the new season explicitly keeps its Awaiting state until results are ready.
+refresh dates from database connectivity. Result studies publish current-season observations as
+soon as validated data exists and mark them as season-to-date.
 Selected views remain shareable through URLs and browser history.
 
 ## What you can examine
