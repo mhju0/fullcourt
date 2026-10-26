@@ -2237,3 +2237,16 @@ Owner는 graphics review d8(Behind the Data method page의 표 규칙)에서 ben
 함께 고친 것: Time Zones의 strength edge가 null이면 0 대신 "—"를 쓰고, Playoff record edge는
 `signedNumber`로 부호를 붙이며, Availability method page의 CHANGE 열은 계수가 줄어든 만큼을 음수로
 쓴다(예: −8.8). Product page의 SHIFT 열은 그대로다. 수치·모집단·계수는 바뀌지 않는다.
+
+## D-145 — Games의 빈 날짜와 일정 사유 (2026-10-26)
+
+Owner는 정규시즌 안의 빈 날짜도 선택하고, 개막 전·종료 후는 채우지 않기로 했다.
+모바일과 데스크톱의 날짜 범위 및 화살표 경계를 맞춘다. 일반 문구는
+`No games scheduled for this day.`, Cup 미정은
+`NBA Cup schedule pending. Matchups to be announced.`, 올스타는 `All-Star break.`다.
+추가 요청에 따라 선거일·휴일·Cup 결승·최종일 전 휴식일도 확인된 사유를 쓴다.
+
+확정 빈 날짜는 경기 수 0과 두 rest 지표의 대시로 표시한다. 미정 경기 수는 TBD이며,
+실제 경기 행과 데이터 오류는 설명용 메타데이터보다 우선한다. 과거 올스타와 Cup 기간을
+월이나 공백 길이로 추정하지 않는다. [출처와 범위](research/2026-10-26-games-empty-dates.md)에
+시즌별 근거·등록 범위·미수집과 경기 없음의 구분을 남긴다. 모델·API·DB는 바뀌지 않는다.

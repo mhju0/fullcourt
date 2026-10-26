@@ -10,11 +10,13 @@ import { createSlateRefresh, shouldRefreshSlate } from "@/lib/slate-refresh";
 import { isLeavingPage } from "@/lib/route-transition";
 import {
   calendarView,
+  canShiftDay,
   daysInMonth,
   initSlate,
   monthCalendar,
   monthTabs,
   slateMonth,
+  seasonCalendarDays,
   slateReducer,
   weekDays,
   type CalendarView,
@@ -29,6 +31,7 @@ import {
   currentDisplaySeason,
   slateDateKey,
 } from "@/lib/nba-season";
+import { gameDayContext, type GameDayContext } from "@/lib/game-day-context";
 import type { GameDateCount, GameResponse } from "@/types";
 
 const isAbort = (err: unknown) => err instanceof Error && err.name === "AbortError";
@@ -49,6 +52,9 @@ export interface GameSlate {
   calendar: CalendarView;
   selectedDate: string | null;
   lastDate: string | null;
+  canPreviousDay: boolean;
+  canNextDay: boolean;
+  emptyContext: GameDayContext | null;
   selectedLabel: { long: string; short: string } | null;
   /** The selected day's authoritative games. */
   games: readonly SlateGame[];
@@ -220,36 +226,25 @@ export function useGameSlate(): GameSlate {
     [state.games]
   );
 
-  const days = useMemo<readonly SlateDay[]>(
-    () =>
-      daysInMonth(state).map(({ date, gameCount }) => {
-        const label = format(noon(date), "MMMM d, yyyy");
-        return {
-          date,
-          gameCount,
-          label,
-          dayOfMonth: format(noon(date), "d"),
-          ariaLabel: `${label}, ${gameCount} games`,
-          isSelected: date === state.selectedDate,
-        };
-      }),
-    [state]
-  );
-
   const toSlateDay = useCallback(
-    ({ date, gameCount }: GameDateCount): SlateDay => {
+    ({ date, gameCount, disabled }: GameDateCount & { disabled?: boolean }): SlateDay => {
       const label = format(noon(date), "MMMM d, yyyy");
+      const actualCount = date === state.selectedDate && state.status === "slateReady" ? state.games.length : gameCount;
+      const context = gameDayContext({ season, date, gameCount: actualCount, today: slateDateKey() });
+      const count = context?.count ?? actualCount;
       return {
         date,
-        gameCount,
+        gameCount: count,
+        disabled,
         label,
         dayOfMonth: format(noon(date), "d"),
-        ariaLabel: `${format(noon(date), "EEEE")}, ${label}, ${gameCount} ${gameCount === 1 ? "game" : "games"}`,
+        ariaLabel: `${format(noon(date), "EEEE")}, ${label}, ${count === "TBD" ? "games TBD" : count === "—" ? "game count unavailable" : `${count} ${count === 1 ? "game" : "games"}`}`,
         isSelected: date === state.selectedDate,
       };
     },
-    [state.selectedDate]
+    [state.selectedDate, state.status, state.games, season]
   );
+  const days = useMemo(() => daysInMonth(state).map(toSlateDay), [state, toSlateDay]);
   const week = useMemo(() => weekDays(state).map(toSlateDay), [state, toSlateDay]);
   const monthGrid = useMemo(() => {
     const { leadingBlanks, days: all } = monthCalendar(state);
@@ -285,6 +280,10 @@ export function useGameSlate(): GameSlate {
     calendar: calendarView(state),
     selectedDate,
     lastDate: state.days.reduce<string | null>((last, day) => !last || day.date > last ? day.date : last, null),
+    canPreviousDay: canShiftDay(state, -1),
+    canNextDay: canShiftDay(state, 1),
+    emptyContext: state.status === "slateEmpty" && selectedDate
+      ? gameDayContext({ season, date: selectedDate, gameCount: state.days.find(day => day.date === selectedDate)?.gameCount ?? 0, today: slateDateKey(), inSeason: seasonCalendarDays(state).some(day => day.date === selectedDate) }) : null,
     selectedLabel,
     games,
     status: state.status,

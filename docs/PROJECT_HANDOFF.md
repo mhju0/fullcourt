@@ -301,3 +301,13 @@ Open: graphics review d7 (table formatting, owner: later) and d8 (Behind the Dat
 - Supabase: the downgrade is on hold by owner decision. Egress was 4.4 GB nine days into the 10-17 → 11-17 Pro cycle, above the Free plan's 5 GB/month pace.
 - Physical iPhone/VoiceOver checks are optional per the owner; axe runs on every route at phone width in `e2e/accessibility.spec.ts`.
 - Still open: a live-game score check (first 2026-27 slate after this note: 10-26 7:00 PM ET).
+
+## 2026-10-26 — Games 빈 날짜와 일정 사유, v1.2.10 준비
+
+Owner가 고른 일반 빈 날짜·Cup 미정 문구와 추가 요청한 올스타·선거일 등 사유를 적용했다(D-145).
+날짜 선택기는 공개 정규시즌 양끝 안의 모든 날짜를 표시하며 폰 주간 정렬과 양끝 화살표를 맞춘다.
+확정 빈 날짜는 0/대시/대시, Cup 미정은 TBD이며 실제 경기가 우선한다. 그룹 경기 종료 후의
+미수집과 지난 Cup 공백은 경기 없음으로 확정하지 않는다. 공식 근거와 과거 시즌 등록 범위는
+[조사 기록](research/2026-10-26-games-empty-dates.md)에 남겼다. 계수·스키마·API 변경 없음.
+검증: 전체 unit 1,667개·lint, 마지막 범위 보완 targeted 66개·ESLint, production build 통과.
+다음 단계: built browser·독립 candidate 검토·PR preview와 production 확인. 기존 운영 미해결은 유지한다.

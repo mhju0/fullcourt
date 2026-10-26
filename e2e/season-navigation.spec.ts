@@ -10,6 +10,8 @@ test("a phone picks a date from the week strip or the calendar, and restores it 
   await expect(season).toBeVisible();
   await expect(week.getByRole("button")).toHaveCount(7);
   await expect(week.locator('[aria-current="date"]')).toHaveAccessibleName(/April 12, 2026/);
+  await expect(week.getByRole("button").first()).toBeEnabled();
+  await expect(week.getByRole("button").nth(1)).toBeDisabled();
   await expect(page.getByRole("group", { name: "Month", exact: true })).toBeHidden();
   expect((await season.boundingBox())!.y).toBeLessThan((await week.boundingBox())!.y);
   // Nothing in the controls scrolls sideways any more.

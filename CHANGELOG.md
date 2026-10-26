@@ -1,5 +1,11 @@
 # Release history
 
+## 1.2.10 — 2026-10-26
+
+- Show every date within the published regular season on the Games calendar, including days with no games, and stop navigation at the season boundaries.
+- Explain known off days, including Election Day, holidays, the All-Star break and the NBA Cup Championship. Distinguish pending Cup matchups from a confirmed zero-game slate.
+- Keep unavailable rest metrics as dashes on empty dates (D-145).
+
 ## 1.2.9 — 2026-10-26
 
 - Write rates first with "wins / games" beneath them in the Rest Advantage method tables and the Schedule Edge market check.
