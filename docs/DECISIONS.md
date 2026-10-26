@@ -2204,3 +2204,18 @@ Recharts의 active index는 클릭보다 한 프레임 늦어서, pointer 선택
 차트별로 commit을 나눴고, v1.2.5 시점 화면과 동작은 로컬 archive
 `../fullcourt-local-archive/d6-chart-baseline-2026-10-25/`에 남겼다. 차트 하나를 되돌릴 때는 그
 commit을 revert한다. 수치·모집단·계수는 바뀌지 않는다.
+
+## D-143 — 표의 비율과 횟수 표기 통일 (2026-10-25)
+
+Owner는 graphics review d7(표마다 횟수와 비율 배치가 다름)에서 bench의 추천안을 그대로 골랐다
+(https://claude.ai/artifact/2gXKv6kdfbRbqB1TNwyGpH). 비율을 먼저 쓰고, 횟수는 "W / G"처럼
+슬래시 양쪽에 공백을 두고 천 단위 구분 기호를 쓴다. 숫자로 정렬하는 표(Shooting)는 비율과
+횟수를 별도 열로 두고, 나머지(Season Report 팀 기록, Home Court 시즌 데이터)는 한 칸에 비율을
+위, 횟수를 아래 muted로 쌓는다.
+
+경기가 없는 비율은 칸 안에 문장 대신 "—"를 쓰고, 표 아래 한 줄로 뜻을 적는다. 이 줄은 dash가
+있을 때만 나온다. Header 대소문자는 표를 따른다: `DataTable`은 대문자, 직접 만든 두 표는
+sentence case를 유지한다. Home Court 표는 6열에서 4열로(5+ 표시 시 8열에서 5열로) 줄었다.
+
+Season Report와 Home Court는 commit을 나눴으므로 하나만 되돌릴 수 있다. 수치·모집단·계수는
+바뀌지 않는다.

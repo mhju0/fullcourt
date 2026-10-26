@@ -68,6 +68,13 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   await expect(table.getByRole('row')).toHaveCount(12);
   await expect(table.getByRole('row').nth(1)).toContainText('2025-26');
   await expect(table.getByRole('row').nth(1)).toContainText('100 / 200');
+  // Rate on top, wins / games under it; an empty group is a dash explained once below (D-143).
+  const latest = table.getByRole('row').nth(1).getByRole('cell');
+  await expect(latest.nth(0)).toHaveText(/^50\.0%\s*100\s\/\s200$/);
+  await expect(latest.nth(1)).toHaveText(/^—\s*0\s\/\s0$/);
+  await expect(latest.nth(2)).toHaveText('—');
+  await expect(table).not.toContainText('No eligible games');
+  await expect(page.getByTestId('home-court-dash-note')).toBeVisible();
   await expect(table.getByRole('link', { name: '2024-25', exact: true })).toHaveAttribute('href', '/season?season=2024-25');
 });
 
@@ -167,11 +174,11 @@ test('large gaps are opt-in, preserve selection, and expose filled markers with 
   await expect(chart.getByRole('button')).toHaveAccessibleName(/5\+ gap: 22 wins of 42, 52.4%, −2.6 percentage points versus the home rate/);
   await expect(page.getByText('Seasonal sample sizes vary; these are observed records, not precise estimates. Groups overlap, and the records do not establish that rest caused the difference.', { exact: true })).toBeVisible();
   await page.getByText('View season data', { exact: true }).click();
-  await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: /^5\+ raw/ })).toBeVisible();
   await toggle.uncheck();
   await expect(inspectionSeason).toContainText('2024-25');
   await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
-  await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toHaveCount(0);
+  await expect(page.getByRole('columnheader', { name: /^5\+ raw/ })).toHaveCount(0);
 });
 
 test('large gaps keep zero-sample seasons empty and show isolated zero and 100 percent points', async ({ page }) => {

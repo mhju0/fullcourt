@@ -26,6 +26,16 @@ function formatRate(value: number) {
   return `${value.toFixed(1)}%`;
 }
 
+/** Rate on top, its wins / games under it in muted type (D-143). */
+function RateCell({ rate, wins, games }: { rate: number | null; wins: number; games: number }) {
+  return (
+    <td className="mono text-right tabular-nums">
+      {rate === null ? "—" : formatRate(rate)}
+      <span className={`block ${muted}`}>{wins.toLocaleString()}&nbsp;/&nbsp;{games.toLocaleString()}</span>
+    </td>
+  );
+}
+
 function largeRestGapVersusHome(row: HomeCourtStudySeason) {
   return row.largeRestGap.winPct === null || row.homeGames === 0
     ? null
@@ -159,16 +169,14 @@ export function HomeCourtStudy() {
       <details className="fc-disclosure">
         <summary>View season data</summary>
         <ScrollCue data-pinned="" className="focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" role="region" aria-label="Home-court season data; scroll horizontally for all columns" tabIndex={0}>
-          <table className="fc-table w-full min-w-[760px] text-left">
+          <table className="fc-table w-full min-w-[520px] text-left">
             <thead className="bg-[var(--term-surface-2)] text-[var(--term-text-muted)]">
               <tr>
                 <th scope="col" className={styles.seasonCell}>Season</th>
-                <th scope="col" className="text-right">Home wins{"\u00a0/\u00a0"}games</th>
-                <th scope="col" className="text-right">Home win rate</th>
-                <th scope="col" className="text-right">Rested at home wins{"\u00a0/\u00a0"}games</th>
-                <th scope="col" className="text-right">Rested at home win rate</th>
-                <th scope="col" className="text-right">Vs baseline</th>
-                {showLarge ? <><th scope="col" className="text-right">5+ wins{"\u00a0/\u00a0"}games</th><th scope="col" className="text-right">5+ raw win rate</th></> : null}
+                <th scope="col" className="text-right">Home<br /><span className="whitespace-nowrap">win % · W / G</span></th>
+                <th scope="col" className="text-right">Rested at home<br /><span className="whitespace-nowrap">win % · W / G</span></th>
+                <th scope="col" className="text-right">Vs baseline<br />pp</th>
+                {showLarge ? <th scope="col" className="text-right">5+ raw<br /><span className="whitespace-nowrap">win % · W / G</span></th> : null}
               </tr>
             </thead>
             <tbody>
@@ -180,12 +188,10 @@ export function HomeCourtStudy() {
                       <a className="fc-text-link inline-flex min-h-11 items-center" href={`/season?season=${row.season}`}>{row.season}</a>
                       {!row.isComplete ? <span className={`block text-xs font-normal ${muted}`}>Season to date</span> : null}
                     </th>
-                    <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()}&nbsp;/&nbsp;{row.homeGames.toLocaleString()}</td>
-                    <td className="mono text-right tabular-nums">{row.homeGames > 0 ? formatRate(row.homeBaselinePct) : "No eligible games"}</td>
-                    <td className="mono text-right tabular-nums">{row.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.games.toLocaleString()}</td>
-                    <td className="mono text-right tabular-nums">{row.games > 0 ? formatRate(row.winPct) : "No eligible games"}</td>
-                    <td className="mono text-right tabular-nums">{gap === null ? "Unavailable" : `${signedNumber(gap, 1)}\u00a0pp`}</td>
-                    {showLarge ? <><td className="mono text-right tabular-nums">{row.largeRestGap.restedTeamWins.toLocaleString()}&nbsp;/&nbsp;{row.largeRestGap.games.toLocaleString()}</td><td className="mono text-right tabular-nums">{row.largeRestGap.winPct === null ? "No eligible games" : formatRate(row.largeRestGap.winPct)}</td></> : null}
+                    <RateCell rate={row.homeGames > 0 ? row.homeBaselinePct : null} wins={row.homeWins} games={row.homeGames} />
+                    <RateCell rate={row.games > 0 ? row.winPct : null} wins={row.restedTeamWins} games={row.games} />
+                    <td className="mono text-right tabular-nums">{gap === null ? "—" : signedNumber(gap, 1)}</td>
+                    {showLarge ? <RateCell rate={row.largeRestGap.winPct} wins={row.largeRestGap.restedTeamWins} games={row.largeRestGap.games} /> : null}
                   </tr>
                 );
               })}
@@ -193,6 +199,7 @@ export function HomeCourtStudy() {
           </table>
         </ScrollCue>
         <p className="fc-scroll-hint" aria-hidden="true">Scroll sideways for more columns.</p>
+        {rows.some((row) => row.homeGames === 0 || row.games === 0 || (showLarge && row.largeRestGap.winPct === null)) ? <p className={`text-xs ${muted}`} data-testid="home-court-dash-note">— no eligible games, so no rate or comparison.</p> : null}
       </details>
 
       <section className="fc-report-section flex flex-col gap-4" aria-labelledby="home-court-context">

@@ -51,6 +51,10 @@ for (const width of [1280, 390]) {
     await expect(gaps.nth(2)).toContainText("At the league home/rest gap");
     await expect(gaps.nth(3)).toContainText("−24.1");
     await expect(gaps.nth(4)).toContainText("Gap unavailable");
+    // Rate on top, wins / games under it; no games is a dash explained under the table (D-143).
+    await expect(rows.nth(0).getByRole("cell").nth(0)).toHaveText(/^80\.0%\s*16\s\/\s20$/);
+    await expect(rows.nth(4).getByRole("cell").nth(0)).toHaveText(/^—\s*0\s\/\s0$/);
+    await expect(section.getByTestId("team-records-dash-note")).toHaveCount(1);
     await expect(gaps.nth(4)).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(gaps.nth(5)).toContainText("Small sample");
     await expect(gaps.nth(5)).toContainText("Smaller home/rest gap than league");
