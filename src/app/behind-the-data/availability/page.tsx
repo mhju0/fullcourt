@@ -9,6 +9,7 @@ import {
 } from "@/components/behind-the-data-parts";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import { DataTable } from "@/components/ui/data-table";
+import { signedNumber } from "@/lib/signed-number";
 import {
   AVAILABILITY_DEFINITION,
   AVAILABILITY_EFFECTS,
@@ -181,7 +182,8 @@ value = max(0, GmSc average
             { label: "TERM", cell: (r) => r.name },
             { label: "ALONE", unit: "COEF.", numeric: true, cell: (r) => r.scheduleOnly.toFixed(3) },
             { label: "WITH ABSENCES", unit: "COEF.", numeric: true, cell: (r) => r.absenceControlled.toFixed(3) },
-            { label: "CHANGE", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.shiftPct.toFixed(1) },
+            // `shiftPct` is the shrink, so a coefficient that got smaller is a negative change.
+            { label: "CHANGE", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => signedNumber(-r.shiftPct, 1) },
           ]}
         />
         <Prose>

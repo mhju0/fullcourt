@@ -136,17 +136,20 @@ export default function TimeZonesMethodPage() {
         </Prose>
         <DataTable
           rows={[
-            { label: `East ${H}h+`, edge: east.strengthEdgeToHome ?? 0, pct: east.homeWinPct },
-            { label: `West ${H}h+`, edge: west.strengthEdgeToHome ?? 0, pct: west.homeWinPct },
-            { label: "No long shift", edge: neither.strengthEdgeToHome ?? 0, pct: neither.homeWinPct },
+            { label: `East ${H}h+`, edge: east.strengthEdgeToHome, pct: east.homeWinPct },
+            { label: `West ${H}h+`, edge: west.strengthEdgeToHome, pct: west.homeWinPct },
+            { label: "No long shift", edge: neither.strengthEdgeToHome, pct: neither.homeWinPct },
           ]}
           rowKey={(r) => r.label}
           columns={[
             { label: "VISITOR'S SHIFT", cell: (r) => r.label },
-            { label: "HOME EDGE", unit: "STRENGTH", numeric: true, cell: (r) => signedNumber(r.edge, 4) },
+            { label: "HOME EDGE", unit: "STRENGTH", numeric: true, cell: (r) => (r.edge === null ? "—" : signedNumber(r.edge, 4)) },
             { label: "HOME WON", unit: "%", numeric: true, style: { fontWeight: 700 }, cell: (r) => r.pct.toFixed(2) },
           ]}
         />
+        {[east, west, neither].some((g) => g.strengthEdgeToHome === null) && (
+          <Note>— strength not broken out for that group.</Note>
+        )}
         <Prose>
           The strength edge <strong>flips sign between the groups</strong>, and the win rate
           follows it. So team strength explains the raw {rawSwingPoints(data).toFixed(1)}-point

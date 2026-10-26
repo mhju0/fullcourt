@@ -24,6 +24,7 @@ import {
 import { LEAD, TYPE, WIDTH, termTdStyle } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
+import { deviationText } from "@/lib/deviation-color";
 
 export const metadata: Metadata = {
   title: "Playoff Predictions · Behind the Data",
@@ -213,7 +214,7 @@ p < 0.5  →  pick the opponent`}
               unit: "WIN % PTS",
               numeric: true,
               // Stored as a 0–1 fraction; printed in percentage points to match the WIN% unit.
-              cell: (r) => (r.meanWinPctDiff * 100).toFixed(1),
+              cell: (r) => signedNumber(r.meanWinPctDiff * 100, 1),
             },
           ]}
         />
@@ -318,13 +319,17 @@ p < 0.5  →  pick the opponent`}
             },
             {
               label: "VERDICT",
-              style: { color: "var(--term-blue-text)", fontWeight: 700 },
-              cell: (m) => `${m.improvementPct}% BETTER`,
+              // Green for a model that beats the base rate, the better/worse pair (D-144).
+              cell: (m) => (
+                <span style={{ color: deviationText(m.improvementPct), fontWeight: 700 }}>
+                  {m.improvementPct}% BETTER
+                </span>
+              ),
             },
           ]}
         >
           {/* Accuracy is the half of the result that is not a win, so it sits below the three
-              calibration rows rather than among them — and its verdict is muted, not blue. */}
+              calibration rows rather than among them — and its verdict is muted, not green. */}
           <tr>
             <td style={{ ...termTdStyle, fontWeight: 700 }}>ACCURACY</td>
             <td style={{ ...termTdStyle, textAlign: "right" }} className="tabular-nums">
@@ -363,20 +368,12 @@ p < 0.5  →  pick the opponent`}
           much of that comes from the grind input.
         </Prose>
         <DataTable
-          // Each row emphasises whichever of the two accuracy columns actually won it — blue
-          // for the model, plain bold for the always-home-court rule. Naming the winner is
+          // The model's figure is green where it beats the always-home-court rule and red where
+          // it loses (D-144), and the rule's figure is bold where it wins. Naming the winner is
           // what makes the split legible: the model wins from round two, and loses round one.
           rows={[
-            {
-              label: "Round 2 on",
-              ...PLAYOFF_ROUND_SPLIT.roundsTwoPlus,
-              winner: "model" as const,
-            },
-            {
-              label: "Round 1",
-              ...PLAYOFF_ROUND_SPLIT.roundOne,
-              winner: "baseline" as const,
-            },
+            { label: "Round 2 on", ...PLAYOFF_ROUND_SPLIT.roundsTwoPlus },
+            { label: "Round 1", ...PLAYOFF_ROUND_SPLIT.roundOne },
           ]}
           rowKey={(r) => r.label}
           rowAttrs={(_r, i) =>
@@ -395,13 +392,7 @@ p < 0.5  →  pick the opponent`}
               cell: (r) => (
                 <WithSub
                   value={
-                    <span
-                      style={
-                        r.winner === "model"
-                          ? { color: "var(--term-blue-text)", fontWeight: 700 }
-                          : undefined
-                      }
-                    >
+                    <span style={{ color: deviationText(r.model - r.baseline), fontWeight: 700 }}>
                       {r.model.toFixed(1)}
                     </span>
                   }
@@ -415,7 +406,7 @@ p < 0.5  →  pick the opponent`}
               numeric: true,
               cell: (r) => (
                 <WithSub
-                  value={<span style={r.winner === "baseline" ? { fontWeight: 700 } : undefined}>{r.baseline.toFixed(1)}</span>}
+                  value={<span style={r.baseline > r.model ? { fontWeight: 700 } : undefined}>{r.baseline.toFixed(1)}</span>}
                   sub={`log loss ${r.baselineLogLoss.toFixed(4)}`}
                 />
               ),
