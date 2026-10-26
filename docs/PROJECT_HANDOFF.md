@@ -225,5 +225,9 @@ Cup 결승은 전적에 제외하고 물리 경기로 포함한다. Hinkle 위�
 전적은 실제 PostgreSQL CTE와 154팀 측 독립 oracle에서 일치했고 CI의 disposable PostgreSQL에도 연결했다.
 Cup 해제는 현재 입력과 저장/공개 tuple 비교로 확인하며, 완전 배정된 실제 시즌 자료는 아직 없어
 해제 경로는 실제 schema에 맞춘 fixture로 검증한다. 현재 실제 DB의 보류·범위 종료는 직접 확인했다.
-전체 unit 1,701개·lint·typecheck·build 통과. 다음 단계: desktop/mobile·200% browser 검증,
+전체 unit 1,714개·lint·typecheck·build 통과. 다음 단계: desktop/mobile·200% browser 검증,
 독립 고정 후보 검토, PR preview·실서비스 확인과 v1.3.0 릴리스. 기존 운영 미해결 항목은 유지한다.
+
+독립 검토의 snapshot 대상 변경·정규 Cup 경기 이동 후 만료 경계 지적을 보완했다. 실제 200%
+글자 확대의 행 겹침도 공유 em 높이와 필요한 위치의 줄바꿈으로 수정했다. 검토 후보는
+`6e2485e3`이며, 기존 Cup 범위 이후에도 현재 입력·tuple과 미해결 연기를 검사한다.
