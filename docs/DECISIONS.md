@@ -2219,3 +2219,21 @@ sentence case를 유지한다. Home Court 표는 6열에서 4열로(5+ 표시 �
 
 Season Report와 Home Court는 commit을 나눴으므로 하나만 되돌릴 수 있다. 수치·모집단·계수는
 바뀌지 않는다.
+
+## D-144 — Method page 표에도 비율·횟수와 better/worse 색 적용 (2026-10-26)
+
+Owner는 graphics review d8(Behind the Data method page의 표 규칙)에서 bench의 추천안 세 개를
+그대로 골랐다 (https://claude.ai/artifact/H9nnDoBxh3qZUs4SoDe6uJ).
+
+1. 횟수: 데이터에 승수가 있는 표만 D-143을 따른다. Rest Advantage의 세 표와 Schedule Edge의
+   market check는 비율 아래에 "W / G"(market check는 overs / team-seasons)를 muted로 쓴다.
+   Playoff와 Time Zones 표는 승수가 없으므로 label 아래 "N series/games"를 유지한다.
+2. 색: 분명한 better/worse 비교에만 D-140 pair를 쓴다. Rest Advantage의 GAP 열(Model Results와
+   같은 방식), Playoff calibration verdict, Playoff round split의 model 수치(home-court 기준보다
+   나으면 green, 못하면 red). 표본이 얇은 행은 색 대신 muted를 유지하고, ValueGrid tile은 blue로 둔다.
+   `deviationText`/`deviationFill`은 server page에서 쓰도록 `src/lib/deviation-color.ts`로 옮겼다.
+3. Referee archive는 발행된 그대로 둔다.
+
+함께 고친 것: Time Zones의 strength edge가 null이면 0 대신 "—"를 쓰고, Playoff record edge는
+`signedNumber`로 부호를 붙이며, Availability method page의 CHANGE 열은 계수가 줄어든 만큼을 음수로
+쓴다(예: −8.8). Product page의 SHIFT 열은 그대로다. 수치·모집단·계수는 바뀌지 않는다.

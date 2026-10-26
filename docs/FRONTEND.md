@@ -118,7 +118,8 @@ Behind the Data method pages (2026-10-21). A `Formula` line is at most 38 charac
 12px Geist Mono fits at 375px; break a long expression across aligned lines instead of letting
 it scroll. `behind-the-data-formula-width.test.ts` renders every method page and enforces it.
 A method table keeps its rate and baseline columns on a phone: no `minWidth`, at most four
-columns, and a row's sample count goes under its label rather than in its own column. An ablation table may keep separate counts when they are the quantities being compared. A list of named
+columns, and a row's sample count goes under its label rather than in its own column. Where the
+data has wins, the count is "W / G" under the rate instead (D-143, D-144). An ablation table may keep separate counts when they are the quantities being compared. A list of named
 inputs with long explanations is a list, not a table. `Subhead` groups a long section and `Term`
 pairs one named term with its formula (`src/components/behind-the-data-parts.tsx`).
 
@@ -274,6 +275,18 @@ A table that pairs a rate with its count writes the rate first and the count as
   says what the dash means, and it appears only when a dash does.
 - Header case follows the table: `DataTable` stays uppercase, and the hand-built Season Report
   and Home Court tables stay in sentence case.
+
+### Method tables (D-144, v1.2.9)
+
+- The Behind the Data tables whose data has wins follow D-143: Rest Advantage's three rest
+  tables and the Schedule Edge market check write the rate with `W / G` (overs / team-seasons)
+  beneath it. Playoff and Time Zones tables have no win counts and keep "N series" or
+  "N games" under the row label.
+- A clear better/worse comparison takes the D-140 pair through `deviationText`
+  (`src/lib/deviation-color.ts`, shared with Model Results): the Rest Advantage gap columns,
+  the Playoff calibration verdict, and the model's round-split accuracy against the
+  home-court rule. A thin sample stays muted rather than coloured. ValueGrid tiles stay blue.
+- `method-table-rules.test.ts` renders the pages and checks both rules.
 
 ### Readable comparisons (D-119, v1.0.2)
 

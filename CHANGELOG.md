@@ -1,5 +1,11 @@
 # Release history
 
+## 1.2.9 — 2026-10-26
+
+- Write rates first with "wins / games" beneath them in the Rest Advantage method tables and the Schedule Edge market check.
+- Colour the clear better/worse comparisons on the method pages green and red: Rest Advantage's gap columns, the Playoff calibration verdict, and the model's accuracy by round against the home-court rule.
+- Show a dash for a missing Time Zones strength edge instead of zero, sign the Playoff record edge, and print the Availability coefficient change as a negative shrink. Figures are unchanged (D-144).
+
 ## 1.2.8 — 2026-10-26
 
 - Take the hand-typed game counts out of the Data and limits page and the 2019-20 Season Report note, describing the exclusions by their dates instead. The Rest Advantage method page now computes the gap between the home and road baselines (19.8 points) instead of saying "twenty". Figures are unchanged.
