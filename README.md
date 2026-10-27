@@ -52,31 +52,32 @@ Selected views remain shareable through URLs and browser history.
 | [Player Shooting by Rest](https://fullcourt.fyi/shooting) | Effective field goal percentage on no rest versus 2–29 days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
 | [Expected Shot Value](https://fullcourt.fyi/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
 | [Availability Cost](https://fullcourt.fyi/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors, with selectable annual readouts. Absences are identified after games, so this is not a lineup forecast. |
-| [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 regular seasons (2014–15 through 2025–26), by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
+| [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 completed regular seasons (2014–15 through 2025–26) and the current season to date, by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
-Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-21 at v1.1.0 (`9c313de8`);
+Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-27 at v1.3.2 (`8419bb8f`);
 [capture details and reproduction](docs/screenshots/README.md). Desktop images show historical
 Games and the current published studies. Phone images use 375px and 402px Chromium viewports.
 Physical iPhone, Safari and VoiceOver behavior remains unverified; live data can change.
 
 <img src="docs/screenshots/games.png" alt="Games board for December 2, 2024: season and date controls above four matchups, two marked MEDIUM REST EDGE and one LARGE REST EDGE." width="900" />
 
-<img src="docs/screenshots/shooting.png" alt="Player shooting table for the latest published season, with rest splits, attempt counts and signed difference cells." width="900" />
+<img src="docs/screenshots/shooting.png" alt="Player shooting table for the 2026-27 season to date, with the rest difference beside each player and eFG% and shots under No rest and 2+ days rest; early-season differences stay grey below 50 shots per rest group." width="900" />
 
 <img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, season context and a link to game reviews." width="900" />
 
 <p>
 <img src="docs/screenshots/games-mobile-375.png" alt="Games at 375px: compact date controls and a complete historical matchup above the bottom navigation." width="250" />
-<img src="docs/screenshots/shooting-mobile-402.png" alt="Shooting at 402px: player search, collapsed advanced filters and the four-column rest comparison." width="268" />
+<img src="docs/screenshots/shooting-mobile-402.png" alt="Shooting at 402px: player search, collapsed advanced filters, the rest difference color key and the top of the table with the rest difference beside the player." width="268" />
 <img src="docs/screenshots/schedule-mobile-402.png" alt="Schedule Edge at 402px: season controls, summary and team ranking before detailed status." width="268" />
 </p>
 
-On phones, Games puts matchups earlier, Schedule Edge leads with rankings, and Shooting keeps
-its two rest splits and difference together in four columns. Home Court links graph selection
-to the season readout, chart selections offer an explicit game-browsing action, and Expected
-Shot Value compares models on one court while keeping the selected location.
+On phones, Games puts matchups earlier, Schedule Edge leads with rankings, and Shooting puts
+the rest difference beside each player, with eFG% and shots under each rest group and player
+names pinned while the table scrolls. Home Court links graph selection to the season readout,
+chart selections offer an explicit game-browsing action, and Expected Shot Value compares
+models on one court while keeping the selected location.
 
 ## How the fatigue score works
 

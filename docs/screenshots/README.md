@@ -1,8 +1,8 @@
 # Product screenshots
 
-Captured on 2026-10-21 from https://fullcourt.fyi after the v1.1.0 production alias was
-verified at commit `9c313de8f6e42ae3f7e89307b15a08225415339e`, Ready deployment
-`dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc`. [manifest.json](manifest.json) records each URL,
+Captured on 2026-10-27 from https://fullcourt.fyi after the v1.3.2 production alias was
+verified at commit `8419bb8f8a62f06206255119f802103a1288cc68`, Ready deployment
+`dpl_DxhVk7bmFU6YapGjtCxmRuMAPJQi`. [manifest.json](manifest.json) records each URL,
 viewport, timestamp and page width. These are real rendered pages with live APIs, without
 fixture substitution or image retouching. Data and default published seasons can change.
 
@@ -18,8 +18,9 @@ fixture substitution or image retouching. Data and default published seasons can
 [Social preview](../social-preview.png) was fetched from the live `/opengraph-image` endpoint
 on the same date and visually checked; its bytes already matched the tracked preview.
 
-The phone captures demonstrate the compact reading order, four-column shooting comparison
-and early schedule ranking. They use Chromium at device scale 1 with reduced motion.
+The phone captures demonstrate the compact reading order, the shooting table with the rest
+difference beside each player, and early schedule ranking. They use Chromium at device
+scale 1 with reduced motion.
 The generator waits for populated content and loaded fonts, and rejects page-wide horizontal
 overflow. Desktop images end after a representative content row; phone images retain the
 viewport and bottom navigation. Physical iPhone/Safari/VoiceOver behavior is unverified.
@@ -32,8 +33,8 @@ values and does not query Vercel itself.
 
 ```sh
 SCREENSHOT_BASE_URL=https://fullcourt.fyi \
-SCREENSHOT_DEPLOYMENT_SHA=9c313de8f6e42ae3f7e89307b15a08225415339e \
-SCREENSHOT_DEPLOYMENT_ID=dpl_7APuWsqku5cEFWRKdPfRnYgFh9Gc \
+SCREENSHOT_DEPLOYMENT_SHA=8419bb8f8a62f06206255119f802103a1288cc68 \
+SCREENSHOT_DEPLOYMENT_ID=dpl_DxhVk7bmFU6YapGjtCxmRuMAPJQi \
 node scripts/screenshots.mjs
 ```
 
