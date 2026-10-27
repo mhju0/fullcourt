@@ -58,18 +58,18 @@ Selected views remain shareable through URLs and browser history.
 
 Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-27 at v1.3.2 (`8419bb8f`);
 [capture details and reproduction](docs/screenshots/README.md). Desktop images show historical
-Games and the current published studies. Phone images use 375px and 402px Chromium viewports.
+Games, the completed 2025-26 Shooting season and current Officiating. Phone images use 375px and 402px Chromium viewports.
 Physical iPhone, Safari and VoiceOver behavior remains unverified; live data can change.
 
 <img src="docs/screenshots/games.png" alt="Games board for December 2, 2024: season and date controls above four matchups, two marked MEDIUM REST EDGE and one LARGE REST EDGE." width="900" />
 
-<img src="docs/screenshots/shooting.png" alt="Player shooting table for the 2026-27 season to date, with the rest difference beside each player and eFG% and shots under No rest and 2+ days rest; early-season differences stay grey below 50 shots per rest group." width="900" />
+<img src="docs/screenshots/shooting.png" alt="Player shooting table for the completed 2025-26 season, with the rest difference beside each player and eFG% and shots under No rest and 2+ days rest; differences stay grey within 1 point or below 50 shots per rest group." width="900" />
 
 <img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, season context and a link to game reviews." width="900" />
 
 <p>
 <img src="docs/screenshots/games-mobile-375.png" alt="Games at 375px: compact date controls and a complete historical matchup above the bottom navigation." width="250" />
-<img src="docs/screenshots/shooting-mobile-402.png" alt="Shooting at 402px: player search, collapsed advanced filters, the rest difference color key and the top of the table with the rest difference beside the player." width="268" />
+<img src="docs/screenshots/shooting-mobile-402.png" alt="Shooting at 402px for 2025-26: season picker, player search, collapsed advanced filters, the rest difference color key and the first table rows with the rest difference beside each player." width="268" />
 <img src="docs/screenshots/schedule-mobile-402.png" alt="Schedule Edge at 402px: season controls, summary and team ranking before detailed status." width="268" />
 </p>
 
