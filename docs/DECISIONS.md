@@ -421,12 +421,12 @@ commit is almost always this step.**
 
 ### D-48 · Clean-slate Codex takeover — **ACTIVE**
 **Approved 2026-09-05.** The evidence hierarchy is current source/tests → current Git
-state/history → this ledger → ROADMAP.md → PROJECT_HANDOFF.md → historical Claude material
+state/history → this ledger → ROADMAP.md → historical Claude material
 when additional context is needed. Formal ADRs retain detailed rationale, interpreted against
 current source, tests and Git evidence.
 
-Track a minimal root `AGENTS.md` and the handoff documents. `CLAUDE.md` is historical evidence;
-`docs/archive/CLAUDE_ENV_INVENTORY.md` is an archive. Do not inherit or migrate Claude global instructions,
+Track a minimal root `AGENTS.md`. `CLAUDE.md` is historical evidence; the former Claude
+environment inventory is an archive. Do not inherit or migrate Claude global instructions,
 skills, MCP servers, hooks, subagents or preferences without an explicit owner request. The
 reviewer-only commit `51588c4` is abandoned; takeover work starts from `origin/main` on a fresh
 branch, preserving the local documentation.
@@ -434,13 +434,16 @@ branch, preserving the local documentation.
 Prefer native model capabilities. Only repeated, demonstrated limitations justify proposing
 persistent configuration: AGENTS.md for a project-wide instruction, a skill for a reusable
 specialized workflow, MCP for an external connection, or Codex config for client/runtime
-settings. Update this ledger for significant decisions or reversals, ROADMAP.md for material
-roadmap changes, and PROJECT_HANDOFF.md for material high-level state/architecture changes;
-routine implementation details do not belong in these documents.
+settings. Update this ledger for significant decisions or reversals and ROADMAP.md for material
+roadmap changes; routine implementation details do not belong in these documents.
 *Evidence:* owner's takeover approval, 2026-09-05.
 
 **Completed 2026-09-05:** pre-existing local skill ports and the reviewer configuration were
 archived outside agent discovery; no replacement harness was installed.
+
+**Amended 2026-10-28 (owner decision):** the tracked handoff (`docs/` project handoff) and the
+Claude environment inventory moved to the private, git-ignored `.memory/` folder shared by both
+agents; the evidence order and update list above no longer name the handoff. See AGENTS.md.
 
 ### D-49 · Existing playoff grind contracts run in CI — **ACTIVE**
 **Approved 2026-09-05.** Retain `ml/tests/test_compute_prior_grind.py` and run it in a separate

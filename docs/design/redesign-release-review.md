@@ -28,7 +28,7 @@ when a validated branch cannot become a PR. No repository-wide permission was br
 
 Release gates: project lint/typecheck/unit/build/audit, Python contracts, desktop/mobile browser
 coverage, focused history/loading/error checks, screenshots, hosted preview verification, and
-post-merge production checks. Results are recorded in PROJECT_HANDOFF and the release PR.
+post-merge production checks. Results are recorded in the release PR.
 Physical-device and human screen-reader testing are not claimed by browser automation.
 
 

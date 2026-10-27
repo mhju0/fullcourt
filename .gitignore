@@ -71,3 +71,7 @@ __pycache__/
 
 # Local-only work kept inside the repo folder: worktrees, archives, scratch (AGENTS.md)
 /.local/
+
+# Private agent memory and write locks shared by Claude and Codex (never commit)
+.memory/
+.locks/

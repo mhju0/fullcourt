@@ -8,7 +8,7 @@ Start with the topic you need; do not use old release notes as setup instruction
 | Question | Source of truth |
 | --- | --- |
 | What does FullCourt do? | [Repository README](../README.md) |
-| What is deployed, and what needs attention? | [Project handoff](PROJECT_HANDOFF.md) |
+| What is deployed, and what needs attention? | [Roadmap](ROADMAP.md), [release history](../CHANGELOG.md) |
 | What work is actually planned? | [Roadmap](ROADMAP.md) |
 | How is the application structured? | [Architecture](ARCHITECTURE.md) |
 | How do pages, controls, and motion work? | [Frontend](FRONTEND.md) |
