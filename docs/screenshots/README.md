@@ -5,14 +5,17 @@ verified at commit `8419bb8f8a62f06206255119f802103a1288cc68`, Ready deployment
 `dpl_DxhVk7bmFU6YapGjtCxmRuMAPJQi`. [manifest.json](manifest.json) records each URL,
 viewport, timestamp and page width. These are real rendered pages with live APIs, without
 fixture substitution or image retouching. Data and default published seasons can change.
+The two Shooting images were recaptured the same day at the completed 2025-26 season
+(`?year=2025`) from deployment `dpl_7AAkjSBHZkFLc76iQwj1QhrBpWCx` (commit `0ce35fe2`, a
+docs-only change over `8419bb8f`); the phone view starts at the season picker.
 
 | Image | View |
 | --- | --- |
 | [games.png](games.png) | Desktop historical Games, 2024-12-02 |
-| [shooting.png](shooting.png) | Desktop Shooting, latest published default |
+| [shooting.png](shooting.png) | Desktop Shooting, 2025-26 season |
 | [officiating.png](officiating.png) | Desktop Officiating overview and reviews |
 | [games-mobile-375.png](games-mobile-375.png) | Games at 375 × 812 CSS pixels |
-| [shooting-mobile-402.png](shooting-mobile-402.png) | Shooting at 402 × 874 CSS pixels |
+| [shooting-mobile-402.png](shooting-mobile-402.png) | Shooting at 402 × 874 CSS pixels, 2025-26, scrolled to the season picker |
 | [schedule-mobile-402.png](schedule-mobile-402.png) | Schedule Edge at 402 × 874 CSS pixels |
 
 [Social preview](../social-preview.png) was fetched from the live `/opengraph-image` endpoint
