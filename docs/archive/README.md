@@ -1,11 +1,10 @@
 # Historical records
 
-These documents preserve original rationale, study protocols, and the pre-takeover harness
-inventory. They are not current setup instructions or open task lists.
+These documents preserve original rationale and study protocols. They are not current setup
+instructions or open task lists.
 
 - [Playoff model design](PLAYOFF_PREDICTOR_DESIGN.md): original feature and evaluation decisions.
 - [Shot Value design](SHOT_QUALITY_DESIGN.md): original storage/model alternatives and actual-build comparison.
-- [Claude environment inventory](CLAUDE_ENV_INVENTORY.md): historical harness audit; not inherited configuration.
 
 Current behavior: [documentation index](../README.md). Scientific evidence remains in `ml/`,
 `docs/research/`, and `docs/adr/` beside the producing scripts and invariant records.

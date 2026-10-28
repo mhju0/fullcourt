@@ -1,6 +1,6 @@
 # FullCourt
 
-Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md → docs/PROJECT_HANDOFF.md → historical Claude material. Record significant decisions in DECISIONS.md, material roadmap changes in ROADMAP.md, and high-level state/architecture changes in PROJECT_HANDOFF.md. Claude harness configuration is not inherited; migration requires an explicit request.
+Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md → historical Claude material. Record significant decisions in DECISIONS.md and material roadmap changes in ROADMAP.md. Claude harness configuration is not inherited; migration requires an explicit request.
 
 - From the repository root: `pnpm install --frozen-lockfile`, `pnpm dev`, `pnpm build`, `pnpm start`. CI uses Node 22 and Python 3.11; pnpm is pinned in package.json. Root dependency additions require `pnpm add -w`.
 - Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build`, `pnpm audit --prod`. CI also runs Python contracts in scripts/tests and ml/tests; commands and dependencies are in docs/TESTING_AND_CICD.md.
@@ -22,12 +22,12 @@ production release, bump package.json, add a dated CHANGELOG.md entry, and creat
 matching immutable version tag and GitHub release after verification. See CHANGELOG.md
 for patch/minor/major conventions. Do not move published release tags.
 
-## Agent handoff
+## Agent memory and handoff
 
-- At session start, read `docs/PROJECT_HANDOFF.md`.
-- Before ending a session where you made decisions, changed architecture, or left work unfinished, append a dated entry: what changed, decisions and why, open issues, next step. Keep it brief and append-only.
-- When the file exceeds ~200 lines, condense the oldest entries into a short dated summary. Never delete unresolved open issues.
-- Durable rules belong in AGENTS.md, not in the handoff file.
+- At session start, read `.memory/README.md` (private, git-ignored).
+- Before ending a session that changed something or left work unfinished, update `.memory/handoff.md`.
+- Product and engineering decisions go in docs/DECISIONS.md and docs/adr/; the owner's preferences about agent work go in `.memory/decisions.md`.
+- Durable repository rules belong in AGENTS.md, not in `.memory/`.
 
 <!-- antislop:start -->
 ## antislop

@@ -52,7 +52,7 @@ physical-device/human checks, future Cup assignments and unobserved travel remai
 Secret alert #1 remains open: current metadata is redacted; revocation/history purge is unknown.
 v1.0.9 (PR #190, `c5e504e`) released the research-cleanup guards: arena and TypeScript
 configuration provenance, readonly-clone byte parity and preserved old receipts. It changed
-no published figure; its closeout is in PROJECT_HANDOFF.md.
+no published figure; its closeout is in CHANGELOG.md.
 
 ## Maintenance
 
