@@ -420,13 +420,14 @@ commit is almost always this step.**
 ---
 
 ### D-48 · Clean-slate Codex takeover — **ACTIVE**
+*Partly superseded by D-147 (handoff and Claude environment inventory).*
 **Approved 2026-09-05.** The evidence hierarchy is current source/tests → current Git
-state/history → this ledger → ROADMAP.md → historical Claude material
+state/history → this ledger → ROADMAP.md → PROJECT_HANDOFF.md → historical Claude material
 when additional context is needed. Formal ADRs retain detailed rationale, interpreted against
 current source, tests and Git evidence.
 
-Track a minimal root `AGENTS.md`. `CLAUDE.md` is historical evidence; the former Claude
-environment inventory is an archive. Do not inherit or migrate Claude global instructions,
+Track a minimal root `AGENTS.md` and the handoff documents. `CLAUDE.md` is historical evidence;
+`docs/archive/CLAUDE_ENV_INVENTORY.md` is an archive. Do not inherit or migrate Claude global instructions,
 skills, MCP servers, hooks, subagents or preferences without an explicit owner request. The
 reviewer-only commit `51588c4` is abandoned; takeover work starts from `origin/main` on a fresh
 branch, preserving the local documentation.
@@ -434,16 +435,13 @@ branch, preserving the local documentation.
 Prefer native model capabilities. Only repeated, demonstrated limitations justify proposing
 persistent configuration: AGENTS.md for a project-wide instruction, a skill for a reusable
 specialized workflow, MCP for an external connection, or Codex config for client/runtime
-settings. Update this ledger for significant decisions or reversals and ROADMAP.md for material
-roadmap changes; routine implementation details do not belong in these documents.
+settings. Update this ledger for significant decisions or reversals, ROADMAP.md for material
+roadmap changes, and PROJECT_HANDOFF.md for material high-level state/architecture changes;
+routine implementation details do not belong in these documents.
 *Evidence:* owner's takeover approval, 2026-09-05.
 
 **Completed 2026-09-05:** pre-existing local skill ports and the reviewer configuration were
 archived outside agent discovery; no replacement harness was installed.
-
-**Amended 2026-10-28 (owner decision):** the tracked handoff (`docs/` project handoff) and the
-Claude environment inventory moved to the private, git-ignored `.memory/` folder shared by both
-agents; the evidence order and update list above no longer name the handoff. See AGENTS.md.
 
 ### D-49 · Existing playoff grind contracts run in CI — **ACTIVE**
 **Approved 2026-09-05.** Retain `ml/tests/test_compute_prior_grind.py` and run it in a separate
@@ -2285,3 +2283,10 @@ Cup 기간 중에는 첫 가능한 직전 Cup 경기 다음 날인 12월 5일부
 [Visit Indy 경기장 정보](https://www.visitindy.com/directory/hinkle-fieldhouse-at-butler-university/)의
 39.84349, -86.167705를 사용하고 ESPN venue 2032와 대조했다. 이 좌표는 해당 결승 날짜의
 Indianapolis에만 적용해 다른 시대·경기장으로 퍼지지 않게 한다. schema 변경·운영 DB 쓰기는 없다.
+
+## D-147 — Agent handoff는 비공개 `.memory/`로 이동 (2026-10-28)
+
+Owner가 모든 저장소의 에이전트 메모리를 git에서 제외된 `.memory/`로 통일하기로 결정했다.
+`docs/PROJECT_HANDOFF.md`와 `docs/archive/CLAUDE_ENV_INVENTORY.md`는 저장소에서 빠지고,
+현재 상태와 다음 단계는 `.memory/handoff.md`가 맡는다. D-48의 증거 순서와 갱신 목록에서
+handoff를 뺀다. 이 ledger, ADR, ROADMAP.md는 그대로 공개 기록으로 남는다.
