@@ -6,14 +6,21 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 - Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build`, `pnpm audit --prod`. CI also runs Python contracts in scripts/tests and ml/tests; commands and dependencies are in docs/TESTING_AND_CICD.md.
 - Verification budget, to keep a task to minutes on the owner's Mac: while working, run `pnpm typecheck`, ESLint on changed files, and the Vitest files that cover the change; run the full `pnpm test:run` (about 20s, capped at half the cores) once before committing. For e2e, run only the specs that cover the changed route or copy, against one `pnpm build && pnpm start` server reused across runs; rebuild only after code changes. Rerun failures alone before investigating them. The full e2e suite, `audit:alignment`, multi-width sweeps and other site-wide scans run only when the owner asks or before a release. Search inside the repository, never the whole disk. Stop the server you started when the task ends.
 - Everything local stays inside this folder; never create folders beside it in the parent Projects directory. Worktrees go in `.local/worktrees/<name>`, archives and backups in `.local/archive/`, other scratch in `.local/`. `.local/` is gitignored and excluded from TypeScript and ESLint. Never run `git clean -x` (or `-X`) here: it deletes ignored files, including the archive.
-- `pnpm test:e2e` starts its own server and needs a populated database. Set PLAYWRIGHT_PORT for another port, or PLAYWRIGHT_BASE_URL to test an existing server. It is not run in CI.
+- `pnpm test:e2e` starts its own server and needs a populated database. Set PLAYWRIGHT_PORT for another port, or PLAYWRIGHT_BASE_URL to test an existing server. CI runs only the bounded smoke gate (`playwright.smoke.config.ts`, API fixtures); the full database-backed suite is a release check.
 - Merging to `main` deploys directly to Vercel production; verify the PR preview before merging.
 - Environment: .env.example. Database pages need DATABASE_URL and populated data. Python requirements: requirements.txt for local pipelines, scripts/requirements.txt for manual pipeline tools (the scheduled daily workflow installs nothing), ml/requirements.txt for modeling.
-- src/lib/db/schema.ts is deliberately incomplete: shot_grid and shot_value_surface are queried with raw SQL. drizzle/ contains manual SQL records, not an automatic bootstrap. Do not run drizzle-kit push/generate or reconcile the database to the ORM schema. Prepare schema changes as SQL for the owner to apply manually.
-- src/lib/fatigue.ts contains ratified coefficients. Coefficient changes require an explicit owner decision; preserve the evaluation protocol in docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md, including its amendments.
-- Game dates are America/New_York calendar dates; use formatEasternDateKey(). Published regular-season game reads use publishableGames() in queries.ts. The headline counts isCalledSide() games (rested home team), keeps rested visitors separate, and compares rates with venue baselines.
+- src/lib/db/schema.ts is deliberately incomplete: shot_grid and shot_value_surface are queried with raw SQL. drizzle/ contains manual SQL records, not an automatic bootstrap. Do not run drizzle-kit push/generate or reconcile the database to the ORM schema. Prepare schema changes as SQL for the owner to apply in the Supabase SQL editor; never apply it yourself or assume it was applied. Python has no Alembic.
+- src/lib/fatigue.ts contains ratified coefficients. Coefficient changes require an explicit owner decision (tuning them against the backtest would make it circular); structural changes to its interface go through an ADR. Before proposing a refit or a new factor, read docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md, including its amendments, and use its three-step harness, never a database recompute: `scripts/export_fatigue_features.ts` → `ml/prepare_fatigue_dataset.py` → `ml/fit_fatigue_weights.py`. Skipping `prepare` raises `StaleFatigueArtifact` (`ml/fatigue_artifacts.py`).
+- Game dates are America/New_York calendar dates; use formatEasternDateKey(), never the viewer's date or server UTC. Published game reads go through publishableGames() in queries.ts (regular season plus the regime filter); never hand-write either predicate. Ingest records every season; each module decides what it reads (ADR 0004).
+- The headline counts isCalledSide() games (rested home team), keeps rested visitors as their own row, and reads every rate against a venue baseline (`AnalysisResponse.venueBaseline`, per season on the season chart), never a 50% line. The retired claims about rest never outweighing home court stay retired; `src/lib/rest-split-facts.ts` holds what replaced them.
 - FullCourt is the product; rest advantage is the metric. Preserve rest-advantage identifiers when changing branding.
 - Generated analytics artifacts in src/data/, public/data/, and the model-facts files must stay aligned with their producing scripts and pinning tests; do not hand-edit published figures. shadcn is a build dependency: globals.css imports shadcn/tailwind.css.
+- Shared helpers, never hand-rolled: season labels `src/lib/nba-season.ts`; signed numbers `signedNumber()`; failure cards `MessageCard` with `errMsg`.
+- Officiating is published at `/officiating` (`/referees` redirects, D-60). Publishing or unpublishing a route is a deliberate product act, never a side effect of a docs change. Quote a per-official figure only beside what chance produces at the same bar, with the caveat that three officials share every game.
+- New analytics modules are additive, isolated slices: their own scripts, tables, routes and page.
+- The app is light-only; `/` is the one dark surface, scoped with `fc-chrome-front`. Read docs/FRONTEND.md before any theme change.
+- Python: new code logs with `logging`; HTTP uses stdlib `urllib`; `httpx` is not a dependency. Run pipeline scripts from the repository root.
+- Docs: start at docs/README.md. A new page starts from docs/ADDING_A_SURFACE.md; a UI/UX pass starts from the open rows of docs/UIUX_CHECKLIST.md and flips its row in the same commit; domain terms in docs/GLOSSARY.md. `docs/agents/` and `docs/audit/` are local and gitignored.
 
 ## Release versioning
 
@@ -41,185 +48,6 @@ For UI, copy, accessibility, mobile layout, or code comments work, read `anti-sl
 
 Use `docs/design/BRAND_GRAMMAR.md` for existing design direction. Before UI work, ask whether antislop applies during the work or as an audit afterward, unless the session already establishes the mode. Explicit user instructions and existing owner decisions take precedence over skill defaults.
 <!-- antislop:end -->
-
-# FullCourt — historical Claude project brief
-
-> Historical harness material. The active repository contract is [AGENTS.md](AGENTS.md);
-> current implementation guidance starts at [docs/README.md](docs/README.md).
-> This retained brief is not an up-to-date product inventory. Harness migration is separate work.
-
-Versions, counts, model figures, and env vars have a source of truth in the code and are kept
-out of this file. Trust the code over this file, and fix this file when they disagree.
-
-## What this is
-
-FullCourt models how NBA **travel, rest, and schedule density** affect game outcomes. Each team
-in a matchup gets a **fatigue score**; the differential is the **rest advantage**; the backtest
-asks whether the more-rested team actually won — counting only the games where that team is also
-at home (`isCalledSide`, `src/lib/rest-advantage-evidence.ts`, since 2026-08-02). The games where
-the rested team is the visitor are counted as their own row and published in full, never pooled
-into the headline.
-
-**Every published rate is read against a venue baseline, not against a coin flip** (since
-2026-08-06). Home teams win ~59.9% of all games regardless of rest, so a headline of 61.2%
-plotted against 50% credited the model with roughly ten points of home court it did not produce.
-`AnalysisResponse.venueBaseline` carries it, and the season chart uses each season's own, because
-home court ran from 67.9% in 1987-88 to 54.3% in 2023-24. Do not reintroduce a 50% zero line.
-
-Two claims the site used to publish were measured and retired on 2026-08-06 — *"rest alone never
-outweighs home court at any magnitude"* and *"no threshold rescues it"*. Both were absolutes
-resting on a pooled 41-season rate. Do not restate either; `src/lib/rest-split-facts.ts` and its
-test hold what replaced them.
-
-- Live: https://fullcourt.fyi · Repo: https://github.com/mhju0/fullcourt
-- Headline figures are computed live from the database and rendered on the site. Do not hand-type
-  one into prose — see the pinning rules below.
-
-## Module status
-
-**Every product route is published.** The referee module was the last one held back and went
-live on 2026-08-22 (D-33). Since D-60 it is published as `/officiating`; `/referees` redirects
-there and the earlier studies live at `/behind-the-data/referees/archive`. Status and phase
-history live in committed docs, not here:
-
-- [docs/ROADMAP.md](docs/ROADMAP.md) — project status, shipped modules, ongoing operational work
-- [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/archive/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
-  and build record, the single source of truth for that module
-- [docs/SHOT_QUALITY_DESIGN.md](docs/archive/SHOT_QUALITY_DESIGN.md) — Shot Quality, SQ-0 … SQ-7
-- [docs/adr/](docs/adr/) — the accepted decisions. Read the relevant one before reopening a
-  question it already settled.
-
-New analytics modules are built as **additive, isolated slices** — their own scripts, tables,
-routes and page — so they never destabilize the rest-advantage flow.
-
-## Brand vs. metric
-
-"FullCourt" is the product. "Rest advantage" is a **metric**: `restAdvantage`,
-`restAdvantageDifferential`, `rest_advantage_differential`, `RestAdvCell`,
-`formatRestAdvantageDisplay`, and the `REST ADVANTAGE` / `RA` UI labels. Never rename the metric
-while touching branding.
-
-## Hard bans
-
-- **Officiating is published.** `/officiating` is the live surface and `/referees` redirects to
-  it (D-60); never restore an in-progress card. Publishing or unpublishing a route is a deliberate product act,
-  never a side effect of a docs change — if a stale doc says otherwise, the doc is wrong. Its
-  guarantees are enforced by `referee-legends.test.ts` and `referee-timing.test.ts`. Quote a
-  per-official figure only beside the count chance produces at the same bar, and keep the caveat
-  that three officials work every game and the data credits all three, so a per-official figure
-  cannot isolate one official's effect.
-- **Never rename rest-advantage identifiers.** See above.
-- **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
-  live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
-  purpose. Never reconcile it.
-- **All schema changes are manual SQL applied by the human** in the Supabase SQL editor. Write
-  the SQL, hand it over, and wait — never apply it yourself and never assume it was applied.
-- **Python:** no Alembic. New code uses `logging`, not `print()` — every `ml/` script and the
-  newer `scripts/sq*` / `aggregate_*` already do; the pipeline scripts (`daily_update.py`,
-  `fetch_schedule.py`) still print to the Actions log and are left alone. HTTP goes through stdlib
-  `urllib`; `requests` is present only because `nba_api` and `fetch_schedule.py` use it. **Do not
-  add `httpx`** — it is not a dependency of this repo.
-
-`src/lib/fatigue.ts` holds **ratified coefficients**. Never change a constant or a scoring term
-without escalating: those numbers were hand-set and ratified before the backtest ran, so tuning
-them against it would make the result circular. The file's *interface* is not frozen — ADR 0005
-reshaped it deliberately. Structural changes go through an ADR; number changes go through Michael.
-
-One coefficient has moved, and it is the precedent rather than a loophole: `ALTITUDE_MULTIPLIER`
-was raised 1.15 → 1.29 on 2026-08-02 — the first ratified constant changed on measured evidence,
-approved by Michael, reasoned in the constant's own docblock (`src/lib/fatigue.ts`) and in ADR
-0006. It was fitted against **final margin**, not against the win rates the site publishes, which
-is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it, and
-was removed on 2026-10-17 (ADR 0006 amendment, D-100) after measuring no effect.
-
-The ban was suspended once, deliberately, to find out whether fitted weights would beat the
-ratified ones. They do not, by enough to matter — and most of the model's terms turn out to
-carry no signal at all. Read [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
-before proposing either a refit or a new factor; it says what was already tried and measured.
-Use the harness to answer questions of this shape — never a database recompute. It is **three**
-steps and the middle one is not optional:
-
-```
-scripts/export_fatigue_features.ts   →  ml/data/fatigue_features.csv
-ml/prepare_fatigue_dataset.py        →  ml/data/fatigue_model_table.csv
-ml/fit_fatigue_weights.py            →  reads fatigue_model_table.csv
-```
-
-Skipping `prepare` is refused: since v1.0.9 the fit, ablation, time-zone and Availability scripts
-check provenance through `ml/fatigue_artifacts.py` and raise `StaleFatigueArtifact` when the table
-on disk does not match the current export. Before that guard, a stale table from an earlier run
-was read without warning and produced numbers that looked valid.
-
-## Domain rules that are easy to get wrong
-
-- **Publishing a game row?** Go through `publishableGames()` (`src/lib/db/queries.ts`), which folds
-  in `game_type = 'regular'` **and** the abnormal-stretch regime filter. Never hand-write either
-  predicate — that is exactly how four readers quietly lost the regime filter, and
-  `publishable-games.test.ts` now fails if a second copy appears.
-- **Ingest records what was played.** 2019-20 is in `NBA_SEASONS`; each module decides what it may
-  read. See [ADR 0004](docs/adr/0004-season-exclusions-belong-to-modules-not-ingest.md).
-- **Dates are US/Eastern everywhere.** `games.date` is the ET calendar date of tip-off. App-side
-  "today" uses `formatEasternDateKey()` — never the viewer's local date, never server UTC.
-- **Never hardcode a derived season label.** Use the helpers in `src/lib/nba-season.ts`.
-- **Never hand-roll a signed number.** `signedNumber()` (`src/lib/signed-number.ts`) — U+2212, bare
-  zero, units at the call site.
-- **Never hand-roll a failure card.** `MessageCard` (`src/components/ui/message-card.tsx`) carries
-  `role="alert"` on the error tone; normalize the thrown value with `errMsg` (`src/lib/fetcher.ts`).
-- **Published figures are pinned to generated artifacts, never typed into prose.** A number that
-  cannot be pinned should be rewritten so it cannot age (`"every season since 1985-86"`, not a
-  count).
-- **The app is light-only** ("Broadcast"). It went light → dark → light once; do not reintroduce a
-  dark token set without reading [docs/FRONTEND.md](docs/FRONTEND.md). `/` (the front door)
-  is the one deliberately dark surface and is scoped to itself; since
-  2026-08-28 the header joins that dark on `/` only, via the scoped `fc-chrome-front` class,
-  never a global re-theme.
-
-## Dev environment
-
-- **Verification commands.** `pnpm test:run` (Vitest), `pnpm typecheck`
-  (`tsc --noEmit --incremental false`), `pnpm lint` (ESLint), `pnpm build` (Next). Those four are
-  the commit gate. E2E is `pnpm test:e2e` and is deliberately not part of it — see the Playwright
-  note below.
-- **pnpm is the package manager.** `pnpm-workspace.yaml` exists, so the repo root is a workspace
-  root: adding a root dependency needs `pnpm add -w <pkg>`, or pnpm refuses.
-- **Always run pipeline scripts from the project root.** `daily_update.py` and the backfills
-  resolve the repo root relative to the file, and the `tsx` scripts rely on the `@/*` alias.
-- **Python: three requirements files, and they are not interchangeable.** Activate a virtualenv,
-  then `requirements.txt` (root, pinned) or `scripts/requirements.txt` (loose; what the
-  **manual pipeline** tools use — normal daily execution is stdlib-only; CI installs
-  constrained psycopg2-binary for ML contracts). The `ml/` harness needs its own stack: `pip install -r ml/requirements.txt`
-  (scipy + scikit-learn), deliberately isolated from the pipeline pins. Running the fatigue
-  harness without it is an `ImportError`.
-- Env vars are documented with descriptions in the committed `.env.example`.
-- The bounded Playwright smoke gate runs in CI against a built app and deterministic API fixtures.
-  The full database-backed E2E suite remains a separate release check.
-
-## Documentation index
-
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — end-to-end data flow, module map, dated decisions
-- [docs/DATABASE.md](docs/DATABASE.md) — tables, indexes, RLS policies, Data API grants
-- [docs/DATA_PIPELINE.md](docs/DATA_PIPELINE.md) — every script + the full fatigue-model math
-- [docs/API.md](docs/API.md) — every route: params, response shape, DB reads
-- [docs/FRONTEND.md](docs/FRONTEND.md) — pages, components, the `--term-*` design system
-- [docs/design/BRAND_GRAMMAR.md](docs/design/BRAND_GRAMMAR.md) — the brand grammar: premise,
-  naming, mark, voice laws, and the 2026-08-09 direction record (absorbed `design/README.md`).
-  The one place brand/design *direction* lives; FRONTEND.md stays the implementation law
-- [docs/ADDING_A_SURFACE.md](docs/ADDING_A_SURFACE.md) — the contract a new page or tab has to
-  satisfy, with the test that enforces each rule named beside it. **Start here for a new page**;
-  FRONTEND.md says why the rules are what they are
-- [docs/UIUX_CHECKLIST.md](docs/UIUX_CHECKLIST.md) — conventions measured against major US/KR
-  sports properties: adopted, open, and refused-with-reasons. A UI/UX pass starts from its
-  open rows, and an adoption PR flips its row in the same commit
-- [docs/TESTING_AND_CICD.md](docs/TESTING_AND_CICD.md) — Vitest/Playwright, CI, data workflow
-- [docs/GLOSSARY.md](docs/GLOSSARY.md) — domain language and the nav-label rationale
-- [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) — rollover runbook and data-source matrix
-- [docs/LAUNCH_DAY.md](docs/LAUNCH_DAY.md) — the first live slate (2026-10-20): the two writers
-  and their hours, what a good in-season run looks like line by line, the three greens that are
-  not green, and which probe row to believe about ESPN
-
-Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone:
-`docs/agents/` holds the local skill configuration referenced below, and `docs/audit/` holds
-local audit output. The skill configuration can be edited directly in this checkout.
 
 ## Agent skills
 
