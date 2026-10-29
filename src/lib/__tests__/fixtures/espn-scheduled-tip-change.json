@@ -1,0 +1,17 @@
+{
+  "sourceUrl": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261029",
+  "retrievedAt": "2026-10-29T16:37:47Z",
+  "events": [{
+    "id": "401909893",
+    "date": "2026-10-30T00:00Z",
+    "competitions": [{
+      "date": "2026-10-30T00:00Z",
+      "timeValid": true,
+      "status": { "type": { "state": "pre", "completed": false, "name": "STATUS_SCHEDULED" } },
+      "competitors": [
+        { "homeAway": "home", "team": { "abbreviation": "ATL" } },
+        { "homeAway": "away", "team": { "abbreviation": "CLE" } }
+      ]
+    }]
+  }]
+}

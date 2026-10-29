@@ -26,10 +26,11 @@ import { isHeldGame, type GameStatus } from "@/lib/game-status";
 export type EspnGameStatus = GameStatus | "unknown";
 
 export type EspnScoreboardGame = {
-  /** ESPN event id. Carried for reporting only — never matched on. */
+  /** Scores match on pairing; scheduled tip changes additionally verify this event identity. */
   eventId: string;
   /** Provider fixture date, when supplied; never use a moved event for the original date. */
   date?: string;
+  tipOffUtc?: string;
   awayAbbr: string;
   homeAbbr: string;
   status: EspnGameStatus;
@@ -44,6 +45,8 @@ export type EspnScoreboardGame = {
 
 export type StoredGameRow = {
   id: number;
+  externalId?: string;
+  tipOffUtc?: Date | string | null;
   homeAbbr: string;
   awayAbbr: string;
   status: string;
@@ -65,6 +68,7 @@ export type ScoreUpdate = {
    * a third-party hiccup drop the overtime term from that night's fatigue.
    */
   overtimePeriods: number | null;
+  scheduledTip?: { expectedExternalId: string; expectedTipOffUtc: string; tipOffUtc: string };
 };
 
 export type ScoreReconciliation = {
@@ -171,6 +175,7 @@ function parseEvent(ev: any): EspnScoreboardGame | null {
   const instant = new Date(comp?.date ?? ev?.date);
   return {
     ...(Number.isFinite(instant.getTime()) ? {date: formatEasternDateKey(instant)} : {}),
+    ...(comp?.timeValid === true && Number.isFinite(instant.getTime()) ? { tipOffUtc: instant.toISOString() } : {}),
     eventId: String(ev?.id ?? ""),
     awayAbbr,
     homeAbbr,
@@ -205,7 +210,8 @@ function parseScore(raw: unknown, status: EspnGameStatus): number | null {
 export function reconcileScores(
   stored: readonly StoredGameRow[],
   espnGames: readonly EspnScoreboardGame[],
-  dateKey?: string
+  dateKey?: string,
+  now = new Date()
 ): ScoreReconciliation {
   const byKey = new Map(espnGames.filter(g => !dateKey || g.date === dateKey).map((g) => [gameKey(g.awayAbbr, g.homeAbbr), g]));
   const matchedKeys = new Set<string>();
@@ -237,6 +243,18 @@ export function reconcileScores(
       inProgress.push(row.id);
       continue;
     }
+    const previousTip = row.tipOffUtc == null ? null : new Date(row.tipOffUtc);
+    const correctedTip = dateKey && espn.tipOffUtc ? applyGameInputCorrection({ date: dateKey,
+      homeAbbr: row.homeAbbr, awayAbbr: row.awayAbbr, tipOffUtc: espn.tipOffUtc }).tipOffUtc : undefined;
+    const nextTip = correctedTip ? new Date(correctedTip) : null;
+    const scheduledTip = dateKey && row.status === "scheduled" && espn.status === "scheduled"
+      && row.externalId === `espn-${espn.eventId}`
+      && espnGames.filter(game => game.date === dateKey && gameKey(game.awayAbbr, game.homeAbbr) === key).length === 1
+      && previousTip && nextTip && previousTip.getTime() > now.getTime() && nextTip.getTime() > now.getTime()
+      && formatEasternDateKey(previousTip) === dateKey && formatEasternDateKey(nextTip) === dateKey
+      && previousTip.getTime() !== nextTip.getTime()
+      ? { expectedExternalId: row.externalId, expectedTipOffUtc: previousTip.toISOString(), tipOffUtc: nextTip.toISOString() }
+      : undefined;
     // A final with a blank score is a feed glitch: writing it would null a stored result or
     // record a final with no score. The next run picks the game up once the score is there.
     if (espn.status === "final" && (espn.homeScore === null || espn.awayScore === null)) continue;
@@ -256,7 +274,7 @@ export function reconcileScores(
       espn.status !== row.status ||
       espn.homeScore !== row.homeScore ||
       espn.awayScore !== row.awayScore ||
-      (overtimePeriods !== null && overtimePeriods !== row.overtimePeriods);
+      (overtimePeriods !== null && overtimePeriods !== row.overtimePeriods) || scheduledTip !== undefined;
 
     if (changed) {
       updates.push({
@@ -266,6 +284,7 @@ export function reconcileScores(
         homeScore: espn.homeScore,
         awayScore: espn.awayScore,
         overtimePeriods,
+        ...(scheduledTip ? { scheduledTip } : {}),
       });
     }
   }

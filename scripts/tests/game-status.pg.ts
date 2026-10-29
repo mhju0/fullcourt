@@ -8,6 +8,7 @@ import { createDailyRefreshPort, selectRecoveryGameIds } from "../../src/lib/dai
 import { createStampedCache } from "../../src/lib/stamped-cache";
 import { scoreGameFatigue } from "../../src/lib/fatigue";
 import { buildGameStoryline } from "../../src/lib/game-storyline";
+import { formatEasternDateKey } from "../../src/lib/nba-season";
 import { integrityTestUrl } from "./integrity-test-url";
 
 // Explicit disposable loopback URLs only; never read .env.local.
@@ -163,6 +164,92 @@ try {
   await a`update games set tip_off_utc=tip_off_utc+interval '1 minute' where id=11`;
   assert.notEqual(await getSeasonGamesStamp("2099-00"),beforeTip);
   pass("lifecycle-only holds, content-only fatigue edits and tip-only changes all move the season stamp");
+
+  const [tipClock] = await a`select (((clock_timestamp() at time zone 'America/New_York')::date + 2 + time '12:00') at time zone 'America/New_York') as old_tip`;
+  const oldTip = new Date(String(tipClock.old_tip));
+  const newTip = new Date(oldTip.getTime() + 3_600_000);
+  const tipDate = formatEasternDateKey(oldTip);
+  await a`insert into games(id,external_id,date,season,home_team_id,away_team_id,status,tip_off_utc) values
+    (199,'tip-prior',${tipDate}::date-1,'2097-98',1,2,'scheduled',${oldTip}::timestamptz-interval '1 day'),
+    (200,'espn-tip-source',${tipDate},'2097-98',1,2,'scheduled',${oldTip}),
+    (201,'tip-related',${tipDate}::date+1,'2097-98',1,3,'scheduled',${newTip}::timestamptz+interval '1 day'),
+    (202,'tip-outside',${tipDate}::date+31,'2097-98',1,3,'scheduled',${newTip}::timestamptz+interval '31 days'),
+    (203,'tip-unrelated',${tipDate}::date+1,'2097-98',3,4,'scheduled',${newTip}::timestamptz+interval '1 day'),
+    (204,'tip-tipped',${tipDate}::date+1,'2097-98',1,3,'scheduled',clock_timestamp()-interval '1 hour')`;
+  await a`insert into fatigue_scores(game_id,team_id,score,decay_load_score,travel_load_score,b2b_multiplier,altitude_multiplier,density_multiplier,freshness_bonus,games_in_last_7_days,travel_distance_miles,is_back_to_back)
+    select g.id,s.team,4,0,0,1,1,1,0,2,0,false from games g cross join lateral(values(g.home_team_id),(g.away_team_id))s(team) where g.id between 200 and 204`;
+  assert.equal((await createDailyRefreshPort(dbA).refreshGame(200)).status,"refreshed");
+  assert.equal((await createDailyRefreshPort(dbA).refreshGame(201)).status,"refreshed");
+  assert.equal(Number((await a`select b2b_multiplier from fatigue_scores where game_id=200 and team_id=1`)[0].b2b_multiplier),1.38);
+  assert.equal(Number((await a`select b2b_multiplier from fatigue_scores where game_id=201 and team_id=1`)[0].b2b_multiplier),1.36);
+  await a`insert into predictions(game_id,predicted_advantage_team_id,rest_advantage_differential,actual_winner_id) values
+    (200,1,4,null),(201,1,4,null),(200,1,4,1),(202,1,4,null),(203,3,4,null),(204,1,4,null)`;
+  const tipUpdate = {expectedIdentity:{date:tipDate,homeAbbr:"BOS",awayAbbr:"BKN"},gameId:200,status:"scheduled" as const,
+    homeScore:null,awayScore:null,overtimePeriods:null,
+    scheduledTip:{expectedExternalId:"espn-tip-source",expectedTipOffUtc:oldTip.toISOString(),tipOffUtc:newTip.toISOString()}};
+  assert.deepEqual(await writeGameStatus(dbA,tipUpdate),{written:true,invalidated:2});
+  assert.equal(new Date(String((await a`select tip_off_utc from games where id=200`)[0].tip_off_utc)).toISOString(),newTip.toISOString());
+  assert.equal((await a`select count(*)::int n from fatigue_scores where game_id in(200,201)`)[0].n,0);
+  assert.equal((await a`select count(*)::int n from fatigue_scores where game_id in(202,203,204)`)[0].n,6);
+  assert.equal((await a`select count(*)::int n from predictions where game_id in(200,201) and actual_winner_id is null`)[0].n,0);
+  assert.equal((await a`select count(*)::int n from predictions where game_id=200 and actual_winner_id is not null`)[0].n,1);
+  assert.equal((await a`select count(*)::int n from predictions where game_id in(202,203,204)`)[0].n,3);
+  assert.equal((await writeGameStatus(dbA,tipUpdate)).written,false,"replaying an old tip comparison must be a no-op");
+  assert.equal((await createDailyRefreshPort(dbA).refreshGame(200)).status,"refreshed");
+  assert.equal((await createDailyRefreshPort(dbA).refreshGame(201)).status,"refreshed");
+  assert.equal((await a`select count(*)::int n from fatigue_scores where game_id in(200,201)`)[0].n,4);
+  assert.equal(Number((await a`select b2b_multiplier from fatigue_scores where game_id=200 and team_id=1`)[0].b2b_multiplier),1.36,"source turnaround becomes 25 hours");
+  assert.equal(Number((await a`select b2b_multiplier from fatigue_scores where game_id=201 and team_id=1`)[0].b2b_multiplier),1.38,"downstream turnaround becomes 24 hours");
+  pass("same-date tip correction atomically invalidates source and related future pairs/open predictions, preserves boundaries/resolved results, and locked recovery restores pairs");
+
+  await a`update games set tip_off_utc=${oldTip} where id=200`;
+  for (const status of ["live","postponed","cancelled","final"]) {
+    await a`update games set status=${status} where id=200`;
+    assert.equal((await writeGameStatus(dbA,tipUpdate)).written,false);
+  }
+  await a`update games set status='scheduled' where id=200`;
+  assert.equal((await writeGameStatus(dbA,{...tipUpdate,scheduledTip:{...tipUpdate.scheduledTip,expectedExternalId:"espn-other"}})).written,false);
+  await assert.rejects(writeGameStatus(dbA,{...tipUpdate,scheduledTip:{...tipUpdate.scheduledTip,tipOffUtc:new Date(newTip.getTime()+86_400_000).toISOString()}}),/same Eastern/);
+  const [tipPairBefore] = await a`select count(*)::int n from fatigue_scores where game_id=200`;
+  assert.equal(tipPairBefore.n,2);
+  await a.unsafe(`create function refuse_tip_test() returns trigger language plpgsql as $$begin raise exception 'injected tip invalidation failure';end$$`);
+  await a.unsafe(`create trigger refuse_tip before delete on fatigue_scores for each statement execute function refuse_tip_test()`);
+  await assert.rejects(writeGameStatus(dbA,tipUpdate), error => error instanceof Error && String(error.cause).includes("injected tip invalidation failure"));
+  assert.equal(new Date(String((await a`select tip_off_utc from games where id=200`)[0].tip_off_utc)).toISOString(),oldTip.toISOString());
+  assert.equal((await a`select count(*)::int n from fatigue_scores where game_id=200`)[0].n,2);
+  await a`drop trigger refuse_tip on fatigue_scores`;
+  pass("tip writer refuses non-scheduled states/event or date drift and rolls tip back on invalidation failure");
+
+  const now = new Date();
+  const todayEt = formatEasternDateKey(now);
+  const [dayBounds] = await a`select ((${todayEt}::date + time '00:00') at time zone 'America/New_York')::text as start,
+    ((${todayEt}::date + time '23:59:59.999') at time zone 'America/New_York')::text as finish`;
+  const sameDayPast = new Date(String(dayBounds.start));
+  const sameDayFuture = new Date(String(dayBounds.finish));
+  const future = sameDayFuture.toISOString();
+  const past = sameDayPast.toISOString();
+  if (sameDayPast < now && sameDayFuture > now) {
+    await a`update games set date=${todayEt},tip_off_utc=${past}::timestamptz where id=200`;
+    const todayUpdate = {...tipUpdate,expectedIdentity:{...tipUpdate.expectedIdentity,date:todayEt},
+      scheduledTip:{...tipUpdate.scheduledTip,expectedTipOffUtc:past,tipOffUtc:future}};
+    assert.equal((await writeGameStatus(dbA,todayUpdate)).written,false,"a stored tip that has passed cannot move automatically");
+    await a`update games set tip_off_utc=${future}::timestamptz where id=200`;
+    assert.equal((await writeGameStatus(dbA,{...todayUpdate,scheduledTip:{...todayUpdate.scheduledTip,expectedTipOffUtc:future,tipOffUtc:past}})).written,false,"a provider tip in the past cannot be adopted");
+    const nearTip = new Date(Date.now()+700).toISOString();
+    await a`update games set tip_off_utc=${nearTip}::timestamptz where id=200`;
+    await a.unsafe(`create function delay_tip_test() returns trigger language plpgsql as $$begin perform pg_sleep(0.9);return null;end$$`);
+    await a.unsafe(`create trigger delay_tip before delete on fatigue_scores for each statement execute function delay_tip_test()`);
+    await assert.rejects(writeGameStatus(dbA,{...todayUpdate,scheduledTip:{...todayUpdate.scheduledTip,expectedTipOffUtc:nearTip}}),/tip crossed/);
+    assert.equal(new Date(String((await a`select tip_off_utc::text as tip from games where id=200`)[0].tip)).toISOString(),nearTip);
+    assert.equal((await a`select count(*)::int n from fatigue_scores where game_id=200`)[0].n,2);
+    await a`drop trigger delay_tip on fatigue_scores`;
+    pass("same-date past-tip guards and old tip crossing during invalidation preserve the original tip and fatigue");
+  }
+  await a`update games set date=${tipDate},tip_off_utc=${oldTip} where id=200`;
+  const raced = await Promise.all([writeGameStatus(dbA,tipUpdate),writeGameStatus(dbB,{...tipUpdate,scheduledTip:undefined,status:"postponed"})]);
+  assert.equal((await a`select status from games where id=200`)[0].status,"postponed");
+  assert.ok(raced[1].written);
+  pass("concurrent tip correction and hold preserve authoritative hold under shared ordered locks");
   console.log(`${passed} PostgreSQL lifecycle contracts passed`);
 } finally {
   await queryClient?.end();

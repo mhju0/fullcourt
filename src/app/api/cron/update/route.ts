@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 
   const deadlineMs = Date.now() + ROUTE_BUDGET_MS;
   const today = formatEasternDateKey();
-  const dateKeys = [adjacentEasternDateKey(today, -1), today];
+  const dateKeys = [adjacentEasternDateKey(today, -1), today, adjacentEasternDateKey(today, 1)];
   let gamesUpdated = 0;
   let checkedGames = 0;
   let espnGamesAvailable = 0;
@@ -43,6 +43,7 @@ export async function GET(request: Request) {
       id: games.id, date: games.date, homeTeamId: games.homeTeamId, awayTeamId: games.awayTeamId,
       homeAbbr: home.abbreviation, awayAbbr: away.abbreviation, status: games.status,
       homeScore: games.homeScore, awayScore: games.awayScore, overtimePeriods: games.overtimePeriods,
+      externalId: games.externalId, tipOffUtc: games.tipOffUtc,
     }).from(games).innerJoin(home, eq(games.homeTeamId, home.id)).innerJoin(away, eq(games.awayTeamId, away.id))
       .where(or(
         and(inArray(games.date, dateKeys), inArray(games.status, ["scheduled", "live", "postponed", "cancelled"])),
