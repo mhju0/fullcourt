@@ -1,5 +1,6 @@
 import postponedFixture from "./fixtures/espn-status_postponed.json";
 import cancelledFixture from "./fixtures/espn-status_canceled.json";
+import scheduledTipFixture from "./fixtures/espn-scheduled-tip-change.json";
 import { describe, expect, it } from "vitest";
 import {
   mapEspnStatus,
@@ -258,4 +259,52 @@ it("does not convert unknown provider labels into a scheduled update", () => {
   const ev = event({state:"pre",completed:false});
   Object.assign(ev.competitions[0].status.type,{name:"STATUS_NEW_PROVIDER_LABEL"});
   expect(reconcileScores([row({status:"postponed"})],parseScoreboard({events:[ev]})).updates).toEqual([]);
+});
+
+describe("scheduled tip corrections", () => {
+  const now = new Date("2026-10-29T16:00:00Z");
+  const stored = row({ externalId: "espn-401909893", homeAbbr: "ATL", awayAbbr: "CLE",
+    tipOffUtc: new Date("2026-10-29T23:00:00Z") });
+  const [observed] = parseScoreboard(scheduledTipFixture);
+  const corrections = (input = stored, events = [observed]) =>
+    reconcileScores([input], events, "2026-10-29", now).updates.filter(update => update.scheduledTip);
+
+  it("retains the authentic confirmed 8 PM ET tip and its previous value for write-time comparison", () => {
+    expect(observed.tipOffUtc).toBe("2026-10-30T00:00:00.000Z");
+    expect(corrections()).toEqual([expect.objectContaining({
+      expectedIdentity: { date: "2026-10-29", homeAbbr: "ATL", awayAbbr: "CLE" },
+      scheduledTip: { expectedExternalId: "espn-401909893", expectedTipOffUtc: "2026-10-29T23:00:00.000Z", tipOffUtc: "2026-10-30T00:00:00.000Z" },
+    })]);
+  });
+
+  it("also accepts an earlier confirmed same-date tip while both times are future", () => {
+    expect(corrections(stored, [{ ...observed, tipOffUtc: "2026-10-29T22:00:00Z" }])).toHaveLength(1);
+  });
+
+  it.each([
+    { tipOffUtc: null }, { tipOffUtc: "invalid" }, { tipOffUtc: "2026-10-29T16:00:00Z" },
+    { tipOffUtc: "2026-10-28T23:00:00Z" }, { externalId: "espn-another-event" },
+    { status: "live" }, { status: "final" }, { status: "postponed" }, { status: "cancelled" },
+  ])("preserves unsafe or non-scheduled stored rows: %j", override => {
+    expect(corrections({ ...stored, ...override })).toEqual([]);
+  });
+
+  it.each([
+    { tipOffUtc: undefined }, { tipOffUtc: "invalid" }, { tipOffUtc: "2026-10-29T16:00:00Z" },
+    { tipOffUtc: "2026-10-29T23:00:00Z" }, { tipOffUtc: "2026-10-30T23:00:00Z" },
+    { date: "2026-10-30" }, { homeAbbr: "BOS" }, { eventId: "another-event" },
+  ])("does not infer a correction from unsafe provider observations: %j", override => {
+    expect(corrections(stored, [{ ...observed, ...override }])).toEqual([]);
+  });
+
+  it("refuses ambiguous duplicate provider pairings", () => {
+    expect(corrections(stored, [observed, { ...observed, eventId: "another-event" }])).toEqual([]);
+  });
+
+  it.each([false, undefined])("does not publish a tip ESPN has not confirmed: %s", timeValid => {
+    const competition = scheduledTipFixture.events[0].competitions[0];
+    const [parsed] = parseScoreboard({ events: [{ ...scheduledTipFixture.events[0], competitions: [{ ...competition, timeValid }] }] });
+    expect(parsed.tipOffUtc).toBeUndefined();
+    expect(corrections(stored, [parsed])).toEqual([]);
+  });
 });

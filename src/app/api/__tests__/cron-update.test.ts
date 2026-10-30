@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { PgDialect } from "drizzle-orm/pg-core";
+import scheduledTipFixture from "@/lib/__tests__/fixtures/espn-scheduled-tip-change.json";
 
 /**
  * The evening score pass. It cannot be exercised against a real slate until the season starts,
@@ -36,12 +38,13 @@ vi.mock("@/lib/nba-season", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/nba-season")>();
   return {
     ...actual,
-    formatEasternDateKey: (date?: Date) => (date ? actual.formatEasternDateKey(date) : TODAY),
+    formatEasternDateKey: (date?: Date) => (date ? actual.formatEasternDateKey(date) : today),
   };
 });
 
 const TODAY = "2026-10-20";
 const YESTERDAY = "2026-10-19";
+let today = TODAY;
 
 const recoveryIds = vi.fn();
 const refreshGame = vi.fn();
@@ -59,9 +62,9 @@ vi.mock("@/lib/daily-refresh-port", async importOriginal => {
 });
 
 vi.mock("@/lib/game-status-write", () => ({
-  writeGameStatus: async (_db: unknown, update: { expectedIdentity?: unknown; gameId: number; status: string; homeScore: number | null; awayScore: number | null; overtimePeriods: number | null }) => {
+  writeGameStatus: async (_db: unknown, update: { expectedIdentity?: unknown; gameId: number; status: string; homeScore: number | null; awayScore: number | null; overtimePeriods: number | null; scheduledTip?: { tipOffUtc: string } }) => {
     const {status, homeScore, awayScore, overtimePeriods} = update;
-    updateSet({status, homeScore, awayScore, ...(overtimePeriods !== null ? {overtimePeriods} : {})});
+    updateSet(update.scheduledTip ? { tipOffUtc: update.scheduledTip.tipOffUtc } : {status, homeScore, awayScore, ...(overtimePeriods !== null ? {overtimePeriods} : {})});
     const rows = await updateReturning();
     return {written: rows.length > 0, invalidated: 0};
   },
@@ -155,6 +158,7 @@ function fetchedDates(): string[] {
 
 describe("GET /api/cron/update", () => {
   beforeEach(() => {
+    today = TODAY;
     selectWhere.mockReset();
     recoveryIds.mockReset().mockResolvedValue([]);
     refreshGame.mockReset().mockResolvedValue({ status: "refreshed", predictionRowsWritten: 0 });
@@ -166,6 +170,7 @@ describe("GET /api/cron/update", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
     delete process.env.CRON_SECRET;
   });
@@ -189,6 +194,29 @@ describe("GET /api/cron/update", () => {
     const res = await GET(req("Bearer test-secret"));
     expect(refreshGame).toHaveBeenCalledWith(99, expect.objectContaining({ deadlineMs: expect.any(Number) }));
     expect((await res.json()).meta.fatigueRescored).toBe(1);
+  });
+
+  it("corrects the authentic CLE@ATL scheduled tip before its stale 7 PM ET time", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-29T16:00:00Z"));
+    today = "2026-10-29";
+    selectWhere.mockResolvedValue([storedRow({ id: 118764, externalId: "espn-401909893", date: "2026-10-29",
+      homeAbbr: "ATL", awayAbbr: "CLE", tipOffUtc: new Date("2026-10-29T23:00:00Z") })]);
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => scheduledTipFixture }));
+
+    const res = await GET(req("Bearer test-secret"));
+
+    expect(res.status).toBe(200);
+    expect(updateSet).toHaveBeenCalledWith({ tipOffUtc: "2026-10-30T00:00:00.000Z" });
+  });
+
+  it("polls tomorrow's unfinished fixtures as well as today's and yesterday's", async () => {
+    selectWhere.mockResolvedValue([storedRow({ date: "2026-10-21" })]);
+    espnRespondsByDate({ "20261021": [event({ state: "pre", completed: false, periods: 0 })] });
+    await GET(req("Bearer test-secret"));
+    const query = new PgDialect().sqlToQuery(selectWhere.mock.calls[0][0]);
+    expect(query.params.slice(0, 3)).toEqual(["2026-10-19", "2026-10-20", "2026-10-21"]);
+    expect(fetchedDates()).toEqual(["20261021"]);
   });
 
   it("runs recovery after an ESPN failure and exposes a sanitized degraded result", async () => {

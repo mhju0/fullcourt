@@ -13,7 +13,7 @@ test("mobile Games exposes the complete rest comparison without sideways scrolli
 
 test("mobile shot comparison switches one court with the keyboard", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/shot-quality");
+  await page.goto("/shot-quality?season=2024-25");
   await expect(page.getByRole("group", { name: /^Zone average: half-court/ })).toBeVisible({ timeout: 20_000 });
   await expect(page.getByRole("group", { name: /half-court/ })).toHaveCount(1);
   const models = page.getByRole("group", { name: "Shot value model", exact: true });

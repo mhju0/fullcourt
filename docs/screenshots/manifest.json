@@ -26,14 +26,12 @@
     "pageScrollWidth": 1280
   },
   "officiating": {
-    "source": "https://fullcourt.fyi",
+    "source": "http://localhost:3117",
     "route": "/officiating",
-    "url": "https://fullcourt.fyi/officiating",
-    "deploymentSha": "8419bb8f8a62f06206255119f802103a1288cc68",
-    "deploymentId": "dpl_DxhVk7bmFU6YapGjtCxmRuMAPJQi",
+    "url": "http://localhost:3117/officiating",
     "width": 1280,
     "height": 1494,
-    "capturedAt": "2026-10-27T12:13:08.593Z",
+    "capturedAt": "2026-10-30T01:10:59.734Z",
     "browser": "Chromium",
     "physicalDevice": false,
     "pageScrollWidth": 1280

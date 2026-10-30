@@ -1,5 +1,7 @@
 # Product screenshots
 
+The original Officiating capture is superseded by the 2026-10-30 refresh below.
+
 Captured on 2026-10-27 from https://fullcourt.fyi after the v1.3.2 production alias was
 verified at commit `8419bb8f8a62f06206255119f802103a1288cc68`, Ready deployment
 `dpl_DxhVk7bmFU6YapGjtCxmRuMAPJQi`. [manifest.json](manifest.json) records each URL,
@@ -45,3 +47,10 @@ Append image names without `.png` to capture selected views, for example
 `node scripts/screenshots.mjs games shooting-mobile-402`. For a populated local app,
 `SCREENSHOT_BASE_URL=http://localhost:3000 node scripts/screenshots.mjs` needs no deployment
 identity. Local captures should not be described as production evidence.
+
+## Officiating refresh, 2026-10-30
+
+`officiating.png` was regenerated with the same generator from the local v1.3.3 production
+build at `http://localhost:3117`, including the Eastern publication check and refresh labels.
+It is a rendered local verification capture, not a production capture. The other images retain
+their original source records. The manifest records the current source and capture time per image.

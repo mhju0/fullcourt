@@ -22,8 +22,8 @@ are authoritative for individual fields, optional values, and units.
 | `/api/season-readiness` | Required browsable `season` | `{ season, ready, expectedAfterDate }`; operational current-season availability, independent of fatigue evidence and publication coverage | `inSeason` |
 | `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing; separate fixture coverage and unsettled-result status | Current/upcoming: `inSeason`; historical: `historical` |
 | `/api/playoffs` | Optional `season` | Bracket, series, prediction records, and latest published season | `inSeason` |
-| `/api/officiating/[season]` | Path `season` with published L2M reports | That season's reviewed games from `src/data/officiating.json`. `/officiating` carries every season's totals and fetches only the selected season's list. 400 for a season with no reports | `historical` (the file changes only with a deploy) |
-| `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells, display-model hint, and latest published season | `historical` |
+| `/api/officiating/[season]` | Path `season` with published L2M reports; optional pinned `publication` hash | That season's reviewed games from the validated daily publication, with bundled fallback. `/officiating` carries every season's totals and fetches only the selected season's list. 400 for a season with no reports; 404 for a missing pinned publication | `inSeason` |
+| `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Validated daily observed grids or historical database surfaces, display-model hint, publication health, and latest published season | `inSeason` |
 
 Shared numeric rest-advantage parameters default to zero. Season validation uses the calendar
 helpers in `src/lib/nba-season.ts`; browsable seasons include a released-but-unplayed season
@@ -35,6 +35,8 @@ Without an explicit season, Playoff Rest and Expected Shot Value resolve their l
 publication from database records. They do not advance to an empty research season merely
 because the calendar changed. A valid explicit season remains authoritative, including an
 empty result; a failed publication lookup remains an error. See [season rollover](SEASON_ROLLOVER.md).
+The Expected Shot Value page explicitly requests the current display season on initial entry,
+so its unavailable-data guide can appear even when the API's latest publication is historical.
 
 Games and upcoming-game endpoints are read fresh instead of from a long-lived edge snapshot, so an
 authoritative fetch can show a stored final score. No in-game score is stored. A game normally
@@ -87,10 +89,12 @@ published regular-season reads obey `publishableGames()`.
 
 ## Artifact-backed surfaces
 
-Shooting uses `public/data/player-rest.json`; Availability uses pinned generated facts; the
-historical referee archive uses committed referee artifacts. Officiating imports
-`src/data/officiating.json` and loads `/data/officiating/<season>/<report>.json` on expansion.
-These are static publication assets, not database-query endpoints. `/referees` redirects to
+Shooting merges validated daily observations with `public/data/player-rest.json`; Availability
+uses pinned generated facts; the historical referee archive uses committed referee artifacts.
+Officiating loads validated daily publications with `src/data/officiating.json` as its bundled
+fallback. Daily report expansions use the matching pinned `/api/officiating/report` publication;
+bundled reports retain their `/data/officiating/<season>/<report>.json` detail paths.
+These publications do not query the application database. `/referees` redirects to
 `/officiating`; the old analysis lives at `/behind-the-data/referees/archive`.
 
 ## Operational endpoints

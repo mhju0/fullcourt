@@ -7,7 +7,7 @@ import { loadPlayerRestPublication } from "@/lib/player-rest-publication-server"
 import { loadOfficiatingPublication } from "@/lib/officiating-publication-server";
 import { readDailyDatasetHistory } from "@/lib/daily-publication-server";
 import { parseCurrentShotQualityArtifact, getCurrentShotQualitySnapshot } from "@/lib/shot-quality-publication";
-import { currentDisplaySeason } from "@/lib/nba-season";
+import { currentDisplaySeason, formatEasternTimestamp } from "@/lib/nba-season";
 import {
   getDataAsOf,
   getLatestPublishedPlayoffSeason,
@@ -37,19 +37,6 @@ async function readStatusValue<T>(
     console.error(`[data-status/${label}]`, error);
     return null;
   }
-}
-
-function formatUtcTimestamp(value: string): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    timeZone: "UTC",
-    timeZoneName: "short",
-  }).format(new Date(value));
 }
 
 function StatusCard({
@@ -182,14 +169,14 @@ export default async function DataStatusPage() {
           href="/shot-quality"
           coverage={currentShots ? `${currentShots.source.gameIds.length} observed games · ${currentShots.source.shotCount.toLocaleString()} source attempts` : shotSeason ? `League court surfaces through ${shotSeason}` : "Unavailable"}
           through={currentShots?.source.lastGameDate ?? shotSeason ?? "Unknown"}
-          refresh={currentShots ? `Snapshot generated ${formatUtcTimestamp(currentShots.generatedAt)}. Latest check: ${shotStatus}.` : `Historical refresh not recorded. Latest current-season check: ${shotStatus}.`}
+          refresh={currentShots ? `Snapshot generated ${formatEasternTimestamp(currentShots.generatedAt) ?? "Not recorded"}. Latest check: ${shotStatus}.` : `Historical refresh not recorded. Latest current-season check: ${shotStatus}.`}
         />
         <StatusCard
           title="Player Shooting by Rest"
           href="/shooting"
           coverage={shootingCoverage ?? "Unavailable"}
           through={playerPayload.publication?.through ?? shootingCoverage?.split(" to ").at(-1) ?? "Unknown"}
-          refresh={`Published observations generated ${playerPayload.generated}. Latest check: ${playerPayload.refresh?.status ?? "bundled"}.`}
+          refresh={`Published observations generated ${formatEasternTimestamp(playerPayload.generated) ?? "Not recorded"}. Latest check: ${playerPayload.refresh?.status ?? "bundled"}.`}
         />
         <StatusCard
           title="Availability Cost"
@@ -203,7 +190,7 @@ export default async function DataStatusPage() {
           href="/officiating"
           coverage={`${officiatingSeasons[0]?.season ?? "Unknown"} to ${latestOfficiating.season}`}
           through={latestOfficiating.through}
-          refresh={`NBA report index refreshed ${formatUtcTimestamp(latestOfficiating.refreshedAt)}. Latest check: ${officiating.publication.status}.`}
+          refresh={`NBA report index refreshed ${formatEasternTimestamp(latestOfficiating.refreshedAt) ?? "Not recorded"}. Latest check: ${officiating.publication.status}.`}
         />
       </div>
     </div>

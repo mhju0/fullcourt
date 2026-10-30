@@ -248,6 +248,12 @@ on a hidden sample floor. See [publication policy](EARLY_SEASON_PUBLICATION.md).
 
 Static/pipeline-driven studies retain their latest published coverage. Schedule Edge is
 available as a provisional outlook before results. Availability Cost remains a retrospective.
+Expected Shot Value opens on the current display season, showing the existing missing-data
+guide rather than automatically selecting the latest historical grid. Explicit season and map
+selections remain shareable. Technical publication failures belong on Data Status, while the
+chart retains unavailable-data/model states and actual request errors (D-148).
+Visible publication timestamps use Eastern date and minute precision with an ET label;
+date-only metadata stays a date without an invented refresh time.
 The homepage's period follows the finding explanation. Games keeps its compact wrapping
 strip under “Upcoming large rest edges,” with readable title/body tokens and rested-home
 5+ chronological selection (D-115/D-116).

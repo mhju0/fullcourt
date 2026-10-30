@@ -141,7 +141,7 @@ describe("observed player publications", () => {
 
 describe("actual shot-value publications", () => {
   it("shows current observations without a GP-readiness hold or a prior-season request", () => {
-    state.data["/api/shot-quality"] = shotResponse("2026-27");
+    state.data["/api/shot-quality?season=2026-27"] = shotResponse("2026-27");
     state.data["/api/shot-quality?season=2024-25"] = shotResponse("2024-25");
     const html = renderShot();
     expect(state.reads).not.toContain("/api/shot-quality?season=2024-25");
@@ -155,9 +155,9 @@ describe("actual shot-value publications", () => {
   it.each([false, true])("shows raw current attempts while models await publication even if old readiness fails (%s)", (failure) => {
     state.failure = failure;
     const payload = shotResponse("2026-27");
-    state.data["/api/shot-quality"] = { ...payload, cells: payload.cells.map((cell) => ({ ...cell, fga: 1, fgm: 0, gbm: null, baseline: null })), meta: { cellCount: 1, totalFga: 1 } };
+    state.data["/api/shot-quality?season=2026-27"] = { ...payload, cells: payload.cells.map((cell) => ({ ...cell, fga: 1, fgm: 0, gbm: null, baseline: null })), meta: { cellCount: 1, totalFga: 1 } };
     const html = renderShot();
-    expect(state.reads.filter((key) => key.includes("?season="))).toEqual([]);
+    expect(state.reads.filter((key) => key.includes("?season="))).toEqual(["/api/shot-quality?season=2026-27"]);
     expect(html).toContain("Actual shot attempts");
     expect(html).toContain("Model estimates are awaiting publication");
     expect(html).toContain('value="2026-27" selected=""');

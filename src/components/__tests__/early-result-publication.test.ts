@@ -90,6 +90,7 @@ describe("early officiating publication", () => {
     expect(html).toContain('value="2026-27" selected=""');
     expect(html).toContain("Season to date");
     expect(html).toContain("1 identified errors, 1 reviewed games");
+    expect(html.replaceAll("\u00a0", " ")).toContain("Oct 21, 2026, 8:00 AM ET");
     expect(html).toContain("not whole-game officiating accuracy");
     expect(html).toContain("0.30");
     expect(html).not.toContain("1.00");
