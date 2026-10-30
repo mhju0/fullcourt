@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.6 — 2026-10-30
+
+- Record safe collection failure reasons in staged candidates and GitHub Actions summaries, including Shot Value timeouts, HTTP failures, empty responses and rejected data. Preserve publication statuses, retry budgets and last-good snapshots.
+
 ## 1.3.5 — 2026-10-30
 
 - Include stored event identity and tip time in daily score synchronization so guarded future tip corrections can run.
