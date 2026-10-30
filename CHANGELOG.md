@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.8 — 2026-10-31
+
+- Add a read-only release verification command for canonical deployment identity, CI, live database health and publication integrity. Report recorded source failures separately from verification errors.
+
 ## 1.3.7 — 2026-10-30
 
 - Request ESPN scoreboards with the explicit game limit already used by Shooting, recovering date URLs that returned empty bodies. Keep invalid-response rejection, daily failure reporting and publication safeguards.

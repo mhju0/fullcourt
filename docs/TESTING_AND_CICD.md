@@ -97,6 +97,43 @@ After merging, verify the deployment commit and production alias, `/api/health`,
 user flow. A successful build does not establish database health. Record results in the release
 PR, synchronize local main without force-pushing, and stop temporary servers when finished.
 
+### Read-only release verification
+
+Run from the repository root with existing GitHub CLI and Vercel CLI authentication:
+
+```sh
+corepack pnpm --silent verify:release
+corepack pnpm --silent verify:release --help
+```
+
+The default expected commit is the full local Git HEAD. Use `--sha` followed by a full
+40-character hexadecimal commit to verify another commit; branches, tags and abbreviated
+SHAs are rejected. `--silent` suppresses pnpm's wrapper banner so verification stdout is JSON.
+Help prints usage and does not perform verification.
+
+The command checks the newest matching `ci.yml` push/main run for that exact commit,
+the canonical `fullcourt.fyi` deployment's project/repository/commit and Ready production
+state, and public `/api/health` HTTP 200 with `status: ok` and `db: up`. It reads one
+strict publication manifest and verifies each latest dataset entry's byte length, SHA256,
+domain schema and declared season/generation identity. Retained historical seasons are
+valid observations. A second canonical deployment read detects alias movement during the
+checks. The command uses GET requests and existing CLI credentials; it does not initiate
+login, deployments, workflow dispatches, database connections or configuration changes.
+The pinned Vercel CLI may use its normal package cache.
+
+| Exit | Meaning |
+| --- | --- |
+| `0` | Deployment/CI/health and publication integrity verified; all recorded source states are published. |
+| `2` | Deployment and publication integrity verified, with a known failed or unavailable source check. This is degradation, not an all-data pass. |
+| `1` | A required check failed or could not be established, including authentication, transport, malformed evidence, hash/identity mismatch or alias movement. This takes precedence over source degradation. |
+
+`deploymentHealth` and `dataIntegrity` are separate from each module's `sourceState`.
+Season, hash, `checkedAt` and `publishedAt` describe the evidence obtained. Coverage and
+freshness are explicitly `not-evaluated`: this command does not test missing games, source
+age, current-season completeness, model readiness, rendered pages or user flows. It also
+does not replace the publication writer's required Shooting health gate. Errors use fixed
+safe codes; command stderr and raw exception messages are not printed.
+
 The normal CI build has no database credentials. Local builds may have `.env.local`, so the CI
 build is a necessary independent gate; do not rename credential files around an unguarded shell
 command. Schema changes are manual SQL and require a separate owner application step.
