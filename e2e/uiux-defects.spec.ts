@@ -41,7 +41,7 @@ test("method sections expose headings and mobile descriptors stay inside their c
 
 test("shot locations can be inspected by keyboard and pointer", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/shot-quality");
+  await page.goto("/shot-quality?season=2024-25");
   await page.getByRole("group", { name: "Shot value model", exact: true }).getByRole("button", { name: "Location model", exact: true }).click();
   const court = page.getByRole("group", { name: /^Location model: half-court/ });
   await expect(court).toBeVisible({ timeout: 45000 });

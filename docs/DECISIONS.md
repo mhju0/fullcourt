@@ -2290,3 +2290,17 @@ Owner가 모든 저장소의 에이전트 메모리를 git에서 제외된 `.mem
 `docs/PROJECT_HANDOFF.md`와 `docs/archive/CLAUDE_ENV_INVENTORY.md`는 저장소에서 빠지고,
 현재 상태와 다음 단계는 `.memory/handoff.md`가 맡는다. D-48의 증거 순서와 갱신 목록에서
 handoff를 뺀다. 이 ledger, ADR, ROADMAP.md는 그대로 공개 기록으로 남는다.
+
+## D-148 — Shot Value의 현재 시즌 진입과 Eastern 갱신 시각 (2026-10-30)
+
+Owner는 Explore에서 Expected Shot Value를 열면 현재 시즌을 먼저 선택하고, 자료가 없으면
+기존 시즌 자료 대기 안내를 보여주도록 요청했다. 과거 시즌을 명시한 URL과 지도 모드는 유지한다.
+페이지가 이전 공개 시즌으로 자동 이동하지 않는다. 시즌을 생략한 API의 최신 공개본 계약은 유지한다.
+
+차트 위의 원시 갱신 확인 시각과 기술적인 실패 문장은 제거한다. 자료 없음·모델 미게시·실제
+조회 오류는 계속 구분하고, 운영 실패 상태는 Data Status에 남긴다. 화면의 공개본 생성·갱신
+시각은 America/New_York의 날짜와 시·분, ET로 통일한다. 날짜만 기록된 과거 메타데이터에
+시각을 만들어 붙이지 않는다. 기계용 ISO 시각과 경기 날짜의 의미는 바뀌지 않는다.
+
+홈페이지의 Shooting 커버리지도 검증된 공개본에서 읽는다. 역사 연구 스냅샷·Schedule Worth
+보정값·피로도 계수는 이 표시 수정으로 다시 추정하지 않는다.

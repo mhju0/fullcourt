@@ -11,8 +11,25 @@ import {
   pickDefaultGamesDate,
   slateDateKey,
   formatEasternTipTime,
+  formatEasternTimestamp,
 } from "../nba-season";
 import type { GameDateCount } from "@/types";
+
+describe("formatEasternTimestamp", () => {
+  it("prints publication times to the minute in Eastern daylight and standard time", () => {
+    expect(formatEasternTimestamp("2026-10-29T16:54:50.509Z")).toBe("Oct 29, 2026, 12:54 PM ET");
+    expect(formatEasternTimestamp("2026-01-15T03:17:59.999Z")).toBe("Jan 14, 2026, 10:17 PM ET");
+  });
+
+  it("preserves a date-only publication label without inventing a time or moving its day", () => {
+    expect(formatEasternTimestamp("2026-10-20")).toBe("Oct 20, 2026");
+  });
+
+  it("keeps absent or invalid refresh evidence absent", () => {
+    expect(formatEasternTimestamp(null)).toBeNull();
+    expect(formatEasternTimestamp("not-a-date")).toBeNull();
+  });
+});
 
 function dates(values: string[]): GameDateCount[] {
   return values.map((date) => ({ date, gameCount: 1 }));

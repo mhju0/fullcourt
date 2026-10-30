@@ -15,10 +15,12 @@ selection wins. Other pages validate season support and show a fallback when nec
 a long-running server keep the previous list. Deploy once on or after October 1 (ET), then check
 that the new season appears in the season selector and on `/behind-the-data/data-and-limits`.
 
-Playoff Rest and Expected Shot Value default to their latest usable database publication,
-independently of the October calendar transition. Their explicit season selections remain
-shareable; an unpublished selected season explains the missing data and offers the latest
-results. `/data-status` separates schedule coverage, result evidence and recorded refresh dates.
+Playoff Rest defaults to its latest usable publication. The Expected Shot Value page opens on
+the current display season and explains missing data instead of automatically selecting a past
+season; its API still resolves the latest usable publication when no season is supplied.
+Explicit season selections remain shareable. An unpublished selected season explains the missing
+data and offers published results. `/data-status` separates schedule coverage, result evidence
+and recorded refresh dates.
 
 The daily pipeline season-gates on ESPN's published regular-season dates, with an
 October–April fallback; Vercel cron remains scheduled year-round and has its own

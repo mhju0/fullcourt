@@ -66,7 +66,7 @@ test("research defaults come from publications and Playoff Rest URL history surv
   await expect(page.getByText("NO PUBLISHED BRACKET FOR THIS SEASON")).toBeVisible();
 });
 
-test("October rollover keeps publication defaults and explicit empty seasons return to latest results", async ({ page }) => {
+test("October rollover preserves playoff publication defaults and the current shot season", async ({ page }) => {
   await page.clock.setFixedTime(new Date("2026-10-01T16:00:00Z"));
   await page.route("**/api/playoffs**", (route) => {
     const requested = new URL(route.request().url()).searchParams.get("season");
@@ -87,7 +87,7 @@ test("October rollover keeps publication defaults and explicit empty seasons ret
     return fulfill(route, response);
   });
   await page.goto("/shot-quality");
-  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
+  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2026-27");
   await page.goto("/shot-quality?season=2025-26");
   await expect(page.getByText("The 2025-26 expected shot value surface has not been published yet.")).toBeVisible();
   await page.getByRole("button", { name: "View latest results · 2024-25" }).click();
@@ -122,15 +122,16 @@ test("Shot Value restores season, map mode and comparison and copies their conte
 });
 
 test("unsupported Shot Value state recovers honestly and a failed season never relabels stale data", async ({ page }) => {
+  await page.clock.setFixedTime(new Date("2026-10-29T17:00:00Z"));
   await mockShotQuality(page);
   await page.goto("/shot-quality?season=1899-00&mode=heat");
   await expect(page.getByText(/1899-00 is unavailable/)).toBeVisible();
   await expect(page.getByText(/heat is not a supported map view/)).toBeVisible();
-  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
+  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2026-27");
 
   await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
   await expect(page.getByText("FAILED TO LOAD SHOT DATA")).toBeVisible();
-  await expect(page.getByText(/2024-25 · 1 CELLS/)).toHaveCount(0);
+  await expect(page.getByText(/2026-27 · 1 CELLS/)).toHaveCount(0);
 });
 
 test("copy failure exposes selectable canonical share text", async ({ page }) => {

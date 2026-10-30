@@ -42,13 +42,17 @@ for (const width of [390, 1280]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 
-  test(`officiating defaults to published current results and preserves season history at ${width}px`, async ({ page }) => {
+  test(`officiating defaults to published current results and preserves season history at ${width}px`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/officiating");
     const selector = page.locator("#officiating-season");
     await expect(selector).toHaveValue("2026-27");
     await expect(page.getByRole("region", { name: "Season finding" })).toBeVisible();
     await expect(page.getByText(/Season to date: published reports so far/)).toBeVisible();
+    await expect(page.getByText(/Last successful refresh.* ET/)).toBeVisible();
+    await expect(page.getByText(/Latest daily update check.* ET/)).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (width === 390) await page.screenshot({ path: testInfo.outputPath("officiating-390.png") });
     await selector.selectOption("2025-26");
     await page.reload();
     await expect(selector).toHaveValue("2025-26");
@@ -72,7 +76,7 @@ test("report current publication displays despite a failed unrelated readiness e
   await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
 });
 
-test("shot value defaults to its actual publication and keeps an explicit unpublished current awaiting", async ({ page }) => {
+test("shot value defaults to the current season and keeps historical publications selectable", async ({ page }) => {
   const model = { pMake: 0.6, expectedEfg: 0.6, xpps: 1.2 };
   await page.route("**/api/shot-quality*", route => {
     const season = new URL(route.request().url()).searchParams.get("season") ?? "2024-25";
@@ -87,16 +91,20 @@ test("shot value defaults to its actual publication and keeps an explicit unpubl
   });
   await page.goto("/shot-quality");
   const selector = page.locator("#shot-quality-season");
-  await expect(selector).toHaveValue("2024-25");
-  await expect(page.locator('[data-shot-anchor="two-court"]')).toBeVisible();
-  await selector.selectOption("2026-27");
   await expect(selector).toHaveValue("2026-27");
   await expect(page.getByRole("heading", { name: "Awaiting season data · 2026-27" })).toBeVisible();
   await expect(page.locator('[data-shot-anchor="two-court"]')).toHaveCount(0);
-  await page.goBack();
+  await selector.selectOption("2024-25");
   await expect(selector).toHaveValue("2024-25");
   await expect(page.locator('[data-shot-anchor="two-court"]')).toBeVisible();
+  await page.goBack();
+  await expect(selector).toHaveValue("2026-27");
+  await expect(page.getByRole("heading", { name: "Awaiting season data · 2026-27" })).toBeVisible();
+  await expect(page.locator('[data-shot-anchor="two-court"]')).toHaveCount(0);
   await page.goForward();
+  await expect(selector).toHaveValue("2024-25");
+  await expect(page.locator('[data-shot-anchor="two-court"]')).toBeVisible();
+  await page.goBack();
   await expect(selector).toHaveValue("2026-27");
   await expect(page.locator('[data-shot-anchor="two-court"]')).toHaveCount(0);
 });

@@ -7,7 +7,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { COURT_STEPS, courtNeighbour } from "@/lib/chart-inspection"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season"
+import { currentDisplaySeason, formatEasternTimestamp, NBA_SEASONS } from "@/lib/nba-season"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -466,16 +466,16 @@ export function ShotQualityContent() {
     ? requestedSeason
     : null
   const requestedMode = params.get("mode")
+  const currentSeason = currentDisplaySeason()
+  const season = validRequestedSeason ?? currentSeason
 
   const { data: publication, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
-    validRequestedSeason ? `/api/shot-quality?season=${validRequestedSeason}` : "/api/shot-quality",
+    `/api/shot-quality?season=${season}`,
     apiFetcher,
     { revalidateOnFocus: false }
   )
-  const currentSeason = defaultNbaSeason()
   const data = publication
   const error = swrError ? errMsg(swrError) : null
-  const season = validRequestedSeason ?? data?.season ?? currentSeason
   const dataMatchesSelection = Boolean(data && data.season === season)
   const hasModelValues = Boolean(data?.cells.some(c => c.baseline || c.gbm))
   const mode: ColorMode = requestedMode === "diff" ? "diff" : requestedMode === "actual" ? "actual" : requestedMode === "value" || hasModelValues ? "value" : "actual"
@@ -498,6 +498,7 @@ export function ShotQualityContent() {
   const modelCoverage = data?.meta.publication?.models
   const completeModels = Boolean(cells.length && cells.every(c => c.baseline && c.gbm))
   const publicationMeta = data?.meta.publication
+  const snapshotGenerated = formatEasternTimestamp(publicationMeta?.generatedAt ?? null)
 
 
   // Color-scale domains, derived per season from the cells actually returned.
@@ -575,12 +576,6 @@ export function ShotQualityContent() {
     <div className="flex flex-col gap-12">
       {controls}
       {fallbackNotes.map((note) => <p key={note} role="status" className="mono text-xs text-[var(--term-text-muted)]">{note}</p>)}
-      {publicationMeta?.checkedAt || publicationMeta?.updateStatus === "failed" ? <p role="status" className="text-body text-[var(--term-text-muted)] [overflow-wrap:anywhere]">{publicationMeta.checkedAt ? <>Last update check {publicationMeta.checkedAt}. </> : null}{publicationMeta.updateStatus === "failed" ? "The latest update failed; the previous publication is retained." : publicationMeta.updateStatus === "unavailable" ? "The source has no new publication." : "Published snapshot available."}</p> : null}
-
-      {!isEmpty && !validRequestedSeason && season < currentSeason ? <p role="status" className="text-body text-[var(--term-text-muted)]">
-        Showing {season}, the latest published shot grid. {currentSeason} shot data is not available yet.
-      </p> : null}
-
       {isEmpty && season >= currentSeason ? <SeasonDataGuide season={season}
         body="Shot-location data for this season has not been published. Observed attempts will appear as soon as a validated shot grid is available."
         previousHref={`/shot-quality?season=${data.latestPublishedSeason}`}
@@ -616,7 +611,7 @@ export function ShotQualityContent() {
             <p>Observed attempts in {cells.length.toLocaleString()} measured locations. Early-season totals describe the shots collected so far.</p>
             {publicationMeta?.source === "nba-stats-snapshot" ? <>
               <p>NBA Stats ShotChartDetail · {publicationMeta.gameCount?.toLocaleString()} games · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
-              <p>Snapshot generated {publicationMeta.generatedAt}. {publicationMeta.droppedShotCount?.toLocaleString()} attempts outside the map or without coordinates are excluded.</p>
+              <p>{snapshotGenerated ? <>Snapshot generated {snapshotGenerated}. </> : null}{publicationMeta.droppedShotCount?.toLocaleString()} attempts outside the map or without coordinates are excluded.</p>
               <p>Coverage is the games returned by the source; completeness against the NBA schedule has not been established.</p>
             </> : <p>Historical database grid. Source collection date and game coverage are unavailable.</p>}
             {hasModelValues ? <p>Model coverage: zone average {modelCoverage?.["baseline-zone-v1"].coveredCells ?? cells.filter(c => c.baseline).length}/{cells.length} cells; location model {modelCoverage?.["gbm-v1"].coveredCells ?? cells.filter(c => c.gbm).length}/{cells.length} cells. {completeModels ? "Both surfaces cover every location." : "Incomplete surfaces retain unavailable locations."} Model training period is unavailable for these published surfaces.</p> : <p>Model estimates are awaiting publication. The map shows observed shot attempts.</p>}

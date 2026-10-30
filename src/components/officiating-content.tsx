@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { defaultNbaSeason } from "@/lib/nba-season";
+import { defaultNbaSeason, formatEasternTimestamp } from "@/lib/nba-season";
 import { latestUsableResultSeason } from "@/lib/result-season";
 import { SeasonDataGuide } from "@/components/season-data-guide";
 import { useState, useRef, useEffect } from "react";
@@ -143,12 +143,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeasonSummary[]
           </p>
           <p className={styles.freshness}>
             Last successful refresh{" "}
-            {new Intl.DateTimeFormat("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              timeZone: "America/New_York",
-            }).format(new Date(season.refreshedAt))}
+            {formatEasternTimestamp(season.refreshedAt) ?? "Not recorded"}
           </p>
         </div>
       </div>

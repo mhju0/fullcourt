@@ -1,5 +1,12 @@
 # Release history
 
+## 1.3.3 — 2026-10-30
+
+- Open Expected Shot Value on the current season, with its unavailable-data guide when no shot grid is published. Keep explicitly selected historical seasons and map views.
+- Remove technical refresh-check notices from the shot chart. Format visible publication times in Eastern time to the minute; keep operational diagnostics on Data Status.
+- Use validated Shooting publications for the homepage's player coverage.
+- Reconcile confirmed upcoming tip-time changes under the existing fixture locks, invalidate affected fatigue and open predictions together, and recover them through the locked scorer. Include tomorrow's fixtures in score polling.
+
 ## 1.3.2 — 2026-10-26
 
 - Retry Shooting collection and validation within a bounded time budget. Keep the twice-daily automatic recalculation schedule.

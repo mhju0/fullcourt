@@ -152,6 +152,25 @@ export function formatEasternTipTime(instant: Date | string | null): string | nu
   return `${EASTERN_TIP_FMT.format(date)} ET`;
 }
 
+const PUBLICATION_DATE_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "UTC", month: "short", day: "numeric", year: "numeric",
+});
+const EASTERN_TIMESTAMP_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York", month: "short", day: "numeric", year: "numeric",
+  hour: "numeric", minute: "2-digit", hour12: true,
+});
+
+export function formatEasternTimestamp(instant: Date | string | null): string | null {
+  if (instant === null) return null;
+  const date = typeof instant === "string" ? new Date(instant) : instant;
+  if (Number.isNaN(date.getTime())) return null;
+  // Older publication metadata records a calendar date without a refresh time.
+  if (typeof instant === "string" && /^\d{4}-\d{2}-\d{2}$/.test(instant)) {
+    return PUBLICATION_DATE_FMT.format(date);
+  }
+  return `${EASTERN_TIMESTAMP_FMT.format(date)} ET`;
+}
+
 export function seasonLabelForDateKey(dateKey: string): string {
   const year = Number(dateKey.slice(0, 4));
   const month = Number(dateKey.slice(5, 7));
