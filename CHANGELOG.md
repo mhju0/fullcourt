@@ -1,5 +1,12 @@
 # Release history
 
+## 1.3.5 — 2026-10-30
+
+- Include stored event identity and tip time in daily score synchronization so guarded future tip corrections can run.
+- Reuse validated ESPN scoreboards within one daily invocation. Retry failed dates and incomplete snapshots without using older runs' data.
+- Skip context UPDATEs when their effective values are unchanged, preserving overtime, timestamp and neutral-site semantics.
+- Overlap Data Status publication reads with its sequential database checks, and calculate historical coverage with a compact SQL aggregate over the existing population.
+
 ## 1.3.4 — 2026-10-30
 
 - Update the pinned Python setup Action and install only the Chromium headless shell used by the browser gate. Preserve all release checks and data publication schedules.
