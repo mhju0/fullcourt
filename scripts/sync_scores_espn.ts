@@ -125,6 +125,8 @@ async function main() {
 async function syncScores(sql: Pool, from: string, to: string, dryRun: boolean) {
   const { rows } = await sql.query<StoredGameRow & { date: string }>(`
     select g.id,
+           g.external_id          as "externalId",
+           g.tip_off_utc          as "tipOffUtc",
            g.date::text            as date,
            ht.abbreviation         as "homeAbbr",
            at.abbreviation         as "awayAbbr",
