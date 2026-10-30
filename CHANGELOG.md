@@ -1,5 +1,10 @@
 # Release history
 
+## 1.3.4 — 2026-10-30
+
+- Update the pinned Python setup Action and install only the Chromium headless shell used by the browser gate. Preserve all release checks and data publication schedules.
+- Document the measured ESPN/hoopR shot-source comparison and its unresolved accounting and coordinate differences. Keep the production shot source unchanged.
+
 ## 1.3.3 — 2026-10-30
 
 - Open Expected Shot Value on the current season, with its unavailable-data guide when no shot grid is published. Keep explicitly selected historical seasons and map views.
