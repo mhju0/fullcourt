@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.7 — 2026-10-30
+
+- Request ESPN scoreboards with the explicit game limit already used by Shooting, recovering date URLs that returned empty bodies. Keep invalid-response rejection, daily failure reporting and publication safeguards.
+
 ## 1.3.6 — 2026-10-30
 
 - Record safe collection failure reasons in staged candidates and GitHub Actions summaries, including Shot Value timeouts, HTTP failures, empty responses and rejected data. Preserve publication statuses, retry budgets and last-good snapshots.

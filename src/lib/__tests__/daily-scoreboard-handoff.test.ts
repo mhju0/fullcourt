@@ -95,6 +95,34 @@ it("shares one validated final scoreboard between the real score and context scr
   expect(process.exitCode ?? 0).toBe(0);
 });
 
+it("requests the selected Eastern date with an explicit event limit in both scripts", async () => {
+  const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify(final)));
+  vi.stubGlobal("fetch", fetch);
+  await scores();
+  vi.stubEnv("DAILY_SCOREBOARD_RUN_ID", "fresh-context-invocation");
+  await context();
+  expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261029&limit=1000",
+    "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261029&limit=1000",
+  ]);
+  expect(mock.contextWrites).toEqual([[1, 0, final.events[0].competitions[0].date, false, null]]);
+});
+
+it.each(["", "not json", JSON.stringify({ error: "invalid scoreboard" })])(
+  "keeps an empty or invalid response degraded without caching it: %j", async body => {
+    const fetch = vi.fn().mockImplementation(async () => new Response(body));
+    vi.stubGlobal("fetch", fetch);
+    await scores();
+    expect(process.exitCode).toBe(2);
+    await context();
+    expect(process.exitCode).toBe(2);
+    expect(mock.contextWrites).toEqual([]);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(mock.files.has("ml/data/officials/sb-20261029.json")).toBe(false);
+    expect([...mock.files.keys()].some(path => path.includes("/scoreboards/"))).toBe(false);
+  }
+);
+
 it("retries a failed score fetch without falling back to an older persistent scoreboard", async () => {
   mock.files.set("ml/data/officials/sb-20261029.json", JSON.stringify({ events: [] }));
   const fetch = vi.fn().mockRejectedValueOnce(new Error("upstream unavailable"))

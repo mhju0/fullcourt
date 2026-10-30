@@ -159,7 +159,7 @@ async function main() {
       try {
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         const sb: any = readInvocationScoreboard(date, byDate.get(date)!) ?? await fetchJsonCached(
-          `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
+          `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}&limit=1000`,
           `sb-${compact}.json`,
           refresh
         );
