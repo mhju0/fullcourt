@@ -217,6 +217,27 @@ it.each(["scheduled", "live", "ambiguous", "other-date"])(
   }
 );
 
+it.each(["other-date", "missing-date", "invalid-date"])(
+  "refetches before consuming a mixed same-pair receipt with %s", async reason => {
+    const competition = final.events[0].competitions[0];
+    const date = reason === "other-date" ? "2026-10-31T00:00:00Z"
+      : reason === "invalid-date" ? "invalid" : undefined;
+    const poisoned = { ...final.events[0], id: "same-pair-other-event", date, competitions: [{
+      ...competition, date, neutralSite: true, venue: { address: { city: "Wrong venue" } },
+      competitors: competition.competitors.map(team => ({
+        ...team, linescores: Array.from({ length: 6 }, () => ({ value: 20 })),
+      })),
+    }] };
+    const fetch = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ events: [...final.events, poisoned] })))
+      .mockResolvedValueOnce(new Response(JSON.stringify(final)));
+    vi.stubGlobal("fetch", fetch);
+    await scores();
+    await context();
+    expect(mock.contextWrites).toEqual([[1, 0, competition.date, false, null]]);
+    expect(fetch).toHaveBeenCalledTimes(2);
+  }
+);
+
 it("refetches once for the date when another game becomes final between stages", async () => {
   const later = { ...final.events[0], id: "later-final", competitions: [{
     ...final.events[0].competitions[0],

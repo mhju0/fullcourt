@@ -28,8 +28,9 @@ correction path. Existing date, identity, future-time and transaction checks sti
 
 The score and context stages share validated scoreboard responses within one daily invocation.
 Temporary receipts bind the raw response to its date, hash and invocation ID. Context reuses a
-response only when every selected completed game has one matching final event on that Eastern
-date. Missing or invalid receipts and newly completed games cause a fresh request. The daily
+response only when each selected game has a unique team-pair event in the entire response,
+and that event is final on the requested Eastern date. Missing or invalid receipts, ambiguous
+pairings and newly completed games cause a fresh request. The daily
 context stage retains `--refresh`, so a failed handoff cannot fall back to an older persistent
 cache. Standalone cache and `--refresh` behavior are unchanged.
 

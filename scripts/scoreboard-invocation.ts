@@ -41,9 +41,8 @@ export function readInvocationScoreboard(
     if (!Array.isArray(payload?.events)) return null;
     const events = parseScoreboard(payload);
     for (const target of targets) {
-      const matching = events.filter(event => event.date === date
-        && event.homeAbbr === target.home && event.awayAbbr === target.away);
-      if (matching.length !== 1 || matching[0].status !== "final") return null;
+      const matching = events.filter(event => event.homeAbbr === target.home && event.awayAbbr === target.away);
+      if (matching.length !== 1 || matching[0].date !== date || matching[0].status !== "final") return null;
     }
     return payload;
   } catch {
