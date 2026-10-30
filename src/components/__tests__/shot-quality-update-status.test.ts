@@ -4,7 +4,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ShotQualityContent } from "@/components/shot-quality-content";
 
 const state = vi.hoisted(() => ({ status: "failed", search: "season=2026-27", checkedAt: "2026-10-29T16:54:50.509Z",
-  generatedAt: "2026-10-22T12:00:00Z", hasCells: false, failure: false, reads: [] as string[] }));
+  generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", hasCells: false, failure: false, reads: [] as string[] }));
+vi.mock("@/components/copy-finding-button", () => ({
+  CopyFindingButton: ({ text }: { text: string }) => createElement("button", { "data-copy-finding": text }, "Copy this view"),
+}));
 vi.mock("@/hooks/useSeasonUrl", () => ({
   usePageQuery: () => ({ params: new URLSearchParams(state.search), update: vi.fn() }),
 }));
@@ -14,9 +17,11 @@ vi.mock("swr", () => ({ default: (key: string) => {
   return { data: {
     season, latestPublishedSeason: "2025-26", activeModel: "gbm-v1", cells: state.hasCells ? [{
       cellX: 0, cellY: 0, zoneBasic: "Restricted Area", zoneRange: "Less Than 8 ft.", zoneArea: "Center(C)",
-      fga: 1, fgm: 0, fg3a: 0, fg3m: 0, baseline: null, gbm: null,
+      fga: 1, fgm: 0, fg3a: 0, fg3m: 0,
+      baseline: state.models === "none" ? null : { pMake: .5, expectedEfg: .5, xpps: 1 },
+      gbm: state.models === "complete" ? { pMake: .6, expectedEfg: .6, xpps: 1.2 } : null,
     }] : [], meta: { cellCount: state.hasCells ? 1 : 0, totalFga: state.hasCells ? 1 : 0, publication: {
-      source: "nba-stats-snapshot", checkedAt: state.checkedAt, updateStatus: state.status, generatedAt: state.generatedAt,
+      source: state.source, checkedAt: state.checkedAt, updateStatus: state.status, generatedAt: state.generatedAt,
       firstGameDate: "2026-10-21", lastGameDate: "2026-10-21", gameCount: 1, droppedShotCount: 0,
     } },
   }, error: state.failure ? new Error("Provider unavailable") : undefined, isLoading: false };
@@ -26,7 +31,7 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(new Date("2026-10-29T17:00:00Z"));
   Object.assign(state, { status: "failed", search: "season=2026-27", checkedAt: "2026-10-29T16:54:50.509Z",
-    generatedAt: "2026-10-22T12:00:00Z", hasCells: false, failure: false, reads: [] });
+    generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", hasCells: false, failure: false, reads: [] });
 });
 afterEach(() => vi.useRealTimers());
 
@@ -90,5 +95,95 @@ describe("shot publication update status", () => {
     expect(html).not.toContain("The latest update failed");
     state.generatedAt = "2026-10-22";
     expect(renderToStaticMarkup(createElement(ShotQualityContent))).toContain("Snapshot generated Oct 22, 2026.");
+  });
+
+  it("labels official web snapshots truthfully without implying model publication", () => {
+    state.hasCells = true;
+    state.source = "nba-web-snapshot";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain("NBA.com official play-by-play");
+    expect(html).not.toContain("NBA Stats ShotChartDetail");
+    expect(html).not.toContain("Historical database grid.");
+    expect(html).toContain("Model estimates are awaiting publication. The map shows observed shot attempts.");
+    expect(html).toContain("Snapshot generated Oct 22, 2026, 8:00 AM ET.");
+  });
+
+  it("retains the existing Stats provider label for v1 snapshots", () => {
+    state.hasCells = true;
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain("NBA Stats ShotChartDetail");
+    expect(html).not.toContain("NBA.com official play-by-play");
+  });
+
+  it.each(["value", "diff"])("keeps raw-only explicit %s unavailable instead of substituting shot attempts", mode => {
+    state.hasCells = true;
+    state.source = "nba-web-snapshot";
+    state.search = `season=2026-27&mode=${mode}`;
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(state.reads).toEqual(["/api/shot-quality?season=2026-27"]);
+    expect(html).toContain('value="2026-27" selected=""');
+    expect(html).toMatch(new RegExp(`<button[^>]*aria-pressed="true"[^>]*>${mode === "value" ? "EXPECTED eFG%" : "MODEL DIFFERENCE"}</button>`));
+    expect(html).toContain("MODEL ESTIMATES NOT AVAILABLE");
+    expect(html).toContain("Model estimates have not been published for this season. Choose Shot attempts to view observed shots.");
+    expect(html).not.toContain('aria-label="Actual shot attempts:');
+    expect(html).not.toContain("The map shows observed shot attempts.");
+    expect(html).not.toContain("Marker size shows shot attempts.");
+    expect(html).not.toContain("Copy this view");
+    expect(html).not.toContain("data-copy-finding");
+  });
+
+  it.each(["", "&mode=actual"])("keeps raw attempts visible and shareable for the actual view: %s", mode => {
+    state.hasCells = true;
+    state.source = "nba-web-snapshot";
+    state.search = `season=2026-27${mode}`;
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain('aria-label="Actual shot attempts:');
+    expect(html).toContain("Copy this view");
+    expect(html).toContain("observed shot attempts by location");
+    expect(html).not.toContain("Model estimates describe shot locations");
+    expect(html).not.toContain("MODEL ESTIMATES NOT AVAILABLE");
+  });
+
+  it.each(["partial", "complete"])("preserves historical %s models in the expected-value view", models => {
+    state.hasCells = true;
+    state.models = models;
+    state.source = "database";
+    state.search = "season=2025-26&mode=value";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain('aria-label="Zone average:');
+    expect(html).toContain("Copy this view");
+    expect(html).not.toContain("MODEL ESTIMATES NOT AVAILABLE");
+  });
+
+  it("does not share an incomplete difference view", () => {
+    state.hasCells = true;
+    state.models = "partial";
+    state.search = "season=2025-26&mode=diff";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain("MODEL COMPARISON INCOMPLETE");
+    expect(html).not.toContain("Copy this view");
+    expect(html).not.toContain('aria-label="MODEL DIFFERENCE:');
+  });
+
+  it("keeps a complete historical difference view shareable", () => {
+    state.hasCells = true;
+    state.models = "complete";
+    state.search = "season=2025-26&mode=diff";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain('aria-label="MODEL DIFFERENCE:');
+    expect(html).toContain("Copy this view");
+    expect(html).not.toContain("MODEL COMPARISON INCOMPLETE");
+  });
+
+  it("limits completed-slate provenance to v2 while preserving the legacy caveat", () => {
+    state.hasCells = true;
+    state.source = "nba-web-snapshot";
+    const current = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(current).toContain("Collected from NBA.com’s completed-game slate.");
+    expect(current).not.toContain("completeness against the NBA schedule has not been established");
+    state.source = "nba-stats-snapshot";
+    const legacy = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(legacy).toContain("completeness against the NBA schedule has not been established");
+    expect(legacy).not.toContain("Collected from NBA.com’s completed-game slate.");
   });
 });

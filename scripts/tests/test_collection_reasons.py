@@ -75,11 +75,13 @@ class ShotReasonTests(unittest.TestCase):
 
 class ParentReasonTests(unittest.TestCase):
     def collect(self, child_reason, code=1):
+        self.child_calls = []
         with tempfile.TemporaryDirectory() as directory:
             stage = Path(directory)
             summary = stage / "summary.md"
 
             def child(*args, reason_path=None, **kwargs):
+                self.child_calls.append((args, reason_path))
                 if reason_path is not None and child_reason is not None:
                     Path(reason_path).write_bytes(child_reason if isinstance(child_reason, bytes)
                                                   else json.dumps(child_reason).encode())
@@ -96,6 +98,14 @@ class ParentReasonTests(unittest.TestCase):
             text = summary.read_text()
             self.assertNotIn(SECRET, json.dumps(candidate) + text)
             return candidate, text
+
+    def test_official_web_collector_has_a_bounded_process_and_safe_reason_channel(self):
+        self.collect(None)
+        self.assertEqual(len(self.child_calls), 1)
+        (command, timeout), reason_path = self.child_calls[0]
+        self.assertEqual(command[:4], [sys.executable, "scripts/publish_nba_web_shot_grid.py", "--season", "2026-27"])
+        self.assertEqual(timeout, 900)
+        self.assertEqual(reason_path.name, "shot-quality-reason.json")
 
     def test_parent_surfaces_only_allowlisted_codes_and_keeps_other_modules_independent(self):
         candidate, summary = self.collect({"schemaVersion": 1, "reason": "http-403"})

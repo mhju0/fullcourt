@@ -159,9 +159,9 @@ def main():
                     raise ValueError("Prior source hash differs")
                 code = collect_officiating(args.out, season, body)
             else:
-                command = [sys.executable, "scripts/publish_current_shot_grid.py", "--season", season, "--output", str(args.out / f"{name}.json")]
+                command = [sys.executable, "scripts/publish_nba_web_shot_grid.py", "--season", season, "--output", str(args.out / f"{name}.json")]
                 reason_path = args.out / "shot-quality-reason.json"
-                code = run(command, 90, reason_path=reason_path)
+                code = run(command, 900, reason_path=reason_path)
                 entry["reason"] = read_failure_reason(reason_path)
             if code == 3:
                 entry["status"] = "unavailable"

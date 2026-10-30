@@ -497,6 +497,7 @@ export function ShotQualityContent() {
   const cells = useMemo(() => data?.cells ?? [], [data])
   const modelCoverage = data?.meta.publication?.models
   const completeModels = Boolean(cells.length && cells.every(c => c.baseline && c.gbm))
+  const viewHasData = cells.length > 0 && (mode === "actual" || (mode === "value" ? hasModelValues : completeModels))
   const publicationMeta = data?.meta.publication
   const snapshotGenerated = formatEasternTimestamp(publicationMeta?.generatedAt ?? null)
 
@@ -542,10 +543,10 @@ export function ShotQualityContent() {
       <SeasonSelector id="shot-quality-season" season={season} onSeasonChange={setSeason} />
       <EncodingToggle mode={mode} onModeChange={setMode} modelsAvailable={hasModelValues} />
       </div>
-      {dataMatchesSelection ? (
+      {dataMatchesSelection && viewHasData ? (
         <CopyFindingButton
           key={`${season}-${mode}-${compareModels}`}
-          text={`${season} Expected Shot Value · ${mode === "actual" ? "observed shot attempts by location" : mode === "diff" ? "location model minus zone average, in percentage points" : "expected effective field-goal percentage"}. Model estimates describe shot locations, not guaranteed outcomes.`}
+          text={`${season} Expected Shot Value · ${mode === "actual" ? "observed shot attempts by location" : mode === "diff" ? "location model minus zone average, in percentage points" : "expected effective field-goal percentage"}.${mode === "actual" ? "" : " Model estimates describe shot locations, not guaranteed outcomes."}`}
           query={{ season, mode, compare: compareModels ? "1" : null, model: params.get("model") }}
         />
       ) : null}
@@ -609,18 +610,18 @@ export function ShotQualityContent() {
 
           <div className="mb-4 flex flex-col gap-2 text-body text-[var(--term-text-muted)] [overflow-wrap:anywhere]" role="status">
             <p>Observed attempts in {cells.length.toLocaleString()} measured locations. Early-season totals describe the shots collected so far.</p>
-            {publicationMeta?.source === "nba-stats-snapshot" ? <>
-              <p>NBA Stats ShotChartDetail · {publicationMeta.gameCount?.toLocaleString()} games · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
+            {publicationMeta?.source === "nba-stats-snapshot" || publicationMeta?.source === "nba-web-snapshot" ? <>
+              <p>{publicationMeta.source === "nba-web-snapshot" ? "NBA.com official play-by-play" : "NBA Stats ShotChartDetail"} · {publicationMeta.gameCount?.toLocaleString()} games · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
               <p>{snapshotGenerated ? <>Snapshot generated {snapshotGenerated}. </> : null}{publicationMeta.droppedShotCount?.toLocaleString()} attempts outside the map or without coordinates are excluded.</p>
-              <p>Coverage is the games returned by the source; completeness against the NBA schedule has not been established.</p>
+              <p>{publicationMeta.source === "nba-web-snapshot" ? "Collected from NBA.com’s completed-game slate." : "Coverage is the games returned by the source; completeness against the NBA schedule has not been established."}</p>
             </> : <p>Historical database grid. Source collection date and game coverage are unavailable.</p>}
-            {hasModelValues ? <p>Model coverage: zone average {modelCoverage?.["baseline-zone-v1"].coveredCells ?? cells.filter(c => c.baseline).length}/{cells.length} cells; location model {modelCoverage?.["gbm-v1"].coveredCells ?? cells.filter(c => c.gbm).length}/{cells.length} cells. {completeModels ? "Both surfaces cover every location." : "Incomplete surfaces retain unavailable locations."} Model training period is unavailable for these published surfaces.</p> : <p>Model estimates are awaiting publication. The map shows observed shot attempts.</p>}
+            {hasModelValues ? <p>Model coverage: zone average {modelCoverage?.["baseline-zone-v1"].coveredCells ?? cells.filter(c => c.baseline).length}/{cells.length} cells; location model {modelCoverage?.["gbm-v1"].coveredCells ?? cells.filter(c => c.gbm).length}/{cells.length} cells. {completeModels ? "Both surfaces cover every location." : "Incomplete surfaces retain unavailable locations."} Model training period is unavailable for these published surfaces.</p> : <p>Model estimates are awaiting publication.{mode === "actual" ? " The map shows observed shot attempts." : ""}</p>}
           </div>
           {mode === "actual" ? <p className="mb-4 text-body text-[var(--term-text-muted)]">Larger, darker squares mark more shot attempts. Counts describe observed volume at each location.</p> : hasModelValues ? <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} /> : null}
 
-          {mode === "actual" || !hasModelValues ? (
+          {mode === "actual" ? (
             <div className="mx-auto w-full max-w-lg"><ShotCourt cells={cells} scaleFga={stats.scaleFga} getValue={c => c.fga} getColor={v => seqColor(v / stats.scaleFga)} formatValue={v => `${v.toLocaleString()} attempts`} title="Actual shot attempts" subtitle="OBSERVED VOLUME · REGULAR SEASON" /></div>
-          ) : mode === "value" ? (
+          ) : !hasModelValues ? <MessageCard tone="muted" title="MODEL ESTIMATES NOT AVAILABLE" body="Model estimates have not been published for this season. Choose Shot attempts to view observed shots." /> : mode === "value" ? (
             <ShotModelComparison cells={cells} scaleFga={stats.scaleFga} getColor={seqColorFor} formatValue={fmtEfg} />
           ) : !completeModels ? <MessageCard tone="muted" title="MODEL COMPARISON INCOMPLETE" body="A model difference requires both estimates at every location. Inspect the available values in Expected eFG%." /> : (
             <div className="mx-auto w-full md:max-w-md">
@@ -636,9 +637,9 @@ export function ShotQualityContent() {
             </div>
           )}
 
-          <p className="mt-3" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+          {viewHasData ? <p className="mt-3" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
             Marker size shows shot attempts.
-          </p>
+          </p> : null}
         </div>
       )}
     </div>

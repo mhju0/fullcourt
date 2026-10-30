@@ -464,7 +464,7 @@ export interface ShotQualityResponse {
 export interface ShotQualityPublication {
   checkedAt?: string | null;
   updateStatus?: "published" | "unavailable" | "failed" | "bundled";
-  source: "database" | "nba-stats-snapshot";
+  source: "database" | "nba-stats-snapshot" | "nba-web-snapshot";
   generatedAt: string | null;
   firstGameDate: string | null;
   lastGameDate: string | null;
@@ -483,8 +483,6 @@ export interface CurrentShotQualitySnapshot {
   season: string;
   generatedAt: string;
   source: {
-    provider: "NBA Stats ShotChartDetail";
-    url: string;
     fetchedAt: string;
     firstGameDate: string;
     lastGameDate: string;
@@ -492,7 +490,16 @@ export interface CurrentShotQualitySnapshot {
     shotCount: number;
     droppedNoLocation: number;
     droppedOutsideHalfCourt: number;
-  };
+  } & ({
+    provider: "NBA Stats ShotChartDetail";
+    url: string;
+  } | {
+    provider: "NBA.com play-by-play";
+    url: "https://www.nba.com/games";
+    collectionStartedAt: string;
+    teamFieldGoalAttempts: number;
+    formatGameCounts: { hanaV3: number; ngss: number };
+  });
   cells: ShotQualityCell[];
 }
 

@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { createServer, request } from "node:http";
-import { releaseDates, releaseGame } from "../../e2e/fixtures/release-data";
+import { releaseDates, releaseGame, releaseRawShotQuality } from "../../e2e/fixtures/release-data";
 
 const port = 3100;
 const appPort = 3101;
@@ -21,6 +21,7 @@ const server = createServer((req, res) => {
     else if (url.pathname === "/api/games/upcoming") data = [];
     // The board guide reads the 3+ bucket's rate from here; with no bucket it omits the sentence.
     else if (url.pathname === "/api/analysis") data = { thresholds: [] };
+    else if (url.pathname === "/api/shot-quality") data = releaseRawShotQuality;
     else if (/^\/api\/games\/\d{4}-\d{2}-\d{2}$/.test(url.pathname)) {
       data = [releaseGame(url.pathname.split("/").at(-1)!)];
     } else {
