@@ -92,7 +92,7 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
 async function fetchScoreboard(dateKey: string): Promise<unknown> {
   const compact = dateKey.replaceAll("-", "");
   const res = await fetch(
-    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
+    `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}&limit=1000`,
     { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
   );
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
