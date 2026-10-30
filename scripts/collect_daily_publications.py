@@ -14,11 +14,14 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from zoneinfo import ZoneInfo
 from daily_publications import DATASETS, MAX_BYTES, empty_manifest, load_manifest
+from collection_failure import FAILURE_REASONS, REASON_PATH_ENV, failure_reason, read_failure_reason
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://raw.githubusercontent.com/mhju0/fullcourt/data-publications/"
 SHOOTING_BUDGET = 900
 SHOOTING_BACKOFF = (5, 15)
+STAGE_REASONS = FAILURE_REASONS | {"published", "validation-timeout", "budget-exhausted",
+                                   "no-regular-finals", "no-observed-shots", "awaiting-first-reports"}
 
 
 def fetch(path, limit=MAX_BYTES):
@@ -29,8 +32,12 @@ def fetch(path, limit=MAX_BYTES):
     return body
 
 
-def run(args, timeout):
-    completed = subprocess.run(args, cwd=ROOT, capture_output=True, timeout=timeout, check=False)
+def run(args, timeout, reason_path=None):
+    environment = None
+    if reason_path is not None:
+        reason_path.unlink(missing_ok=True)
+        environment = {**os.environ, REASON_PATH_ENV: str(reason_path)}
+    completed = subprocess.run(args, cwd=ROOT, capture_output=True, timeout=timeout, check=False, env=environment)
     # Child diagnostics may contain database connection information; only verdicts leave this process.
     return completed.returncode
 
@@ -136,11 +143,15 @@ def main():
     for name in DATASETS:
         old = previous["datasets"].get(name)
         checked = datetime.now(timezone.utc).isoformat()
-        entry = {"expectedPriorHash": old["sha256"] if old else None, "checkedAt": checked, "status": "failed"}
+        entry = {"expectedPriorHash": old["sha256"] if old else None, "checkedAt": checked,
+                 "status": "failed", "reason": "source-error"}
         candidate["datasets"][name] = entry
+        phase = "source"
         try:
             if name == "shooting":
                 entry.update(collect_shooting(args.out, season))
+                attempts = entry.get("attempts", [])
+                entry["reason"] = attempts[-1] if attempts and attempts[-1] in STAGE_REASONS else "source-error"
                 continue
             if name == "officiating":
                 body = fetch(old["path"]) if old else None
@@ -149,22 +160,35 @@ def main():
                 code = collect_officiating(args.out, season, body)
             else:
                 command = [sys.executable, "scripts/publish_current_shot_grid.py", "--season", season, "--output", str(args.out / f"{name}.json")]
-                code = run(command, 90)
+                reason_path = args.out / "shot-quality-reason.json"
+                code = run(command, 90, reason_path=reason_path)
+                entry["reason"] = read_failure_reason(reason_path)
             if code == 3:
                 entry["status"] = "unavailable"
+                entry["reason"] = "no-observed-shots" if name == "shotQuality" else "awaiting-first-reports"
             elif code == 0:
+                phase = "validation"
+                entry["reason"] = "validation-error"
                 result = subprocess.run(["node", "node_modules/tsx/dist/cli.mjs", "scripts/validate_daily_dataset.ts", name, str(args.out / f"{name}.json")], cwd=ROOT, capture_output=True, timeout=30)
                 if result.returncode == 0:
                     entry.update(status="published", **json.loads(result.stdout))
-        except Exception:
+                    entry["reason"] = "published"
+        except Exception as error:
             entry["status"] = "failed"
-        logging.info("%s: %s", name, entry["status"])
+            if phase == "validation":
+                entry["reason"] = "validation-timeout" if isinstance(error, subprocess.TimeoutExpired) else "validation-error"
+            else:
+                entry["reason"] = failure_reason(error)
+        logging.info("%s: %s; reason: %s", name, entry["status"], entry["reason"])
     (args.out / "candidate.json").write_text(json.dumps(candidate, indent=2) + "\n")
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
-        shooting = candidate["datasets"]["shooting"]
         with open(summary, "a") as stream:
-            stream.write(f"- Shooting collection: {shooting['status']}; attempts: {', '.join(shooting.get('attempts', []))}\n")
+            for name, entry in candidate["datasets"].items():
+                stream.write(f"- {name}: {entry['status']}; reason: {entry['reason']}\n")
+                if name == "shooting":
+                    attempts = [reason if reason in STAGE_REASONS else "source-error" for reason in entry.get("attempts", [])]
+                    stream.write(f"  - Attempts: {', '.join(attempts)}\n")
     # A failed module is reported visibly, while successful modules remain publishable.
     return 0
 

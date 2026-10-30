@@ -121,6 +121,19 @@ study, exclusions, amendments, and authorization boundary are in
 
 ## Offline publications
 
+`collect_daily_publications.py` records each module's collection `reason` in the staged
+candidate and Actions summary. Shot Quality reports `source-timeout`, `http-403`, `http-error`,
+`empty-response`, `invalid-response`, or `validation-error` when that cause is known;
+unclassified failures remain `source-error`. The child passes only a versioned, allowlisted
+code through a sidecar cleared before launch. Raw exceptions, URLs and child stderr are not
+included in these diagnostics. Missing or malformed sidecars yield `source-error`.
+
+A valid ShotChartDetail dataset with zero rows stays `unavailable` with `no-observed-shots`;
+this describes the response, not complete provider coverage. Shooting retains its existing
+attempt reasons and retry budget; Officiating child failures retain a generic reason unless
+the parent observes a known cause. These stage-only fields do not enter the public manifest,
+and do not change publication statuses, last-good preservation, CAS or the required Shooting gate.
+
 | Publication | Producers | Serving path |
 | --- | --- | --- |
 | Player Shooting by Rest | `fetch_shooting_data.py` → `analyze_player_shooting.py` → `export_player_rest.py` | `public/data/player-rest.json`, consumed by Shooting |

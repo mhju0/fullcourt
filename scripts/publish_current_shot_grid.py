@@ -22,6 +22,7 @@ import urllib.request
 from zoneinfo import ZoneInfo
 
 from season_window import current_season_start_year
+from collection_failure import EmptyResponse, InvalidResponse, ValidationFailure, failure_reason, write_failure_reason
 
 logger = logging.getLogger("publish_current_shot_grid")
 ENDPOINT = "https://stats.nba.com/stats/shotchartdetail"
@@ -46,7 +47,16 @@ def source_url(season: str) -> str:
 def fetch_payload(url: str, timeout: float) -> dict:
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Referer": "https://www.nba.com/", "Accept": "application/json"})
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return json.load(response)
+        body = response.read()
+    if not body.strip():
+        raise EmptyResponse()
+    try:
+        payload = json.loads(body)
+    except (json.JSONDecodeError, UnicodeDecodeError) as error:
+        raise InvalidResponse() from error
+    if not isinstance(payload, dict):
+        raise ValidationFailure()
+    return payload
 
 
 def shot_rows(payload: dict) -> list[dict]:
@@ -147,12 +157,12 @@ def build_snapshot(payload: dict, season: str, fetched_at: str, generated_at: st
 
 def publish(snapshot: dict, output: Path, expected_game_ids: list[str] | None = None) -> bool:
     if expected_game_ids is not None and not set(expected_game_ids).issubset(snapshot["source"]["gameIds"]):
-        raise ValueError("Provider shot coverage is missing expected completed games")
+        raise ValidationFailure("Provider shot coverage is missing expected completed games")
     if output.exists():
         previous = json.loads(output.read_text()).get("snapshot")
         if previous and previous["season"] == snapshot["season"]:
             if not set(previous["source"]["gameIds"]).issubset(snapshot["source"]["gameIds"]) or previous["source"]["shotCount"] > snapshot["source"]["shotCount"]:
-                raise ValueError("Provider response regressed; preserving prior snapshot")
+                raise ValidationFailure("Provider response regressed; preserving prior snapshot")
             if previous["source"]["shotCount"] == snapshot["source"]["shotCount"] and previous["cells"] == snapshot["cells"] and previous["source"]["gameIds"] == snapshot["source"]["gameIds"]:
                 return False
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -185,17 +195,20 @@ def main() -> int:
         for attempt in range(2):
             try:
                 payload = fetch_payload(source_url(args.season), args.timeout)
-                snapshot = build_snapshot(payload, args.season, datetime.now(timezone.utc).isoformat())
+                try:
+                    snapshot = build_snapshot(payload, args.season, datetime.now(timezone.utc).isoformat())
+                except (ValueError, TypeError, KeyError, AttributeError) as error:
+                    raise ValidationFailure() from error
                 if snapshot is not None:
                     break
-            except Exception:
+            except Exception as error:
                 if attempt == 1:
                     raise
-                logger.warning("Shot fetch failed; retrying once", exc_info=True)
+                logger.warning("Shot fetch failed (%s); retrying once", failure_reason(error))
             if attempt == 0:
                 time.sleep(1)
         if snapshot is None:
-            logger.info("Provider has not published shots for %s; prior artifact preserved", args.season)
+            logger.info("Provider response contains no shots for %s; prior artifact preserved", args.season)
             return 3
         expected = json.loads(args.expected_game_ids.read_text()) if args.expected_game_ids else None
         if expected is not None and (not isinstance(expected, list) or any(not isinstance(value, str) for value in expected)):
@@ -203,8 +216,9 @@ def main() -> int:
         changed = publish(snapshot, args.output, expected)
         logger.info("%s %s: %d games, %d shots, %d cells", "Published" if changed else "Unchanged", args.season, len(snapshot["source"]["gameIds"]), snapshot["source"]["shotCount"], len(snapshot["cells"]))
         return 0
-    except Exception:
-        logger.exception("Shot publication failed; prior artifact preserved")
+    except Exception as error:
+        write_failure_reason(error)
+        logger.error("Shot publication failed (%s); prior artifact preserved", failure_reason(error))
         return 1
 
 
