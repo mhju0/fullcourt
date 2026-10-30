@@ -57,6 +57,7 @@ config({ path: ".env.local" });
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import type { Pool } from "pg";
 import { writeStageSummary } from "./pipeline-stage-summary";
+import { retainInvocationScoreboard } from "./scoreboard-invocation";
 
 import {
   parseScoreboard,
@@ -100,6 +101,7 @@ async function fetchScoreboard(dateKey: string): Promise<unknown> {
   if (!Array.isArray(parsed?.events)) throw new Error("Invalid scoreboard: events must be an array");
   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
   writeFileSync(`${CACHE_DIR}/sb-${compact}.json`, body);
+  retainInvocationScoreboard(dateKey, body);
   return parsed;
 }
 
