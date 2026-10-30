@@ -221,7 +221,10 @@ async function main() {
               [u.id, u.overtimePeriods, u.tipOffUtc, u.neutralSite, u.neutralVenueCity] as const
           )
         )}) as v(id, ot, tip, neutral, city)
-        where g.id = v.id::int`;
+        where g.id = v.id::int
+          and (g.overtime_periods, g.tip_off_utc, g.neutral_site, g.neutral_venue_city)
+            is distinct from
+              (coalesce(v.ot::int, g.overtime_periods), v.tip::timestamptz, v.neutral::boolean, v.city::varchar)`;
       written += res.count ?? chunk.length;
       if (i % (CHUNK * 10) === 0) console.log(`  wrote ${written}/${updates.length}`);
     }

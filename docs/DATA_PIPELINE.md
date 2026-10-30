@@ -23,6 +23,20 @@ The in-season sequence is:
    games are read from the schedule, played or not (D-82); a finished one brings its real
    overtime and margin, an unplayed one neither.
 
+Score sync includes the stored event identity and tip time required by the guarded future-tip
+correction path. Existing date, identity, future-time and transaction checks still govern writes.
+
+The score and context stages share validated scoreboard responses within one daily invocation.
+Temporary receipts bind the raw response to its date, hash and invocation ID. Context reuses a
+response only when every selected completed game has one matching final event on that Eastern
+date. Missing or invalid receipts and newly completed games cause a fresh request. The daily
+context stage retains `--refresh`, so a failed handoff cannot fall back to an older persistent
+cache. Standalone cache and `--refresh` behavior are unchanged.
+
+Context writes compare the effective overtime, tip, neutral-site flag and city in SQL.
+Unchanged values do not update a row. Missing provider overtime still preserves stored
+overtime, and equivalent timestamp offsets compare as the same instant.
+
 The score route also rescores fatigue, narrowly: once it stores a night's finals, the next game
 of each finalized team is rescored if it is today or tomorrow (ET) and has not tipped off, so
 that night's overtime and margin are in the row before the game (D-83).
