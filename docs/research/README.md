@@ -5,6 +5,8 @@ coverage. Current officiating figures come from the [publication pipeline](../OF
 
 | Question | Record |
 | --- | --- |
+| Why is current-season Shot Value missing? | [Collection diagnosis, 2026-10-30](2026-10-30-shot-value-collection.md) |
+| Can ESPN or hoopR replace the shot source? | [Measured source comparison, 2026-10-30](2026-10-30-shot-source-comparison.md) |
 | Do stored fatigue scores and picks follow from the stored games? | [Recompute audit, 2026-10-11](2026-10-11-fatigue-recompute-audit.md) |
 | Is NBA home advantage shrinking over time? | [Home advantage trend, data and research](2026-09-11-home-advantage-trend.md) |
 | What fan questions motivated Officiating? | [Fan questions](2026-09-06-referee-fan-questions.md) |
