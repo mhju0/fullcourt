@@ -72,6 +72,7 @@ polling can prevent network idle. Regression assertions are in `alignment-law.sp
 | --- | --- |
 | `.github/workflows/ci.yml` | Correctness/build checks, secret-free browser smoke, real disposable PostgreSQL contracts; required `verify` aggregates all three |
 | `.github/workflows/daily-update.yml` | Season-gated daily ingest at 21:17 UTC; blocked manual sources reject before secret use |
+| `.github/workflows/season-publications.yml` | Current-season observations at 10:50 and 21:50 UTC; isolated collection, then validated publication to `data-publications` with required Shooting health |
 | `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics, plus a check that the daily season gate reads ESPN's dates rather than the calendar fallback; not proof of successful data ingestion |
 | `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update; collection runs read-only, and only the `propose` job can push the data branch and open its PR |
 | `.github/workflows/maintenance-health.yml` | Daily scheduled-run completion monitor; weekly full dependency audit |
@@ -173,7 +174,11 @@ It does not prove hosted preview connectivity, provider data, physical-device be
 accessibility outside those flows. The fixture spec is excluded from the full connected suite.
 
 CI transfers only its credential-free `.next` build to the browser job, excluding cache; test
-failure reports are retained seven days. The disposable PostgreSQL 18 service uses fixed
+failure reports are retained seven days. The browser gate installs only Chromium's headless
+shell and system dependencies, matching both smoke projects' default headless configuration.
+It skips the unused full browser download; it does not cache browser binaries. Keep this
+installation aligned with the smoke configuration if a project later needs a browser channel
+or headed mode. The disposable PostgreSQL 18 service uses fixed
 loopback port 55433 and `fullcourt_ci_disposable`. Test-only SQL initializes an empty service;
 it is never a production schema migration. The legacy restore replay URL guard is preserved.
 `verify` rejects failed, cancelled, skipped and missing prerequisites. No PR job receives
@@ -207,6 +212,12 @@ The full dependency audit is weekly/manual and advisory for known development fi
 transport/parsing failures fail the workflow. The production audit remains required. JSON and
 counts retain scope, commit and pnpm version. Do not blanket-override all transitive findings.
 All these workflows require integration into main before scheduled behavior can be observed.
+
+Current-season publication isolates each module's collection result and retains its last
+valid public blob when a module fails. The main-only publisher writes `data-publications`,
+then `--require-shooting` verifies this run's Shooting result; a Shooting failure fails the
+job after other valid modules are published. An overall successful run is not proof that
+every module refreshed; inspect the per-module summary and public manifest checks.
 
 The Node-only maintenance monitor and provider probe disable setup-node package-manager auto-caching. Neither installs pnpm; the pinned action otherwise detects the root packageManager and fails before the monitor starts. The dependencies job retains its pnpm setup/cache. The release-gate contracts scan all workflow jobs for this boundary, preserving cache use only where pnpm is installed first.
 
