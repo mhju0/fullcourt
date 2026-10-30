@@ -1,5 +1,10 @@
 # Release history
 
+## 1.3.9 — 2026-10-31
+
+- Restore current-season observed shot collection from validated official NBA game pages, with explicit feed provenance and separate accounting for team attempts without coordinates. Preserve historical publications and unavailable model estimates.
+- Show an unavailable-model guide for raw-only Expected eFG% and Model Difference links, and keep copied findings consistent with the displayed data.
+
 ## 1.3.8 — 2026-10-31
 
 - Add a read-only release verification command for canonical deployment identity, CI, live database health and publication integrity. Report recorded source failures separately from verification errors.

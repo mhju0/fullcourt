@@ -1,4 +1,4 @@
-import type { FatigueInfo, GameDateCount, GameResponse } from "../../src/types";
+import type { FatigueInfo, GameDateCount, GameResponse, ShotQualityResponse } from "../../src/types";
 
 const homeFatigue: FatigueInfo = {
   score: 1, isBackToBack: false, is3In4: false, travelDistanceMiles: 0,
@@ -32,3 +32,22 @@ export function releaseGame(date: string): GameResponse {
     seasonOpeners: { home: false, away: false },
   };
 }
+
+// Synthetic raw cells and publication metadata exercise the NBA-web display contract only.
+export const releaseRawShotQuality: ShotQualityResponse = {
+  season: "2024-25", latestPublishedSeason: "2024-25", previousPublishedSeason: "2023-24", activeModel: "gbm-v1",
+  cells: [
+    { cellX: 0, cellY: 1, zoneBasic: null, zoneRange: null, zoneArea: null, fga: 10, fgm: 4, fg3a: 0, fg3m: 0, gbm: null, baseline: null },
+    { cellX: 21, cellY: 3, zoneBasic: null, zoneRange: null, zoneArea: null, fga: 4, fgm: 1, fg3a: 4, fg3m: 1, gbm: null, baseline: null },
+    { cellX: 8, cellY: 18, zoneBasic: null, zoneRange: null, zoneArea: null, fga: 6, fgm: 2, fg3a: 0, fg3m: 0, gbm: null, baseline: null },
+  ],
+  meta: { cellCount: 3, totalFga: 20, publication: {
+    source: "nba-web-snapshot", updateStatus: "published", checkedAt: "2024-12-25T13:00:00Z",
+    generatedAt: "2024-12-25T12:00:00Z", firstGameDate: "2024-12-24", lastGameDate: "2024-12-24",
+    gameCount: 1, sourceShotCount: 20, droppedShotCount: 0,
+    models: {
+      "gbm-v1": { coveredCells: 0, totalCells: 3, ready: false, trainingPeriod: null },
+      "baseline-zone-v1": { coveredCells: 0, totalCells: 3, ready: false, trainingPeriod: null },
+    },
+  } },
+};

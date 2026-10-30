@@ -162,3 +162,44 @@ test("Games press feedback honors reduced motion", async ({ page }, info) => {
   if (reduced) expect(await previous.evaluate(el => getComputedStyle(el).transitionDuration)).toBe("0s");
   await page.mouse.up();
 });
+
+test("raw Shot Value views preserve the selected season and explain unavailable models", async ({ page }, info) => {
+  await page.clock.setFixedTime(new Date("2024-12-25T17:00:00Z"));
+  await page.goto("/shot-quality?season=2024-25&mode=actual");
+  const season = page.getByLabel("SEASON", { exact: true });
+  const rawCourt = page.getByRole("group", { name: /^Actual shot attempts: half-court/ });
+  const shotAttempts = page.getByRole("button", { name: "SHOT ATTEMPTS", exact: true });
+  const copy = page.getByRole("button", { name: "Copy this view", exact: true });
+  await expect(season).toHaveValue("2024-25");
+  await expect(rawCourt).toBeVisible();
+  await expect(page.getByText(/NBA.com official play-by-play/)).toBeVisible();
+  await expect(page.getByText("Collected from NBA.com’s completed-game slate.", { exact: true })).toBeVisible();
+  await expect(copy).toBeVisible();
+  await expect(copy).toBeEnabled();
+  await expectAccessible(page);
+  const actualScreenshot = info.outputPath("shot-value-raw-actual.png");
+  await page.screenshot({ path: actualScreenshot, fullPage: true });
+  await info.attach("Synthetic raw Shot Value", { path: actualScreenshot, contentType: "image/png" });
+
+  for (const mode of ["value", "diff"] as const) {
+    await page.goto(`/shot-quality?season=2024-25&mode=${mode}`);
+    await expect(page).toHaveURL(new RegExp(`/shot-quality\\?season=2024-25&mode=${mode}$`));
+    await expect(season).toHaveValue("2024-25");
+    await expect(page.getByRole("button", { name: mode === "value" ? "EXPECTED eFG%" : "MODEL DIFFERENCE", exact: true })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByText("MODEL ESTIMATES NOT AVAILABLE", { exact: true })).toBeVisible();
+    await expect(page.getByText("Model estimates have not been published for this season. Choose Shot attempts to view observed shots.", { exact: true })).toBeVisible();
+    await expect(rawCourt).toHaveCount(0);
+    await expect(copy).toHaveCount(0);
+    if (mode === "value") await expectAccessible(page);
+    const guideScreenshot = info.outputPath(`shot-value-raw-${mode}-guide.png`);
+    await page.screenshot({ path: guideScreenshot, fullPage: true });
+    await info.attach(`Synthetic raw ${mode} guide`, { path: guideScreenshot, contentType: "image/png" });
+    await expect(shotAttempts).toBeEnabled();
+    await shotAttempts.click();
+    await expect(page).toHaveURL(/\/shot-quality\?season=2024-25&mode=actual$/);
+    await expect(season).toHaveValue("2024-25");
+    await expect(rawCourt).toBeVisible();
+    await expect(copy).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+  }
+});

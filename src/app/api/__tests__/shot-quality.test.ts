@@ -26,6 +26,14 @@ function snapshotArtifact(season: string, day: string) {
     gameIds: [`002${season.slice(2, 4)}00001`], shotCount: 2, droppedNoLocation: 0, droppedOutsideHalfCourt: 0,
   }, cells: [{ cellX: 0, cellY: 0, zoneBasic: null, zoneRange: null, zoneArea: null, fga: 2, fgm: 1, fg3a: 0, fg3m: 0, gbm: null, baseline: null }] } };
 }
+function webSnapshotArtifact(season: string, day: string) {
+  const legacy = snapshotArtifact(season, day);
+  return { schemaVersion: 2, snapshot: { ...legacy.snapshot, source: {
+    ...legacy.snapshot.source, provider: "NBA.com play-by-play", url: "https://www.nba.com/games",
+    collectionStartedAt: `${day}T11:00:00Z`, teamFieldGoalAttempts: 0,
+    formatGameCounts: { hanaV3: 0, ngss: 1 },
+  } } };
+}
 
 describe("GET /api/shot-quality", () => {
   beforeEach(() => {
@@ -93,6 +101,41 @@ describe("GET /api/shot-quality", () => {
     expect(body.data).toMatchObject({ season: "2026-27", latestPublishedSeason: "2026-27", previousPublishedSeason: "2025-26" });
     expect(body.data.meta.publication.source).toBe("nba-stats-snapshot");
     expect(body.data.meta.totalFga).toBe(2);
+  });
+
+  it("serves current v2 raw cells with official web provenance and no historical model fallback", async () => {
+    const current = webSnapshotArtifact("2026-27", "2026-10-22");
+    daily.data = current;
+    const model = { pMake: .5, expectedEfg: .5, xpps: 1 };
+    grid.mockResolvedValue([{ ...current.snapshot.cells[0], fga: 999, gbm: model, baseline: model }]);
+    const response = await GET(request("?season=2026-27&model=gbm-v1"));
+    const body = await response.json();
+    expect(response.status).toBe(200);
+    expect(grid).not.toHaveBeenCalled();
+    expect(body.data.cells).toEqual(current.snapshot.cells);
+    expect(body.data.meta).toMatchObject({ totalFga: 2, publication: {
+      source: "nba-web-snapshot", gameCount: 1, sourceShotCount: 2, droppedShotCount: 0,
+      models: { "gbm-v1": { ready: false, coveredCells: 0 }, "baseline-zone-v1": { ready: false, coveredCells: 0 } },
+    } });
+  });
+
+  it("keeps a historical database model publication intact when an older v2 raw snapshot exists", async () => {
+    vi.setSystemTime(new Date("2027-10-23T12:00:00Z"));
+    const raw = webSnapshotArtifact("2026-27", "2026-10-22");
+    daily.data = raw;
+    const model = { pMake: .5, expectedEfg: .5, xpps: 1 };
+    grid.mockResolvedValue([{ ...raw.snapshot.cells[0], fga: 999, baseline: model, gbm: model }]);
+    const body = await (await GET(request("?season=2026-27"))).json();
+    expect(body.data.meta).toMatchObject({ totalFga: 999, publication: { source: "database", generatedAt: null } });
+    expect(body.data.cells[0]).toMatchObject({ gbm: model, baseline: model });
+  });
+
+  it("does not relabel an invalid v2 artifact as a current publication", async () => {
+    const invalid = webSnapshotArtifact("2026-27", "2026-10-22");
+    daily.data = { ...invalid, snapshot: { ...invalid.snapshot, cells: [{ ...invalid.snapshot.cells[0], zoneBasic: "Restricted Area" }] } };
+    const body = await (await GET(request("?season=2026-27"))).json();
+    expect(body.data).toMatchObject({ season: "2026-27", latestPublishedSeason: "2025-26", cells: [] });
+    expect(body.data.meta.publication).toMatchObject({ source: "database", updateStatus: "failed" });
   });
 
   it("keeps an archived raw season readable after the next raw season publishes", async () => {

@@ -128,11 +128,26 @@ unclassified failures remain `source-error`. The child passes only a versioned, 
 code through a sidecar cleared before launch. Raw exceptions, URLs and child stderr are not
 included in these diagnostics. Missing or malformed sidecars yield `source-error`.
 
-A valid ShotChartDetail dataset with zero rows stays `unavailable` with `no-observed-shots`;
-this describes the response, not complete provider coverage. Shooting retains its existing
+A valid collection with no completed regular-season shots stays `unavailable` with
+`no-observed-shots`; this describes the observed cohort, not complete provider coverage. Shooting retains its existing
 attempt reasons and retry budget; Officiating child failures retain a generic reason unless
 the parent observes a known cause. These stage-only fields do not enter the public manifest,
 and do not change publication statuses, last-good preservation, CAS or the required Shooting gate.
+
+Current Shot Value collection uses `publish_nba_web_shot_grid.py`. It reads NBA.com's
+structured game pages through explicit `hanaV3` and `ngss` adapters, reconciles ordinary
+attempts with player/team box scores, and rechecks the final-game slate before atomic output.
+Team-only attempts without coordinates contribute once to the source total and missing-location
+count. The combined missing/outside-map limit remains 2%. RAW-v2 records actual feed counts;
+zone labels and both model fields remain null. The Stats collector remains a separate manual tool.
+See the [source validation record](research/2026-10-31-nba-official-shot-source.md).
+
+The collector has an 840-second cooperative budget, three HTTP workers and an 8-second
+socket-idle timeout. The parent imposes a 900-second process limit; the collection job allows
+60 minutes for this and the other bounded modules. A failed page, changed cohort or deadline
+preserves prior output. These are upper bounds; the initial 71-game validation took 39 seconds.
+HTTP 429/5xx and transport timeouts may retry once within that budget, respecting Retry-After.
+Other HTTP errors and data/coverage validation failures do not trigger a retry.
 
 | Publication | Producers | Serving path |
 | --- | --- | --- |
