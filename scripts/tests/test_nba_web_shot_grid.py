@@ -194,7 +194,7 @@ class BoundaryTests(unittest.TestCase):
     def test_preseason_filtered_only_after_card_count_validation(self):
         slate = copy.deepcopy(SLATE)
         row = slate["gameCardFeed"]["modules"][0]["cards"][0]["cardData"]
-        row.update(seasonType="Pre Season", gameId="0012600001")
+        row.update(seasonType="Preseason", gameId="0012600001")
         self.assertEqual(len(web.parse_slate(slate, "2026-10-28", "2026-27", 12)), 11)
         with self.assertRaises(ValueError): web.parse_slate(slate, "2026-10-28", "2026-27", 11)
         row.update(seasonType="Regular Season", gameId="0022500001")
@@ -333,6 +333,23 @@ class HttpRetryTests(unittest.TestCase):
 
 
 class CollectionTests(unittest.TestCase):
+    def test_unknown_or_mispaired_competition_fails_whole_collection_before_game_fetches(self):
+        def unexpected_game(*args):
+            raise AssertionError("Unproven slate reached game parser")
+        for label, identifier in (("regular season", "0022600138"), ("Unknown", "0022600138"),
+                                  ("Preseason", "0022600138"), ("Regular Season", "0012600138"),
+                                  ("Preseason", "0012500138"), ("Pre Season", "0012600138")):
+            with self.subTest(label=label, identifier=identifier):
+                slate = copy.deepcopy(SLATE)
+                slate["allGamesInCurrentYear"] = {"2026": {f"2026-10-{day:02}": 12 if day == 28 else 0 for day in range(1, 29)}}
+                row = next(c["cardData"] for c in slate["gameCardFeed"]["modules"][0]["cards"]
+                           if c["cardData"]["gameId"] == "0022600138")
+                row.update(seasonType=label, gameId=identifier)
+                with patch.object(web, "parse_game", side_effect=unexpected_game) as games:
+                    with self.assertRaises(web.ValidationFailure):
+                        web.collect("2026-27", fetch=lambda url, budget: slate, now=lambda: NOW)
+                    games.assert_not_called()
+
     def collect(self, change=None, missing=False):
         counts = {f"2026-10-{day:02}": 0 for day in range(1, 29)}
         counts["2026-10-28"] = 1
@@ -433,7 +450,7 @@ class EmptySeasonTests(unittest.TestCase):
                 row["cardData"]["gameStatus"] = 1
                 row["cardData"]["homeTeam"]["score"] = row["cardData"]["awayTeam"]["score"] = 0
                 if preseason:
-                    row["cardData"].update(seasonType="Pre Season", gameId="0012600138")
+                    row["cardData"].update(seasonType="Preseason", gameId="0012600138")
                 slate["gameCardFeed"]["modules"][0]["cards"] = [row]
                 body = json.dumps({"props": {"pageProps": slate}}).encode()
                 body = b'<script id="__NEXT_DATA__">' + body + b'</script>'

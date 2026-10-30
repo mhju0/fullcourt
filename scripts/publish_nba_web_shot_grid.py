@@ -201,10 +201,10 @@ def parse_slate(props, day, season, expected_count):
         require(row.get("leagueId") == "00" and row.get("seasonYear") == season)
         require(instant(row.get("gameTimeUtc")).astimezone(EASTERN).date().isoformat() == day)
         require(type(row.get("gameStatus")) is int and row["gameStatus"] in (1, 2, 3))
-        require(isinstance(row.get("seasonType"), str))
-        if row["seasonType"] != "Regular Season":
+        if row.get("seasonType") == "Preseason":
+            require(re.fullmatch(r"001" + season[2:4] + r"\d{5}", identifier))
             continue
-        require(re.fullmatch(r"002" + season[2:4] + r"\d{5}", identifier))
+        require(row.get("seasonType") == "Regular Season" and re.fullmatch(r"002" + season[2:4] + r"\d{5}", identifier))
         home, away = team(row.get("homeTeam")), team(row.get("awayTeam"))
         require(home["id"] != away["id"])
         output.append({"id": identifier, "date": day, "tip": instant(row["gameTimeUtc"]),
