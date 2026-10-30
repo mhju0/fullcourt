@@ -35,6 +35,7 @@ const PUBLISHING_READERS = [
   "readFinalGamesFacts",
   "getCompletedGamesStamp",
   "getCompletedGamesWithFatigue",
+  "getCompletedGamesWithFatigueCoverage",
   "searchRegularSeasonGames",
   "getUpcomingGamesWithRA",
   "getRegularSeasonScheduleForDisparity",

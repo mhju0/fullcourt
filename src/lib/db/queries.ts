@@ -878,6 +878,27 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
     );
 }
 
+/** Count the same evidence population without transferring every historical game. */
+export async function getCompletedGamesWithFatigueCoverage(): Promise<{
+  games: number;
+  latestEvidenceDate: string | null;
+}> {
+  const homeFatigue = latestFatigueSubquery("coverage_home_latest");
+  const awayFatigue = latestFatigueSubquery("coverage_away_latest");
+  const [row] = await db
+    .select({ total: count(), latest: max(games.date) })
+    .from(games)
+    .innerJoin(homeFatigue, and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId)))
+    .innerJoin(awayFatigue, and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId)))
+    .where(publishableGames(
+      eq(games.status, "final"), isNotNull(games.homeScore), isNotNull(games.awayScore)
+    ));
+  return {
+    games: Number(row?.total ?? 0),
+    latestEvidenceDate: row?.latest ? String(row.latest) : null,
+  };
+}
+
 /**
  * Seasons with at least one published regular-season game that has not reached final status.
  *

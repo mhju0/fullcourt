@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getCompletedGamesStamp,
   getCompletedGamesWithFatigue,
+  getCompletedGamesWithFatigueCoverage,
   getIncompleteRegularSeasonSeasons,
   getIncompleteRegularSeasonSeasonsStamp,
   searchRegularSeasonGames,
@@ -15,6 +16,7 @@ import type { HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 vi.mock("@/lib/db/queries", () => ({
   getCompletedGamesStamp: vi.fn(),
   getCompletedGamesWithFatigue: vi.fn(),
+  getCompletedGamesWithFatigueCoverage: vi.fn(),
   getIncompleteRegularSeasonSeasons: vi.fn(),
   getIncompleteRegularSeasonSeasonsStamp: vi.fn(),
   searchRegularSeasonGames: vi.fn(),
@@ -22,6 +24,7 @@ vi.mock("@/lib/db/queries", () => ({
 
 const mockStamp = vi.mocked(getCompletedGamesStamp);
 const mockRows = vi.mocked(getCompletedGamesWithFatigue);
+const mockCoverage = vi.mocked(getCompletedGamesWithFatigueCoverage);
 const mockIncomplete = vi.mocked(getIncompleteRegularSeasonSeasons);
 const mockIncompleteStamp = vi.mocked(getIncompleteRegularSeasonSeasonsStamp);
 const mockSearch = vi.mocked(searchRegularSeasonGames);
@@ -117,14 +120,19 @@ describe("getHistoricalBacktest", () => {
     expect(mockRows).toHaveBeenCalledTimes(1);
   });
 
-  it("shares one read of the games with the coverage line", async () => {
+  it("reads coverage directly without loading or fingerprinting the historical rows", async () => {
     mockStamp.mockResolvedValue("1230@2025-04-13");
+    mockCoverage.mockResolvedValue({ games: 47_143, latestEvidenceDate: "2026-04-12" });
     const { getHistoricalBacktest, getHistoricalEvidenceCoverage } = await loadModule();
 
-    await getHistoricalBacktest(0);
-    await getHistoricalEvidenceCoverage();
+    expect(await getHistoricalEvidenceCoverage()).toEqual({ games: 47_143, latestEvidenceDate: "2026-04-12" });
+    expect(mockCoverage).toHaveBeenCalledOnce();
+    expect(mockRows).not.toHaveBeenCalled();
+    expect(mockStamp).not.toHaveBeenCalled();
 
+    await getHistoricalBacktest(0);
     expect(mockRows).toHaveBeenCalledTimes(1);
+    expect(mockStamp).toHaveBeenCalledOnce();
   });
 });
 
@@ -236,16 +244,18 @@ describe("searchHistoricalGameEvidence", () => {
 });
 
 describe("getHistoricalEvidenceCoverage", () => {
-  it("retains neutral sites and refreshes the cached coverage after corrections", async () => {
+  it("reads corrected aggregate coverage without consulting the historical row cache", async () => {
     mockRows.mockReset();
     mockStamp.mockReset();
-    mockStamp.mockResolvedValueOnce("v1").mockResolvedValueOnce("v1").mockResolvedValueOnce("v2");
-    mockRows.mockResolvedValueOnce([...ROWS, { ...ROWS[0], date: "2025-01-01", neutralSite: true }]).mockResolvedValueOnce(ROWS);
+    mockCoverage.mockReset();
+    mockCoverage.mockResolvedValueOnce({ games: 2, latestEvidenceDate: "2025-01-01" })
+      .mockResolvedValueOnce({ games: 1, latestEvidenceDate: "2024-12-25" });
     const { getHistoricalEvidenceCoverage } = await loadModule();
     const first = await getHistoricalEvidenceCoverage();
     expect(first).toEqual({ games: 2, latestEvidenceDate: "2025-01-01" });
-    expect(await getHistoricalEvidenceCoverage()).toBe(first);
     expect(await getHistoricalEvidenceCoverage()).toEqual({ games: 1, latestEvidenceDate: "2024-12-25" });
-    expect(mockRows).toHaveBeenCalledTimes(2);
+    expect(mockCoverage).toHaveBeenCalledTimes(2);
+    expect(mockRows).not.toHaveBeenCalled();
+    expect(mockStamp).not.toHaveBeenCalled();
   });
 });
