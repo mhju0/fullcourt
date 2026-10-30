@@ -1,13 +1,13 @@
 import {
   getCompletedGamesStamp,
   getCompletedGamesWithFatigue,
+  getCompletedGamesWithFatigueCoverage,
   getIncompleteRegularSeasonSeasons,
   getIncompleteRegularSeasonSeasonsStamp,
   searchRegularSeasonGames,
 } from "@/lib/db/queries";
 import {
   buildHistoricalBacktest,
-  summarizeHistoricalEvidenceCoverage,
   buildHistoricalGameSearch,
   gapRangeByKey,
   type HistoricalGameEvidenceRow,
@@ -34,8 +34,8 @@ export type HistoricalGameSearchRequest = HistoricalGameSearchFilters &
  * no LIMIT — and reduces them in JS. Its interface hid that, so callers treated
  * it as a getter and asked for it once per surface.
  *
- * The rows are held once, behind the stamp that covers them, and every threshold and the
- * coverage line are built from that one read. Holding per-threshold answers instead meant each
+ * The rows are held once, behind the stamp that covers them, and every threshold is
+ * built from that one read. Holding per-threshold answers instead meant each
  * new `seasonMinRA` from the query string re-ran the read (review, 2026-10-21). The pending
  * season set has its own stamp, so a season closing rebuilds the answer without re-reading
  * the games.
@@ -60,10 +60,6 @@ const builtBacktests = new WeakMap<
   HistoricalGameEvidenceRow[],
   WeakMap<Set<string>, Map<number, AnalysisResponse>>
 >();
-const builtCoverage = new WeakMap<
-  HistoricalGameEvidenceRow[],
-  { games: number; latestEvidenceDate: string | null }
->();
 
 export async function getHistoricalBacktest(seasonMinRA: number): Promise<AnalysisResponse> {
   const rows = await readCompletedRows("all");
@@ -83,10 +79,7 @@ export async function getHistoricalBacktest(seasonMinRA: number): Promise<Analys
 
 /** Coverage includes neutral sites, which the home-court venue baseline excludes. */
 export async function getHistoricalEvidenceCoverage() {
-  const rows = await readCompletedRows("all");
-  let coverage = builtCoverage.get(rows);
-  if (!coverage) builtCoverage.set(rows, (coverage = summarizeHistoricalEvidenceCoverage(rows)));
-  return coverage;
+  return getCompletedGamesWithFatigueCoverage();
 }
 
 /**

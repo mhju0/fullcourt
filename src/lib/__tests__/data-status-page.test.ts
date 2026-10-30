@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/db", () => ({ db: { execute: vi.fn().mockResolvedValue([]) } }));
+const execute = vi.hoisted(() => vi.fn().mockResolvedValue([]));
+vi.mock("@/lib/db", () => ({ db: { execute } }));
 vi.mock("@/lib/db/queries", () => ({
   getDataAsOf: vi.fn().mockResolvedValue({ finalGames: 47_143, latestFinalDate: "2026-04-12" }),
   getPublishedScheduleCoverage: vi.fn().mockResolvedValue({ games: 1, firstDate: "2026-10-20", lastDate: "2026-10-20" }),
@@ -29,6 +30,17 @@ vi.mock("@/lib/daily-publication-server", () => ({
 
 import DataStatusPage from "@/app/data-status/page";
 import { getHistoricalEvidenceCoverage } from "@/lib/rest-advantage-evidence-server";
+import { getDataAsOf, getPublishedScheduleCoverage, getLatestPublishedPlayoffSeason, getLatestPublishedShotQualitySeason } from "@/lib/db/queries";
+import { loadPlayerRestPublication } from "@/lib/player-rest-publication-server";
+
+beforeEach(() => { vi.clearAllMocks(); });
+afterEach(() => { vi.restoreAllMocks(); });
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>(yes => { resolve = yes; });
+  return { promise, resolve };
+}
 
 describe("Data Status rendered model coverage", () => {
   it("uses Eastern minutes for publication evidence and retains operational failure status", async () => {
@@ -53,5 +65,91 @@ describe("Data Status rendered model coverage", () => {
     expect(html).toContain("Unavailable");
     expect(html).not.toContain("games with fatigue evidence");
     errorLog.mockRestore();
+  });
+
+  it("starts database reads while publication data is still pending", async () => {
+    const publication = await loadPlayerRestPublication();
+    vi.clearAllMocks();
+    const held = deferred<typeof publication>();
+    vi.mocked(loadPlayerRestPublication).mockReturnValueOnce(held.promise);
+    const page = DataStatusPage();
+    try {
+      expect(execute).toHaveBeenCalledOnce();
+      expect(loadPlayerRestPublication).toHaveBeenCalledOnce();
+    } finally {
+      held.resolve(publication);
+      await page;
+    }
+  });
+
+  it("keeps every database operation sequential while the independent publication branch runs", async () => {
+    const probe = deferred<unknown[]>();
+    const games = deferred<Awaited<ReturnType<typeof getDataAsOf>>>();
+    const schedule = deferred<Awaited<ReturnType<typeof getPublishedScheduleCoverage>>>();
+    const coverage = deferred<Awaited<ReturnType<typeof getHistoricalEvidenceCoverage>>>();
+    const playoffs = deferred<string | null>();
+    const shots = deferred<string | null>();
+    let active = 0, maxActive = 0;
+    const order: string[] = [];
+    function track<T>(name: string, promise: Promise<T>) {
+      active++;
+      maxActive = Math.max(maxActive, active);
+      order.push(name);
+      return promise.finally(() => { active--; });
+    }
+    execute.mockImplementationOnce(() => track("database", probe.promise));
+    vi.mocked(getDataAsOf).mockImplementationOnce(() => track("games", games.promise));
+    vi.mocked(getPublishedScheduleCoverage).mockImplementationOnce(() => track("schedule", schedule.promise));
+    vi.mocked(getHistoricalEvidenceCoverage).mockImplementationOnce(() => track("analysis", coverage.promise));
+    vi.mocked(getLatestPublishedPlayoffSeason).mockImplementationOnce(() => track("playoffs", playoffs.promise));
+    vi.mocked(getLatestPublishedShotQualitySeason).mockImplementationOnce(() => track("shots", shots.promise));
+    const page = DataStatusPage();
+    await vi.waitFor(() => expect(order).toEqual(["database"]));
+    expect(loadPlayerRestPublication).toHaveBeenCalledOnce();
+    probe.resolve([]);
+    await vi.waitFor(() => expect(order).toEqual(["database", "games"]));
+    games.resolve({ finalGames: 2, latestFinalDate: "2026-10-28" });
+    await vi.waitFor(() => expect(order).toEqual(["database", "games", "schedule"]));
+    schedule.resolve({ games: 3, firstDate: "2026-10-20", lastDate: "2026-10-30" });
+    await vi.waitFor(() => expect(order).toEqual(["database", "games", "schedule", "analysis"]));
+    coverage.resolve({ games: 2, latestEvidenceDate: "2026-10-28" });
+    await vi.waitFor(() => expect(order).toEqual(["database", "games", "schedule", "analysis", "playoffs"]));
+    playoffs.resolve("2025-26");
+    await vi.waitFor(() => expect(order).toEqual(["database", "games", "schedule", "analysis", "playoffs", "shots"]));
+    shots.resolve("2024-25");
+    await page;
+    expect(maxActive).toBe(1);
+    expect(active).toBe(0);
+  });
+
+  it.each([
+    { title: "Game results", read: getDataAsOf },
+    { title: "Published schedules", read: getPublishedScheduleCoverage },
+    { title: "Model Results", read: getHistoricalEvidenceCoverage },
+    { title: "Playoff Rest", read: getLatestPublishedPlayoffSeason },
+    { title: "Expected Shot Value", read: getLatestPublishedShotQualitySeason },
+  ])("keeps a failed $title read isolated from the other database cards", async ({ title, read }) => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.mocked(read).mockRejectedValueOnce(new Error("database timeout"));
+    const html = renderToStaticMarkup(await DataStatusPage());
+    const cards = html.match(/<article\b[^>]*>[\s\S]*?<\/article>/g)!;
+    expect(cards.find(card => card.includes(title))).toContain("Unavailable");
+    for (const other of ["Game results", "Published schedules", "Model Results", "Playoff Rest", "Expected Shot Value"].filter(value => value !== title)) {
+      expect(cards.find(card => card.includes(other))).not.toContain("Unavailable");
+    }
+    expect(getLatestPublishedShotQualitySeason).toHaveBeenCalledOnce();
+  });
+
+  it("retains publication cards and skips dependent reads when the database probe fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    execute.mockRejectedValueOnce(new Error("connection unavailable"));
+    const html = renderToStaticMarkup(await DataStatusPage());
+    expect(getDataAsOf).not.toHaveBeenCalled();
+    expect(getPublishedScheduleCoverage).not.toHaveBeenCalled();
+    expect(getHistoricalEvidenceCoverage).not.toHaveBeenCalled();
+    expect(getLatestPublishedPlayoffSeason).not.toHaveBeenCalled();
+    expect(getLatestPublishedShotQualitySeason).not.toHaveBeenCalled();
+    expect(html).toContain("Jan 14, 2026, 10:17 PM ET");
+    expect(html).toContain("Latest current-season check: failed");
   });
 });

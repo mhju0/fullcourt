@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import scheduledTipFixture from "./fixtures/espn-scheduled-tip-change.json";
 
 const mock = vi.hoisted(() => ({
   rows: [] as object[], writes: [] as object[], end: vi.fn(), databaseError: false, writeError: false, failGameIds: [] as number[], refused: false,
+  queries: [] as string[],
 }));
 vi.mock("dotenv", () => ({ config: vi.fn() }));
 vi.mock("node:fs", () => ({ existsSync: () => true, mkdirSync: vi.fn(), writeFileSync: vi.fn() }));
@@ -9,7 +11,8 @@ vi.mock("@/lib/db/pool", () => ({
   dbPoolConfig: () => ({}),
   createDatabase: () => ({}),
   createDbPool: () => ({
-    query: async () => {
+    query: async (statement: string) => {
+      mock.queries.push(statement);
       if (mock.databaseError) throw new Error("database unavailable");
       return { rows: mock.rows };
     },
@@ -41,6 +44,7 @@ beforeEach(() => {
   vi.resetModules();
   mock.rows = [row(1, "2026-10-20"), row(2, "2026-10-21")];
   mock.writes = [];
+  mock.queries = [];
   mock.databaseError = false;
   mock.writeError = false;
   mock.failGameIds = [];
@@ -56,6 +60,7 @@ afterEach(() => {
   process.argv = originalArgv;
   process.exitCode = originalExitCode;
   vi.unstubAllGlobals();
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -66,6 +71,31 @@ async function run() {
 }
 
 describe("score sync process status", () => {
+  it("loads the stored event identity and tip before passing an authentic scheduled-tip correction to the writer", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-29T16:00:00Z"));
+    process.argv = ["node", "scripts/sync_scores_espn.ts", "2026-10-29", "2026-10-29"];
+    mock.rows = [{
+      ...row(118764, "2026-10-29"), homeAbbr: "ATL", awayAbbr: "CLE",
+      externalId: "espn-401909893", tipOffUtc: new Date("2026-10-29T23:00:00Z"),
+    }];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify(scheduledTipFixture))));
+    await run();
+    expect(mock.queries).toHaveLength(1);
+    expect(mock.queries[0]).toMatch(/g\.external_id\s+as\s+"externalId"/i);
+    expect(mock.queries[0]).toMatch(/g\.tip_off_utc\s+as\s+"tipOffUtc"/i);
+    expect(mock.writes).toEqual([expect.objectContaining({
+      gameId: 118764,
+      expectedIdentity: { date: "2026-10-29", homeAbbr: "ATL", awayAbbr: "CLE" },
+      scheduledTip: {
+        expectedExternalId: "espn-401909893",
+        expectedTipOffUtc: "2026-10-29T23:00:00.000Z",
+        tipOffUtc: "2026-10-30T00:00:00.000Z",
+      },
+    })]);
+    expect(process.exitCode ?? 0).toBe(0);
+  });
+
   it("retains good date writes and signals a failed date as degraded", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(new Response(JSON.stringify(final)))
       .mockRejectedValueOnce(new Error("feed unavailable")));

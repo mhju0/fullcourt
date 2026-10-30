@@ -73,9 +73,25 @@ function StatusCard({
   );
 }
 
+async function readDatabaseStatus() {
+  const connection = await readStatusValue("database", () => db.execute(sql`select 1`));
+  const databaseReachable = connection !== null;
+  if (!databaseReachable) {
+    return { databaseReachable, game: null, schedule: null, analysis: null, playoffSeason: null, shotSeason: null };
+  }
+  // The hosted pool has one connection; publication fetches can overlap this sequential branch.
+  const game = await readStatusValue("games", getDataAsOf);
+  const schedule = await readStatusValue("schedule", getPublishedScheduleCoverage);
+  const analysis = await readStatusValue("analysis", getHistoricalEvidenceCoverage);
+  const playoffSeason = await readStatusValue("playoffs", getLatestPublishedPlayoffSeason);
+  const shotSeason = await readStatusValue("shot-quality", getLatestPublishedShotQualitySeason);
+  return { databaseReachable, game, schedule, analysis, playoffSeason, shotSeason };
+}
+
 export default async function DataStatusPage() {
-  const [playerPayload, officiating, shots] = await Promise.all([
-    loadPlayerRestPublication(), loadOfficiatingPublication(), readDailyDatasetHistory("shotQuality"),
+  const [[playerPayload, officiating, shots], { databaseReachable, game, schedule, analysis, playoffSeason, shotSeason }] = await Promise.all([
+    Promise.all([loadPlayerRestPublication(), loadOfficiatingPublication(), readDailyDatasetHistory("shotQuality")]),
+    readDatabaseStatus(),
   ]);
   const officiatingSeasons = officiating.seasons;
   const shotCheck = shots.at(-1);
@@ -86,24 +102,6 @@ export default async function DataStatusPage() {
     .sort((a, b) => a.season.localeCompare(b.season) || a.generatedAt.localeCompare(b.generatedAt));
   const latestOfficiating = [...officiatingSeasons].sort((a, b) => a.season.localeCompare(b.season)).at(-1)!;
   const shootingCoverage = shootingHomeCoverage(playerPayload);
-
-  const connection = await readStatusValue("database", () => db.execute(sql`select 1`));
-  const databaseReachable = connection !== null;
-
-  let game = null;
-  let schedule = null;
-  let analysis = null;
-  let playoffSeason = null;
-  let shotSeason = null;
-  if (databaseReachable) {
-    // Vercel uses one connection per function. These reads can stall that slot when queued
-    // together, so keep their independent failure states while issuing them one at a time.
-    game = await readStatusValue("games", getDataAsOf);
-    schedule = await readStatusValue("schedule", getPublishedScheduleCoverage);
-    analysis = await readStatusValue("analysis", getHistoricalEvidenceCoverage);
-    playoffSeason = await readStatusValue("playoffs", getLatestPublishedPlayoffSeason);
-    shotSeason = await readStatusValue("shot-quality", getLatestPublishedShotQualitySeason);
-  }
 
   const candidate = shotSnapshots.at(-1);
   const currentShots = candidate && (!shotSeason || candidate.season >= shotSeason) ? candidate : null;

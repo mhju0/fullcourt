@@ -13,6 +13,26 @@ import daily_update
 
 
 class DailyUpdateStatusTests(unittest.TestCase):
+    def test_scoreboard_handoff_is_shared_within_one_run_and_fresh_on_retry(self):
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.dict(os.environ, {"DAILY_SUMMARY_PATH": str(Path(directory) / "summary.json")}), \
+             patch.object(daily_update, "is_in_season", return_value=True), \
+             patch.object(daily_update, "resolve_database_url", return_value="test-only"), \
+             patch.object(daily_update.subprocess, "run", return_value=SimpleNamespace(returncode=0)) as run:
+            daily_update.main()
+            first = [call.kwargs['env'] for call in run.call_args_list]
+            self.assertEqual(len(first), 4)
+            token = first[0]['DAILY_SCOREBOARD_RUN_ID']
+            self.assertTrue(token)
+            self.assertTrue(all(env['DAILY_SCOREBOARD_RUN_ID'] == token for env in first))
+            self.assertTrue(all(env['DAILY_STAGE_SUMMARY_DIR'] == first[0]['DAILY_STAGE_SUMMARY_DIR'] for env in first))
+            self.assertIn('--refresh', run.call_args_list[1].args[0])
+            run.reset_mock()
+            daily_update.main()
+            second = run.call_args_list[0].kwargs['env']
+            self.assertNotEqual(second['DAILY_SCOREBOARD_RUN_ID'], token)
+            self.assertNotEqual(second['DAILY_STAGE_SUMMARY_DIR'], first[0]['DAILY_STAGE_SUMMARY_DIR'])
+
     def run_pipeline(self, codes):
         with tempfile.TemporaryDirectory() as directory, \
              patch.dict(os.environ, {"DAILY_SUMMARY_PATH": str(Path(directory) / "summary.json")}), \

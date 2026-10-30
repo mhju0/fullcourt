@@ -38,6 +38,7 @@ config({ path: ".env.local" });
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
 import { contextExitCode, writeStageSummary } from "./pipeline-stage-summary";
+import { readInvocationScoreboard } from "./scoreboard-invocation";
 
 // Shared with scripts/sync_scores_espn.ts, which matches ESPN events to stored rows on the
 // same (date, away, home) key. Two copies of this map would silently match two different
@@ -120,7 +121,7 @@ async function main() {
   const flags = process.argv.slice(2).filter((a) => a.startsWith("--"));
   const dates_ = process.argv.slice(2).filter((a) => /^\d{4}-\d{2}-\d{2}$/.test(a));
   const dryRun = flags.includes("--dry-run");
-  const refresh = flags.includes("--refresh");
+  const refresh = flags.includes("--refresh") || Boolean(process.env.DAILY_SCOREBOARD_RUN_ID);
   const [from, to] = dates_;
   const sql = postgres(process.env.DATABASE_URL!, { max: 4 });
 
@@ -157,7 +158,7 @@ async function main() {
       const compact = date.replaceAll("-", "");
       try {
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        const sb: any = await fetchJsonCached(
+        const sb: any = readInvocationScoreboard(date, byDate.get(date)!) ?? await fetchJsonCached(
           `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
           `sb-${compact}.json`,
           refresh
@@ -220,7 +221,10 @@ async function main() {
               [u.id, u.overtimePeriods, u.tipOffUtc, u.neutralSite, u.neutralVenueCity] as const
           )
         )}) as v(id, ot, tip, neutral, city)
-        where g.id = v.id::int`;
+        where g.id = v.id::int
+          and (g.overtime_periods, g.tip_off_utc, g.neutral_site, g.neutral_venue_city)
+            is distinct from
+              (coalesce(v.ot::int, g.overtime_periods), v.tip::timestamptz, v.neutral::boolean, v.city::varchar)`;
       written += res.count ?? chunk.length;
       if (i % (CHUNK * 10) === 0) console.log(`  wrote ${written}/${updates.length}`);
     }

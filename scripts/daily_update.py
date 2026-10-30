@@ -62,6 +62,7 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
+from uuid import uuid4
 
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
@@ -128,7 +129,8 @@ def main() -> None:
     try:
         database_url = resolve_database_url()
         with tempfile.TemporaryDirectory(prefix="fullcourt-stages-") as directory:
-            env = {**os.environ, "DATABASE_URL": database_url, "DAILY_STAGE_SUMMARY_DIR": directory}
+            env = {**os.environ, "DATABASE_URL": database_url, "DAILY_STAGE_SUMMARY_DIR": directory,
+                   "DAILY_SCOREBOARD_RUN_ID": uuid4().hex}
 
             def run(name, args, optional=False, optional_partial=False):
                 nonlocal final_code

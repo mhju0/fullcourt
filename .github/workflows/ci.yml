@@ -172,6 +172,8 @@ jobs:
           pnpm exec tsx scripts/tests/prospective-refresh.pg.ts
           pnpm exec tsx scripts/tests/daily-freshness.pg.ts
           pnpm exec tsx scripts/tests/game-status.pg.ts
+          pnpm exec tsx scripts/tests/game-context.pg.ts
+          pnpm exec tsx scripts/tests/historical-evidence-coverage.pg.ts
           pnpm exec tsx scripts/tests/serverless-pool.pg.ts
           pnpm exec tsx scripts/tests/seed-season.pg.ts
 

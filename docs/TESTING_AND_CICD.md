@@ -39,6 +39,14 @@ exercises the historical seeder's transaction, conflict refusal, no-op reruns, r
 concurrent writer serialization. It never invokes a production seed or needs provider access.
 The matching and cache-directory contracts run in the ordinary Vitest suite.
 
+`scripts/tests/game-context.pg.ts` runs the actual context script against a private disposable
+schema with a fixed provider response. It checks effective-value no-ops and real changes,
+including row-version preservation. `historical-evidence-coverage.pg.ts` compares the compact
+coverage aggregate with the existing full row loader over revision, missing-side, neutral-site,
+competition and score-boundary fixtures. Both run in the PostgreSQL CI job and refuse production
+URLs. Data Status tests separately verify overlapping publication reads, sequential DB reads and
+isolated failure cards.
+
 The historical arena transition has separate real-PostgreSQL contracts and an unchanged-old /
 new-engine replay gate; see [its runbook](../scripts/arena-correction/README.md). Its independent
 source-script packet and before/after numeric oracle are retained with the dated local audit.
