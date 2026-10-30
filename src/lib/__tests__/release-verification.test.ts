@@ -5,6 +5,7 @@ import { verifyRelease } from "../../../scripts/verify_release";
 import shooting from "@/data/shooting-current.json";
 import { DAILY_DATASETS, DAILY_PUBLICATION_BASE, MAX_PUBLICATION_BYTES, type DailyDataset, type DailyManifest } from "@/lib/daily-publication";
 import type { OfficiatingSnapshot } from "@/lib/officiating-publication";
+import { parseCurrentShooting } from "@/lib/player-rest-publication";
 
 const SHA = "225d6bae72b6fdd27a4645142cf651fa851011f5";
 const NOW = "2026-10-31T12:00:00Z";
@@ -166,12 +167,24 @@ describe("read-only release verification", () => {
     const f = fixture(); f.state.manifest.checks.shooting!.status = "failed";
     const entry = f.state.manifest.datasets.shooting!;
     if (fault === "bytes") entry.bytes++;
-    if (fault === "hash") f.state.blobs.set(entry.path, f.state.blobs.get(entry.path)!.replace("{", " "));
+    if (fault === "hash") {
+      const original = f.state.blobs.get(entry.path)!;
+      const [first, ...rest] = Object.entries(JSON.parse(original));
+      const reordered = JSON.stringify(Object.fromEntries([...rest, first]));
+      const originalParsed = parseCurrentShooting(JSON.parse(original));
+      expect(originalParsed).not.toBeNull();
+      expect(parseCurrentShooting(JSON.parse(reordered))).toEqual(originalParsed);
+      expect(Buffer.byteLength(reordered)).toBe(entry.bytes);
+      expect(createHash("sha256").update(reordered).digest("hex")).not.toBe(entry.sha256);
+      f.state.blobs.set(entry.path, reordered);
+    }
     if (fault === "json") f.replaceBody("shooting", "{");
     if (fault === "domain") f.replaceBody("shooting", "{}");
     if (fault === "season") entry.season = "2025-26";
     if (fault === "generatedAt") entry.generatedAt = NOW;
-    expect(await f.verify()).toMatchObject({ exitCode: 1, dataIntegrity: "failed", deploymentHealth: "verified" });
+    const result = await f.verify();
+    expect(result).toMatchObject({ exitCode: 1, dataIntegrity: "failed", deploymentHealth: "verified" });
+    if (fault === "hash") expect(result.failures).toContainEqual({ check: "publications", code: "publication-integrity" });
   });
 
   it.each(["path", "future", "schema", "limit"])("rejects an invalid manifest before requesting its blobs: %s", async fault => {
