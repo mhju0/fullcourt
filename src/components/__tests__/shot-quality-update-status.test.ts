@@ -2,9 +2,11 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ShotQualityContent } from "@/components/shot-quality-content";
+import type { ShotQualityCell } from "@/types";
 
 const state = vi.hoisted(() => ({ status: "failed", search: "season=2026-27", checkedAt: "2026-10-29T16:54:50.509Z",
-  generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", hasCells: false, failure: false, reads: [] as string[] }));
+  generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", zoneBasic: "Restricted Area" as string | null,
+  servedCells: [] as ShotQualityCell[], hasCells: false, failure: false, reads: [] as string[] }));
 vi.mock("@/components/copy-finding-button", () => ({
   CopyFindingButton: ({ text }: { text: string }) => createElement("button", { "data-copy-finding": text }, "Copy this view"),
 }));
@@ -14,13 +16,14 @@ vi.mock("@/hooks/useSeasonUrl", () => ({
 vi.mock("swr", () => ({ default: (key: string) => {
   state.reads.push(key);
   const season = new URL(key, "https://fullcourt.test").searchParams.get("season") ?? "2025-26";
-  return { data: {
-    season, latestPublishedSeason: "2025-26", activeModel: "gbm-v1", cells: state.hasCells ? [{
-      cellX: 0, cellY: 0, zoneBasic: "Restricted Area", zoneRange: "Less Than 8 ft.", zoneArea: "Center(C)",
+  state.servedCells = state.hasCells ? [{
+      cellX: 0, cellY: 0, zoneBasic: state.zoneBasic, zoneRange: state.zoneBasic === null ? null : "Less Than 8 ft.", zoneArea: state.zoneBasic === null ? null : "Center(C)",
       fga: 1, fgm: 0, fg3a: 0, fg3m: 0,
       baseline: state.models === "none" ? null : { pMake: .5, expectedEfg: .5, xpps: 1 },
       gbm: state.models === "complete" ? { pMake: .6, expectedEfg: .6, xpps: 1.2 } : null,
-    }] : [], meta: { cellCount: state.hasCells ? 1 : 0, totalFga: state.hasCells ? 1 : 0, publication: {
+    }] : [];
+  return { data: {
+    season, latestPublishedSeason: "2025-26", activeModel: "gbm-v1", cells: state.servedCells, meta: { cellCount: state.hasCells ? 1 : 0, totalFga: state.hasCells ? 1 : 0, publication: {
       source: state.source, checkedAt: state.checkedAt, updateStatus: state.status, generatedAt: state.generatedAt,
       firstGameDate: "2026-10-21", lastGameDate: "2026-10-21", gameCount: 1, droppedShotCount: 0,
     } },
@@ -31,11 +34,50 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.setSystemTime(new Date("2026-10-29T17:00:00Z"));
   Object.assign(state, { status: "failed", search: "season=2026-27", checkedAt: "2026-10-29T16:54:50.509Z",
-    generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", hasCells: false, failure: false, reads: [] });
+    generatedAt: "2026-10-22T12:00:00Z", source: "nba-stats-snapshot", models: "none", zoneBasic: "Restricted Area", servedCells: [], hasCells: false, failure: false, reads: [] });
 });
 afterEach(() => vi.useRealTimers());
 
 describe("shot publication update status", () => {
+  it("names raw cell centers without filling source zones or model values", () => {
+    state.hasCells = true;
+    state.zoneBasic = null;
+    state.source = "nba-web-snapshot";
+    state.search = "season=2026-27&mode=actual";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain("Near rim · 1 attempts");
+    expect(html).not.toContain("Unclassified zone");
+    expect(html).toContain("Court areas use each square’s center when source labels are unavailable.");
+    expect(html).toContain("Model estimates are awaiting publication.");
+    expect(state.servedCells).toEqual([{
+      cellX: 0, cellY: 0, zoneBasic: null, zoneRange: null, zoneArea: null,
+      fga: 1, fgm: 0, fg3a: 0, fg3m: 0, baseline: null, gbm: null,
+    }]);
+  });
+
+  it("uses the same cell-center label in the model comparison heading", () => {
+    state.hasCells = true;
+    state.zoneBasic = null;
+    state.models = "complete";
+    state.search = "season=2025-26&mode=value";
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain('<p class="text-[15px] font-semibold">Near rim</p>');
+    expect(html).not.toContain("Unclassified zone");
+    expect(html).toContain("Court areas use each square’s center when source labels are unavailable.");
+    expect(state.servedCells[0].zoneBasic).toBeNull();
+  });
+
+  it.each(["actual", "value"])("preserves historical source labels in %s view", mode => {
+    state.hasCells = true;
+    state.models = "complete";
+    state.source = "database";
+    state.search = `season=2025-26&mode=${mode}`;
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    expect(html).toContain("Restricted Area");
+    expect(html).not.toContain("Near rim");
+    expect(html).not.toContain("Court areas use each square’s center when source labels are unavailable.");
+  });
+
   it.each(["EXPECTED eFG%", "MODEL DIFFERENCE"])("keeps %s selectable to explain unavailable model estimates", label => {
     state.hasCells = true;
     const html = renderToStaticMarkup(createElement(ShotQualityContent));

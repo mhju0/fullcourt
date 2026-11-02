@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.11 — 2026-11-02
+
+- Name unlabelled shot-map locations with fixed court-area rules shared across seasons. Preserve source-provided zone labels and keep display areas separate from model inputs.
+
 ## 1.3.10 — 2026-11-02
 
 - Update Sentry's transitive glob dependency to clear the production dependency audit.

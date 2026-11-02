@@ -2360,3 +2360,16 @@ source 시도에 한 번 포함하고 좌표 없음에 기록한다. 이를 3점
 기본 원시 지도와 명시적인 model view URL을 구분한다. 모델 값이 없는 value/diff 보기는
 미게시 안내를 유지하고, 실제 시도 지도나 모델을 주장하는 복사 문장을 대신 보여주지 않는다.
 기존 모델을 사용하는 추론·export는 별도 검증 단계다.
+
+## D-151 — 슛 지도의 위치 표시명과 원본 zone 분리 (2026-11-02)
+
+원본 `zoneBasic`이 있으면 그대로 표시하고, 없으면 셀 중심의 고정 코트 위치로
+Near rim / Paint / Mid-range / Left corner / Right corner / Above the arc를 표시한다.
+같은 위치는 시즌·시도 수·2/3점 구성과 무관하게 같은 표시명을 사용한다.
+[NBA 코트 규정](https://official.nba.com/rule-no-1-court-dimensions-equipment/)의 선 위치를
+참조하되, 이 표시명을 NBA 제공 zone이나 개별 슛의 2/3점 판정으로 취급하지 않는다.
+Near rim은 림과의 근접 범위이며 공식 Restricted Area 분류를 뜻하지 않는다.
+
+누락된 이름을 보완한 지도에는 셀 중심으로 분류한다는 안내를 표시한다. 원본 publication의
+zone 필드나 모델 입력·기준값·준비 상태는 바꾸지 않는다. D-150의 원시 자료와 모델 구역
+검증 경계를 유지한다.
