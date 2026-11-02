@@ -36,6 +36,14 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("shot publication update status", () => {
+  it.each(["EXPECTED eFG%", "MODEL DIFFERENCE"])("keeps %s selectable to explain unavailable model estimates", label => {
+    state.hasCells = true;
+    const html = renderToStaticMarkup(createElement(ShotQualityContent));
+    const button = html.match(new RegExp(`<button[^>]*>${label}</button>`))?.[0];
+    expect(button).toBeDefined();
+    expect(button).not.toContain("disabled");
+  });
+
   it("shows the existing current-season guide without a redundant refresh-status paragraph", () => {
     const html = renderToStaticMarkup(createElement(ShotQualityContent));
     expect(html).toContain("Awaiting season data");

@@ -182,7 +182,9 @@ test("raw Shot Value views preserve the selected season and explain unavailable 
   await info.attach("Synthetic raw Shot Value", { path: actualScreenshot, contentType: "image/png" });
 
   for (const mode of ["value", "diff"] as const) {
-    await page.goto(`/shot-quality?season=2024-25&mode=${mode}`);
+    const modelView = page.getByRole("button", { name: mode === "value" ? "EXPECTED eFG%" : "MODEL DIFFERENCE", exact: true });
+    await expect(modelView).toBeEnabled();
+    await modelView.click();
     await expect(page).toHaveURL(new RegExp(`/shot-quality\\?season=2024-25&mode=${mode}$`));
     await expect(season).toHaveValue("2024-25");
     await expect(page.getByRole("button", { name: mode === "value" ? "EXPECTED eFG%" : "MODEL DIFFERENCE", exact: true })).toHaveAttribute("aria-pressed", "true");

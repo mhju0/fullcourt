@@ -93,11 +93,9 @@ type ColorMode = "actual" | "value" | "diff"
 function EncodingToggle({
   mode,
   onModeChange,
-  modelsAvailable,
 }: {
   mode: ColorMode
   onModeChange: (m: ColorMode) => void
-  modelsAvailable: boolean
 }) {
   const options: { key: ColorMode; label: string }[] = [
     { key: "actual", label: "SHOT ATTEMPTS" },
@@ -117,7 +115,6 @@ function EncodingToggle({
               key={o.key}
               type="button"
               aria-pressed={active}
-              disabled={o.key !== "actual" && !modelsAvailable}
               onClick={() => onModeChange(o.key)}
               className={`fc-control-button mono px-3 py-2 ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
@@ -541,7 +538,7 @@ export function ShotQualityContent() {
     <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="flex flex-wrap items-end gap-4">
       <SeasonSelector id="shot-quality-season" season={season} onSeasonChange={setSeason} />
-      <EncodingToggle mode={mode} onModeChange={setMode} modelsAvailable={hasModelValues} />
+      <EncodingToggle mode={mode} onModeChange={setMode} />
       </div>
       {dataMatchesSelection && viewHasData ? (
         <CopyFindingButton

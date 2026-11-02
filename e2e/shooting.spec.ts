@@ -230,7 +230,7 @@ for (const width of [320, 390, 430, 1440]) {
     await open(page, "lebron");
     await expect(page.locator("thead tr")).toHaveCount(2);
     expect(await page.locator("thead tr").first().locator("th").allTextContents()).toEqual(
-      ["Player", "With rest ↓eFG pts", "No rest", "2+ days rest"]);
+      ["Player", "eFG% Difference with Rest ↓eFG pts", "No rest", "2+ days rest"]);
     // The sub-headings carry their group for assistive tech; the leaf header per column.
     // In DOM order these are already column order: Player and With rest from the first row, then the four below.
     const headers = page.locator("thead th:not([colspan])");
