@@ -1,5 +1,11 @@
 # Release history
 
+## 1.3.10 — 2026-11-02
+
+- Update Sentry's transitive glob dependency to clear the production dependency audit.
+- Let unavailable Expected Shot Value model views open their explanation when selected, while preserving the season and return to observed shot attempts.
+- Rename the Player Shooting by Rest comparison column to “eFG% Difference with Rest”.
+
 ## 1.3.9 — 2026-10-31
 
 - Restore current-season observed shot collection from validated official NBA game pages, with explicit feed provenance and separate accounting for team attempts without coordinates. Preserve historical publications and unavailable model estimates.

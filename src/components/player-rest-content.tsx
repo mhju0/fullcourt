@@ -101,7 +101,7 @@ function playerColumns(
       ),
     },
     {
-      label: "With rest",
+      label: "eFG% Difference with Rest",
       unit: "eFG pts",
       sortKey: "effect",
       numeric: true,
