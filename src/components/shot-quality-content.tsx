@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { COURT_STEPS, courtNeighbour } from "@/lib/chart-inspection"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason, formatEasternTimestamp, NBA_SEASONS } from "@/lib/nba-season"
+import { shotCourtAreaLabel } from "@/lib/shot-court-area"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -343,7 +344,7 @@ function ShotCourt({
   const selected = locations[activeIndex]
   const selectedValue = selected ? getValue(selected.c) : null
   const description = selected
-    ? `${selected.c.zoneBasic ?? "Unclassified zone"} · ${selected.c.fga.toLocaleString()} attempts · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
+    ? `${shotCourtAreaLabel(selected.c)} · ${selected.c.fga.toLocaleString()} attempts · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
     : "No measured locations for this view."
   const pick = (event: ReactPointerEvent<SVGSVGElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -361,7 +362,7 @@ function ShotCourt({
   return (
     <figure className="flex flex-col gap-2">
       {compareModels && selected ? <div className="mb-2 border border-[var(--term-border)] p-4" role="status" aria-live="polite">
-        <p className="text-[15px] font-semibold">{selected.c.zoneBasic ?? "Unclassified zone"}</p>
+        <p className="text-[15px] font-semibold">{shotCourtAreaLabel(selected.c)}</p>
         <div className="mt-3 grid grid-cols-2 gap-3">
           <div><p className="text-[15px] text-[var(--term-text-muted)]">Zone average</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.baseline ? formatValue(selected.c.baseline.expectedEfg) : "Unavailable"}</p></div>
           <div><p className="text-[15px] text-[var(--term-text-muted)]">Location model</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.gbm ? formatValue(selected.c.gbm.expectedEfg) : "Unavailable"}</p></div>
@@ -379,6 +380,9 @@ function ShotCourt({
       <p id={helpId} style={{ margin: 0, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
         Hover or tap a location to inspect it. With the court focused, the arrow keys move to the nearest location in that direction.
       </p>
+      {cells.some(c => c.zoneBasic === null) ? <p style={{ margin: 0, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+        Court areas use each square’s center when source labels are unavailable.
+      </p> : null}
       <svg
         onPointerMove={(event) => { if (event.pointerType === "mouse") pick(event) }}
         onPointerDown={pick}
