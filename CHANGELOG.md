@@ -2,6 +2,7 @@
 
 ## 1.3.10 — 2026-11-02
 
+- Update Sentry's transitive glob dependency to clear the production dependency audit.
 - Let unavailable Expected Shot Value model views open their explanation when selected, while preserving the season and return to observed shot attempts.
 - Rename the Player Shooting by Rest comparison column to “eFG% Difference with Rest”.
 

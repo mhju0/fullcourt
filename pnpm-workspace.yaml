@@ -5,6 +5,8 @@ packages: []
 # with the allowBuilds map below. Keep the overrides in step with whatever advisory
 # motivated them — ws is a CVE pin, not a preference.
 overrides:
+  # GHSA-3g3m-2fjr-6pw4 / GHSA-g3hv-75wg-m249: patched glob and minimatch for Sentry's build plugin.
+  '@sentry/bundler-plugins>glob': 14.0.2
   # GHSA-jqcg-44mw-7w3h: shadcn tooling reaches this through Express.
   proxy-addr@<2.0.8: 2.0.8
   '@babel/core@<=7.29.0': 7.29.6
