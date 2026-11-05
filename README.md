@@ -6,7 +6,7 @@
 
 NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
-**v1.3.2 · October 26, 2026** · [Release history](CHANGELOG.md)
+**v1.3.11 · November 2, 2026** · [Release history](CHANGELOG.md)
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
@@ -26,7 +26,7 @@ compared with their venue baselines. These are historical associations, not esti
 rest alone caused or a complete forecast of who will win.
 
 The [Model Results page](https://fullcourt.fyi/analysis) carries the current rates and
-sample sizes, split by gap size (small 0.5–3, medium 3–5, large 5+) and by five-season era. [Behind the Data](https://fullcourt.fyi/behind-the-data)
+sample sizes, split by gap size (small 0.5 to 3, medium 3 to 5, large 5+) and by five-season era. [Behind the Data](https://fullcourt.fyi/behind-the-data)
 explains the calculations and publishes results that did not support a measurable effect.
 
 The [engineering walkthrough source](src/app/how-it-was-built/page.tsx) explains the problem,
@@ -49,21 +49,23 @@ Selected views remain shareable through URLs and browser history.
 | [Home-Court Advantage](https://fullcourt.fyi/home-court) | Each season's home win rate beside the record of teams that were also more rested at home. |
 | [Model Results](https://fullcourt.fyi/analysis) | Win rates for the rested team at home by gap size and by era, each compared with its venue baseline, the rested-visitor games reported separately, and a searchable game record filtered by gap size and rested side. |
 | [Playoff Rest](https://fullcourt.fyi/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |
-| [Player Shooting by Rest](https://fullcourt.fyi/shooting) | Effective field goal percentage on no rest versus 2–29 days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
+| [Player Shooting by Rest](https://fullcourt.fyi/shooting) | Effective field goal percentage on no rest versus 2 to 29 days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
 | [Expected Shot Value](https://fullcourt.fyi/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
 | [Availability Cost](https://fullcourt.fyi/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors, with selectable annual readouts. Absences are identified after games, so this is not a lineup forecast. |
-| [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 completed regular seasons (2014–15 through 2025–26) and the current season to date, by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
+| [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 completed regular seasons (2014-15 through 2025-26; 2014-15 starts March 1, 2015) and the current season to date, by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
-Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-27 at v1.3.2 (`8419bb8f`);
-[capture details and reproduction](docs/screenshots/README.md). Desktop images show historical
-Games, the completed 2025-26 Shooting season and current Officiating. Phone images use 375px and 402px Chromium viewports.
+All six images come from [fullcourt.fyi](https://fullcourt.fyi). Games and Schedule Edge were
+captured on 2026-10-27 at v1.3.2 (`8419bb8f`); Shooting and Officiating were retaken on
+2026-11-05 at v1.3.11 (`cf217e17`). [Capture details and reproduction](docs/screenshots/README.md).
+Desktop images show historical Games, the completed 2025-26 Shooting season and 2026-27
+Officiating through November 2, 2026. Phone images use 375px and 402px Chromium viewports.
 Physical iPhone, Safari and VoiceOver behavior remains unverified; live data can change.
 
 <img src="docs/screenshots/games.png" alt="Games board for December 2, 2024: season and date controls above four matchups, two marked MEDIUM REST EDGE and one LARGE REST EDGE." width="900" />
 
-<img src="docs/screenshots/shooting.png" alt="Player shooting table for the completed 2025-26 season, with the rest difference beside each player and eFG% and shots under No rest and 2+ days rest; differences stay grey within 1 point or below 50 shots per rest group." width="900" />
+<img src="docs/screenshots/shooting.png" alt="Player shooting table for the completed 2025-26 season, with the eFG% Difference with Rest column beside each player and eFG% and shots under No rest and 2+ days rest; differences stay grey within 1 point or below 50 shots per rest group." width="900" />
 
 <img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, season context and a link to game reviews." width="900" />
 
@@ -122,6 +124,7 @@ availability, and Officiating use published artifacts. Officiating loads report 
 | Ingest and analysis | Python and TypeScript scripts; scikit-learn models run offline |
 | Checks | Vitest, Playwright, Python contracts |
 | Hosting and scheduled jobs | Vercel and GitHub Actions |
+| Monitoring | Sentry error reporting and Vercel Analytics |
 
 Start at the [documentation index](docs/README.md) for architecture, operations, reproducibility,
 and release verification. No accounts or login are needed; selected views can be shared by URL.
