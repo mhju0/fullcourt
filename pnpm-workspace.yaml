@@ -40,6 +40,11 @@ overrides:
   # Both are dev tooling. Re-check if drizzle-kit drops @esbuild-kit.
   esbuild@<=0.24.2: 0.25.12
   esbuild@>=0.27.3 <0.28.1: 0.28.2
+  # GHSA-g3hv-75wg-m249 (2026-11-05, globparts amplification, >=7.0.0 <11.0.1) has no 10.x
+  # backport. Its callers here, @typescript-eslint/typescript-estree (allowDefaultProject) and
+  # @ts-morph/common (shadcn tooling), only call minimatch(path, pattern[, { dot }]), which 11
+  # keeps; 11 removed makeRe, regexp, AST, debug, matchOne and slashSplit. Lint and shadcn only.
+  minimatch@^10.0.0: 11.0.4
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
 # install scripts, so everything else stayed unbuilt. msw is new to this list only because
