@@ -1,5 +1,7 @@
 # Home-court study release review
 
+> **Superseded in part (2026-11-05):** the 100-game threshold for rested-home rates and gaps described below was removed by [D-137](../DECISIONS.md) (2026-10-23). Season Report and Home Court now show the observed rate with its numerator, denominator and as-of date whenever a denominator exists. The rest of this review is the record of the original release.
+
 D-70 adds the Explore study at `/home-court` and the selected-season home baseline to Season Report. The [research record](../research/2026-09-11-home-advantage-trend.md) retains source data, research links, and owner decisions.
 
 ## Design and behavior

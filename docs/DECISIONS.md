@@ -767,7 +767,7 @@ focus. Games has a specific page title, and player-count labels use the correct 
 The existing homepage hero and model outputs remain unchanged. See the
 [implementation and verification record](design/seven-polish-fixes-review.md).
 
-### D-70 · Home win-rate history and season context — ACTIVE
+### D-70 · Home win-rate history and season context — ACTIVE · 100-game display threshold SUPERSEDED BY D-137
 
 The owner approved a Home-court advantage study reached through Explore and a visible
 home-baseline comparison in Season Report. Home win rate names the observed percentage;
