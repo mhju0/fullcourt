@@ -31,6 +31,15 @@ overrides:
   # Reached through next, for image optimisation.
   sharp@<0.35.5: 0.35.5
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
+  # 2026-11-05 Dependabot sweep. vite is a peer of vitest, so `pnpm update` leaves the
+  # resolved 8.0.3 in place; the 8.0.x-8.1.5 advisories are patched in the 8.1.6 backport.
+  # Test-only (vitest), never shipped.
+  vite@>=8.0.0 <8.1.6: 8.1.6
+  # GHSA-67mh-4wv8-2f99 (dev-server CORS, <=0.24.2) reaches drizzle-kit through the deprecated
+  # @esbuild-kit/core-utils, which pins ~0.18.20; the 0.27.3-0.28.0 advisory reaches vite.
+  # Both are dev tooling. Re-check if drizzle-kit drops @esbuild-kit.
+  esbuild@<=0.24.2: 0.25.12
+  esbuild@>=0.27.3 <0.28.1: 0.28.2
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
 # install scripts, so everything else stayed unbuilt. msw is new to this list only because
