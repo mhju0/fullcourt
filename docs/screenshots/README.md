@@ -1,6 +1,6 @@
 # Product screenshots
 
-The original Officiating capture is superseded by the 2026-10-30 refresh below.
+Shooting, Shooting at 402px and Officiating were retaken from production on 2026-11-05; see the refresh below.
 
 Captured on 2026-10-27 from https://fullcourt.fyi after the v1.3.2 production alias was
 verified at commit `8419bb8f8a62f06206255119f802103a1288cc68`, Ready deployment
@@ -54,3 +54,13 @@ identity. Local captures should not be described as production evidence.
 build at `http://localhost:3117`, including the Eastern publication check and refresh labels.
 It is a rendered local verification capture, not a production capture. The other images retain
 their original source records. The manifest records the current source and capture time per image.
+
+## Production refresh, 2026-11-05
+
+`shooting.png`, `shooting-mobile-402.png` and `officiating.png` were regenerated with the same
+generator from https://fullcourt.fyi at v1.3.11, commit
+`cf217e17ab192d55fc232a39aa5cc334731b6574`, Ready deployment `dpl_HRc1SrLcgxc1PPdZfLLc8HE7Jbd7`.
+The Shooting table now shows the renamed "eFG% Difference with Rest" column. Officiating shows
+2026-27 data through November 2, 2026. This replaces the 2026-10-30 local Officiating capture
+as the README image; `games.png`, `games-mobile-375.png` and `schedule-mobile-402.png` keep their
+2026-10-27 records.
