@@ -94,17 +94,28 @@ describe("observed player publications", () => {
     expect(html).not.toContain('data-testid="player-row"');
   });
 
-  it("opens the selected season's provider record when historical and current names match", () => {
+  it("opens an unmatched current player's single observed season", () => {
     state.data["/api/player-rest"] = { ...playerPayload, names: ["Test Player", "Test Player"],
-      seasonOnlyPlayers: [1], seasons: [playerPayload.seasons[0], [1, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0, 3, 0, 0, 9, 0, 0]] };
+      seasonOnlyPlayers: [1], overlayYears: [2026], seasons: [playerPayload.seasons[0], [1, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0, 3, 0, 0, 9, 0, 0]] };
     state.search = "year=2026&player=Test+Player";
     const current = renderPlayer();
     expect(current).toContain('aria-expanded="true"');
     expect(current).toContain("Observed season");
-    expect(current).toContain("No cross-provider player identity has been inferred");
+    expect(current).toContain("No earlier season matched this player by name");
     expect(current.match(/data-testid="season-row"/g)).toHaveLength(1);
-    state.search = "year=career&volume=0&player=Test+Player";
-    expect(renderPlayer()).toContain("Historical career gap (2025-26 through 2025-26)");
+  });
+
+  it("opens a joined current player's whole career and keeps the estimate note historical", () => {
+    state.data["/api/player-rest"] = { ...playerPayload, overlayYears: [2026],
+      seasons: [playerPayload.seasons[0], [0, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0, 3, 0, 0, 9, 0, 0]] };
+    for (const search of ["year=2026&player=Test+Player", "year=career&volume=0&player=Test+Player"]) {
+      state.search = search;
+      const html = renderPlayer();
+      expect(html).toContain('aria-expanded="true"');
+      expect(html.match(/data-testid="season-row"/g)).toHaveLength(2);
+      expect(html).toContain(">Career<");
+      expect(html).toContain("Historical career gap (2025-26 through 2025-26)");
+    }
   });
 
   it("shows the selected season's observation date and counts rather than the newest season's metadata", () => {

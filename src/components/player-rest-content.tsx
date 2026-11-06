@@ -636,7 +636,10 @@ function PlayerExpansion({
   const seasons = [...allSeasons].reverse();
   const totals = careerTotals(allSeasons);
   const seasonOnly = index.seasonOnlyPlayers.has(row.player);
-  const estimate = seasonOnly || totals.se === null ? undefined : index.career.get(row.player);
+  // The shrunk estimate was fitted on the historical export, so its note reads only those seasons.
+  const historicalSeasons = allSeasons.filter((s) => !index.overlayYears.has(s[S.YEAR]));
+  const historicalTotals = careerTotals(historicalSeasons);
+  const estimate = seasonOnly || historicalSeasons.length === 0 || historicalTotals.se === null ? undefined : index.career.get(row.player);
 
   return (
     <>
@@ -698,7 +701,7 @@ function PlayerExpansion({
                 one — a raw career gap off ~250 attempts per side carries a standard error near
                 4 points, so the extremes of a raw ranking are mostly noise — but it now says
                 why in words rather than naming the method. */}
-            Historical career gap ({seasonLabel(allSeasons[0][S.YEAR])} through {seasonLabel(allSeasons[allSeasons.length - 1][S.YEAR])}): {signed(totals?.exactNumerators ? totals.effect : estimate.delta)} percentage points, give or
+            Historical career gap ({seasonLabel(historicalSeasons[0][S.YEAR])} through {seasonLabel(historicalSeasons[historicalSeasons.length - 1][S.YEAR])}): {signed(historicalTotals.exactNumerators ? historicalTotals.effect : estimate.delta)} percentage points, give or
             take {estimate.se.toFixed(2)} as one standard error. The estimate
             shrunk toward the player-pool mean is {signed(estimate.shrunk)},
             which reduces the influence of uncertain extremes.
@@ -717,7 +720,7 @@ function PlayerExpansion({
             }}
           >
             {seasonOnly
-              ? "Current-season ESPN records are shown separately from the historical NBA records. No cross-provider player identity has been inferred; historical career totals and estimates are unchanged."
+              ? "No earlier season matched this player by name, so only this season is shown. Historical career totals and estimates are unchanged."
               : "No career estimate is available. Estimates require at least 150 attempts in each rest arm and exact shooting counts. Observed totals remain available."}
           </td>
         </tr>

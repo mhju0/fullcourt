@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { formatEasternDateKey } from "./nba-season";
-import { S, type PlayerRestPayload } from "./player-rest";
+import { S, searchKey, type PlayerRestPayload } from "./player-rest";
 
-/** Current ESPN identities remain separate from historical NBA identities. */
+/** Current ESPN players join earlier records only through linkCurrentPlayers. */
 const instant = z.string().datetime({ offset: true });
 const fixtureId = /^(?:espn-\d{9,12}|00[2456]\d{7}|bref-\d{9}[A-Z]{3})$/;
 
@@ -98,11 +98,48 @@ export function selectShootingHistory(remotes: readonly unknown[], bundled: unkn
   return { publications: [...bySeason].sort(([a], [b]) => a.localeCompare(b)).map(([, publication]) => publication), rejected };
 }
 
+/** A namesake whose last season is older than this is never joined to a current player. */
+const LINK_RECENT_SEASONS = 8;
+
+function identityKey(name: string): string {
+  return searchKey(name).replace(/[^a-z]+/g, " ").trim();
+}
+
+/**
+ * ESPN and NBA ids share no key, so a current player joins an earlier record only when the
+ * name is unique on both sides and that earlier player appeared in the last few seasons.
+ * Anyone else (rookies, ambiguous names) stays a separate one-season record.
+ */
+function linkCurrentPlayers(historical: PlayerRestPayload, current: PlayerRestPayload, currentYear: number): Map<number, number> {
+  const lastYear = new Map<number, number>();
+  for (const row of historical.seasons) lastYear.set(row[S.PLAYER], Math.max(lastYear.get(row[S.PLAYER]) ?? row[S.YEAR], row[S.YEAR]));
+  const earlier = new Map<string, number[]>();
+  historical.names.forEach((name, player) => {
+    const last = lastYear.get(player);
+    if (last === undefined || last < currentYear - LINK_RECENT_SEASONS) return;
+    const key = identityKey(name);
+    earlier.set(key, [...(earlier.get(key) ?? []), player]);
+  });
+  const currentCounts = new Map<string, number>();
+  for (const name of current.names) currentCounts.set(identityKey(name), (currentCounts.get(identityKey(name)) ?? 0) + 1);
+  const links = new Map<number, number>();
+  current.names.forEach((name, player) => {
+    const key = identityKey(name), matches = earlier.get(key);
+    if (currentCounts.get(key) === 1 && matches?.length === 1) links.set(player, matches[0]);
+  });
+  return links;
+}
+
 export function mergeHistoricalAndCurrent(historical: PlayerRestPayload, current: PlayerRestPayload): PlayerRestPayload {
   const offset = historical.names.length, teamOffset = historical.teams.length;
   const currentYear = Number(current.publication!.season!.slice(0, 4));
   // Never replace a published historical season through a provider overlay.
   if (historical.seasons.some(row => row[S.YEAR] >= currentYear)) return historical;
+  const links = linkCurrentPlayers(historical, current, currentYear);
+  const unlinked = current.names.map((_, i) => i).filter(i => !links.has(i));
+  const playerIndex = new Map(links);
+  unlinked.forEach((player, i) => playerIndex.set(player, offset + i));
+  const joined = new Set(links.values());
   return {
     ...historical,
     generated: current.generated,
@@ -112,12 +149,13 @@ export function mergeHistoricalAndCurrent(historical: PlayerRestPayload, current
       ...(historical.publication?.season ? { [historical.publication.season]: historical.publication } : {}),
       [current.publication!.season!]: current.publication!,
     },
-    names: [...historical.names, ...current.names],
-    playerIds: historical.playerIds && current.playerIds ? [...historical.playerIds, ...current.playerIds] : undefined,
+    names: [...historical.names, ...unlinked.map(i => current.names[i])],
+    playerIds: historical.playerIds && current.playerIds ? [...historical.playerIds, ...unlinked.map(i => current.playerIds![i])] : undefined,
     teams: [...historical.teams, ...current.teams],
-    pos: [...(historical.pos ?? historical.names.map(() => "")), ...(current.pos ?? [])],
-    seasons: [...historical.seasons, ...current.seasons.map(row => row.map((v, i) => i === S.PLAYER ? v + offset : i === S.TEAM ? v + teamOffset : v))],
-    seasonOnlyPlayers: [...(historical.seasonOnlyPlayers ?? []), ...current.names.map((_, i) => i + offset)],
+    pos: [...(historical.pos ?? historical.names.map(() => "")), ...unlinked.map(i => current.pos?.[i] ?? "")],
+    seasons: [...historical.seasons, ...current.seasons.map(row => row.map((v, i) => i === S.PLAYER ? playerIndex.get(v)! : i === S.TEAM ? v + teamOffset : v))],
+    seasonOnlyPlayers: [...(historical.seasonOnlyPlayers ?? []).filter(player => !joined.has(player)), ...unlinked.map((_, i) => i + offset)],
+    overlayYears: [...(historical.overlayYears ?? []), currentYear],
     shrunk: historical.shrunk,
   };
 }

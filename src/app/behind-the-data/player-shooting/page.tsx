@@ -94,8 +94,9 @@ rest effect = eFG% rested
         <Note>
           Historical seasons come from a verified export. Current-season ESPN observations
           update separately after fixture and box-score checks. A first observed appearance
-          has no inferred prior-season rest. Current identities are not joined to historical
-          careers by name.
+          has no inferred prior-season rest. A current player joins their historical career
+          when the name matches exactly one player who appeared in the last eight seasons;
+          rookies and ambiguous names stay separate. Career estimates use historical seasons only.
         </Note>
       </Section>
 
