@@ -45,8 +45,17 @@ for (const width of [1440, 390]) {
     expect(effects.findIndex(text => text === "—") === -1 || effects.slice(effects.findIndex(text => text === "—")).every(text => text === "—")).toBe(true);
     await rendered.getByRole("button").focus();
     await page.keyboard.press("Enter");
-    await expect(page.getByTestId("career-row")).toContainText("Observed season");
-    await expect(page.locator("main")).toContainText("No cross-provider player identity has been inferred");
+    // The current season joins the player's historical career unless no earlier record matched.
+    if ((payload.seasonOnlyPlayers ?? []).includes(first[S.PLAYER])) {
+      await expect(page.getByTestId("career-row")).toContainText("Observed season");
+      await expect(page.locator("main")).toContainText("No earlier season matched this player by name");
+    } else {
+      await expect(page.getByTestId("career-row")).toContainText("Career");
+      const careerSeasons = payload.seasons.filter(row => row[S.PLAYER] === first[S.PLAYER]).length;
+      expect(careerSeasons).toBeGreaterThan(1);
+      await expect(page.getByTestId("season-row")).toHaveCount(careerSeasons);
+      await expect(page.getByTestId("season-row").first()).toContainText(payload.publication!.season!);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
     expect(errors).toEqual([]);
     info.annotations.push({ type: "observed", description: `${rows.length} player rows; ${rows.length - expectedMissing} formed rest contrasts; through ${payload.publication!.through}` });
@@ -54,7 +63,7 @@ for (const width of [1440, 390]) {
   });
 }
 
-test("an explicit volume filter is retained and historical career rows remain available", async ({ page }) => {
+test("an explicit volume filter is retained and career rows remain available", async ({ page }) => {
   const { payload, year, rows } = await currentSnapshot(page);
   await page.goto(`/shooting?year=${year}&volume=300`);
   await expect(page.locator("#pr-volume")).toHaveValue("300");
@@ -69,7 +78,6 @@ test("an explicit volume filter is retained and historical career rows remain av
   await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
   await page.getByTestId("player-row").first().getByRole("button").click();
   await expect(page.getByTestId("career-row")).toBeVisible();
-  await expect(page.getByTestId("season-row").first()).not.toContainText(payload.publication!.season!);
 });
 
 

@@ -29,17 +29,39 @@ describe("current Shooting publication", () => {
       expect(parseCurrentShooting(value)).toBeNull();
     }
   });
-  it("never joins current and historical players by the same display name", () => {
+  it("joins a current player to the one recent historical player with the same name", () => {
     const current = parseCurrentShooting(structuredClone(bundled))!;
-    current.names[0] = "Same Name";
+    current.names[0] = "Samé Name";
     const merged = mergeHistoricalAndCurrent(historical, current);
     const index = indexPayload(merged);
+    const linked = current.seasons.find(row => row[0] === 0)!;
+    expect(merged.names).toHaveLength(1 + 329);
+    expect(index.seasonsByPlayer.get(0)!.map(row => row[1])).toEqual([2025, 2026]);
+    expect(index.seasonOnlyPlayers.has(0)).toBe(false);
+    expect(index.seasonOnlyPlayers.size).toBe(329);
+    expect(merged.overlayYears).toEqual([2026]);
     const base = { minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
     const career = buildRows(index, { ...base, year: "career" });
     expect(career).toHaveLength(1);
-    expect(career[0].fga).toBe(4);
+    expect(career[0].fga).toBe(4 + linked[5]);
     expect(buildRows(index, { ...base, year: 2026 })).toHaveLength(330);
     expect(merged.shrunk).toEqual(historical.shrunk);
+  });
+  it("leaves a current player unjoined when the name is ambiguous or the namesake is long retired", () => {
+    const base = { minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
+    const retired: PlayerRestPayload = { ...historical, seasons: [[0,2015,0,25,2,4,50,2,50,2,50,4,2,2,8,4,4]] };
+    const twins: PlayerRestPayload = { ...historical, names: ["Same Name", "Same Name"], pos: ["G", "F"],
+      seasons: [historical.seasons[0], [1,2024,0,25,2,4,50,2,50,2,50,4,2,2,8,4,4]] };
+    for (const prior of [retired, twins]) {
+      const current = parseCurrentShooting(structuredClone(bundled))!;
+      current.names[0] = "Same Name";
+      const index = indexPayload(mergeHistoricalAndCurrent(prior, current));
+      expect(index.seasonOnlyPlayers.size).toBe(330);
+      expect(buildRows(index, { ...base, year: "career" })).toHaveLength(prior.names.length);
+    }
+    const current = parseCurrentShooting(structuredClone(bundled))!;
+    current.names[0] = current.names[1] = "Same Name";
+    expect(indexPayload(mergeHistoricalAndCurrent(historical, current)).seasonOnlyPlayers.size).toBe(330);
   });
   it("rejects false coverage metadata and future or impossible observation dates", () => {
     for (const mutate of [
@@ -75,7 +97,7 @@ describe("current Shooting publication", () => {
     expect(selectCurrentShooting(null, bundled, "2027-28", now).current).toBeNull();
   });
 
-  it("retains a completed previous season at rollover and adds the next season without pooling careers", () => {
+  it("retains a completed previous season at rollover and joins the next season to the same players", () => {
     const finalPrevious = structuredClone(bundled);
     finalPrevious.generated = finalPrevious.publication.generatedAt = "2027-04-21T12:00:00Z";
     finalPrevious.publication.through = "2027-04-20";
@@ -97,12 +119,14 @@ describe("current Shooting publication", () => {
     const merged = selected.publications.reduce(mergeHistoricalAndCurrent, historical);
     const index = indexPayload(merged);
     expect(index.years).toEqual([2027, 2026, 2025]);
-    expect(merged.seasonOnlyPlayers).toHaveLength(660);
+    expect(merged.names).toHaveLength(331);
+    expect(merged.seasonOnlyPlayers).toHaveLength(0);
+    expect(merged.overlayYears).toEqual([2026, 2027]);
     const base = { minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
     expect(buildRows(index, { ...base, year: 2026 })).toHaveLength(330);
     expect(buildRows(index, { ...base, year: 2027 })).toHaveLength(330);
-    expect(buildRows(index, { ...base, year: "career" })).toHaveLength(1);
-    expect(buildRows(index, { ...base, year: "career" })[0].fga).toBe(4);
+    expect(buildRows(index, { ...base, year: "career" })).toHaveLength(331);
+    expect(index.seasonsByPlayer.get(1)!.map(row => row[1])).toEqual([2026, 2027]);
     expect(merged.shrunk).toEqual(historical.shrunk);
     expect(mergeHistoricalAndCurrent(merged, next)).toBe(merged);
     expect(mergeHistoricalAndCurrent(merged, finalPrevious)).toBe(merged);

@@ -36,6 +36,8 @@ export interface PlayerRestPayload {
   refresh?: { checkedAt: string | null; status: string; publishedAt: string | null }
   playerIds?: string[]
   seasonOnlyPlayers?: number[]
+  /** Season start years added from current-season publications rather than the historical export. */
+  overlayYears?: number[]
   publication?: { through: string | null; expectedGames: number; observedGames: number; missingGameIds: string[]; season?: string; source?: string; generatedAt?: string; emptyArms?: number; historyGames?: number; fixtureIds?: string[]; fixtureIdentitySha256?: string }
   publications?: Record<string, NonNullable<PlayerRestPayload["publication"]>>
   names: string[]
@@ -63,6 +65,7 @@ export interface PlayerRestIndex {
   teams: string[]
   pos: string[]
   seasonOnlyPlayers: Set<number>
+  overlayYears: Set<number>
   /** Search keys with diacritics stripped, parallel to `names`. */
   searchKeys: string[]
   /** Every season a player appeared in, oldest first. */
@@ -203,6 +206,7 @@ export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
     teams: payload.teams,
     pos: payload.pos ?? [],
     seasonOnlyPlayers: new Set(payload.seasonOnlyPlayers ?? []),
+    overlayYears: new Set(payload.overlayYears ?? []),
     searchKeys: payload.names.map(searchKey),
     seasonsByPlayer,
     career,

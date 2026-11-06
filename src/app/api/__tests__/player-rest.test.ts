@@ -49,18 +49,25 @@ describe("GET /api/player-rest season history", () => {
     expect(indexPayload(body).years[0]).toBe(2026);
     expect(body.seasons.filter(row => row[1] === 2026)).toHaveLength(330);
   });
-  it("keeps both successive observed seasons selectable and excludes every overlay cohort from historical careers", async () => {
+  it("keeps both successive observed seasons selectable and joins them to each player's career", async () => {
     state.history = [entry(artifact(2026, true)), entry(artifact(2027))];
     const body = await response();
     const index = indexPayload(body);
     expect(index.years.slice(0, 3)).toEqual([2027, 2026, 2025]);
-    expect(body.seasonOnlyPlayers).toHaveLength(660);
+    // 301 current names match one historical player seen since 2018-19 (Hezonja returns after 2019-20); the 29 unmatched 2026 rookies
+    // become their own records and the 2027 cohort then joins them too.
+    expect(body.names).toHaveLength(historical.names.length + 29);
+    expect(body.seasonOnlyPlayers).toEqual([]);
     expect(body.publications?.["2026-27"]).toMatchObject({ through: "2027-04-20", observedGames: 1000, generatedAt: "2027-04-21T12:00:00Z" });
     expect(body.publications?.["2027-28"]).toMatchObject({ through: "2027-10-22", observedGames: 16, generatedAt: "2027-10-23T12:00:00Z" });
     expect(body.seasons.filter(row => row[1] === 2026)).toHaveLength(330);
     expect(body.seasons.filter(row => row[1] === 2027)).toHaveLength(330);
     const options = { year: "career" as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
-    expect(buildRows(index, options)).toEqual(buildRows(indexPayload(historical), options));
+    expect(buildRows(index, options)).toHaveLength(buildRows(indexPayload(historical), options).length + 29);
+    const lebron = historical.names.indexOf("LeBron James");
+    const lebronSeasons = index.seasonsByPlayer.get(lebron)!;
+    expect(lebronSeasons.slice(-3).map(row => row[1])).toEqual([2025, 2026, 2027]);
+    expect(lebronSeasons.length).toBe(historical.seasons.filter(row => row[0] === lebron).length + 2);
     expect(body.shrunk).toEqual(historical.shrunk);
   });
   it.each(["wrong-year", "wrong-module"])("retains valid previous history and marks a %s reference failed", async mode => {

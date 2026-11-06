@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.12 — 2026-11-06
+
+- Join current-season players to their historical careers in Player Shooting by Rest, so opening a player in 2026-27 shows every season, not only the current one. A player joins when the name matches exactly one player seen in the last eight seasons; rookies and ambiguous names stay as one-season records, and career estimates still read historical seasons only.
+
 ## 1.3.11 — 2026-11-02
 
 - Name unlabelled shot-map locations with fixed court-area rules shared across seasons. Preserve source-provided zone labels and keep display areas separate from model inputs.
