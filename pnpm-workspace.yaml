@@ -3,12 +3,10 @@ packages: []
 # pnpm 10 stopped reading the "pnpm" field in package.json and moved the build-approval
 # settings out of .npmrc; pnpm 11 then replaced onlyBuiltDependencies/neverBuiltDependencies
 # with the allowBuilds map below. Keep the overrides in step with whatever advisory
-# motivated them — ws is a CVE pin, not a preference.
+# motivated them: each pin is a CVE fix, not a preference.
 overrides:
   # GHSA-3g3m-2fjr-6pw4 / GHSA-g3hv-75wg-m249: patched glob and minimatch for Sentry's build plugin.
   '@sentry/bundler-plugins>glob': 14.0.2
-  # GHSA-jqcg-44mw-7w3h: shadcn tooling reaches this through Express.
-  proxy-addr@<2.0.8: 2.0.8
   '@babel/core@<=7.29.0': 7.29.6
   # Two 2026-09-01 advisories against <=4.28.6 (GHSA-c83g-rgw3-j3cx unbounded cache growth,
   # GHSA-73wf-gq98-2v4g crash via untrusted browserslist-stats.json). Reached only through
@@ -30,7 +28,6 @@ overrides:
   # GHSA-wq5f-xc86-pv6w (2026-10-06): a flaw in the librsvg that sharp bundles, <0.35.5.
   # Reached through next, for image optimisation.
   sharp@<0.35.5: 0.35.5
-  ws@>=8.0.0 <8.21.0: '>=8.21.0'
   # 2026-11-05 Dependabot sweep. vite is a peer of vitest, so `pnpm update` leaves the
   # resolved 8.0.3 in place; the 8.0.x-8.1.5 advisories are patched in the 8.1.6 backport.
   # Test-only (vitest), never shipped.
