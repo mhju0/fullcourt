@@ -131,7 +131,7 @@ and release verification. No accounts or login are needed; selected views can be
 
 ## Run locally
 
-Use the pnpm version pinned in `package.json`. CI uses Node 22 and Python 3.11.
+Use the pnpm version pinned in `package.json`. CI and Vercel use Node 24; CI uses Python 3.11.
 
 ```bash
 pnpm install --frozen-lockfile
