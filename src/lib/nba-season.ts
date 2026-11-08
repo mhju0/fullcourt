@@ -120,6 +120,11 @@ export function formatEasternDateKey(date = new Date()): string {
 
 /** The Games board keeps showing a game day until this hour (ET) the next morning. */
 const SLATE_ROLLOVER_HOUR_ET = 6;
+const EASTERN_HOUR_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  hour: "numeric",
+  hourCycle: "h23",
+});
 
 /**
  * The game day the Games board opens on: the Eastern date, held until 6 AM.
@@ -128,7 +133,13 @@ const SLATE_ROLLOVER_HOUR_ET = 6;
  * midnight would open on tomorrow's slate while tonight's was unfinished.
  */
 export function slateDateKey(now = new Date()): string {
-  return formatEasternDateKey(new Date(now.getTime() - SLATE_ROLLOVER_HOUR_ET * 60 * 60 * 1000));
+  const todayKey = formatEasternDateKey(now);
+  // Read the hour off the ET clock: the nights the clocks change are 23 or 25 hours long,
+  // so subtracting a fixed six hours moves the rollover an hour on those mornings.
+  if (Number(EASTERN_HOUR_FMT.format(now)) >= SLATE_ROLLOVER_HOUR_ET) return todayKey;
+  const day = new Date(`${todayKey}T00:00:00Z`);
+  day.setUTCDate(day.getUTCDate() - 1);
+  return day.toISOString().slice(0, 10);
 }
 
 const EASTERN_TIP_FMT = new Intl.DateTimeFormat("en-US", {
