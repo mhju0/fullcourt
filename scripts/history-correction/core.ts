@@ -92,10 +92,12 @@ export function verifySources(manifest: Manifest): void {
 export async function applyManifest(sql: postgres.Sql, manifest: Manifest, direction: "apply" | "rollback", failAfterTable?: string, productionAuthorization?: ProductionAuthorization): Promise<string> {
   const options=sql.options;
   if(options.host.length!==1 || options.port.length!==1)throw new Error("A single explicit database target is required");
+  const [host]=options.host,{user,database}=options;
+  if(host===null || typeof user!=="string" || database===null)throw new Error("An explicit TCP host, user and database are required");
   if(productionAuthorization){
     if(options.ssl!=="verify-full")throw new Error("Production requires certificate-verified TLS");
-    validateProductionAuthorization({host:options.host[0],port:options.port[0],user:options.user,database:options.database},manifest,direction,productionAuthorization);
-  }else if(options.host[0]!=="127.0.0.1" || options.port[0]!==55434 || options.database!=="fullcourt_recalculation")
+    validateProductionAuthorization({host,port:options.port[0],user,database},manifest,direction,productionAuthorization);
+  }else if(host!=="127.0.0.1" || options.port[0]!==55434 || options.database!=="fullcourt_recalculation")
     throw new Error("Transaction writes require the explicit local shadow database unless reviewed production authorization is supplied");
   verifyManifest(manifest);
   verifySources(manifest);
