@@ -292,4 +292,16 @@ describe("slateDateKey", () => {
     expect(slateDateKey(new Date("2026-12-02T10:59:00Z"))).toBe("2026-12-01");
     expect(slateDateKey(new Date("2026-12-02T11:00:00Z"))).toBe("2026-12-02");
   });
+
+  it("holds until 6 AM on the ET clock on the morning the clocks fall back", () => {
+    // 2026-11-01: 2 AM EDT becomes 1 AM EST, so midnight to 6 AM is seven hours long.
+    expect(slateDateKey(new Date("2026-11-01T10:30:00Z"))).toBe("2026-10-31"); // 5:30 AM EST
+    expect(slateDateKey(new Date("2026-11-01T11:00:00Z"))).toBe("2026-11-01"); // 6:00 AM EST
+  });
+
+  it("moves at 6 AM on the ET clock on the morning the clocks spring forward", () => {
+    // 2027-03-14: 2 AM EST becomes 3 AM EDT, so midnight to 6 AM is five hours long.
+    expect(slateDateKey(new Date("2027-03-14T09:59:00Z"))).toBe("2027-03-13"); // 5:59 AM EDT
+    expect(slateDateKey(new Date("2027-03-14T10:00:00Z"))).toBe("2027-03-14"); // 6:00 AM EDT
+  });
 });

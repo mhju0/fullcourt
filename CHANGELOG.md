@@ -1,5 +1,12 @@
 # Release history
 
+## 1.3.13 — 2026-11-08
+
+- Open the Games board on the right game day on the two mornings the clocks change. The board now moves to the new day at 6 AM on the Eastern clock; it had moved at 5 AM in November and 7 AM in March.
+- State a shot location's attempt count once in the Shot attempts view, and use the singular for one attempt or one game.
+- Stop reporting Node's own process warnings to Sentry as errors. They were logged at every server cold start and made up the project's largest issue.
+- Apply patch and minor dependency updates: Next.js 16.4.5, Sentry 11.11, Supabase JS 2.119, lucide-react 1.70, shadcn 4.23, Tailwind 4.3.5.
+
 ## 1.3.12 — 2026-11-06
 
 - Join current-season players to their historical careers in Player Shooting by Rest, so opening a player in 2026-27 shows every season, not only the current one. A player joins when the name matches exactly one player seen in the last eight seasons; rookies and ambiguous names stay as one-season records, and career estimates still read historical seasons only.
