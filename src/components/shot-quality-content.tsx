@@ -45,6 +45,8 @@ const MARKER_MAX_FT = 1.18
 const MARKER_MIN_FT = 0.3
 
 const clamp = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v))
+const countOf = (n: number, noun: string): string => `${n.toLocaleString()} ${noun}${n === 1 ? "" : "s"}`
+const attemptsLabel = (n: number): string => countOf(n, "attempt")
 const clamp01 = (v: number): number => clamp(v, 0, 1)
 
 function percentile(sorted: readonly number[], q: number): number {
@@ -313,6 +315,7 @@ function ShotCourt({
   title,
   subtitle,
   compareModels = false,
+  valueIsAttempts = false,
 }: {
   cells: ShotQualityCell[]
   scaleFga: number
@@ -322,6 +325,8 @@ function ShotCourt({
   title: string
   subtitle: string
   compareModels?: boolean
+  /** The view's value is the attempt count itself, so the description states it once. */
+  valueIsAttempts?: boolean
 }) {
   // Geometry only (independent of the color mode) so it memoizes across toggles.
   const markers = useMemo<Marker[]>(() => {
@@ -344,7 +349,7 @@ function ShotCourt({
   const selected = locations[activeIndex]
   const selectedValue = selected ? getValue(selected.c) : null
   const description = selected
-    ? `${shotCourtAreaLabel(selected.c)} · ${selected.c.fga.toLocaleString()} attempts · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
+    ? `${shotCourtAreaLabel(selected.c)} · ${attemptsLabel(selected.c.fga)}${valueIsAttempts ? "" : ` · ${selectedValue === null ? "No value for this model" : formatValue(selectedValue)}`} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
     : "No measured locations for this view."
   const pick = (event: ReactPointerEvent<SVGSVGElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -367,7 +372,7 @@ function ShotCourt({
           <div><p className="text-[15px] text-[var(--term-text-muted)]">Zone average</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.baseline ? formatValue(selected.c.baseline.expectedEfg) : "Unavailable"}</p></div>
           <div><p className="text-[15px] text-[var(--term-text-muted)]">Location model</p><p className="mono mt-1 text-2xl font-semibold">{selected.c.gbm ? formatValue(selected.c.gbm.expectedEfg) : "Unavailable"}</p></div>
         </div>
-        <p className="mt-3 text-[15px] text-[var(--term-text-muted)]">{selected.c.fga.toLocaleString()} attempts at this location · {selected.c.cellX + 0.5} ft across, {selected.c.cellY + 0.5} ft upcourt from the rim</p>
+        <p className="mt-3 text-[15px] text-[var(--term-text-muted)]">{attemptsLabel(selected.c.fga)} at this location · {selected.c.cellX + 0.5} ft across, {selected.c.cellY + 0.5} ft upcourt from the rim</p>
       </div> : null}
       <figcaption className="flex flex-col gap-1">
         <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-text)" }}>
@@ -612,7 +617,7 @@ export function ShotQualityContent() {
           <div className="mb-4 flex flex-col gap-2 text-body text-[var(--term-text-muted)] [overflow-wrap:anywhere]" role="status">
             <p>Observed attempts in {cells.length.toLocaleString()} measured locations. Early-season totals describe the shots collected so far.</p>
             {publicationMeta?.source === "nba-stats-snapshot" || publicationMeta?.source === "nba-web-snapshot" ? <>
-              <p>{publicationMeta.source === "nba-web-snapshot" ? "NBA.com official play-by-play" : "NBA Stats ShotChartDetail"} · {publicationMeta.gameCount?.toLocaleString()} games · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
+              <p>{publicationMeta.source === "nba-web-snapshot" ? "NBA.com official play-by-play" : "NBA Stats ShotChartDetail"} · {publicationMeta.gameCount == null ? null : countOf(publicationMeta.gameCount, "game")} · {publicationMeta.firstGameDate} to {publicationMeta.lastGameDate} (Eastern game dates).</p>
               <p>{snapshotGenerated ? <>Snapshot generated {snapshotGenerated}. </> : null}{publicationMeta.droppedShotCount?.toLocaleString()} attempts outside the map or without coordinates are excluded.</p>
               <p>{publicationMeta.source === "nba-web-snapshot" ? "Collected from NBA.com’s completed-game slate." : "Coverage is the games returned by the source; completeness against the NBA schedule has not been established."}</p>
             </> : <p>Historical database grid. Source collection date and game coverage are unavailable.</p>}
@@ -621,7 +626,7 @@ export function ShotQualityContent() {
           {mode === "actual" ? <p className="mb-4 text-body text-[var(--term-text-muted)]">Larger, darker squares mark more shot attempts. Counts describe observed volume at each location.</p> : hasModelValues ? <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} /> : null}
 
           {mode === "actual" ? (
-            <div className="mx-auto w-full max-w-lg"><ShotCourt cells={cells} scaleFga={stats.scaleFga} getValue={c => c.fga} getColor={v => seqColor(v / stats.scaleFga)} formatValue={v => `${v.toLocaleString()} attempts`} title="Actual shot attempts" subtitle="OBSERVED VOLUME · REGULAR SEASON" /></div>
+            <div className="mx-auto w-full max-w-lg"><ShotCourt cells={cells} scaleFga={stats.scaleFga} getValue={c => c.fga} getColor={v => seqColor(v / stats.scaleFga)} formatValue={attemptsLabel} title="Actual shot attempts" subtitle="OBSERVED VOLUME · REGULAR SEASON" valueIsAttempts /></div>
           ) : !hasModelValues ? <MessageCard tone="muted" title="MODEL ESTIMATES NOT AVAILABLE" body="Model estimates have not been published for this season. Choose Shot attempts to view observed shots." /> : mode === "value" ? (
             <ShotModelComparison cells={cells} scaleFga={stats.scaleFga} getColor={seqColorFor} formatValue={fmtEfg} />
           ) : !completeModels ? <MessageCard tone="muted" title="MODEL COMPARISON INCOMPLETE" body="A model difference requires both estimates at every location. Inspect the available values in Expected eFG%." /> : (

@@ -45,7 +45,8 @@ describe("shot publication update status", () => {
     state.source = "nba-web-snapshot";
     state.search = "season=2026-27&mode=actual";
     const html = renderToStaticMarkup(createElement(ShotQualityContent));
-    expect(html).toContain("Near rim · 1 attempts");
+    // The attempt count is the value of this view, so it is stated once, in the singular.
+    expect(html).toContain("Near rim · 1 attempt · 0.5 ft across, 0.5 ft upcourt from the rim");
     expect(html).not.toContain("Unclassified zone");
     expect(html).toContain("Court areas use each square’s center when source labels are unavailable.");
     expect(html).toContain("Model estimates are awaiting publication.");
@@ -62,6 +63,7 @@ describe("shot publication update status", () => {
     state.search = "season=2025-26&mode=value";
     const html = renderToStaticMarkup(createElement(ShotQualityContent));
     expect(html).toContain('<p class="text-[15px] font-semibold">Near rim</p>');
+    expect(html).toContain("1 attempt at this location");
     expect(html).not.toContain("Unclassified zone");
     expect(html).toContain("Court areas use each square’s center when source labels are unavailable.");
     expect(state.servedCells[0].zoneBasic).toBeNull();
@@ -230,6 +232,7 @@ describe("shot publication update status", () => {
     state.source = "nba-web-snapshot";
     const current = renderToStaticMarkup(createElement(ShotQualityContent));
     expect(current).toContain("Collected from NBA.com’s completed-game slate.");
+    expect(current).toContain("NBA.com official play-by-play · 1 game · 2026-10-21");
     expect(current).not.toContain("completeness against the NBA schedule has not been established");
     state.source = "nba-stats-snapshot";
     const legacy = renderToStaticMarkup(createElement(ShotQualityContent));
