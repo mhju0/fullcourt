@@ -1,6 +1,6 @@
 # Testing and CI/CD
 
-Use the pnpm version pinned in `package.json`. GitHub CI uses Node 22 and Python 3.11;
+Use the pnpm version pinned in `package.json`. GitHub CI and Vercel use Node 24, and CI uses Python 3.11;
 workflow files are the authority for exact commands and versions.
 
 ## Local checks
@@ -228,7 +228,7 @@ loopback port 55433 and `fullcourt_ci_disposable`. Test-only SQL initializes an 
 it is never a production schema migration. The legacy restore replay URL guard is preserved.
 `verify` rejects failed, cancelled, skipped and missing prerequisites. No PR job receives
 production secrets; checkout credentials are not persisted. Third-party Actions use reviewed
-commit pins, maintained by monthly grouped Dependabot updates (security updates arrive as soon as an advisory lands; `@types/node` stays at or below the Node 22 runtime). Keep the Next build cache disabled.
+commit pins, maintained by monthly grouped Dependabot updates (security updates arrive as soon as an advisory lands; `@types/node` stays at or below the Node 24 runtime). Keep the Next build cache disabled.
 
 Main requires up-to-date `verify` results and enforces the check for administrators. A second
 human review is not made impossible for the solo owner; independent agent review, exact-SHA

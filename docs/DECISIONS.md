@@ -2386,3 +2386,10 @@ Owner는 Shooting에서 현재 시즌 선수를 열어도 이전 시즌을 포�
 연결된 선수의 Career 합계와 career 목록에는 현재 시즌 관측이 포함된다. 축소 career 추정과
 "Historical career gap" 안내는 과거 export 시즌만 사용하므로 표준오차와 수치가 같은 모집단을
 읽는다. 과거 집계·`shrunk`·산식·현재 시즌 수집과 publication 검증은 바꾸지 않는다.
+
+## D-153 — CI를 Vercel과 같은 Node 24로 맞춤 (2026-11-08)
+
+Vercel 프로젝트의 Node 버전은 24.x이고 production 함수는 Node 24에서 실행되지만, GitHub
+Actions는 Node 22로 테스트했고 `@types/node`는 `^20`이었다. Owner는 테스트 런타임을 production과
+맞추기로 결정했다. 모든 workflow의 `node-version`을 24로, `@types/node`를 `^24`로 올리고
+Dependabot의 `@types/node` 상한을 런타임과 같은 24로 옮긴다. Vercel 설정은 바꾸지 않는다.
