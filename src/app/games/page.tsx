@@ -220,7 +220,6 @@ function DateChip({
     <button
       type="button"
       onClick={onClick}
-      aria-label={ariaLabel}
       aria-current={selected ? "date" : undefined}
       // Colours live in classes, not the style prop: an inline `border`/`background`
       // shorthand outranks any class rule, which silently killed the hover state.
@@ -238,11 +237,14 @@ function DateChip({
       )}
       style={{ borderRadius: "var(--term-radius)" }}
     >
-      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
+      {/* The full date is spoken as content, not an aria-label: a label that does not contain
+          "GMS" breaks Label in Name (WCAG 2.5.3) for speech users. */}
+      <span className="sr-only">{ariaLabel}</span>
+      <span aria-hidden="true" className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
         {day}
       </span>
       {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
-      <span className="tabular-nums" style={{ fontSize: 10, color: selected ? "#B7BBC6" : "var(--term-text-muted)" }}>
+      <span aria-hidden="true" className="tabular-nums" style={{ fontSize: 10, color: selected ? "#B7BBC6" : "var(--term-text-muted)" }}>
         {count === null ? "—" : count === "TBD" ? "TBD" : `${count} ${count === 1 ? "GM" : "GMS"}`}
       </span>
     </button>
@@ -264,7 +266,6 @@ function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; o
       type="button"
       onClick={onClick}
       disabled={day.disabled}
-      aria-label={day.ariaLabel}
       aria-current={day.isSelected ? "date" : undefined}
       className={cn(
         "mono -ml-px -mt-px flex min-h-12 min-w-0 flex-col items-center justify-center border border-[var(--term-border)] py-1 transition-[background-color,border-color] active:bg-[var(--term-surface-2)]",
@@ -275,11 +276,13 @@ function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; o
             : "bg-[var(--term-surface)] text-[var(--term-text)]"
       )}
     >
+      {/* Spoken as content for the same reason as DateChip's. */}
+      <span className="sr-only">{day.ariaLabel}</span>
       {weekday ? <span aria-hidden="true" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>{weekday}</span> : null}
-      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
+      <span aria-hidden="true" className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
         {day.disabled ? "—" : day.dayOfMonth}
       </span>
-      <span className="tabular-nums" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>
+      <span aria-hidden="true" className="tabular-nums" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>
         {day.disabled ? "" : day.gameCount}
       </span>
     </button>

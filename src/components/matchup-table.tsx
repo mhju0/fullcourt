@@ -614,14 +614,15 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        // The label replaces the row's contents for a screen reader, so the edge badge is named here.
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name}${game.records ? ` (${game.records.away.wins} wins, ${game.records.away.losses} losses entering this game)` : ""} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${game.records ? ` (${game.records.home.wins} wins, ${game.records.home.losses} losses entering this game)` : ""}${pending ? `, ${CUP_FATIGUE_PENDING_NOTE}` : ""}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore, game.overtimePeriods)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
         style={{ gridTemplateColumns: GRID_COLS, padding: "12px 16px" }}
       >
-        <div className="fc-game-status">
+        {/* The spoken name replaces the row's cells, so the edge badge is named here. It is
+            content, not an aria-label, so speech users can say a visible team name (WCAG 2.5.3). */}
+        <span className="sr-only">{`${expanded ? "Collapse" : "Expand"} ${awayBrand.name}${game.records ? ` (${game.records.away.wins} wins, ${game.records.away.losses} losses entering this game)` : ""} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${game.records ? ` (${game.records.home.wins} wins, ${game.records.home.losses} losses entering this game)` : ""}${pending ? `, ${CUP_FATIGUE_PENDING_NOTE}` : ""}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore, game.overtimePeriods)} on ${game.date} game details`}</span>
+        <div aria-hidden="true" className="fc-game-status">
           <StatusCell
             phase={phase}
             date={game.date}
@@ -633,7 +634,7 @@ function GameRow({
           />
         </div>
 
-        <div className="fc-game-teams flex min-w-0 flex-col gap-1">
+        <div aria-hidden="true" className="fc-game-teams flex min-w-0 flex-col gap-1">
           <TeamLine
             abbreviation={awayBrand.abbreviation}
             name={awayBrand.name}
@@ -654,7 +655,7 @@ function GameRow({
           />
         </div>
 
-        <div className="fc-game-extra flex flex-col gap-1">
+        <div aria-hidden="true" className="fc-game-extra flex flex-col gap-1">
             <FatigueLine
               pending={game.cupSchedulePending?.away}
               score={game.awayFatigue?.score ?? null}
@@ -669,7 +670,7 @@ function GameRow({
             />
         </div>
 
-        <div className="fc-game-edge">
+        <div aria-hidden="true" className="fc-game-edge">
           <RestAdvCell
             pending={pending}
             restAdvantage={game.restAdvantage}
@@ -678,7 +679,7 @@ function GameRow({
           />
         </div>
 
-        <div className="fc-game-chevron flex items-center justify-end gap-2">
+        <div aria-hidden="true" className="fc-game-chevron flex items-center justify-end gap-2">
           {edgeSize && <span className="hidden sm:contents"><RestEdgeBadge size={edgeSize} /></span>}
           <ChevronDown
             className={cn(
