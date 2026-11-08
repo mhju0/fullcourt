@@ -26,7 +26,7 @@ async function main() {
   const connection = await client.reserve();
   try {
     await connection`begin read only`;
-    runtime.__nbaRestAdvantageDb = { sqlClient: client, dbInstance: drizzle(Object.assign(connection, { options: client.options }), { schema }) };
+    runtime.__nbaRestAdvantageDb = { sqlClient: client, dbInstance: drizzle(Object.assign(connection, { options: client.options }) as unknown as postgres.Sql, { schema }) };
     const seasons = await connection`select distinct season from playoff_series order by season`;
     const counts = { series: 0, full_insample: 0, walk_forward_oos: 0, missingEarlyOos: 0 };
     for (const { season } of seasons) {

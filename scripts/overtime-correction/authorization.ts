@@ -10,7 +10,9 @@ export function assertLocalDatabase(url:string):void {
 }
 export function connectionTarget(sql:postgres.Sql):ConnectionTarget {
   if(sql.options.host.length!==1||sql.options.port.length!==1)throw new Error('Single explicit database target required');
-  return {host:sql.options.host[0],port:sql.options.port[0],user:sql.options.user,database:sql.options.database};
+  const [host]=sql.options.host,{user,database}=sql.options;
+  if(host===null||typeof user!=='string'||database===null)throw new Error('Explicit TCP host, user and database required');
+  return {host,port:sql.options.port[0],user,database};
 }
 export function authorize(target:ConnectionTarget,binding:{targetFingerprint:string;beforeHash:string;afterHash:string},direction:'apply'|'rollback',authorization:Authorization):void {
   if(authorization.production!==true||authorization.expectedTargetFingerprint!==targetFingerprint(target)||authorization.expectedTargetFingerprint!==binding.targetFingerprint)throw new Error('Reviewed OT production target mismatch');

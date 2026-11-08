@@ -21,7 +21,9 @@ export function assertLocalDatabase(url: string): void {
 export function connectionTarget(sql: postgres.Sql): ConnectionTarget {
   if (sql.options.host.length !== 1 || sql.options.port.length !== 1)
     throw new Error('Single explicit database target required');
-  return { host: sql.options.host[0], port: sql.options.port[0], database: sql.options.database, user: sql.options.user };
+  const [host] = sql.options.host, { user, database } = sql.options;
+  if (host === null || typeof user !== 'string' || database === null) throw new Error('Explicit TCP host, user and database required');
+  return { host, port: sql.options.port[0], database, user };
 }
 export function authorize(target: ConnectionTarget, binding: { targetFingerprint: string; beforeHash: string; afterHash: string; sourceProofSha256: string }, direction: 'apply' | 'rollback', digest: string, auth: Authorization): void {
   if (process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0') throw new Error('Production TLS certificate verification cannot be disabled');

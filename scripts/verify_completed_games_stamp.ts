@@ -45,7 +45,7 @@ async function main() {
     transactionOpen = true;
     runtime.__nbaRestAdvantageDb = {
       sqlClient: client,
-      dbInstance: drizzle(Object.assign(connection, { options: client.options }), { schema, logger: { logQuery(query, values) { logged.push({ query, params: values }); } } }),
+      dbInstance: drizzle(Object.assign(connection, { options: client.options }) as unknown as postgres.Sql, { schema, logger: { logQuery(query, values) { logged.push({ query, params: values }); } } }),
     };
     const candidates = await connection`
       select g.id, g.date::text as date, g.season, g.home_team_id, g.away_team_id, g.home_score, g.away_score,

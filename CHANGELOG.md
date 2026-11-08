@@ -1,5 +1,10 @@
 # Release history
 
+## 1.3.14 — 2026-11-08
+
+- Run CI on Node 24, the runtime Vercel already uses, and drop two dependency overrides that no longer change any resolved version.
+- Upgrade TypeScript to 6.0, Vitest to 5 and postgres.js to 4. The database correction tools now reject a connection without an explicit TCP host, user and database.
+
 ## 1.3.13 — 2026-11-08
 
 - Open the Games board on the right game day on the two mornings the clocks change. The board now moves to the new day at 6 AM on the Eastern clock; it had moved at 5 AM in November and 7 AM in March.
