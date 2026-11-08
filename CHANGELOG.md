@@ -1,5 +1,10 @@
 # Release history
 
+## 1.3.15 — 2026-11-08
+
+- Name the Games date buttons and match rows from their own content, so a speech-control user can say the visible day or team name. Screen readers hear the same names as before.
+- Upgrade Playwright to 1.65 and axe-core to 4.14, and pnpm/action-setup to 6.1.1 in CI.
+
 ## 1.3.14 — 2026-11-08
 
 - Run CI on Node 24, the runtime Vercel already uses, and drop two dependency overrides that no longer change any resolved version.
