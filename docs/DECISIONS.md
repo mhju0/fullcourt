@@ -1172,6 +1172,7 @@ useful downstream work. Known blocked manual sources fail before secret access. 
 probes explicitly distinguish expected blocks from actionable failures. A six-hour due-run
 monitor detects execution problems but is not independent of GitHub or database-freshness proof.
 Scoped fatigue ages are estimates because stored timestamps lack timezone metadata.
+Superseded in part by D-154: a late successful run warns instead of failing.
 
 Main base freshness and administrator enforcement are enabled, preserving `verify` and bans
 on force-push/deletion. Vercel imports GitHub `verify` as a blocking Production promotion check;
@@ -2393,3 +2394,11 @@ Vercel 프로젝트의 Node 버전은 24.x이고 production 함수는 Node 24에
 Actions는 Node 22로 테스트했고 `@types/node`는 `^20`이었다. Owner는 테스트 런타임을 production과
 맞추기로 결정했다. 모든 workflow의 `node-version`을 24로, `@types/node`를 `^24`로 올리고
 Dependabot의 `@types/node` 상한을 런타임과 같은 24로 옮긴다. Vercel 설정은 바꾸지 않는다.
+
+## D-154 — 늦게 끝난 성공 run은 maintenance monitor를 실패시키지 않음 (2026-11-11)
+
+2026-11-09 slot의 daily update는 GitHub scheduler 지연으로 6시간 17분 늦게 시작했고 성공했지만,
+6시간 deadline을 넘겨 Maintenance health run 42847764174가 실패했다. 최근 30회 scheduled run의
+시작 지연은 1시간 50분~6시간 17분이었다. 늦은 성공 run은 다시 돌릴 것이 없으므로 Owner는 이를
+경고로만 남기기로 했다. `late` 상태와 6시간 deadline은 요약과 artifact에 그대로 남고, workflow는
+`::warning::`을 내고 통과한다. missing·failed·unfinished run과 잘못된 API 증거는 계속 실패한다.

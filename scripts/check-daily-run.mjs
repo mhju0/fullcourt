@@ -35,6 +35,11 @@ export function checkDailyRun(payload, jobs, nowValue) {
   if (completed > now || completed < timestamp(run.created_at)) throw new Error('Inconsistent completion timestamp');
   return {...result,completedAt:new Date(completed).toISOString(),delayMinutes:Math.round((timestamp(run.created_at)-expected)/60000),status:completed > deadline ? 'late':'success'};
 }
+// A late successful run is GitHub scheduler delay with nothing to rerun, so it warns instead of failing.
+export function monitorOutcome(status) {
+  if (status === 'success') return 'pass';
+  return status === 'late' ? 'warn' : 'fail';
+}
 async function getJson(url, token) {
   const response = await fetch(url,{headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},signal:AbortSignal.timeout(20000),redirect:'error'});
   if (!response.ok) throw new Error(`Actions API returned HTTP ${response.status}`);
@@ -59,6 +64,8 @@ async function main() {
   console.log(JSON.stringify(result));
   await writeFile('daily-watchdog.json',JSON.stringify(result,null,2)+'\n');
   if (process.env.GITHUB_STEP_SUMMARY) await writeFile(process.env.GITHUB_STEP_SUMMARY,`## Daily scheduled-run monitor\n\nStatus: **${result.status}**\n\nExpected: ${result.expected}\n\nCompletion deadline: ${result.deadline}\n\nThis checks workflow completion, not database freshness. It shares GitHub's scheduler and does not prove email delivery.\n`);
-  if (result.status !== 'success') { console.error(`::error::Daily scheduled run is ${result.status}`);process.exitCode=1; }
+  const outcome = monitorOutcome(result.status);
+  if (outcome === 'warn') console.error(`::warning::Daily scheduled run succeeded but started ${result.delayMinutes} minutes after its slot and finished past the deadline`);
+  if (outcome === 'fail') { console.error(`::error::Daily scheduled run is ${result.status}`);process.exitCode=1; }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main().catch(()=>{console.error('::error::Daily monitoring failed to obtain valid completion evidence');process.exitCode=1;});

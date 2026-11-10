@@ -249,8 +249,9 @@ Future timestamps and non-UTC observations cannot look perfectly fresh. Metadata
 leaves timing unknown and data work continues with a degraded summary.
 
 The scheduled-run monitor checks the due scheduled main run (not a manual substitute) and
-actual job-completion timestamps against a six-hour deadline. It fails for missing, late,
-unfinished or failed executions and invalid API evidence. It shares GitHub's scheduler;
+actual job-completion timestamps against a six-hour deadline. It fails for missing,
+unfinished or failed executions and invalid API evidence. A successful run that finishes past
+the deadline is reported as `late` with a warning and does not fail the workflow (D-154). It shares GitHub's scheduler;
 workflow notifications do not prove email delivery. No production data query is made by it.
 
 The full dependency audit is weekly/manual and advisory for known development findings; audit

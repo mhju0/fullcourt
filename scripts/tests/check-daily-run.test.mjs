@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkDailyRun } from '../check-daily-run.mjs';
+import { checkDailyRun, monitorOutcome } from '../check-daily-run.mjs';
 const now = '2026-10-15T07:43:00Z';
 const good = {event:'schedule',head_branch:'main',created_at:'2026-10-14T23:17:00Z',run_started_at:'2026-10-14T23:18:00Z',status:'completed',conclusion:'success',id:1};
 const jobs = [{completed_at:'2026-10-14T23:22:00Z',conclusion:'success'}];
@@ -10,3 +10,4 @@ test('an older green run cannot hide a missing due slot',()=>{assert.equal(check
 test('failed and still-running executions are not green',()=>{for(const r of [{...good,conclusion:'failure'},{...good,status:'in_progress',conclusion:null}]) assert.notEqual(checkDailyRun({workflow_runs:[r]},jobs,now).status,'success')});
 test('late completion is distinct from a failed pipeline',()=>{assert.equal(checkDailyRun({workflow_runs:[good]},[{...jobs[0],completed_at:'2026-10-15T04:00:00Z'}],now).status,'late')});
 test('missing completion evidence and malformed API data are errors',()=>{assert.throws(()=>checkDailyRun({workflow_runs:[good]},[],now));assert.throws(()=>checkDailyRun({},jobs,now))});
+test('a late but successful run warns; missing, failed and unfinished runs fail',()=>{assert.equal(monitorOutcome('success'),'pass');assert.equal(monitorOutcome('late'),'warn');for(const s of ['missing','failed','unfinished']) assert.equal(monitorOutcome(s),'fail')});
