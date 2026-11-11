@@ -290,11 +290,22 @@ try {
   assert.equal((await first`select count(*)::int as count from fatigue_scores where game_id=-4`)[0].count,0);
   console.log(projected.trim());
   pass("actual project_fatigue CLI selects missing away side and preserves null-tip gap");
+  await first`insert into games(id,external_id,date,season,home_team_id,away_team_id,status,home_score,away_score) values
+    (-60,'grade-home','2001-01-01','2000-01',1,2,'final',110,100),
+    (-61,'grade-away','2001-01-02','2000-01',1,2,'final',95,101),
+    (-62,'grade-corrected','2001-01-03','2000-01',1,2,'final',90,99),
+    (-63,'grade-unplayed','2001-01-04','2000-01',1,2,'scheduled',null,null)`;
+  await first`insert into predictions(game_id,predicted_advantage_team_id,rest_advantage_differential,actual_winner_id) values
+    (-60,1,3,null),(-61,1,3,null),(-62,1,3,1),(-63,1,3,null)`;
   const nightly = await runCli("scripts/run-daily.ts",today,"games refreshed=");
   assert.match(nightly,/games refreshed=2/);
   assert.match(nightly,/skipped=1/);
   console.log(nightly.trim());
   pass("actual run-daily CLI uses prospective writer and reports unknown-tip skips");
+  const graded = await first`select game_id, actual_winner_id from predictions where game_id between -63 and -60 order by game_id desc`;
+  assert.deepEqual(graded.map(row=>[row.game_id,row.actual_winner_id]),[[-60,1],[-61,2],[-62,2],[-63,null]]);
+  assert.match(nightly,/predictions graded=3/);
+  pass("actual run-daily CLI grades every final from its stored score and leaves unplayed picks open");
 
   const scoreFeed = (state: "pre" | "post", homeScore = "120", awayScore = "117") => ({events:[{
     id:"integrity-event",date:`${today}T18:00:00-04:00`,competitions:[{

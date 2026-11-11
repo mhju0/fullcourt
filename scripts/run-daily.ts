@@ -17,6 +17,7 @@ import type * as Schema from "@/lib/db/schema";
 import { games } from "@/lib/db/schema";
 import { refreshProspectiveGames } from "@/lib/daily-refresh";
 import { createDailyRefreshPort } from "@/lib/daily-refresh-port";
+import { gradeFinishedPredictions } from "@/lib/prediction-grading";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
 type AppDb = NodePgDatabase<typeof Schema>;
@@ -32,6 +33,9 @@ async function main(): Promise<void> {
 
   const { db } = await import("@/lib/db");
   const appDb = db as AppDb;
+
+  const predictionsGraded = await gradeFinishedPredictions(appDb);
+  console.log(`[run-daily] predictions graded=${predictionsGraded}`);
 
   const endDate = format(addDays(parseISO(dateArg), 14), "yyyy-MM-dd");
   const todaysGames = await appDb
@@ -52,7 +56,7 @@ async function main(): Promise<void> {
 
   if (todaysGames.length === 0) {
     writeStageSummary("fatigue", { rows_written: 0, games_refreshed: 0 });
-    writeStageSummary("predictions", { rows_written: 0 });
+    writeStageSummary("predictions", { rows_written: 0, predictions_graded: predictionsGraded });
     await reportDailyFreshness(appDb, dateArg, endDate);
     console.log(`[run-daily] No games in DB for ${dateArg}–${endDate}; skipping fatigue & predictions.`);
     return;
@@ -69,7 +73,7 @@ async function main(): Promise<void> {
     games_refreshed: summary.gamesRefreshed, failed_games: summary.failedGames.length,
     skipped_games: summary.skippedGames.length, deferred_games: summary.deferredGames.length });
   writeStageSummary("predictions", { rows_written: summary.predictionRowsWritten,
-    failed_games: summary.failedGames.length, deferred_games: summary.deferredGames.length });
+    predictions_graded: predictionsGraded, failed_games: summary.failedGames.length, deferred_games: summary.deferredGames.length });
   for (const failure of summary.failedGames) {
     console.warn(
       `[run-daily] preserved game ${failure.gameId} after refresh failure: ${failure.reason}`
