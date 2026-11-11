@@ -9,7 +9,8 @@ from pathlib import Path
 
 STAGES = ('scores', 'context', 'projection', 'fatigue', 'predictions')
 COUNTS = {'rows_written', 'games_refreshed', 'date_errors', 'unmatched', 'matched',
-          'failed_games', 'deferred_games', 'skipped_games', 'no_line_score', 'stored_games'}
+          'failed_games', 'deferred_games', 'skipped_games', 'no_line_score', 'stored_games',
+          'predictions_graded'}
 
 
 def utc_now():

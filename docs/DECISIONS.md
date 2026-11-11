@@ -2402,3 +2402,12 @@ Dependabot의 `@types/node` 상한을 런타임과 같은 24로 옮긴다. Verce
 시작 지연은 1시간 50분~6시간 17분이었다. 늦은 성공 run은 다시 돌릴 것이 없으므로 Owner는 이를
 경고로만 남기기로 했다. `late` 상태와 6시간 deadline은 요약과 artifact에 그대로 남고, workflow는
 `::warning::`을 내고 통과한다. missing·failed·unfinished run과 잘못된 API 증거는 계속 실패한다.
+
+## D-155 — 현재 시즌 예측을 매일 채점 (2026-11-11)
+
+2026-11-11 데이터 감사에서 2026-27 예측 중 끝난 경기의 67건이 모두 `actual_winner_id`가
+비어 있었다. 이전 시즌은 수동 `scripts/backfill_predictions.ts`가 채점했고, 매일 도는 경로에는
+채점 단계가 없었다. Owner는 매일 채점하기로 결정했다. `scripts/run-daily.ts`가 시작할 때
+`gradeFinishedPredictions()`(`src/lib/prediction-grading.ts`)가 final 경기의 저장된 점수로
+승자를 기록한다. 점수가 정정되면 다시 채점하고, 동점·점수 없음·미종료 경기는 열린 채로 둔다.
+기존 채점 27,420건은 모두 저장된 점수와 일치했으므로 첫 실행은 비어 있던 행만 채운다.
