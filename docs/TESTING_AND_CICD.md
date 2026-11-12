@@ -221,7 +221,9 @@ accessibility outside those flows. The fixture spec is excluded from the full co
 CI transfers only its credential-free `.next` build to the browser job, excluding cache; test
 failure reports are retained seven days. The browser gate installs only Chromium's headless
 shell and system dependencies, matching both smoke projects' default headless configuration.
-It skips the unused full browser download; it does not cache browser binaries. Keep this
+It skips the unused full browser download. It caches `~/.cache/ms-playwright` keyed by the
+Playwright version; on a cache hit it still runs `playwright install-deps chromium` for the
+system libraries. Keep this
 installation aligned with the smoke configuration if a project later needs a browser channel
 or headed mode. The disposable PostgreSQL 18 service uses fixed
 loopback port 55433 and `fullcourt_ci_disposable`. Test-only SQL initializes an empty service;
