@@ -296,28 +296,49 @@ export function SeasonReportContent() {
               home, regardless of outcome. Rest advantage is a model-score
               difference.
             </p>
+            <div>
+            {data.loudestCalls.length > 0 ? (
+              <div className={`fc-call-head text-xs font-medium ${muted}`} aria-hidden="true">
+                <span className="fc-call-date">Date</span>
+                <span className="fc-call-match">Matchup</span>
+                <span className="fc-call-score-head">Score</span>
+                <span className="fc-call-ra">Rest adv.</span>
+                <span className="fc-call-result">Result</span>
+              </div>
+            ) : null}
             {data.loudestCalls.slice(0, 5).map((call) => {
               const away = data.teams.find((t) => t.teamId === call.awayTeamId)?.abbreviation;
               const home = data.teams.find((t) => t.teamId === call.homeTeamId)?.abbreviation;
+              const awayWon = call.awayScore > call.homeScore;
               return (
               <a
                 key={call.gameId}
                 data-testid="loudest-call-row"
                 href={`/games?season=${season}&date=${call.date}&game=${call.gameId}#game-${call.gameId}`}
-                className="grid min-h-16 grid-cols-2 items-center gap-2 border-b border-[var(--term-border)] py-3 hover:bg-[var(--term-surface-2)] sm:grid-cols-4"
+                className="fc-call-row min-h-16 border-b border-[var(--term-border)] py-3 hover:bg-[var(--term-surface-2)]"
               >
-                <span className={`mono text-xs ${muted}`}>{call.date}</span>
-                <strong className="flex items-center gap-1">
+                <span className={`fc-call-date mono text-xs ${muted}`}>{call.date}</span>
+                <strong className="fc-call-match flex items-center gap-1">
                   {away ? <TeamLogo abbreviation={away} season={season} size={20} /> : null}
                   {away ?? "—"} @
                   {home ? <TeamLogo abbreviation={home} season={season} size={20} /> : null}
                   {home ?? "—"}
                 </strong>
-                <span className="mono text-[15px] tabular-nums">
-                  {call.awayScore}–{call.homeScore} · RA{"\u00a0"}
-                  {formatRestAdvantageValue(call.restAdvantage)}
+                <span className="fc-call-nums">
+                  <span className="fc-call-score mono text-[15px] tabular-nums">
+                    <span className={awayWon ? "font-semibold" : muted}>{call.awayScore}</span>
+                    <span className={muted}>–</span>
+                    <span className={awayWon ? muted : "font-semibold"}>{call.homeScore}</span>
+                  </span>
+                  <span className="fc-call-ra">
+                    <span className="sr-only">Rest advantage </span>
+                    <span className={`fc-call-ra-label text-xs ${muted}`} aria-hidden="true">Rest adv. </span>
+                    <span className="mono text-[15px] font-semibold tabular-nums">
+                      {formatRestAdvantageValue(call.restAdvantage)}
+                    </span>
+                  </span>
                 </span>
-                <span className="whitespace-nowrap text-right text-[15px]">
+                <span className="fc-call-result whitespace-nowrap text-[15px]">
                   <span className="fc-outcome mono" data-won={call.restedTeamWon ? "" : undefined}>
                     RESTED TEAM {call.restedTeamWon ? "WON" : "LOST"}
                   </span>{" "}
@@ -326,6 +347,7 @@ export function SeasonReportContent() {
               </a>
               );
             })}
+            </div>
           </section>
           <p className="border-t border-[var(--term-border)] pt-6">
             Looking for travel, dense stretches, or favorable schedules?{" "}
