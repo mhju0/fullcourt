@@ -16,6 +16,7 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 - FullCourt is the product; rest advantage is the metric. Preserve rest-advantage identifiers when changing branding.
 - Generated analytics artifacts in src/data/, public/data/, and the model-facts files must stay aligned with their producing scripts and pinning tests; do not hand-edit published figures. shadcn is a build dependency: globals.css imports shadcn/tailwind.css.
 - Shared helpers, never hand-rolled: season labels `src/lib/nba-season.ts`; signed numbers `signedNumber()`; failure cards `MessageCard` with `errMsg`.
+- API read routes return the `{ data, error }` envelope via `src/lib/api-route.ts`; client-facing errors come only from `getPublicApiErrorMessage` (or a thrown `PublicApiError`).
 - Officiating is published at `/officiating` (`/referees` redirects, D-60). Publishing or unpublishing a route is a deliberate product act, never a side effect of a docs change. Quote a per-official figure only beside what chance produces at the same bar, with the caveat that three officials share every game.
 - New analytics modules are additive, isolated slices: their own scripts, tables, routes and page.
 - The app is light-only; `/` is the one dark surface, scoped with `fc-chrome-front`. Read docs/FRONTEND.md before any theme change.
