@@ -7,5 +7,17 @@
       "Bash(*drizzle-kit generate*)",
       "Bash(drizzle-kit generate*)"
     ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -x \"$HOME/.agents/bin/stop-gate\" ] || exit 0; exec \"$HOME/.agents/bin/stop-gate\""
+          }
+        ]
+      }
+    ]
   }
 }
