@@ -16,8 +16,9 @@ Inputs: the request or contract, the diff, and the `scripts/check.sh` output. If
 
 Reject only if:
 - a done-criterion has no evidence (the check output must end in `GATE: PASS`),
-- the diff goes beyond the stated scope, or
-- a test was deleted, skipped or weakened.
+- the diff goes beyond the stated scope,
+- a test was deleted, skipped or weakened, or
+- the diff breaks a hard rule stated in the repo's AGENTS.md (quote the rule).
 
 Skip style. Read files to confirm a claim rather than trusting pasted numbers.
 
