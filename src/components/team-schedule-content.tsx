@@ -159,7 +159,8 @@ function gameState(game: TeamScheduleGame, now: number): ReactNode {
       <span>
         <span style={{ fontWeight: 700, color: won ? "var(--term-blue-text)" : "var(--term-red-text)" }}>{won ? "W" : "L"}</span>{" "}
         {game.teamScore}–{game.opponentScore}
-        {finalGameLabel(game.overtimePeriods) !== "FINAL" && <span style={{ color: "var(--term-text-muted)" }}> {finalGameLabel(game.overtimePeriods)}</span>}
+        {/* The score already says the game is final, so a phone prints only "OT". */}
+        {finalGameLabel(game.overtimePeriods) !== "FINAL" && <span style={{ color: "var(--term-text-muted)" }}> <span className="hidden sm:inline">FINAL/</span>{finalGameLabel(game.overtimePeriods).slice("FINAL/".length)}</span>}
       </span>
     )
   }

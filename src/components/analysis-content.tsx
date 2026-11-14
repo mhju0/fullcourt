@@ -751,6 +751,7 @@ function ExploreGames({
           is what a convention with no module behind it produces; the state rows below use the
           shared one. */}
       <DataTable
+        className="fc-table-compact"
         wrapperClassName="mt-3 overflow-x-auto"
         rows={loading || error || results.length === 0 ? [] : results}
         rowKey={(g) => g.gameId}
