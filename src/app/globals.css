@@ -792,6 +792,33 @@ select.fc-control { padding-right: 32px; }
 .fc-report-note { padding: 8px 12px; border: 1px solid var(--term-border); border-radius: var(--term-radius-sm); background: var(--term-bg); }
 .fc-outcome { display: inline-block; padding: 3px 8px; border-radius: var(--term-radius-sm); background: var(--term-surface-2); color: var(--term-text-dim); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
 .fc-outcome[data-won] { background: color-mix(in srgb, var(--term-blue) 14%, var(--term-surface)); color: var(--term-blue-text); }
+/* Widest-gap rows, laid out by the width of the list, not the viewport. Under 292px, three
+   lines: matchup and score, date and rest advantage, result. The widest matchup plus the result
+   needs 289px, and a 320px phone leaves 254. From 292px, two lines: matchup and result over
+   date, score and rest advantage. The result sits in the last track alone and the numbers span
+   two, so neither line takes width from the matchup. From 640px the five cells sit under the
+   column headings; tracks are fixed widths because every row is its own grid and the columns
+   have to line up. */
+.fc-call-list { container-type: inline-size; }
+.fc-call-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "match score" "date ra" "result result"; align-items: center; gap: 8px 12px; }
+.fc-call-head { display: none; }
+.fc-call-date { grid-area: date; }
+.fc-call-match { grid-area: match; }
+.fc-call-nums { display: contents; }
+.fc-call-score { grid-area: score; display: grid; grid-template-columns: 3ch auto 3ch; column-gap: 4px; justify-content: end; }
+.fc-call-score > :first-child, .fc-call-score-head { text-align: right; }
+.fc-call-ra { grid-area: ra; text-align: right; white-space: nowrap; }
+.fc-call-result { grid-area: result; text-align: right; }
+@container (width >= 292px) and (width < 640px) {
+  .fc-call-row { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "match match result" "date nums nums"; }
+  .fc-call-nums { grid-area: nums; display: flex; align-items: baseline; justify-content: flex-end; gap: 16px; }
+}
+@container (width >= 640px) {
+  .fc-call-head, .fc-call-row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 86px 64px 152px; grid-template-areas: "date match score ra result"; column-gap: 16px; }
+  .fc-call-head { padding: 4px 0 8px; border-bottom: 2px solid var(--term-text); }
+  .fc-call-score-head { grid-area: score; }
+  .fc-call-ra-label { display: none; }
+}
 .fc-report-chapters > section + section { padding-top: 24px; border-top: 1px solid var(--term-hairline); }
 @media (min-width: 768px) {
   .fc-report-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
