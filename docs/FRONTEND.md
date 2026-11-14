@@ -287,7 +287,8 @@ A table that pairs a rate with its count writes the rate first and the count as
 - Where readers sort by either number (Shooting), the rate and the count get separate
   columns under one group header.
 - Elsewhere (Season Report team records, Home Court season data) they share one cell: the rate
-  on top, the count under it in muted type. The header reads "win % · W / G".
+  on top, the count under it in muted type. The header reads "win % · W / G". Under 640px the
+  Season Report table shortens its headers and moves that key to one line above the table (D-156).
 - A rate with no games is a dash, never a word in the cell. One muted line under the table
   says what the dash means, and it appears only when a dash does.
 - Header case follows the table: `DataTable` stays uppercase, and the hand-built Season Report
