@@ -296,7 +296,7 @@ export function SeasonReportContent() {
               home, regardless of outcome. Rest advantage is a model-score
               difference.
             </p>
-            <div>
+            <div className="fc-call-list">
             {data.loudestCalls.length > 0 ? (
               <div className={`fc-call-head text-xs font-medium ${muted}`} aria-hidden="true">
                 <span className="fc-call-date">Date</span>
