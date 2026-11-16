@@ -224,8 +224,8 @@ test("shooting filter and player links restore the same view", async ({ page }) 
   await expect(page.locator("#pr-season")).toHaveValue("2024");
 });
 
-for (const width of [320, 390, 430, 1440]) {
-  test(`six single-line columns scroll internally at ${width}px`, async ({ page }) => {
+for (const width of [320, 390, 430, 700, 701, 1440]) {
+  test(`six columns keep their headings contained and scroll internally at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await open(page, "lebron");
     await expect(page.locator("thead tr")).toHaveCount(2);
@@ -237,18 +237,41 @@ for (const width of [320, 390, 430, 1440]) {
     expect(await page.locator("thead tr").nth(1).locator("th").evaluateAll(nodes => nodes.map(node => node.querySelector("button")!.textContent))).toEqual([
       "No rest eFG%", "No rest Shots", "2+ days rest eFG%", "2+ days rest Shots",
     ]);
+    const scroll = page.locator(".fc-rest-table");
     await page.getByRole("columnheader", { name: "No rest eFG%", exact: true }).click();
     await expect(page.getByRole("columnheader", { name: /^No rest eFG%/ })).toHaveAttribute("aria-sort", "descending");
     await expect(page).toHaveURL(/sort=noRestEfg/);
     await page.waitForLoadState("networkidle");
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
-    const sizes = await page.getByRole("columnheader").filter({ has: page.locator("button") }).evaluateAll(nodes => nodes.map(node => {
-      const button = node.querySelector("button")!;
-      return { nowrap: getComputedStyle(button).whiteSpace, fontSize: getComputedStyle(button).fontSize, textTransform: getComputedStyle(button).textTransform, fits: button.scrollWidth <= button.clientWidth + 1 };
-    }));
-    expect(sizes.every(size => size.nowrap === "nowrap" && size.fontSize === "12px" && size.textTransform === "none" && size.fits), JSON.stringify(sizes)).toBe(true);
-    const scroll = page.locator(".fc-rest-table");
+    await expect(async () => {
+      const sizes = await page.getByRole("columnheader").filter({ has: page.locator("button") }).evaluateAll(nodes => nodes.map(node => {
+        const button = node.querySelector("button")!;
+        return { nowrap: getComputedStyle(button).whiteSpace, fontSize: getComputedStyle(button).fontSize, textTransform: getComputedStyle(button).textTransform, fits: button.scrollWidth <= button.clientWidth + 1 };
+      }));
+      expect(sizes).toHaveLength(6);
+      expect(sizes.every((size, index) => size.nowrap === (index === 1 && width <= 700 ? "normal" : "nowrap") && size.fontSize === "12px" && size.textTransform === "none" && size.fits), JSON.stringify(sizes)).toBe(true);
+    }).toPass({ timeout: 5_000 });
+    const difference = await headers.nth(1).evaluate(header => {
+      const button = header.querySelector("button")!;
+      const range = document.createRange();
+      range.selectNodeContents(button);
+      const bounds = header.getBoundingClientRect();
+      const text = Array.from(range.getClientRects());
+      const label = document.createRange();
+      label.setStart(button, 0);
+      label.setEndBefore(button.lastElementChild!);
+      return {
+        lines: new Set(Array.from(label.getClientRects()).map(rect => Math.round(rect.top))).size,
+        fits: text.every(rect => rect.left >= bounds.left - 1 && rect.right <= bounds.right + 1 && rect.top >= bounds.top - 1 && rect.bottom <= bounds.bottom + 1),
+        height: bounds.height,
+      };
+    });
+    expect(difference.fits, JSON.stringify(difference)).toBe(true);
+    expect(difference.height).toBeLessThanOrEqual(78);
+    if (width <= 700) expect(difference.lines).toBeGreaterThan(1);
+    else expect(difference.lines).toBe(1);
     await expect(scroll).toHaveCSS("mask-image", "none");
+    await scroll.evaluate(node => { node.scrollLeft = 0; });
     expect(await scroll.evaluate(node => node.scrollLeft)).toBe(0);
     const firstCountVisible = await page.getByTestId("player-row").first().locator("td").nth(1).evaluate(cell => {
       const range = document.createRange();
@@ -264,7 +287,9 @@ for (const width of [320, 390, 430, 1440]) {
     if (width <= 430) expect(before.width).toBeLessThanOrEqual(160);
     await scroll.focus();
     await page.keyboard.press("ArrowRight");
-    if (width < 1140) {
+    const overflows = await scroll.evaluate(node => node.scrollWidth > node.clientWidth);
+    if (width <= 430) expect(overflows).toBe(true);
+    if (overflows) {
       await expect.poll(() => scroll.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
       await scroll.evaluate(node => { node.scrollLeft = 300; });
       await page.getByRole("searchbox").focus();

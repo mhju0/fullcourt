@@ -21,7 +21,7 @@ import { SeasonDataGuide } from "@/components/season-data-guide";
 import { MessageCard } from "@/components/ui/message-card";
 import { keepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
-import { TYPE, WIDTH } from "@/lib/terminal-styles";
+import { WIDTH } from "@/lib/terminal-styles";
 
 const LATEST_SEASON = defaultNbaSeason();
 const reportKey = (season: string) => `/api/season-report?season=${season}&schema=home-court-v1`;
@@ -190,7 +190,7 @@ export function SeasonReportContent() {
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
                   <p className="fc-control-label sm:min-h-10">Vs home rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
-                    {delta === null ? "Unavailable" : `${signedNumber(delta, 1)}\u00a0pp`}
+                    {delta === null ? "Unavailable" : <>{signedNumber(delta, 1)}{"\u00a0"}<span className="text-xs font-medium">pp</span></>}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>Rested team at home versus all designated-home games</p>
                 </div>
@@ -296,28 +296,49 @@ export function SeasonReportContent() {
               home, regardless of outcome. Rest advantage is a model-score
               difference.
             </p>
+            <div className="fc-call-list">
+            {data.loudestCalls.length > 0 ? (
+              <div className={`fc-call-head text-xs font-medium ${muted}`} aria-hidden="true">
+                <span className="fc-call-date">Date</span>
+                <span className="fc-call-match">Matchup</span>
+                <span className="fc-call-score-head">Score</span>
+                <span className="fc-call-ra">Rest adv.</span>
+                <span className="fc-call-result">Result</span>
+              </div>
+            ) : null}
             {data.loudestCalls.slice(0, 5).map((call) => {
               const away = data.teams.find((t) => t.teamId === call.awayTeamId)?.abbreviation;
               const home = data.teams.find((t) => t.teamId === call.homeTeamId)?.abbreviation;
+              const awayWon = call.awayScore > call.homeScore;
               return (
               <a
                 key={call.gameId}
                 data-testid="loudest-call-row"
                 href={`/games?season=${season}&date=${call.date}&game=${call.gameId}#game-${call.gameId}`}
-                className="grid min-h-16 grid-cols-2 items-center gap-2 border-b border-[var(--term-border)] py-3 hover:bg-[var(--term-surface-2)] sm:grid-cols-4"
+                className="fc-call-row min-h-16 border-b border-[var(--term-border)] py-3 hover:bg-[var(--term-surface-2)]"
               >
-                <span className={`mono text-xs ${muted}`}>{call.date}</span>
-                <strong className="flex items-center gap-1">
+                <span className={`fc-call-date mono text-xs ${muted}`}>{call.date}</span>
+                <strong className="fc-call-match flex items-center gap-1">
                   {away ? <TeamLogo abbreviation={away} season={season} size={20} /> : null}
                   {away ?? "—"} @
                   {home ? <TeamLogo abbreviation={home} season={season} size={20} /> : null}
                   {home ?? "—"}
                 </strong>
-                <span className="mono text-[15px] tabular-nums">
-                  {call.awayScore}–{call.homeScore} · RA{"\u00a0"}
-                  {formatRestAdvantageValue(call.restAdvantage)}
+                <span className="fc-call-nums">
+                  <span className="fc-call-score mono text-[15px] tabular-nums">
+                    <span className={awayWon ? "font-semibold" : muted}>{call.awayScore}</span>
+                    <span className={muted}>–</span>
+                    <span className={awayWon ? muted : "font-semibold"}>{call.homeScore}</span>
+                  </span>
+                  <span className="fc-call-ra">
+                    <span className="sr-only">Rest advantage </span>
+                    <span className={`fc-call-ra-label text-xs ${muted}`} aria-hidden="true">Rest adv. </span>
+                    <span className="mono text-[15px] font-semibold tabular-nums">
+                      {formatRestAdvantageValue(call.restAdvantage)}
+                    </span>
+                  </span>
                 </span>
-                <span className="whitespace-nowrap text-right text-[15px]">
+                <span className="fc-call-result whitespace-nowrap text-[15px]">
                   <span className="fc-outcome mono" data-won={call.restedTeamWon ? "" : undefined}>
                     RESTED TEAM {call.restedTeamWon ? "WON" : "LOST"}
                   </span>{" "}
@@ -326,6 +347,7 @@ export function SeasonReportContent() {
               </a>
               );
             })}
+            </div>
           </section>
           <p className="border-t border-[var(--term-border)] pt-6">
             Looking for travel, dense stretches, or favorable schedules?{" "}
@@ -340,15 +362,14 @@ export function SeasonReportContent() {
 }
 
 function gapComparison(swing: number | null, baseline: number | null) {
-  if (swing === null) return { label: "Gap unavailable", shortLabel: "Unavailable", backgroundColor: undefined };
-  if (baseline === null) return { label: "League comparison unavailable", shortLabel: "No league gap", backgroundColor: undefined };
+  if (swing === null) return { label: "Gap unavailable", backgroundColor: undefined };
+  if (baseline === null) return { label: "League comparison unavailable", backgroundColor: undefined };
   const difference = Math.round((swing - baseline) * 10) / 10;
   const endpoint = difference < 0 ? "var(--term-worse-3)" : "var(--term-better-3)";
   const intensity = Math.round(Math.min(Math.abs(difference) / 40, 1) * 100);
   return {
     label: difference === 0 ? "At the league home/rest gap"
       : `${difference > 0 ? "Larger" : "Smaller"} home/rest gap than league`,
-    shortLabel: difference === 0 ? "League gap" : `${difference > 0 ? "Larger" : "Smaller"} gap`,
     backgroundColor: difference === 0 ? "var(--term-diff-neutral)"
       : `color-mix(in srgb, ${endpoint} ${intensity}%, var(--term-diff-neutral))`,
   };
@@ -358,6 +379,7 @@ function TeamRecords({ teams, season, baseline }: {
   teams: SeasonReportResponse["teams"]; season: string; baseline: number | null;
 }) {
   const hasDash = teams.some((team) => team.restedWinPct === null || team.tiredWinPct === null);
+  const hasSmallSample = teams.some((team) => team.restedGames < 10 || team.tiredGames < 10);
   return (
     <>
     <div
@@ -366,12 +388,15 @@ function TeamRecords({ teams, season, baseline }: {
       aria-label="Team rest records"
       tabIndex={0}
     >
-      <table className="fc-table w-full table-fixed text-left text-xs sm:text-[15px]">
+      {/* Under 640px the headers drop this key and the gap cell drops its wording, so four
+          columns fit a 320px phone (D-156). */}
+      <p className={`mb-2 text-xs ${muted} sm:hidden`}>Win % over wins / games</p>
+      <table className="fc-table fc-team-records w-full table-fixed text-left text-xs sm:text-[15px]">
         <colgroup>
-          <col style={{ width: "22%" }} />
-          <col style={{ width: "26%" }} />
-          <col style={{ width: "26%" }} />
-          <col style={{ width: "26%" }} />
+          <col className="w-[26%] sm:w-[22%]" />
+          <col className="w-[25%] sm:w-[26%]" />
+          <col className="w-[25%] sm:w-[26%]" />
+          <col className="w-[24%] sm:w-[26%]" />
         </colgroup>
         <thead className={`bg-[var(--term-surface-2)] ${muted}`}>
           <tr className="border-b border-[var(--term-border)]">
@@ -379,18 +404,22 @@ function TeamRecords({ teams, season, baseline }: {
               Team
             </th>
             <th className="px-2 text-right" scope="col">
-              {/* Wraps on a phone, where one line runs into the next column. */}
-              <span>Rested at home</span>
-              <br />
-              <span className="whitespace-nowrap">win % · W / G</span>
+              Rested <br className="sm:hidden" />at home
+              <span className="hidden sm:inline">
+                <br />
+                <span className="whitespace-nowrap">win % · W / G</span>
+              </span>
             </th>
             <th className="px-2 text-right" scope="col">
-              <span className="whitespace-nowrap">Tired road</span>
-              <br />
-              <span className="whitespace-nowrap">win % · W / G</span>
+              <span className="sm:whitespace-nowrap">Tired <br className="sm:hidden" />road</span>
+              <span className="hidden sm:inline">
+                <br />
+                <span className="whitespace-nowrap">win % · W / G</span>
+              </span>
             </th>
             <th className="px-2 text-right" scope="col">
-              Home/rest gap
+              <span className="sm:hidden">Gap</span>
+              <span className="hidden sm:inline">Home/rest gap</span>
               <br />
               pp
             </th>
@@ -407,7 +436,7 @@ function TeamRecords({ teams, season, baseline }: {
               className="border-b border-[var(--term-border)]"
             >
               <th scope="row" className="mono px-2 py-3">
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-1 sm:gap-2">
                   <TeamLogo abbreviation={team.abbreviation} season={season} size={20} />
                   {team.abbreviation}
                 </span>
@@ -424,10 +453,13 @@ function TeamRecords({ teams, season, baseline }: {
               </td>
               <td className="px-2 py-3 text-right" data-testid="team-home-rest-gap"
                 style={{ backgroundColor: comparison.backgroundColor }}>
-                <span className="mono tabular-nums" style={{ fontSize: TYPE.body }}>{swing === null ? "—" : signedNumber(swing, 1)}</span>
-                <span className="mt-1 block text-xs leading-snug"><span className="sm:hidden">{comparison.shortLabel}</span><span className="hidden sm:inline">{comparison.label}</span></span>
+                <span className="mono text-xs font-semibold tabular-nums sm:text-[15px] sm:font-normal">{swing === null ? "—" : signedNumber(swing, 1)}</span>
+                <span className="sr-only sm:not-sr-only sm:mt-1 sm:block sm:text-xs sm:leading-snug">{comparison.label}</span>
                 {team.restedGames < 10 || team.tiredGames < 10 ? (
-                  <span className="block text-xs">Small sample</span>
+                  <span className="block text-xs">
+                    <span className="mono text-[10px] sm:hidden" aria-hidden="true">n&lt;10</span>
+                    <span className="sr-only sm:not-sr-only">Small sample</span>
+                  </span>
                 ) : null}
               </td>
             </tr>
@@ -437,6 +469,7 @@ function TeamRecords({ teams, season, baseline }: {
       </table>
     </div>
     {hasDash ? <p className={`text-xs ${muted}`} data-testid="team-records-dash-note">— no games in that situation.</p> : null}
+    {hasSmallSample ? <p className={`text-xs ${muted} sm:hidden`} data-testid="team-records-sample-note">n&lt;10: fewer than 10 games in one situation.</p> : null}
     </>
   );
 }
