@@ -540,6 +540,10 @@
 .fc-table td {
   padding: 8px 12px;
 }
+/* Season Report team records: four columns on a phone. 12 a side leaves a 320px screen 39px
+   for "12 / 20", which needs 51. */
+@media (max-width: 639px) { .fc-team-records th, .fc-team-records td { padding-inline: 8px; } }
+@media (max-width: 359px) { .fc-team-records th, .fc-team-records td { padding-inline: 4px; } }
 
 /* A closing rule at the bottom is the last row's own `borderBottom`, so the table needs a
    matching one at the top or it reads as open-ended — the header band's tint was doing that
