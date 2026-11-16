@@ -106,6 +106,7 @@ function playerColumns(
       sortKey: "effect",
       numeric: true,
       width: "var(--shooting-effect-width)",
+      className: styles.wrapHead,
       style: { padding: 0 },
       cell: (row) => <EffectValue row={row} />,
     },

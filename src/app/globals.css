@@ -540,6 +540,18 @@
 .fc-table td {
   padding: 8px 12px;
 }
+/* Phones: a four-column table that misses the screen by a few pixels gets a sideways scroll
+   for its whitespace. The explorer tightens under 640px, every table under 360px. */
+@media (max-width: 639px) {
+  .fc-table-compact th,
+  .fc-table-compact td { padding-inline: 8px; }
+}
+@media (max-width: 359px) {
+  .fc-table th,
+  .fc-table td { padding-inline: 4px; }
+  /* The header tracking is inline; without it the explorer's RESULT column fits 320px. */
+  .fc-table-compact th { letter-spacing: 0 !important; }
+}
 /* Season Report team records: four columns on a phone. 12 a side leaves a 320px screen 39px
    for "12 / 20", which needs 51. */
 @media (max-width: 639px) { .fc-team-records th, .fc-team-records td { padding-inline: 8px; } }
@@ -663,6 +675,12 @@
 .fc-text-link { color: var(--term-blue-text); font-weight: 600; }
 
 .fc-game-score { font-size: 18px; }
+/* The city shows only where the team column holds it beside HOME (248px), so it never costs
+   the team's name. 203px is the longest name with its logo, record and HOME tag; under that
+   (phones narrower than 352px) the gaps tighten and only the longest names still shorten. */
+.fc-game-teams { container-type: inline-size; }
+@container (width < 248px) { .fc-team-city { display: none; } }
+@container (width < 203px) { .fc-team-line { gap: 4px; } }
 @media (max-width: 639px) {
   .fc-game-table { min-width: 0 !important; }
   .fc-game-header { display: none; }

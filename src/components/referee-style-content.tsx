@@ -69,7 +69,8 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
       unit: `games since ${data.crewChiefFirstSeason}`,
       sortKey: "chiefGames",
       numeric: true,
-      width: "84px",
+      // Holds the unit line, "games since 2024-25", which is wider than any count.
+      width: "148px",
       style: { color: "var(--term-text-muted)" },
       cell: (row) => (row.chiefGames > 0 ? row.chiefGames : "—"),
     },
@@ -179,7 +180,9 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         <DataTable
           wrapperClassName="fc-scrollport overflow-auto"
           className="table-fixed text-[12px]"
-          minWidth={1046}
+          // Fixed columns take 1016px; the rest is the Official column, which needs 212px for the
+          // longest name beside its CC badge.
+          minWidth={1228}
           stickyHeader
           columns={columns}
           rows={rows}

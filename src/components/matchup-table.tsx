@@ -195,7 +195,7 @@ function TeamLine({
   const colors = getTeamColors(abbreviation);
   return (
     <div
-      className="flex min-w-0 items-center gap-2"
+      className="fc-team-line flex min-w-0 items-center gap-2"
       style={{ height: TEAM_LINE_H }}
     >
       <TeamLogo
@@ -215,9 +215,9 @@ function TeamLine({
       >
         {name}
       </span>
-      {record && <span className="mono shrink-0 tabular-nums" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }} title="Regular-season record entering this game">({record.wins}–{record.losses})</span>}
+      {record && <span className="fc-team-record mono shrink-0 tabular-nums" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }} title="Regular-season record entering this game">({record.wins}–{record.losses})</span>}
       <span
-        className="hidden truncate lg:inline"
+        className="fc-team-city hidden shrink-[999] truncate lg:inline"
         style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}
       >
         {city}

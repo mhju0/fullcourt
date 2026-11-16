@@ -1,5 +1,11 @@
 # Release history
 
+## 1.3.16 — 2026-11-16
+
+- Align scores and rest advantage in Season Report's widest-gap rows, and fit its team records table on phones while preserving counts and screen-reader explanations.
+- Keep table headings, player names and officiating badges readable across screen widths. Shooting's difference heading wraps on phones; Games hides city text when it would crowd the team name.
+- Grade finished predictions in the daily update, warn when a successful daily run starts late, and enforce the shared release gate in CI.
+
 ## 1.3.15 — 2026-11-08
 
 - Name the Games date buttons and match rows from their own content, so a speech-control user can say the visible day or team name. Screen readers hear the same names as before.

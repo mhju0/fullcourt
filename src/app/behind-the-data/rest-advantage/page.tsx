@@ -121,10 +121,9 @@ function RestRowTable() {
         <td style={muted}>—</td>
       </tr>
       <tr>
-        <td style={total}>
+        <td colSpan={2} style={total}>
           <LabelWithGames label={`All games since ${REST_SPLIT_SAMPLE.firstSeason}`} games={REST_SPLIT_BASELINE.games} />
         </td>
-        <td style={total} />
         <td colSpan={2} style={{ ...total, textAlign: "right", color: "var(--term-text-muted)" }}>
           {REST_SPLIT_BASELINE.homeWinPct}% home
           <br />
