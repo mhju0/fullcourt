@@ -2411,3 +2411,17 @@ Dependabot의 `@types/node` 상한을 런타임과 같은 24로 옮긴다. Verce
 `gradeFinishedPredictions()`(`src/lib/prediction-grading.ts`)가 final 경기의 저장된 점수로
 승자를 기록한다. 점수가 정정되면 다시 채점하고, 동점·점수 없음·미종료 경기는 열린 채로 둔다.
 기존 채점 27,420건은 모두 저장된 점수와 일치했으므로 첫 실행은 비어 있던 행만 채운다.
+
+## D-156 — Season Report 팀 기록 표의 휴대폰 배치 (2026-11-14)
+
+2026-11-14 화면 점검에서 팀 기록 표가 375px에서 머리글 `win % · W / G`가 옆 칸으로 6px 넘어가고,
+320px에서는 머리글이 겹치며 `+100.0`이 잘리고 표가 옆으로 13px 스크롤되는 것을 확인했다. Owner는
+시안 세 개 중 표를 유지하고 머리글을 줄이는 A안을 골랐다.
+
+640px 미만에서만 바뀐다. 머리글은 "Rested at home", "Tired road", "Gap pp"로 줄이고, D-143이
+머리글에 두던 `win % · W / G`는 표 위 한 줄 "Win % over wins / games"로 옮긴다. 격차 칸은 숫자와
+색만 보이고, D-119가 정한 문구("Larger home/rest gap than league" 등)는 스크린 리더용으로 남는다.
+"Small sample"은 `n<10`으로 표시하고 표 아래 한 줄로 뜻을 적으며, 이 줄은 해당 행이 있을 때만
+나온다. 640px 이상의 표, 수치, 색 계산, Home Court 표는 바뀌지 않는다.
+
+같은 점검에서 나온 "Vs home rate" 칸의 넘침(768px에서 9px)은 단위 `pp`만 12px로 줄여 고쳤다.
