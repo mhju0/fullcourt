@@ -29,7 +29,12 @@ function reportFixture(baseline: number | null = 20): SeasonReportResponse {
 }
 
 async function fixture(page: Page, baseline: number | null = 20) {
-  await page.route("**/api/season-report?*", route => route.fulfill({ json: { data: reportFixture(baseline), error: null } }));
+  await page.route("**/api/season-report-publication", route => route.fulfill({ json: {
+    data: { seasons: ["2024-25", "2025-26"] }, error: null,
+  } }));
+  await page.route("**/api/season-report?*", route => route.fulfill({ json: {
+    data: { ...reportFixture(baseline), season: new URL(route.request().url()).searchParams.get("season") }, error: null,
+  } }));
   await page.route("**/api/analysis", route => route.fulfill({ json: { data: { seasonWinRates: [] }, error: null } }));
   await page.goto("/season?season=2025-26");
 }
@@ -42,9 +47,10 @@ for (const width of [1280, 390]) {
     const rows = section.getByTestId("edge-conversion-row");
     const gaps = section.getByTestId("team-home-rest-gap");
     await expect(section.getByTestId("swing-baseline-note")).toContainText("+20.0 pp");
-    await expect(rows).toHaveCount(30);
+    await expect(rows).toHaveCount(6);
+    await expect(section.getByRole("table")).toHaveCount(1);
+    await expect(section.locator("thead")).toHaveCount(1);
     await expect(rows.nth(5)).toBeVisible();
-    await expect(rows.nth(6)).not.toBeVisible();
     await expect(gaps.nth(0)).toContainText("Larger home/rest gap than league");
     // A phone shows the number and color; the wording stays for screen readers (D-156).
     await expect(gaps.nth(0).getByText("Larger home/rest gap than league")).toHaveCSS("position", width === 390 ? "absolute" : "static");
@@ -66,9 +72,32 @@ for (const width of [1280, 390]) {
     await expect(gaps.nth(2)).toHaveCSS("background-color", "rgb(226, 232, 240)");
     await expect(section).toContainText("do not measure the effect of rest alone");
     await expect(section).toContainText("statistical significance");
-    await section.getByText("Show the other 24 teams", { exact: true }).focus();
+    const expand = section.getByRole("button", { name: "Show all 30 teams", exact: true });
+    await expect(expand).toHaveAttribute("aria-expanded", "false");
+    await expand.focus();
     await page.keyboard.press("Enter");
+    await expect(rows).toHaveCount(30);
+    await expect(section.getByRole("table")).toHaveCount(1);
+    await expect(section.locator("thead")).toHaveCount(1);
+    await expect(rows.getByRole("rowheader")).toHaveText(abbreviations);
     await expect(rows.nth(29)).toBeVisible();
+    const collapse = section.getByRole("button", { name: "Show fewer teams", exact: true });
+    await expect(collapse).toHaveAttribute("aria-expanded", "true");
+    await collapse.scrollIntoViewIfNeeded();
+    const lastRowBounds = await rows.nth(29).boundingBox();
+    const collapseBounds = await collapse.boundingBox();
+    expect(collapseBounds!.y).toBeGreaterThanOrEqual(lastRowBounds!.y + lastRowBounds!.height);
+    await collapse.focus();
+    await page.keyboard.press("Space");
+    await expect(rows).toHaveCount(6);
+    const records = section.getByRole("region", { name: "Team rest records", exact: true });
+    await expect(records).toBeFocused();
+    const recordsBounds = await records.boundingBox();
+    const chromeHeight = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--term-chrome-h")));
+    expect(recordsBounds!.y).toBeGreaterThanOrEqual(chromeHeight);
+    expect(recordsBounds!.y).toBeLessThan(120);
+    await page.keyboard.press("Tab");
+    await expect(expand).toBeFocused();
     await section.getByText("How to read these records", { exact: true }).click();
     await expect(section).toContainText("at least 0.5 model points lower");
     await expect(section).toContainText("does not mean zero days off");
@@ -78,6 +107,16 @@ for (const width of [1280, 390]) {
     await section.screenshot({ path: info.outputPath(`team-records-${width}.png`) });
   });
 }
+
+test("changing seasons resets expanded team records", async ({ page }) => {
+  await fixture(page);
+  await page.getByRole("button", { name: "Show all 30 teams", exact: true }).click();
+  await expect(page.getByTestId("edge-conversion-row")).toHaveCount(30);
+  await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
+  await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2024-25 vs history");
+  await expect(page.getByTestId("edge-conversion-row")).toHaveCount(6);
+  await expect(page.getByRole("button", { name: "Show all 30 teams", exact: true })).toHaveAttribute("aria-expanded", "false");
+});
 
 test("missing league reference leaves every difference untinted", async ({ page }) => {
   await fixture(page, null);

@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { useId, useLayoutEffect, useRef, useState } from "react";
 import { TeamLogo } from "@/components/matchup-parts";
 import { SeasonSelector } from "@/components/season-selector";
 import { useBacktest } from "@/hooks/useBacktest";
@@ -261,13 +262,7 @@ export function SeasonReportContent() {
                 </>
               )}
             </div>
-            <TeamRecords teams={data.teams.slice(0, 6)} season={season} baseline={data.swingBaseline} />
-            {data.teams.length > 6 ? (
-              <details className="fc-disclosure">
-                <summary>Show the other {data.teams.length - 6} teams</summary>
-                <TeamRecords teams={data.teams.slice(6)} season={season} baseline={data.swingBaseline} />
-              </details>
-            ) : null}
+            <TeamRecords key={season} teams={data.teams} season={season} baseline={data.swingBaseline} />
             <p className={`text-[15px] ${muted}`}>
               Color describes the gap, not fatigue management or statistical significance. These records
               compare different venues and opponents, with differences in team strength and sample size;
@@ -378,12 +373,25 @@ function gapComparison(swing: number | null, baseline: number | null) {
 function TeamRecords({ teams, season, baseline }: {
   teams: SeasonReportResponse["teams"]; season: string; baseline: number | null;
 }) {
-  const hasDash = teams.some((team) => team.restedWinPct === null || team.tiredWinPct === null);
-  const hasSmallSample = teams.some((team) => team.restedGames < 10 || team.tiredGames < 10);
+  const [expanded, setExpanded] = useState(false);
+  const tableId = useId();
+  const regionRef = useRef<HTMLDivElement>(null);
+  const restorePosition = useRef(false);
+  const visibleTeams = expanded ? teams : teams.slice(0, 6);
+  const hasDash = visibleTeams.some((team) => team.restedWinPct === null || team.tiredWinPct === null);
+  const hasSmallSample = visibleTeams.some((team) => team.restedGames < 10 || team.tiredGames < 10);
+  useLayoutEffect(() => {
+    if (!expanded && restorePosition.current) {
+      restorePosition.current = false;
+      regionRef.current?.focus({ preventScroll: true });
+      regionRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    }
+  }, [expanded]);
   return (
     <>
     <div
-      className="overflow-x-auto"
+      ref={regionRef}
+      className="overflow-x-auto scroll-mt-[calc(var(--term-chrome-h)+1rem)] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]"
       role="region"
       aria-label="Team rest records"
       tabIndex={0}
@@ -391,7 +399,7 @@ function TeamRecords({ teams, season, baseline }: {
       {/* Under 640px the headers drop this key and the gap cell drops its wording, so four
           columns fit a 320px phone (D-156). */}
       <p className={`mb-2 text-xs ${muted} sm:hidden`}>Win % over wins / games</p>
-      <table className="fc-table fc-team-records w-full table-fixed text-left text-xs sm:text-[15px]">
+      <table id={tableId} className="fc-table fc-team-records w-full table-fixed text-left text-xs sm:text-[15px]">
         <colgroup>
           <col className="w-[26%] sm:w-[22%]" />
           <col className="w-[25%] sm:w-[26%]" />
@@ -426,7 +434,7 @@ function TeamRecords({ teams, season, baseline }: {
           </tr>
         </thead>
         <tbody>
-          {teams.map((team) => {
+          {visibleTeams.map((team) => {
             const swing = team.restedWinPct === null || team.tiredWinPct === null ? null : team.swing;
             const comparison = gapComparison(swing, baseline);
             return (
@@ -470,6 +478,20 @@ function TeamRecords({ teams, season, baseline }: {
     </div>
     {hasDash ? <p className={`text-xs ${muted}`} data-testid="team-records-dash-note">— no games in that situation.</p> : null}
     {hasSmallSample ? <p className={`text-xs ${muted} sm:hidden`} data-testid="team-records-sample-note">n&lt;10: fewer than 10 games in one situation.</p> : null}
+    {teams.length > 6 ? (
+      <button
+        type="button"
+        className="fc-text-link min-h-11 self-start"
+        aria-expanded={expanded}
+        aria-controls={tableId}
+        onClick={() => {
+          restorePosition.current = expanded;
+          setExpanded(!expanded);
+        }}
+      >
+        {expanded ? "Show fewer teams" : `Show all ${teams.length} teams`}
+      </button>
+    ) : null}
     </>
   );
 }
