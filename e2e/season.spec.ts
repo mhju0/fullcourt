@@ -29,7 +29,7 @@ test.describe("Season Report", () => {
     await page.goto("/season?season=2019-20");
     await expect(page.getByTestId("abnormal-season-note")).toContainText("Orlando bubble");
     await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "SCHEDULE EDGE" }).click();
-    await expect(page.getByRole("status")).toContainText("2019-20 is unavailable on this page");
+    await expect(page.getByRole("status").filter({ hasText: "2019-20 is unavailable on this page" })).toBeVisible();
   });
 
   test("without a chosen season, keeps the prior report until current results are released", async ({ page }) => {
