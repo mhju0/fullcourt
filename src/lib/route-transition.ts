@@ -34,7 +34,7 @@ export function createRouteTransitions() {
       router: { push: (href: string) => void },
       href: string,
       currentUrl: string,
-      startTransition?: (update: () => Promise<void>) => unknown
+      startTransition?: (update: () => Promise<void>) => Pick<ViewTransition, "ready">
     ) {
       // Even a plain navigation supersedes an outstanding animated one.
       release()
@@ -54,7 +54,7 @@ export function createRouteTransitions() {
       const completed = new Promise<void>((done) => { resolve = done })
       const entry = { pathname: destination.pathname, resolve, timer: undefined as ReturnType<typeof setTimeout> | undefined }
       pending = entry
-      startTransition(() => {
+      const transition = startTransition(() => {
         // The browser may invoke an old update after a newer navigation began.
         if (pending !== entry) return completed
         entry.timer = setTimeout(() => {
@@ -68,6 +68,8 @@ export function createRouteTransitions() {
         }
         return completed
       })
+      // A skipped animation rejects ready; updateCallbackDone still reports navigation failures.
+      void transition.ready.catch(() => {})
     },
     committed(pathname: string) {
       // A late commit from a superseded destination cannot release the current one.
@@ -92,7 +94,8 @@ export function navigateWithViewTransition(
   href: string,
   options: { instant?: boolean } = {}
 ): void {
-  const animate = !options.instant && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+  const animate = !options.instant && document.visibilityState !== "hidden" &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
     typeof document.startViewTransition === "function"
   transitions.navigate(router, href, window.location.href,
     animate ? (update) => document.startViewTransition(update) : undefined)
