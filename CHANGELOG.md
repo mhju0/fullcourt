@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.18 — 2026-11-17
+
+- Shorten the repository overview, link current methods and data status, and describe rest results against their venue baselines.
+
 ## 1.3.17 — 2026-11-17
 
 - Handle canceled page cross-fades when a browser tab is hidden, while keeping navigation and genuine navigation-error reporting intact.
