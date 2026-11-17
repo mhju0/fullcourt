@@ -10,7 +10,7 @@ test.describe("Season Report", () => {
     await page.goto("/season?season=2015-16");
     await expect(page.getByTestId("season-rest-win-rate")).toContainText("%");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2015-16 vs history");
-    await expect(page.getByTestId("edge-conversion-row")).toHaveCount(30);
+    await expect(page.getByTestId("edge-conversion-row")).toHaveCount(6);
     await expect(page.getByTestId("loudest-call-row")).toHaveCount(5);
     await expect(page.getByTestId("schedule-tax-row")).toHaveCount(0);
     await expect(page.getByTestId("fatigue-calendar")).toHaveCount(0);

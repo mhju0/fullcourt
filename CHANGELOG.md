@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.19 — 2026-11-18
+
+- Expand Season Report team records into one continuous table, with the collapse control below all teams. Collapsing returns focus and the reading position to the table.
+
 ## 1.3.18 — 2026-11-17
 
 - Shorten the repository overview, link current methods and data status, and describe rest results against their venue baselines.

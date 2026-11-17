@@ -48,6 +48,21 @@ beforeEach(() => {
 });
 
 describe("early season report publication", () => {
+  it.each([6, 30])("keeps %s team records in one table with six initial rows", (count) => {
+    const built = buildSeasonReport("2026-27", [final]);
+    const teams = Array.from({ length: count }, (_, index) => ({
+      ...built.teams[0], teamId: index + 1, abbreviation: "BOS", name: "Boston Celtics",
+    }));
+    state.data[reportKey("2026-27")] = { ...report(), teams };
+    const html = renderReport();
+    expect(html.match(/<table\b/g)).toHaveLength(1);
+    expect(html.match(/<thead\b/g)).toHaveLength(1);
+    expect(html.match(/data-testid="edge-conversion-row"/g)).toHaveLength(6);
+    expect(html.includes("Show all 30 teams")).toBe(count > 6);
+    expect(html).toContain('data-testid="team-records-dash-note"');
+    expect(html).toContain('data-testid="team-records-sample-note"');
+  });
+
   it("defaults to the actual first current result and prints counts and Wilson bounds", () => {
     const html = renderReport();
     expect(html).toContain('value="2026-27" selected=""');
