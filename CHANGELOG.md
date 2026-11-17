@@ -1,5 +1,9 @@
 # Release history
 
+## 1.3.17 — 2026-11-17
+
+- Handle canceled page cross-fades when a browser tab is hidden, while keeping navigation and genuine navigation-error reporting intact.
+
 ## 1.3.16 — 2026-11-16
 
 - Align scores and rest advantage in Season Report's widest-gap rows, and fit its team records table on phones while preserving counts and screen-reader explanations.

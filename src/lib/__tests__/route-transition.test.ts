@@ -1,11 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { createRouteTransitions, navigateWithViewTransition } from "../route-transition"
 
-function harness() {
+function harness(ready: Promise<void> = Promise.resolve()) {
   const transitions = createRouteTransitions()
   const router = { push: vi.fn() }
   const updates: (() => Promise<void>)[] = []
-  const start = vi.fn((update: () => Promise<void>) => { updates.push(update) })
+  const start = vi.fn((update: () => Promise<void>) => {
+    updates.push(update)
+    return { ready }
+  })
   const navigate = (href: string) => transitions.navigate(router, href, "https://fullcourt.test/games", start)
   return { transitions, router, updates, start, navigate }
 }
@@ -127,15 +130,88 @@ describe("route transitions", () => {
     await second
   })
 
-  it.each(["reduced motion", "unsupported"])("keeps plain navigation for %s", (mode) => {
+  it.each(["before update", "after update"])("handles a hidden-document animation rejection %s without losing navigation", async (timing) => {
+    let reject!: (reason: unknown) => void
+    const ready = new Promise<void>((_, fail) => { reject = fail })
+    const h = harness(ready)
+    const unhandled = vi.fn()
+    process.on("unhandledRejection", unhandled)
+    try {
+      h.navigate("/season")
+      const completed = timing === "after update" ? h.updates[0]() : undefined
+      reject(new DOMException("Transition was aborted because of invalid state. Document hidden.", "InvalidStateError"))
+      await new Promise((resolve) => setImmediate(resolve))
+      expect(unhandled).not.toHaveBeenCalled()
+      const update = completed ?? h.updates[0]()
+      expect(h.router.push).toHaveBeenCalledExactlyOnceWith("/season")
+      expect(h.transitions.isLeaving("/games")).toBe(true)
+      h.transitions.committed("/season")
+      await update
+      expect(h.transitions.isLeaving("/games")).toBe(false)
+    } finally {
+      process.off("unhandledRejection", unhandled)
+      h.transitions.dispose()
+    }
+  })
+
+  it("handles a superseded animation rejection without pushing its late update", async () => {
+    let reject!: (reason: unknown) => void
+    const h = harness(new Promise<void>((_, fail) => { reject = fail }))
+    const unhandled = vi.fn()
+    process.on("unhandledRejection", unhandled)
+    try {
+      h.navigate("/season")
+      h.navigate("/analysis")
+      reject(new DOMException("Transition superseded", "AbortError"))
+      await new Promise((resolve) => setImmediate(resolve))
+      expect(unhandled).not.toHaveBeenCalled()
+      await h.updates[0]()
+      expect(h.router.push).not.toHaveBeenCalled()
+      const completed = h.updates[1]()
+      expect(h.router.push).toHaveBeenCalledExactlyOnceWith("/analysis")
+      h.transitions.committed("/analysis")
+      await completed
+    } finally {
+      process.off("unhandledRejection", unhandled)
+      h.transitions.dispose()
+    }
+  })
+
+  it("keeps a failed navigation callback observable through updateCallbackDone", async () => {
+    const transitions = createRouteTransitions()
+    const failure = new Error("router push failed")
+    const router = { push: vi.fn(() => { throw failure }) }
+    let updateCallbackDone!: Promise<void>
+    const unhandled = vi.fn()
+    process.on("unhandledRejection", unhandled)
+    try {
+      transitions.navigate(router, "/season", "https://fullcourt.test/games", (update) => {
+        const result = Promise.resolve().then(update)
+        const ready = new Promise<void>((resolve, reject) => { void result.then(resolve, reject) })
+        updateCallbackDone = new Promise<void>((resolve, reject) => { void result.then(resolve, reject) })
+        return { ready, updateCallbackDone }
+      })
+      await new Promise((resolve) => setImmediate(resolve))
+      expect(unhandled).toHaveBeenCalledExactlyOnceWith(failure, updateCallbackDone)
+      expect(router.push).toHaveBeenCalledExactlyOnceWith("/season")
+    } finally {
+      process.off("unhandledRejection", unhandled)
+      transitions.dispose()
+    }
+  })
+
+  it.each(["reduced motion", "unsupported", "hidden", "instant"])("keeps plain navigation for %s", (mode) => {
     const start = vi.fn()
     vi.stubGlobal("window", {
       location: { href: "https://fullcourt.test/games" },
       matchMedia: () => ({ matches: mode === "reduced motion" }),
     })
-    vi.stubGlobal("document", { startViewTransition: mode === "unsupported" ? undefined : start })
+    vi.stubGlobal("document", {
+      visibilityState: mode === "hidden" ? "hidden" : "visible",
+      startViewTransition: mode === "unsupported" ? undefined : start,
+    })
     const router = { push: vi.fn() }
-    navigateWithViewTransition(router, "/season")
+    navigateWithViewTransition(router, "/season", { instant: mode === "instant" })
     expect(router.push).toHaveBeenCalledExactlyOnceWith("/season")
     expect(start).not.toHaveBeenCalled()
   })
