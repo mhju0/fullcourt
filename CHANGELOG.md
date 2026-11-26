@@ -1,5 +1,10 @@
 # Release history
 
+## 1.4.0 — 2026-11-26
+
+- Browse daily league fatigue within one season on Schedule Edge. See each completed slate’s mean fatigue and game count, with verified All-Star breaks marked on the timeline.
+- Player Shooting opens with at least 50 attempts in each rest group. Switch to All players to include smaller samples or apply a separate total-attempt filter.
+
 ## 1.3.19 — 2026-11-18
 
 - Expand Season Report team records into one continuous table, with the collapse control below all teams. Collapsing returns focus and the reading position to the table.

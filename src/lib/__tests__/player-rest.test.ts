@@ -4,7 +4,8 @@ import { join } from "node:path";
 import { signedNumber } from "../signed-number";
 import {
   buildRows,
-  defaultPlayerVolume,
+  hasQualifiedRestSample,
+  playerVolumeFilter,
   careerTotals,
   effectSe,
   franchiseOptions,
@@ -413,11 +414,16 @@ describe("buildRows — evidencedOnly", () => {
 
 
 describe("early-season observations", () => {
-  it("defaults current season to Everyone while retaining an explicit attempt filter", () => {
-    expect(defaultPlayerVolume(2026, 2026, null)).toBe(0);
-    expect(defaultPlayerVolume(2026, 2026, "600")).toBe(600);
-    expect(defaultPlayerVolume(2025, 2026, null)).toBe(300);
+  it("defaults to any total attempts and keeps explicit supported filters", () => {
+    expect(playerVolumeFilter(null)).toBe(0);
+    expect(playerVolumeFilter("600")).toBe(600);
+    expect(playerVolumeFilter("99")).toBe(0);
   });
+  it.each([[49, 50, false], [50, 49, false], [50, 50, true], [50, 250, true]])(
+    "applies the inclusive floor independently to both arms (%i, %i)", (noRest, rested, expected) => {
+      expect(hasQualifiedRestSample(noRest, rested)).toBe(expected);
+    },
+  );
   it("keeps a one-attempt 150% outlier, with unavailable sampling error", () => {
     const row = [0, 2026, 0, 20, 2, 2, 75, 1, 0, 1, 150, 3, 0, 3, 9, 0, 9];
     const result = seasonRow(indexPayload({ ...PAYLOAD, seasons: [row] }), row);

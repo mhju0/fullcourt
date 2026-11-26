@@ -162,23 +162,25 @@ export const GAP_BANDS = [1, 2.5, 4, 6, 8, 12] as const
 /** Below this many attempts in either rest group a difference is printed but not coloured. */
 export const MIN_COLOUR_SHOTS = 50
 
+export function hasQualifiedRestSample(noRestFga: number, restedFga: number): boolean {
+  return noRestFga >= MIN_COLOUR_SHOTS && restedFga >= MIN_COLOUR_SHOTS
+}
+
 /**
  * The shade step for a difference: ±1…±6 by band, 0 for neutral, null when no difference exists.
  * Banded on the one-decimal value the table prints, so a cell never shows "+1.0" in grey.
  */
 export function gapShade(effect: number | null, noRestFga: number, restedFga: number): number | null {
   if (effect === null) return null
-  if (noRestFga < MIN_COLOUR_SHOTS || restedFga < MIN_COLOUR_SHOTS) return 0
+  if (!hasQualifiedRestSample(noRestFga, restedFga)) return 0
   const size = Number(Math.abs(effect).toFixed(1))
   const step = GAP_BANDS.filter((edge) => size >= edge).length
   return step === 0 ? 0 : Math.sign(effect) * step
 }
 
-export function defaultPlayerVolume(year: number | "career", currentYear: number, explicit: string | null): number {
-  const fallback = year === currentYear ? 0 : 300
-  if (explicit === null) return fallback
+export function playerVolumeFilter(explicit: string | null): number {
   const value = Number(explicit)
-  return [0, 300, 600, 900].includes(value) ? value : fallback
+  return [0, 300, 600, 900].includes(value) ? value : 0
 }
 
 export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {

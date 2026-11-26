@@ -157,6 +157,6 @@ function reportFixture(season: string) {
     homeRate: { games: 150, homeWins: 90, winPct: 60 },
     overall: { games: 90, restedTeamWins: 55, winPct: 61.1, band: 10.1 },
     threePlus: { games: 20, restedTeamWins: 12, winPct: 60, band: 21.5 },
-    swingBaseline: 22.2, teams: [], weeks: [], loudestCalls: [],
+    swingBaseline: 22.2, teams: [], weeks: [], days: [], loudestCalls: [],
   };
 }

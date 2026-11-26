@@ -24,7 +24,7 @@ function reportFixture(baseline: number | null = 20): SeasonReportResponse {
     homeRate: { games: 150, homeWins: 90, winPct: 60 },
     overall: { games: 100, restedTeamWins: 60, winPct: 60, band: winRateBand(60, 100), interval: winRateInterval(60, 100) },
     threePlus: { games: 20, restedTeamWins: 12, winPct: 60, band: winRateBand(12, 20), interval: winRateInterval(12, 20) },
-    swingBaseline: baseline, teams, weeks: [], loudestCalls: [],
+    swingBaseline: baseline, teams, weeks: [], days: [], loudestCalls: [],
   };
 }
 

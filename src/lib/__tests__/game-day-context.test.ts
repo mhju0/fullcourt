@@ -24,6 +24,24 @@ describe("source-backed empty-day context", () => {
     for (const date of ["2027-02-18", "2027-02-25", "2028-02-19"]) expect(context(date)).toBeNull();
   });
 
+  it("ends the 2024-25 break before the rescheduled Charlotte–Los Angeles game", () => {
+    expect(context("2025-02-18", "2025-02-18", 0, "2024-25")?.message).toBe("All-Star break.");
+    expect(context("2025-02-19", "2025-02-19", 0, "2024-25")).toBeNull();
+    expect(context("1999-02-14", "1999-02-14", 0, "1998-99")).toBeNull();
+  });
+
+  it.each([
+    ["1985-86", "1986-02-07", "1986-02-10", "1986-02-06", "1986-02-11"],
+    ["2007-08", "2008-02-15", "2008-02-18", "2008-02-14", "2008-02-19"],
+    ["2020-21", "2021-03-05", "2021-03-09", "2021-03-04", "2021-03-10"],
+  ])("labels the verified %s gap without extending to surrounding NBA dates", (season, start, end, before, after) => {
+    for (const date of [start, end]) {
+      expect(context(date, date, 0, season)?.message).toBe("All-Star break.");
+      expect(context(date, date, 1, season)).toBeNull();
+    }
+    for (const date of [before, after]) expect(context(date, date, 0, season)).toBeNull();
+  });
+
   it.each(["2026-12-04", "2026-12-10"])("retires pending on bracket completion and never calls missing records zero: %s", date => {
     expect(context(date, "2026-11-27")).toEqual({ message: "NBA Cup schedule pending. Matchups to be announced.", count: "TBD" });
     expect(context(date, "2026-11-28")).toEqual({ message: "NBA Cup schedule not available.", count: "TBD" });

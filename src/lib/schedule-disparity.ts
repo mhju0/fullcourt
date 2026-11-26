@@ -70,17 +70,14 @@ export const REST_DAYS_CAP = 5;
  * spread is **one** game (2012-13, a single cancellation), so the threshold has real margin.
  * A season halted mid-schedule sits well above it: teams had played 63 to 67 games when
  * 2019-20 was suspended, a spread of four. That season is the only one it flags, and it is
- * withheld by name in {@link TRUNCATED_SEASONS} so the selector never offers it.
+ * withheld from the rankings by name in {@link TRUNCATED_SEASONS}.
  */
 export const RANKABLE_SEASON_GAME_SPREAD_LIMIT = 2;
 
 /**
- * Seasons this module withholds because their teams did not play comparable numbers of games.
+ * Seasons this module withholds from ranking because teams played unequal numbers of games.
  *
- * Only this module. Every other surface offers all {@link NBA_SEASONS}, because only this one
- * ranks teams against each other within a season — the exact operation an unequal game count
- * invalidates. Rest Advantage pools games, Player Shooting pools shots, and neither cares that
- * one team played four more times than another.
+ * The daily league timeline pools completed games, so it can still show these seasons.
  *
  * 2019-20 qualifies for a reason no date filter can express: the season was suspended on
  * 2020-03-11 with teams having played 63 to 67 games. That is a spread of four, twice the

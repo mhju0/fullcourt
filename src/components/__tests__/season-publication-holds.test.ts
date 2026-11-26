@@ -70,11 +70,13 @@ describe("observed player publications", () => {
     expect(html).not.toContain("Awaiting results");
   });
 
-  it("uses Everyone for a tiny current row and retains an explicit filter", () => {
+  it("allows a tiny current row in All players and retains an explicit filter", () => {
     state.data["/api/player-rest"] = { ...playerPayload, seasons: [[0, 2026, 0, 26, 1, 1, 150, 0, 0, 0, 0]] };
+    expect(renderPlayer()).toContain("No qualified players match this view.");
+    state.search = "sample=all";
     expect(renderPlayer()).toContain("150.0% eFG");
     expect(renderPlayer()).toContain('value="0" selected=""');
-    state.search = "volume=300";
+    state.search = "sample=all&volume=300";
     expect(renderPlayer()).not.toContain('data-testid="player-row"');
     expect(renderPlayer()).toContain('value="300" selected=""');
   });

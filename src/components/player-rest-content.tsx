@@ -4,7 +4,7 @@ import { defaultNbaSeason, parseSeasonStartYear } from "@/lib/nba-season";
 import { latestUsableResultSeason } from "@/lib/result-season";
 import { SeasonDataGuide } from "@/components/season-data-guide";
 import { SeasonSelector } from "@/components/season-selector";
-import { Fragment, useCallback, useMemo } from "react";
+import { Fragment, useCallback, useMemo, useRef } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
@@ -14,12 +14,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   buildRows,
   careerTotals,
-  defaultPlayerVolume,
   franchiseOptions,
   gapShade,
   GAP_BANDS,
+  hasQualifiedRestSample,
   MIN_COLOUR_SHOTS,
   indexPayload,
+  playerVolumeFilter,
   S,
   searchKey,
   seasonLabel,
@@ -60,7 +61,7 @@ async function payloadFetcher(url: string): Promise<PlayerRestPayload> {
 }
 
 const VOLUME_OPTIONS = [
-  { value: 0, label: "Everyone" },
+  { value: 0, label: "Any total attempts" },
   { value: 300, label: "300+ attempts" },
   { value: 600, label: "600+ attempts" },
   { value: 900, label: "900+ attempts" },
@@ -256,6 +257,8 @@ function ComparisonCells({ values }: { values: Pick<BrowseRow, "effect" | "noRes
 
 const FILTER_LABEL =
   "mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]";
+const SAMPLE_OPTION =
+  "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[var(--term-radius)] border border-[var(--term-control-border)] bg-[var(--term-surface)] px-2 text-[15px] has-checked:border-[var(--term-accent)] has-checked:bg-[var(--term-surface-2)] has-checked:font-semibold has-checked:text-[var(--term-accent)]";
 
 export function PlayerRestContent() {
   const { data, error, isLoading, isValidating, mutate } = useSWR<PlayerRestPayload>(
@@ -291,7 +294,7 @@ export function PlayerRestContent() {
         ? Number(rawYear)
         : defaultSeason ? parseSeasonStartYear(defaultSeason) : currentYear;
   const heldCurrent = activeYear === currentYear && !hasCurrentPublication;
-  const minFga = defaultPlayerVolume(activeYear, currentYear, params.get("volume"));
+  const minFga = playerVolumeFilter(params.get("volume"));
   const team = params.get("team") ?? "";
   const pos = params.get("position") ?? "";
   const evidencedOnly = params.get("certain") === "1";
@@ -351,7 +354,7 @@ export function PlayerRestContent() {
             : "desc",
     });
 
-  const rows = index && !heldCurrent ? buildRows(index, {
+  const allRows = index && !heldCurrent ? buildRows(index, {
     year: activeYear,
     minFga,
     query: searchKey(query),
@@ -361,6 +364,16 @@ export function PlayerRestContent() {
     pos: (pos || null) as BuildOptions["pos"],
     evidencedOnly,
   }) : [];
+  const qualifiedRows = allRows.filter(row => hasQualifiedRestSample(row.noRestFga, row.restedFga));
+  const sampleParam = params.get("sample");
+  // A pre-toggle player link should still open its named record, even with a small sample.
+  const linkedNeedsAll = openPlayer !== null &&
+    allRows.some(row => row.player === openPlayer) &&
+    !qualifiedRows.some(row => row.player === openPlayer);
+  const showAll = sampleParam === "all" || (sampleParam === null && linkedNeedsAll);
+  const rows = showAll ? allRows : qualifiedRows;
+  const allPlayersInput = useRef<HTMLInputElement>(null);
+  const setSample = (sample: "qualified" | "all") => update({ sample });
 
   const columns = useMemo(
     () => playerColumns(toggle, (row) => openPlayer === row.player),
@@ -446,7 +459,23 @@ export function PlayerRestContent() {
           />
           </label>
         </div>
-          <details className="fc-disclosure">
+        <fieldset className="grid min-w-0 grid-cols-2 gap-2 sm:flex sm:flex-wrap" aria-describedby="pr-qualification">
+          <legend className={cn(FILTER_LABEL, "mb-2")}>Player sample</legend>
+          <label className={SAMPLE_OPTION}>
+            <input type="radio" name="pr-sample" checked={!showAll}
+              className="accent-[var(--term-accent)]" onChange={() => setSample("qualified")} />
+            Qualified players
+          </label>
+          <label className={SAMPLE_OPTION}>
+            <input ref={allPlayersInput} type="radio" name="pr-sample" checked={showAll}
+              className="accent-[var(--term-accent)]" onChange={() => setSample("all")} />
+            All players
+          </label>
+        </fieldset>
+        <p id="pr-qualification" className="text-[15px] text-[var(--term-text-muted)]">
+          Qualified players have at least {MIN_COLOUR_SHOTS} shots in each group (no rest and 2+ days rest).
+        </p>
+        <details className="fc-disclosure">
             <summary>
               Advanced filters ({Number(Boolean(team)) + Number(minFga > 0) + Number(Boolean(pos)) + Number(evidencedOnly)})
             </summary>
@@ -523,11 +552,10 @@ export function PlayerRestContent() {
           {!rawYear && defaultSeason && defaultSeason < currentSeason ? (
             <p role="status" className="text-[12px] text-[var(--term-text-muted)]">{currentSeason} awaiting results</p>
           ) : null}
-          <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
-            {rows.length.toLocaleString()}{" "}
-            {activeYear === "career"
-              ? rows.length === 1 ? "player" : "players"
-              : `${rows.length === 1 ? "player" : "players"} in ${seasonLabel(activeYear)}`}
+          <span role="status" className="mono ml-auto text-xs text-[var(--term-text-muted)]">
+            {showAll
+              ? `${rows.length.toLocaleString()} ${rows.length === 1 ? "player" : "players"}`
+              : `${rows.length.toLocaleString()} qualified of ${allRows.length.toLocaleString()} ${allRows.length === 1 ? "player" : "players"}`}
           </span>
         </div>
       </div>
@@ -578,12 +606,23 @@ export function PlayerRestContent() {
             ) : null
           }
         />
-        {rows.length === 0 && (
+        {rows.length === 0 && allRows.length > 0 ? (
+          <div className={styles.empty}>
+            <p role="status">No qualified players match this view.</p>
+            <button type="button" className="fc-text-link min-h-11 underline" onClick={() => {
+              allPlayersInput.current?.focus();
+              setSample("all");
+            }}>
+              Show all players
+            </button>
+          </div>
+        ) : rows.length === 0 ? (
           <p role="status" className={styles.empty}>
-            No players match these filters. Try another name, lower the attempt
-            minimum, or clear the team and position filters.
+            {query
+              ? "No players match your search and filters. Try another name or change the filters."
+              : "No players match these filters. Lower the attempt minimum or clear the team and position filters."}
           </p>
-        )}
+        ) : null}
       </div>
 
       <details className="fc-disclosure">

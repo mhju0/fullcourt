@@ -59,6 +59,11 @@ test("current observations bypass game-count readiness and keep missing comparis
   await expect(page.locator("#pr-season")).toHaveValue("2026");
   await expect(page.locator("#pr-volume")).toHaveValue("0");
   const row = page.getByTestId("player-row");
+  await expect(page.getByRole("radio", { name: "Qualified players" })).toBeChecked();
+  await expect(page.getByText("No qualified players match this view.")).toBeVisible();
+  await expect(row).toHaveCount(0);
+  await page.getByRole("button", { name: "Show all players" }).click();
+  await expect(page.getByRole("radio", { name: "All players" })).toBeFocused();
   await expect(row).toHaveCount(1);
   await expect(row).toContainText("150.0% eFG");
   for (const column of [3, 5]) await expect(row.locator("td").nth(column)).toHaveText("0");
@@ -98,4 +103,43 @@ test("an export loading failure is retryable instead of appearing as unpublished
   await main.getByRole("button", { name: "Retry player data" }).click();
   await expect(main.locator("#pr-season")).toHaveValue("2025");
   await expect(main.getByTestId("player-row")).toHaveCount(1);
+});
+
+test("50 in each arm qualifies, 49 in either arm can still be opened in All players", async ({ page }) => {
+  const sample: PlayerRestPayload = {
+    ...historical,
+    names: ["Both Fifty", "No Rest Forty Nine", "Rested Forty Nine"],
+    seasons: [
+      [0, 2025, 0, 25, 17, 160, 50, 50, 48, 50, 52],
+      [1, 2025, 0, 25, 17, 160, 50, 49, 48, 50, 52],
+      [2, 2025, 0, 25, 17, 160, 50, 50, 48, 49, 52],
+    ],
+    shrunk: [],
+  };
+  await playerExport(page, sample);
+  await page.goto("/shooting?year=2025&team=BOS&sort=restedFga&dir=desc");
+  const rows = page.getByTestId("player-row");
+  const qualified = page.getByRole("radio", { name: "Qualified players" });
+  const all = page.getByRole("radio", { name: "All players" });
+  await expect(rows).toHaveCount(1);
+  await expect(rows).toContainText("Both Fifty");
+  await qualified.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(all).toBeChecked();
+  await expect(rows).toHaveCount(3);
+  await expect(rows.last()).toContainText("Rested Forty Nine");
+  await expect(page).toHaveURL(/team=BOS.*sort=restedFga/);
+
+  await page.goto("/shooting?year=career");
+  await expect(qualified).toBeChecked();
+  await expect(rows).toHaveCount(1);
+  await expect(rows).toContainText("Both Fifty");
+  await page.goto("/shooting?year=2025&player=Rested%20Forty%20Nine");
+  await expect(all).toBeChecked();
+  await expect(page.getByTestId("career-row")).toBeVisible();
+  await qualified.check();
+  await expect(rows).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Show all players" })).toBeVisible();
+  await page.getByRole("searchbox").fill("no such player");
+  await expect(page.getByRole("status").filter({ hasText: "No players match your search" })).toBeVisible();
 });

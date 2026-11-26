@@ -1,21 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import useSWR from "swr";
-import { format, parseISO } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Bar, BarChart, Cell, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { DailyFatigueTimeline } from "@/components/daily-fatigue-timeline";
 import { DataTable } from "@/components/ui/data-table";
 import { RankBadge } from "@/components/ui/rank-badge";
 import { competitionRanks } from "@/lib/rank";
-import { inspectionStep } from "@/lib/chart-inspection";
 import { apiFetcher } from "@/lib/fetcher";
-import { formatFatigueScore } from "@/lib/rest-advantage-display";
-import { LEAD, TYPE, WIDTH, termCardStyle } from "@/lib/terminal-styles";
+import { LEAD, TYPE, WIDTH } from "@/lib/terminal-styles";
 import type {
   SeasonReportResponse,
   SeasonReportTeamLabelled,
-  SeasonReportWeek,
 } from "@/lib/season-report";
 
 function SectionDivider({
@@ -157,173 +151,9 @@ function ScheduleTax({
   );
 }
 
-/** A week this far under the season's median is drawn lighter and explained in the caption. */
-const LOW_WEEK_RATIO = 0.75;
-
-const weekDate = (startDate: string, pattern: string) =>
-  format(parseISO(`${startDate}T12:00:00`), pattern);
-
-/**
- * League-wide fatigue, one bar per week. It was a week-number axis with a slider that moved a
- * line of text and nothing on the chart (owner phone review, 2026-10-07, D-79): the axis now
- * names months, the picked week is the highlighted bar, and the low weeks are explained.
- */
-function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
-  const [picked, setPicked] = useState<number | null>(null);
-  const heading = (
-    <SectionDivider
-      label="League fatigue by week"
-      descriptor="Completed games · every team · mean fatigue score"
-    />
-  );
-  if (weeks.length === 0) {
-    return (
-      <div className="flex flex-col gap-3">
-        {heading}
-        <p style={{ color: "var(--term-text-muted)" }}>
-          No completed games yet, so there is no weekly average to show. This
-          fills in as the season is played.
-        </p>
-      </div>
-    );
-  }
-  const peakIndex = weeks.reduce(
-    (best, w, i) => (w.avgFatigue > weeks[best].avgFatigue ? i : best),
-    0,
-  );
-  const index = Math.min(picked ?? peakIndex, weeks.length - 1);
-  const selected = weeks[index];
-  const peak = weeks[peakIndex];
-  const sorted = weeks.map((w) => w.avgFatigue).sort((x, y) => x - y);
-  const median = sorted[Math.floor(sorted.length / 2)];
-  const monthStarts = weeks
-    .filter((w, i) => i === 0 || w.startDate.slice(0, 7) !== weeks[i - 1].startDate.slice(0, 7))
-    .map((w) => w.startDate);
-  const stepButton =
-    "fc-control-button inline-flex size-11 shrink-0 items-center justify-center rounded-[var(--term-radius)] border border-[var(--term-border)] bg-[var(--term-surface)] disabled:opacity-40";
-
-  return (
-    <div className="flex flex-col gap-3">
-      {heading}
-      <p
-        style={{
-          fontSize: TYPE.body,
-          color: "var(--term-text-muted)",
-          maxWidth: WIDTH.prose,
-          lineHeight: LEAD.body,
-        }}
-      >
-        Each bar is one week: the average fatigue score of every team that
-        played. This is the whole league, not a comparison between teams.
-        Lighter bars are weeks well below the usual level, when most teams came
-        in rested, such as opening week or the week after a league break.
-      </p>
-      <p
-        className="mono"
-        style={{ fontSize: 11, color: "var(--term-text-muted)" }}
-      >
-        PEAK: WEEK OF {weekDate(peak.startDate, "MMM d, yyyy").toUpperCase()} ·{" "}
-        {formatFatigueScore(peak.avgFatigue)}
-      </p>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-label="Previous week"
-          disabled={index === 0}
-          onClick={() => setPicked(index - 1)}
-          className={stepButton}
-        >
-          <ChevronLeft className="size-4" aria-hidden />
-        </button>
-        <p
-          className="mono min-w-0 flex-1 text-center text-xs tabular-nums"
-          role="status"
-          data-testid="fatigue-week-readout"
-        >
-          Week of {weekDate(selected.startDate, "MMM d, yyyy")} ·{" "}
-          {formatFatigueScore(selected.avgFatigue)} · {selected.games} games
-        </p>
-        <button
-          type="button"
-          aria-label="Next week"
-          disabled={index === weeks.length - 1}
-          onClick={() => setPicked(index + 1)}
-          className={stepButton}
-        >
-          <ChevronRight className="size-4" aria-hidden />
-        </button>
-      </div>
-      <p
-        id="fatigue-calendar-help"
-        style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}
-      >
-        Tap a bar to inspect its week. With the chart focused, use ← or → for
-        adjacent weeks, or Home or End for the first or latest week.
-      </p>
-      <div
-        data-testid="fatigue-calendar"
-        className="focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
-        style={{ ...termCardStyle, height: 220, padding: 12 }}
-        role="group"
-        tabIndex={0}
-        aria-label="League average fatigue by week"
-        aria-describedby="fatigue-calendar-help"
-        onKeyDown={(event) => {
-          const next = inspectionStep(event.key, index, weeks.length);
-          if (next === null) return;
-          event.preventDefault();
-          setPicked(next);
-        }}
-      >
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={weeks}
-            margin={{ top: 8, right: 8, left: 0, bottom: 4 }}
-            accessibilityLayer={false}
-          >
-            <XAxis
-              dataKey="startDate"
-              tick={{ fontSize: 10, fill: "var(--term-text-muted)" }}
-              stroke="var(--term-border)"
-              ticks={monthStarts}
-              tickFormatter={(d: string) => weekDate(d, "MMM").toUpperCase()}
-              interval={0}
-            />
-            <YAxis
-              tick={{ fontSize: 10, fill: "var(--term-text-muted)" }}
-              stroke="var(--term-border)"
-              width={32}
-            />
-            <Bar
-              dataKey="avgFatigue"
-              maxBarSize={28}
-              isAnimationActive={false}
-              onClick={(_, i) => setPicked(i)}
-              className="cursor-pointer"
-            >
-              {weeks.map((w, i) => (
-                <Cell
-                  key={w.week}
-                  fill={
-                    i === index
-                      ? "var(--term-accent)"
-                      : w.avgFatigue < median * LOW_WEEK_RATIO
-                        ? "color-mix(in srgb, var(--term-hardwood) 45%, var(--term-surface))"
-                        : "var(--term-hardwood)"
-                  }
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-export function ScheduleWorkload({ season }: { season: string }) {
+export function ScheduleWorkload({ season, rankable }: { season: string; rankable: boolean }) {
   const { data, error, isLoading } = useSWR<SeasonReportResponse>(
-    `/api/season-report?season=${season}`,
+    `/api/season-report?season=${season}&schema=daily-fatigue-v1`,
     apiFetcher,
     { revalidateOnFocus: false },
   );
@@ -341,15 +171,15 @@ export function ScheduleWorkload({ season }: { season: string }) {
           aria-label="Loading schedule workload"
         />
       ) : null}
-      {data && data.teams.length > 0 ? (
+      {data ? (
         <>
-          <details className="fc-disclosure">
+          {rankable && data.teams.length > 0 ? <details className="fc-disclosure">
             <summary>Show travel and workload</summary>
             <div className="pt-4">
               <ScheduleTax teams={data.teams} basis={data.basis} />
             </div>
-          </details>
-          <FatigueCalendar key={season} weeks={data.weeks} />
+          </details> : null}
+          <DailyFatigueTimeline season={season} days={data.days ?? []} availableFinalGames={data.availableFinalGames} />
         </>
       ) : !isLoading && !error ? (
         <p>No workload data for this season.</p>

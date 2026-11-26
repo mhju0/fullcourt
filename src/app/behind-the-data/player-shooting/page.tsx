@@ -82,14 +82,13 @@ rest effect = eFG% rested
         </Prose>
         <ValueGrid
           values={[
-            { label: "Default attempt floor", value: "300+", sub: "total shots, not per group" },
+            { label: "Qualified players", value: `${MIN_COLOUR_SHOTS}+`, sub: "shots in each rest group" },
             { label: "Rest states compared", value: "0 vs 2–29", sub: "days off between appearances" },
             { label: "Metric", value: "eFG%", sub: "threes weighted 1.5×" },
           ]}
         />
         <Note>
-          Lowering the attempt floor adds players, but their splits rest on fewer shots and are
-          noisier.
+          Choose All players to include smaller samples. The total-attempt filter is separate.
         </Note>
         <Note>
           Historical seasons come from a verified export. Current-season ESPN observations
