@@ -2470,11 +2470,25 @@ Owner는 Season Report의 처음 여섯 팀과 나머지 팀 사이에 있던 �
   종료 경기와 양 팀 피로 점수를 사용한다. 기존 주간 집계는 유지한다. 2019-20은
   중단 전 일별 수치만 열람할 수 있으며, 팀 순위 제외 규칙은 유지한다 ([ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md)).
 - 경기 없는 날짜는 점이나 숫자 없이 점선으로 연결한다. All-Star Break는 검증된
-  범위 양쪽에 측정 날짜가 있고 그 사이에 측정 날짜가 없을 때만 표시한다.
-  범위는 2023-24 2월 16–21일, 2024-25 2월 14–18일, 2025-26 2월 13–18일,
-  2026-27 2월 19–24일이다. 2024-25의 기존 일정은 19일까지였으나, NBA가
-  샬럿–레이커스전을 19일에 다시 배정했다. 1999년 취소와 이외 시즌의 미검증
-  범위에는 일반 점선을 사용한다. 종료 경기 이후 날짜는 그리지 않는다.
+  범위 전날과 다음 날에 모두 측정값이 있고 그 사이에 측정 날짜가 없을 때만 표시한다.
+  검증 범위는 1985-86부터 2026-27까지 41시즌이다. 1998-99는 올스타전 취소로 제외한다.
+  2026-27은 일정에서 확인했으며, 휴식기 이후 경기까지 측정되면 표시한다.
+  출처나 양쪽 경계를 확인하지 못한 날짜에는 일반 점선을 사용한다.
+- 1985-86부터 2022-23까지 Dallas 가이드 357쪽의 올스타전 날짜를 기준으로,
+  FullCourt 보존 피로 export에서 해당 날짜 직전과 직후 정규시즌 경기일 사이를 찾았다.
+  Minnesota 가이드와 겹치는 31시즌의 날짜를 대조했다. Dallas 표가 2월 16일로 적은
+  2008년은 NBA 박스스코어와 Minnesota 가이드에 맞춰 2월 17일로 확인했다. 2020-21
+  휴식기는 NBA 시즌 안내의 3월 5–9일을 사용한다. 42시즌의 공개 Games 날짜 인덱스에서
+  실제 경기일 경계를 확인했다.
+  [Dallas 가이드](https://cdn.nba.com/teams/uploads/sites/1610612742/2025/09/2024-25-Dallas-Mavericks-Media-Guide-2_compressed.pdf) ·
+  [Minnesota 가이드](https://cdn.nba.com/teams/uploads/sites/1610612750/2022/03/2021-22_Timberwolves_Media_Guide.pdf) ·
+  [NBA 올스타 기록](https://www.nba.com/news/history-nba-all-star-game) ·
+  [1986년 NBA 기록](https://www.nba.com/news/history-this-date-in-nba-feb) ·
+  [2008년 NBA 박스스코어](https://www.nba.com/game/est-vs-wst-0030700001/box-score) ·
+  [2020-21 NBA 시즌 안내](https://www.nba.com/news/nba-2020-21-season-faq)
+- 최근 시즌은 공식 일정에서 확인한 범위를 사용한다. 2023-24 2월 16–21일,
+  2024-25 2월 14–18일, 2025-26 2월 13–18일, 2026-27 2월 19–24일이다.
+  2024-25의 기존 일정은 19일까지였으며, NBA가 샬럿–레이커스전을 19일에 다시 배정했다.
   [2023-24 Warriors 가이드](https://cdn.nba.com/teams/uploads/sites/1610612744/2023/12/2324-gsw-media-guide.pdf) ·
   [2024-25 76ers 일정](https://cdn.nba.com/teams/uploads/sites/1610612755/2024/08/2024-25NBARegularSeasonScheduleRelease_PDF.pdf) ·
   [NBA 재배정 공지](https://pr.nba.com/nba-game-schedule-adjustments-1-15-25/) ·

@@ -175,6 +175,27 @@ test("schedule owns workload and opens each season on the latest measured day", 
   await expect(page.getByText(/Team rankings are unavailable/)).toBeVisible();
   await expect(page.locator("summary", { hasText: "Show travel and workload" })).toHaveCount(0);
   await expect(date).toHaveAttribute("datetime", "2020-03-11");
+  await expect(breakButton).toHaveCount(1);
+});
+
+test("verified historical All-Star gaps use their season's actual league calendar", async ({ page }) => {
+  await page.goto("/schedule?season=1985-86");
+  const selector = page.locator("#schedule-disparity-season");
+  const chart = page.getByRole("region", { name: "League average fatigue by day" });
+  const breakButton = chart.getByRole("button", { name: "All-Star Break" });
+  for (const [season, before, after, detail] of [
+    ["1985-86", "1986-02-06", "1986-02-11", "Feb 7–Feb 10, 1986"],
+    ["2007-08", "2008-02-14", "2008-02-19", "Feb 15–Feb 18, 2008"],
+    ["2020-21", "2021-03-04", "2021-03-10", "Mar 5–Mar 9, 2021"],
+    ["2024-25", "2025-02-13", "2025-02-19", "Feb 14–Feb 18, 2025"],
+  ]) {
+    await selector.selectOption(season);
+    await expect(chart.locator(`[data-gap="${before}/${after}"]`)).toHaveAttribute("stroke-dasharray", "4 4");
+    await breakButton.click();
+    await expect(page.locator("#daily-fatigue-break")).toHaveText(`All-Star Break · ${detail} ET`);
+  }
+  await selector.selectOption("1998-99");
+  await expect(page.getByTestId("fatigue-day-readout").locator("time")).toHaveAttribute("datetime", /^1999-/);
   await expect(breakButton).toHaveCount(0);
 });
 
@@ -224,9 +245,12 @@ test.describe("daily fatigue on touch screens", () => {
     await page.route("**/api/schedule-disparity?*", route => route.fulfill({ json: { data: null, error: null } }));
     await page.route("**/api/season-report?*", route => {
       const season = new URL(route.request().url()).searchParams.get("season");
+      const days = season === "2026-27" ? points : season === "1985-86" ? [
+        { date: "1986-02-06", games: 10, avgFatigue: 4 },
+        { date: "1986-02-12", games: 2, avgFatigue: 4 },
+      ] : [];
       return route.fulfill({ json: { data: {
-        teams: [], days: season === "2026-27" ? points : [],
-        availableFinalGames: season === "2026-27" ? 28 : 0,
+        teams: [], days, availableFinalGames: days.reduce((total, day) => total + day.games, 0),
       }, error: null } });
     });
     await page.goto("/schedule");
@@ -265,6 +289,11 @@ test.describe("daily fatigue on touch screens", () => {
     await page.screenshot({ path: info.outputPath("daily-fatigue-phone.png") });
 
     await page.locator("#schedule-disparity-season").selectOption("1985-86");
+    await expect(readout).toContainText("Feb 12, 1986 ET");
+    await expect(chart.locator("[data-gap='1986-02-06/1986-02-12']")).toHaveAttribute("stroke-dasharray", "4 4");
+    await expect(chart.getByRole("button", { name: "All-Star Break" })).toHaveCount(0);
+
+    await page.locator("#schedule-disparity-season").selectOption("1998-99");
     await expect(chart).toHaveCount(0);
     await expect(page.getByText("No completed games yet. The timeline fills in as the season is played.")).toBeVisible();
   });
