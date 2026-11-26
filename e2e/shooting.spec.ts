@@ -105,7 +105,7 @@ test.describe("Player Shooting by Rest", () => {
     await page.getByTestId("player-row").first().waitFor(READY);
 
     // The difference is the default sort (D-141), so the first press flips it.
-    const header = page.getByRole("columnheader", { name: /^With rest/ });
+    const header = page.getByRole("columnheader", { name: /^eFG% Difference with Rest/ });
     await expect(header).toHaveAttribute("aria-sort", "descending");
     const top = await page.getByTestId("player-row").first().textContent();
 
