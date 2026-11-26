@@ -17,6 +17,18 @@ const KNOWN_EMPTY_DAYS: Readonly<Record<string, string>> = {
   "2027-04-10": "League off day before the regular-season finale.",
 };
 
+// League/club sources and observed slate boundaries are recorded in DECISIONS.md D-159.
+const ALL_STAR_BREAKS: Readonly<Record<string, { start: string; end: string }>> = {
+  "2023-24": { start: "2024-02-16", end: "2024-02-21" },
+  "2024-25": { start: "2025-02-14", end: "2025-02-18" },
+  "2025-26": { start: "2026-02-13", end: "2026-02-18" },
+  "2026-27": { start: "2027-02-19", end: "2027-02-24" },
+};
+
+export function allStarBreak(season: string) {
+  return ALL_STAR_BREAKS[season];
+}
+
 export function gameDayContext(args: {
   season: string;
   date: string;
@@ -26,8 +38,8 @@ export function gameDayContext(args: {
 }): GameDayContext | null {
   if (args.gameCount > 0) return null;
   const { date } = args;
-  if ((args.season === "2026-27" && date >= "2027-02-19" && date <= "2027-02-24")
-    || (args.season === "2025-26" && date >= "2026-02-13" && date <= "2026-02-18")) {
+  const leagueBreak = allStarBreak(args.season);
+  if (leagueBreak && date >= leagueBreak.start && date <= leagueBreak.end) {
     return { message: "All-Star break.", count: 0 };
   }
   if (args.season === "2026-27" && date >= "2026-12-04" && date <= "2026-12-10") {

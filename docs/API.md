@@ -80,6 +80,9 @@ Season Report returns `homeRate` from the same eligible finals before rest filte
 selected-season baseline does not depend on the all-history endpoint. Its `seasonComplete`
 field describes the recorded season rows. Observed rates are available from the first eligible
 game with numerator/denominator and Wilson interval bounds; zero eligible games have no rate.
+The additive `days` field lists the measured ET slate dates in chronological order, with each
+date's completed-game count and mean of both fatigue scores. It uses the same eligible finals as
+`weeks`, which retains its published shape and aggregation. Dates with no eligible game are absent.
 `availableFinalGames` and `missingFatigueGames` distinguish source results from analytical coverage. Versioned query URLs on the new displays
 avoid consuming older edge-cached response shapes during deployment.
 

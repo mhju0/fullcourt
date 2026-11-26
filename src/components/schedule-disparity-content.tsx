@@ -11,7 +11,7 @@ import { formatDataAsOf } from "@/lib/data-as-of"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
-import { BIG_EDGE_FATIGUE_THRESHOLD, defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
+import { BIG_EDGE_FATIGUE_THRESHOLD, defaultRankableSeason, TRUNCATED_SEASONS } from "@/lib/schedule-disparity"
 import {
   HOME_COURT_SPAN_PP,
   REST_SHARE_OF_HOME_COURT,
@@ -24,10 +24,7 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { rankScheduleTeams } from "@/lib/schedule-ranking"
 
-// Rankable rather than browsable: this is the one module that ranks teams against each other
-// inside a season, so a season whose teams played unequal numbers of games is withheld here and
-// offered everywhere else. See TRUNCATED_SEASONS.
-const SEASON_OPTIONS = rankableSeasons(browsableSeasons())
+const SEASON_OPTIONS = browsableSeasons()
 
 // Not `SEASON_OPTIONS[last]`. In August and September the options also carry the upcoming
 // season, which has no games until it is ingested — opening on it showed an empty page for two
@@ -205,9 +202,10 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
 
 export function ScheduleDisparityContent() {
   const { season, setSeason, fallbackNote } = useSeasonUrl(LATEST_SEASON, SEASON_OPTIONS)
+  const rankable = !TRUNCATED_SEASONS.includes(season)
 
   const { data, error, isLoading } = useSWR<ScheduleDisparityResponse>(
-    `/api/schedule-disparity?season=${season}`,
+    rankable ? `/api/schedule-disparity?season=${season}` : null,
     apiFetcher
   )
 
@@ -300,7 +298,7 @@ export function ScheduleDisparityContent() {
         </div>
       ) : null}
 
-      <div style={termCardStyle}>
+      {rankable ? <div style={termCardStyle}>
         <p
           className="mono"
           style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
@@ -370,7 +368,11 @@ export function ScheduleDisparityContent() {
             ))}
           </ol>
         )}
-      </div>
+      </div> : (
+        <p className="text-[15px] text-[var(--term-text-muted)]">
+          Team rankings are unavailable for {season}. Teams played unequal numbers of games.
+        </p>
+      )}
 
       {/* Under the figures it qualifies, not above them: on a phone this sentence and the
           provisional note together pushed every number below the first screen. */}
@@ -577,7 +579,7 @@ export function ScheduleDisparityContent() {
           </details>
         </>
       ) : null}
-      <ScheduleWorkload key={season} season={season} />
+      <ScheduleWorkload key={season} season={season} rankable={rankable} />
     </div>
   )
 }

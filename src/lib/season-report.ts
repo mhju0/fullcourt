@@ -215,6 +215,13 @@ export interface SeasonReportWeek {
   avgFatigue: number;
 }
 
+export interface SeasonReportDay {
+  /** NBA slate date in America/New_York, YYYY-MM-DD. */
+  date: string;
+  games: number;
+  avgFatigue: number;
+}
+
 export interface SeasonReport {
   season: string;
   /**
@@ -276,6 +283,7 @@ export interface SeasonReport {
   teams: SeasonReportTeam[];
   loudestCalls: SeasonReportCall[];
   weeks: SeasonReportWeek[];
+  days: SeasonReportDay[];
 }
 
 /** 95% Wilson score interval, including one-game and all-win/all-loss samples. */
@@ -404,6 +412,7 @@ export function buildSeasonReport(
   const teams = new Map<number, TeamAccumulator>();
   const calls: SeasonReportCall[] = [];
   const buckets = new Map<number, { games: number; fatigueSum: number }>();
+  const dayBuckets = new Map<string, { games: number; fatigueSum: number }>();
   // Rows arrive date-ascending from the query, so the first completed game dates the calendar.
   let firstDate: string | null = null;
   let latestFinalDate: string | null = null;
@@ -446,15 +455,19 @@ export function buildSeasonReport(
     accumulateScheduleTax(teamEntry(teams, row.homeTeamId), row.home);
     accumulateScheduleTax(teamEntry(teams, row.awayTeamId), row.away);
 
-    // Played games only. The weekly curve is a record of how heavy the season *was*, and a
-    // projected tail plotted on the same axis would read as measurement.
+    // Projected fatigue must never become a point on either completed-game series.
     if (scores !== null) {
+      const fatigue = homeFatigue + awayFatigue;
       if (firstDate === null) firstDate = row.date;
       const week = bucketIndex(firstDate, row.date);
       const bucket = buckets.get(week) ?? { games: 0, fatigueSum: 0 };
       bucket.games++;
-      bucket.fatigueSum += homeFatigue + awayFatigue;
+      bucket.fatigueSum += fatigue;
       buckets.set(week, bucket);
+      const day = dayBuckets.get(row.date) ?? { games: 0, fatigueSum: 0 };
+      day.games++;
+      day.fatigueSum += fatigue;
+      dayBuckets.set(row.date, day);
     }
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
@@ -588,6 +601,13 @@ export function buildSeasonReport(
     teams: teamRows,
     loudestCalls: calls.slice(0, LOUDEST_CALL_COUNT),
     weeks,
+    days: [...dayBuckets.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, { games, fatigueSum }]) => ({
+        date,
+        games,
+        avgFatigue: Math.round((fatigueSum / (games * 2)) * 100) / 100,
+      })),
   };
 }
 

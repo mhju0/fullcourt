@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { S, type PlayerRestPayload } from "../src/lib/player-rest";
+import { S, hasQualifiedRestSample, type PlayerRestPayload } from "../src/lib/player-rest";
 import { mergeHistoricalAndCurrent, parseCurrentShooting } from "../src/lib/player-rest-publication";
 
 async function currentSnapshot(page: Page) {
@@ -23,6 +23,11 @@ for (const width of [1440, 390]) {
     await page.goto("/shooting");
     await expect(page.locator("#pr-season")).toHaveValue(String(year));
     await expect(page.locator("#pr-volume")).toHaveValue("0");
+    await expect(page.getByRole("radio", { name: "Qualified players" })).toBeChecked();
+    await expect(page.getByTestId("player-row")).toHaveCount(
+      rows.filter(row => hasQualifiedRestSample(row[S.NO_REST_FGA], row[S.RESTED_FGA])).length,
+    );
+    await page.getByRole("radio", { name: "All players" }).check();
     await expect(page.getByTestId("player-row")).toHaveCount(rows.length);
     const through = new Date(`${payload.publication!.through}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
     await expect(page.locator("main")).toContainText(`Through ${through} · ${payload.publication!.observedGames} of ${payload.publication!.expectedGames} games`);
@@ -65,12 +70,12 @@ for (const width of [1440, 390]) {
 
 test("an explicit volume filter is retained and career rows remain available", async ({ page }) => {
   const { payload, year, rows } = await currentSnapshot(page);
-  await page.goto(`/shooting?year=${year}&volume=300`);
+  await page.goto(`/shooting?year=${year}&sample=all&volume=300`);
   await expect(page.locator("#pr-volume")).toHaveValue("300");
   const qualifying = rows.filter(row => row[S.FGA] >= 300);
   await expect(page.getByTestId("player-row")).toHaveCount(qualifying.length);
   if (!qualifying.length) await expect(page.getByRole("status", { name: "" }).filter({ hasText: "No players match these filters" })).toBeVisible();
-  await page.goto("/shooting?year=career&volume=0");
+  await page.goto("/shooting?year=career&sample=all&volume=0");
   await expect(page.locator("#pr-season")).toHaveValue("career");
   const currentPlayers = new Set(payload.seasonOnlyPlayers ?? []);
   const historicalPlayers = new Set(payload.seasons.filter(row => !currentPlayers.has(row[S.PLAYER])).map(row => row[S.PLAYER]));
@@ -104,7 +109,7 @@ test("selecting an older observed season shows its own coverage while an archive
   const fixture = { ...mergeHistoricalAndCurrent({ ...previous!, seasonOnlyPlayers: [0] }, current!),
     refresh: { status: "failed", checkedAt: "2026-10-23T11:30:00Z", publishedAt: "2026-10-23T11:00:00Z" } };
   await page.route("**/api/player-rest", route => route.fulfill({ json: fixture }));
-  await page.goto("/shooting?volume=0");
+  await page.goto("/shooting?sample=all&volume=0");
   const metadata = page.getByRole("status").filter({ hasText: "Through " });
   await expect(metadata).toContainText("Through Oct 22 · 1 of 1 games");
   await page.locator("#pr-season").selectOption("2025");

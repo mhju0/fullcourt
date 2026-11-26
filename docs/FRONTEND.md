@@ -266,17 +266,19 @@ strip under “Upcoming large rest edges,” with readable title/body tokens and
 ### Chart inspection (D-142, v1.2.6)
 
 Charts are inspected on the chart itself, and the values print in a fixed readout panel
-beside it. No chart uses a floating tooltip. Each inspectable chart is one focusable
-`role="group"` frame with a visible help line (`aria-describedby`). Recharts'
+beside it. No chart uses a floating tooltip. Each inspectable chart has a focusable frame with a visible help line (`aria-describedby`). Recharts'
 `accessibilityLayer` is turned off so the frame owns the keyboard.
 
-- Series (Home Court, Model Results trend and eras, Availability, Schedule weekly fatigue):
+- Series (Home Court, Model Results trend and eras, Availability):
   hover with a mouse or tap to pick; with the frame focused, ← → move one item and Home/End
   jump to the ends (`inspectionStep`, src/lib/chart-inspection.ts). A pointer pick is
   computed from `.recharts-cartesian-grid` geometry (`plotIndexAt`, src/hooks/useChartInspection.ts),
   because Recharts' own active index trails the click by one frame.
-- A season menu appears only on long season series (Home Court, Availability). Schedule keeps
-  its ‹ › week buttons; the gap-size chart keeps its three group buttons and Browse.
+- Schedule Edge opens its daily fatigue timeline on the last measured slate of the selected season.
+  Pan to inspect the calendar, select measured points, or use the day and viewport controls.
+  Home/End stay within the season. Verified All-Star gaps have an inline button that reveals the dates.
+- Long season series (Home Court, Availability) include individual season lookup.
+  The gap-size chart has three group buttons and Browse.
 - Shot maps: hover or tap picks the nearest location; the four arrow keys move to the nearest
   location on that side of the court (`courtNeighbour`). There is no location slider.
 

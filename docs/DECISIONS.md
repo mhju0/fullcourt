@@ -2461,3 +2461,27 @@ Owner는 Season Report의 처음 여섯 팀과 나머지 팀 사이에 있던 �
 
 같은 데이터를 미리보기 표와 나머지 표로 나누는 패턴을 전체 소스에서 점검했으며 현재 적용
 대상은 이 표다. 별도 전체 표를 여는 설명, 선수별 상세 행, 경기 목록의 추가 로딩은 유지한다.
+
+## D-159 — Schedule Edge 일별 타임라인과 Shooting 표본 선택 (2026-11-26)
+
+- 시즌 하나의 첫 측정 경기일부터 마지막 측정 경기일까지 날짜 간격을 그대로 표시한다.
+  기본 선택은 해당 시즌의 마지막 측정 경기일이다. 점수 표기는 기존 소수 첫째 자리
+  버림 규칙을 유지한다. Season Report의 같은 공개 정규시즌
+  종료 경기와 양 팀 피로 점수를 사용한다. 기존 주간 집계는 유지한다. 2019-20은
+  중단 전 일별 수치만 열람할 수 있으며, 팀 순위 제외 규칙은 유지한다 ([ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md)).
+- 경기 없는 날짜는 점이나 숫자 없이 점선으로 연결한다. All-Star Break는 검증된
+  범위 양쪽에 측정 날짜가 있고 그 사이에 측정 날짜가 없을 때만 표시한다.
+  범위는 2023-24 2월 16–21일, 2024-25 2월 14–18일, 2025-26 2월 13–18일,
+  2026-27 2월 19–24일이다. 2024-25의 기존 일정은 19일까지였으나, NBA가
+  샬럿–레이커스전을 19일에 다시 배정했다. 1999년 취소와 이외 시즌의 미검증
+  범위에는 일반 점선을 사용한다. 종료 경기 이후 날짜는 그리지 않는다.
+  [2023-24 Warriors 가이드](https://cdn.nba.com/teams/uploads/sites/1610612744/2023/12/2324-gsw-media-guide.pdf) ·
+  [2024-25 76ers 일정](https://cdn.nba.com/teams/uploads/sites/1610612755/2024/08/2024-25NBARegularSeasonScheduleRelease_PDF.pdf) ·
+  [NBA 재배정 공지](https://pr.nba.com/nba-game-schedule-adjustments-1-15-25/) ·
+  [2025-26 Hornets 가이드](https://cdn.nba.com/teams/uploads/sites/1610612766/2026/04/2025-26_CHA_MediaGuide_NEW.pdf) ·
+  [2026-27 NBA 주요 일정](https://www.nba.com/news/key-dates) ·
+  [1999년 취소 NBA 기록](https://www.nba.com/news/history-all-star-recap-1998)
+- Shooting의 시즌 및 Career 기본 표본은 휴식 없음과 2일 이상 휴식에서 각각
+  50시도 이상이다. All players는 그 조건을 해제한다. 총 시도 기본값은 제한 없음이며,
+  사용자가 지정한 총 시도, 팀, 포지션, 오차 필터는 그대로 적용한다.
+  표본 모드가 없는 기존 선수 링크는 해당 기록을 열 수 있도록 필요할 때 전체 표본을 사용한다.

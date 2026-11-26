@@ -49,32 +49,20 @@ test.describe("Player Shooting by Rest", () => {
    * value for a few hundred milliseconds and the table kept the old rows. Read in the same
    * tick as the change, so a lagging re-render cannot pass by being waited for.
    */
-  test("a changed filter shows its new value and rows in the same tick", async ({ page }) => {
+  test("the sample toggle responds in the same tick and starts without a total-attempt floor", async ({ page }) => {
     await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
+    await expect(page.getByRole("radio", { name: "Qualified players" })).toBeChecked();
+    await expect(page.locator("#pr-volume")).toHaveValue("0");
 
-    const result = await page.evaluate(() => {
+    const result = await page.getByRole("radio", { name: "All players" }).evaluate((input: HTMLInputElement) => {
       const rows = () => document.querySelectorAll("[data-testid=player-row]").length;
-      const select = document.querySelector<HTMLSelectElement>("#pr-volume")!;
       const before = rows();
-      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")!.set!.call(select, "0");
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-      return { value: select.value, before, after: rows() };
+      input.click();
+      return { checked: input.checked, before, after: rows() };
     });
-    expect(result.value).toBe("0");
+    expect(result.checked).toBe(true);
     expect(result.after).toBeGreaterThan(result.before);
-  });
-
-  test("an explicitly selected published season has a volume floor already applied", async ({ page }) => {
-    await page.goto("/shooting?year=2025");
-    await page.getByTestId("player-row").first().waitFor(READY);
-
-    await expect(page.locator("#pr-volume")).toHaveValue("300");
-    // The floor has to bite, or "best eFG%" is a list of 180-attempt centres.
-    const floored = await page.getByTestId("player-row").count();
-    await page.getByText(/^Advanced filters \(/).click();
-    await page.selectOption("#pr-volume", "0");
-    expect(await page.getByTestId("player-row").count()).toBeGreaterThan(floored);
   });
 
   test("expands a player into his own seasons, under the same header", async ({ page }) => {
@@ -127,7 +115,7 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("career view includes observed totals without requiring a model estimate", async ({ page }) => {
-    await page.goto("/shooting?year=career&volume=0");
+    await page.goto("/shooting?year=career&sample=all&volume=0");
     await page.getByTestId("player-row").first().waitFor(READY);
     await page.getByRole("searchbox", { name: "Search player" }).fill("Sarunas Marciulionis");
     await expect(page.getByTestId("player-row")).toHaveCount(1);
@@ -204,7 +192,7 @@ test.describe("Player Shooting by Rest", () => {
   await page.keyboard.press("Space");
   await expect(control).toHaveAttribute("aria-expanded", "false");
   await page.getByRole("searchbox").fill("zzzzzzzz");
-  await expect(page.getByRole("status").filter({ hasText: "No players match these filters" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "No players match your search" })).toBeVisible();
  });
 
 test("shooting filter and player links restore the same view", async ({ page }) => {
@@ -313,7 +301,7 @@ for (const width of [320, 390, 430, 700, 701, 1440]) {
 }
 
 test("attempt columns sort independently and retain zero attempts without rates", async ({ page }) => {
-  await page.goto("/shooting?year=2025&volume=0&sort=restedFga&dir=asc");
+  await page.goto("/shooting?year=2025&sample=all&volume=0&sort=restedFga&dir=asc");
   await page.getByTestId("player-row").first().waitFor(READY);
   const row = page.getByTestId("player-row").first();
   await expect(row.locator("td").nth(5)).toHaveText("0");

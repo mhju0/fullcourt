@@ -530,8 +530,28 @@ describe("buildSeasonReport — fatigue calendar", () => {
     ]);
   });
 
+  it("publishes ordered daily means for eligible finals, leaving unmeasured dates absent", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, date: "2025-10-21", home: side(0), away: side(0) }),
+      game({ gameId: 2, date: "2025-10-23", home: side(2), away: side(4) }),
+      game({ gameId: 3, date: "2025-10-23", home: side(5), away: side(7), neutralSite: true }),
+      game({ gameId: 4, date: "2025-10-24", home: null }),
+      game({ gameId: 5, date: "2025-10-25", status: "live" }),
+      game({ gameId: 6, date: "2025-10-26", awayScore: null }),
+      game({ gameId: 7, date: "2025-10-27", status: "scheduled" }),
+    ]);
+
+    expect(report.days).toEqual([
+      { date: "2025-10-21", games: 1, avgFatigue: 0 },
+      { date: "2025-10-23", games: 2, avgFatigue: 4.5 },
+    ]);
+    expect(report.weeks).toEqual([{ week: 1, startDate: "2025-10-21", games: 3, avgFatigue: 3 }]);
+  });
+
   it("has no weeks at all for a season with nothing completed", () => {
-    expect(buildSeasonReport("2025-26", []).weeks).toEqual([]);
+    const report = buildSeasonReport("2025-26", []);
+    expect(report.weeks).toEqual([]);
+    expect(report.days).toEqual([]);
   });
 });
 
